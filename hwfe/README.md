@@ -1,1 +1,1 @@
-# Hot Wizards
+# Hot Wizards Front End

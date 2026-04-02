@@ -1,0 +1,54 @@
+name: Build and Deploy Hot Wizards Back End
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "hwbe/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: hwbe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: "24.14.1"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build NestJS
+        run: npm run build
+
+      - name: Deploy to Droplet
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # We send the dist folder and the package files
+          source: "hwbe/dist/**,hwbe/package.json,hwbe/package-lock.json"
+          target: "/var/www/hwbe"
+          strip_components: 1
+
+      - name: Restart PM2 Process
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/hwbe
+            npm install --production
+            pm2 delete hwbe-api || true
+            pm2 start dist/main.js --name hwbe-api
+            pm2 save
