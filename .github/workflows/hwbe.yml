@@ -48,7 +48,10 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
             cd /var/www/hwbe
             npm install --omit=dev
-            pm2 restart hwbe-api || pm2 start dist/main.js --name hwbe-api
+
+            # Updated name here
+            pm2 restart hwbe --update-env || pm2 start dist/main.js --name hwbe
             pm2 save
