@@ -1,0 +1,31 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "./",
+    },
+    {
+      "name": "HWBE",
+      "path": "hwbe",
+    },
+    {
+      "name": "HWFE",
+      "path": "hwfe",
+    },
+  ],
+  "settings": {
+    "files.exclude": {
+      "hwbe": true,
+      "hwfe": true,
+    },
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "angular.ng-template",
+      "firsttris.vscode-jest-runner",
+      "mrmlnc.vscode-scss",
+    ],
+  },
+}
