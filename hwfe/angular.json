@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "hotwizards": {
+    "hwfe": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:class": {
@@ -86,10 +86,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "hotwizards:build:production"
+              "buildTarget": "hwfe:build:production"
             },
             "development": {
-              "buildTarget": "hotwizards:build:development"
+              "buildTarget": "hwfe:build:development"
             }
           },
           "defaultConfiguration": "development"
