@@ -32,8 +32,8 @@ jobs:
       - name: Deploy to Droplet
         uses: appleboy/scp-action@v1.0.0
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
+          host: ${{ vars.REMOTE_HOST }}
+          username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           # We send the dist folder and the package files
           source: "hwbe/dist/**,hwbe/package.json,hwbe/package-lock.json"
@@ -43,8 +43,8 @@ jobs:
       - name: Restart PM2 Process
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
+          host: ${{ vars.REMOTE_HOST }}
+          username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/hwbe
