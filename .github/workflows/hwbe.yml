@@ -39,7 +39,7 @@ jobs:
           target: "/var/www/hwbe"
           strip_components: 1
 
-      - name: Restart pm2
+      - name: Restart PM2 Process
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ vars.REMOTE_HOST }}
@@ -48,7 +48,7 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hwbe/hwbe
-            npm install --production
+            cd /var/www/hwbe
+            npm install --omit=dev
             pm2 restart hwbe-api || pm2 start dist/main.js --name hwbe-api
             pm2 save
