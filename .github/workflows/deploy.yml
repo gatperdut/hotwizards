@@ -36,16 +36,16 @@ jobs:
       - name: Cleanup
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ variables.REMOTE_HOST }}
-          username: ${{ variables.REMOTE_USER }}
+          host: ${{ vars.REMOTE_HOST }}
+          username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: rm -rf /var/www/hotwizards/*
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
         with:
-          host: ${{ variables.REMOTE_HOST }}
-          username: ${{ variables.REMOTE_USER }}
+          host: ${{ vars.REMOTE_HOST }}
+          username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "hwfe/dist/hotwizards/browser/*"
           target: "/var/www/hotwizards"
