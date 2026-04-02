@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - "hwbe/**"
+  workflow_dispatch:
 
 jobs:
   build-and-deploy-hwbe:

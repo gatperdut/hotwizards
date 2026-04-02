@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - "hwfe/**"
+  workflow_dispatch:
 
 jobs:
   build-and-deploy-hwfe:
