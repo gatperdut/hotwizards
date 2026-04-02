@@ -8,7 +8,7 @@ on:
       - "hwbe/**"
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-hwbe:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -35,7 +35,6 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # We send the dist folder and the package files
           source: "hwbe/dist/**,hwbe/package.json,hwbe/package-lock.json"
           target: "/var/www/hwbe"
           strip_components: 1
@@ -47,8 +46,9 @@ jobs:
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/hwbe
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hwbe/hwbe
             npm install --production
-            pm2 delete hwbe-api || true
-            pm2 start dist/main.js --name hwbe-api
+            pm2 restart hwbe-api || pm2 start dist/main.js --name hwbe-api
             pm2 save

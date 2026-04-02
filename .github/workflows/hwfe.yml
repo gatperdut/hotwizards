@@ -8,7 +8,7 @@ on:
       - "hwfe/**"
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-hwfe:
     runs-on: ubuntu-latest
 
     defaults:
@@ -31,7 +31,7 @@ jobs:
         run: npm run build
 
       - name: Generate sitemap
-        run: npx sitemap-generator-cli https://hotwizards.net --output dist/hotwizards/browser/sitemap.xml
+        run: npx sitemap-generator-cli https://hotwizards.net --output dist/hwfe/browser/sitemap.xml
 
       - name: Cleanup
         uses: appleboy/ssh-action@v1.0.0
@@ -39,7 +39,7 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: rm -rf /var/www/hotwizards/*
+          script: rm -rf /var/www/hwfe/*
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
@@ -47,6 +47,6 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "hwfe/dist/hotwizards/browser/*"
-          target: "/var/www/hotwizards"
+          source: "hwfe/dist/hwfe/browser/*"
+          target: "/var/www/hwfe"
           strip_components: 4
