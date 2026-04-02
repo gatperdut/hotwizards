@@ -1,0 +1,8 @@
+:host {
+  box-shadow: 
+    0px 0px 0px 8px #4B4C4B,
+    0px 0px 0px 16px #828482,
+    0px 0px 0px 24px #B2B5B2,
+    0px 0px 0px 32px #DADDDA;
+  background: black;
+}

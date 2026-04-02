@@ -1,0 +1,53 @@
+name: Build and Deploy Hot Wizards Frontend
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "hwfe/**"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: hwfe
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: "24.14.1"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Generate sitemap
+        run: npx sitemap-generator-cli https://hotwizards.net --output dist/hotwizards/browser/sitemap.xml
+
+      - name: Cleanup Server Folder
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: rm -rf /var/www/hotwizards/*
+
+      - name: Deploy to Droplet
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Path updated to hwfe
+          source: "hwfe/dist/hotwizards/browser/*"
+          target: "/var/www/hotwizards"
+          strip_components: 4
