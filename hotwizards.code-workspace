@@ -18,6 +18,11 @@
       "hwbe": true,
       "hwfe": true,
     },
+    "search.exclude": {
+      "**/package-lock.json": true,
+      "**/node_modules": true,
+      "**/dist": true,
+    },
   },
   "extensions": {
     "recommendations": [
