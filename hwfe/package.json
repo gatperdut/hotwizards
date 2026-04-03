@@ -1,14 +1,24 @@
 {
   "name": "@hw/hwfe",
-  "version": "0.0.0",
+  "description": "Hot Wizards Frontend",
   "type": "module",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development"
-  },
+  "version": "0.0.1",
+  "author": "carlosrb",
   "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "scripts": {
+    "start": "ng serve",
+    "start:prod": "ng serve --configuration production",
+    "build": "ng build",
+    "build:watch": "ng build --watch",
+    "build:dev": "ng build --configuration development",
+    "serve:prod": "npx serve dist/hwfe/browser",
+    "clean": "rm -rf dist"
+  },
   "packageManager": "npm@11.6.2",
   "dependencies": {
     "@angular/cdk": "^21.2.4",

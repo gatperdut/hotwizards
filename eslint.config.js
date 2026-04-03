@@ -22,6 +22,9 @@ export default [
       },
     },
     rules: {
+      // TODO
+      // https://eslint.org/docs/latest/rules
+      // https://typescript-eslint.io/rules/
       eqeqeq: ['error', 'always'],
       curly: ['warn', 'all'],
       'no-constant-condition': 'warn',
@@ -33,6 +36,7 @@ export default [
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-unsafe-declaration-merging': 'error',
+      '@typescript-eslint/no-unused-private-class-members': 'warn',
       '@typescript-eslint/explicit-member-accessibility': [
         'warn',
         {

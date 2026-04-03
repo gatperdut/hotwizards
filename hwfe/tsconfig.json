@@ -4,6 +4,9 @@
     "module": "preserve",
     "moduleResolution": "bundler",
   },
+  "include": [
+    "../shared/src/**/*"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

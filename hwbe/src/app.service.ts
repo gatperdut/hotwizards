@@ -1,4 +1,4 @@
-import { User } from '@hw/shared/users/user.interface';
+import { Wizard } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -7,5 +7,5 @@ export class AppService {
     return 'Hello World!';
   }
 
-  public user: User | undefined;
+  private user: Wizard | undefined;
 }

@@ -1,11 +1,27 @@
 {
   "name": "hotwizards",
+  "description": "Hot Wizards Monorepo",
   "type": "module",
+  "version": "0.0.1",
+  "author": "carlosrb",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
   "workspaces": [
+    "shared",
     "hwbe",
-    "hwfe",
-    "shared"
+    "hwfe"
   ],
+  "scripts": {
+    "start:hwbe": "npm run start -w @hw/hwbe",
+    "start:hwfe": "npm run start -w @hw/hwfe",
+    "build": "npm run build --workspaces --if-present",
+    "clean": "rm -rf **/dist",
+    "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules"
+  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.1.0",

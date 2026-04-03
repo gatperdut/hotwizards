@@ -1,4 +1,4 @@
-name: Build and Deploy Hot Wizards Back End
+name: Build and Deploy Hot Wizards Backend
 
 on:
   push:

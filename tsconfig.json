@@ -19,7 +19,7 @@
     "noImplicitReturns": true,
     "importHelpers": true,
     "paths": {
-      "@hw/shared/*": ["shared/src/*"],
+      "@hw/shared": ["shared/src/index.ts"],
       "@hw/hwbe/*": ["hwbe/src/*"],
       "@hw/hwfe/*": ["hwfe/src/*"]
     },
