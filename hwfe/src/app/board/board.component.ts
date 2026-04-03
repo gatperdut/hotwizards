@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { PanzoomDirective } from './directives/panzoom.directive';
 
@@ -10,5 +11,13 @@ import { PanzoomDirective } from './directives/panzoom.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardComponent {
+  private httpClient = inject(HttpClient);
+
   public tiles: number[] = Array.from({ length: 375 }, (_, i) => i);
+
+  constructor() {
+    this.httpClient.get<string>('localhost:3000/api/hello').subscribe((a) => {
+      console.log(a);
+    });
+  }
 }

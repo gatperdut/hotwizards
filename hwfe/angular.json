@@ -71,13 +71,21 @@
                   "maximumError": "8kB"
                 }
               ],
+              "serviceWorker": "ngsw-config.json",
+              "sourceMap": {
+                "scripts": true,
+                "styles": false,
+                "hidden": true
+              },
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json"
+              "namedChunks": true
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "outputHashing": "none",
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"

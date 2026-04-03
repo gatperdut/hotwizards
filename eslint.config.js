@@ -13,7 +13,7 @@ export default [
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: ['./hwbe/tsconfig.json', './hwfe/tsconfig.json'],
+        project: ['./hwbe/tsconfig.build.json', './hwfe/tsconfig.app.json'],
         tsconfigRootDir: import.meta.dirname,
       },
     },

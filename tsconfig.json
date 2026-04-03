@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": "./",
+    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "resolvePackageJsonExports": true,
+    "declaration": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+  },
+}
