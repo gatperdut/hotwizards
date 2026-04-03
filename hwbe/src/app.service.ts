@@ -8,8 +8,4 @@ export class AppService {
   }
 
   private user: Wizard | undefined;
-
-  constructor() {
-    console.log(this.user);
-  }
 }
