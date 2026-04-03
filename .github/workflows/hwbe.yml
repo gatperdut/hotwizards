@@ -5,24 +5,19 @@ on:
     branches:
       - master
     paths:
-      # Trigger if backend code changes...
       - "hwbe/**"
-      # ...OR if the shared library changes (since Backend depends on it)
       - "shared/**"
-      # ...OR if the versioning bot updates package files
       - "package.json"
       - "package-lock.json"
   workflow_dispatch:
 
 jobs:
   build-and-deploy-hwbe:
-    # IMPORTANT: Only deploy if it's a real commit, 
-    # not the temporary 'changeset' markdown files.
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Note: Use v4 (v6 doesn't exist yet in 2026 stable)
+        uses: actions/checkout@v4
 
       - name: Setup node.js
         uses: actions/setup-node@v4
@@ -31,11 +26,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        # Run install from the ROOT so it links @hw/shared properly
         run: npm install
 
       - name: Build
-        # Use workspace command to build the backend
         run: npm run build -w @hw/hwbe
 
       - name: Deploy
@@ -44,7 +37,6 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # We grab the built dist and the package files
           source: "hwbe/dist/**,hwbe/package.json,package.json,package-lock.json"
           target: "/var/www/hwbe"
           strip_components: 1

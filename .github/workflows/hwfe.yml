@@ -5,11 +5,8 @@ on:
     branches:
       - master
     paths:
-      # Trigger if frontend code changes
       - "hwfe/**"
-      # Trigger if shared library changes (Frontend needs the new types/logic)
       - "shared/**"
-      # Trigger when Changesets updates the version numbers
       - "package.json"
       - "package-lock.json"
   workflow_dispatch:
@@ -17,7 +14,6 @@ on:
 jobs:
   build-and-deploy-hwfe:
     runs-on: ubuntu-latest
-    # Removed the 'hwfe' working-directory default to handle the monorepo root
 
     steps:
       - name: Checkout code
@@ -30,15 +26,12 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        # Install from root to link @hw/shared
         run: npm install
 
       - name: Build
-        # Use workspace command
         run: npm run build -w @hw/hwfe
 
       - name: Generate sitemap
-        # Run from the frontend directory specifically for the tool to find config
         working-directory: hwfe
         run: npx sitemap-generator-cli https://hotwizards.net --output dist/hwfe/browser/sitemap.xml
 
@@ -56,7 +49,6 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # Path adjusted to the monorepo structure
           source: "hwfe/dist/hwfe/browser/*"
           target: "/var/www/hwfe"
           strip_components: 4
