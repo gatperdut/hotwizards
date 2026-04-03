@@ -17,7 +17,12 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "paths": {
+      "@hw/shared/*": ["shared/src/*"],
+      "@hw/hwbe/*": ["hwbe/src/*"],
+      "@hw/hwfe/*": ["hwfe/src/*"]
+    },
   },
-  "compileOnSave": false
+  "compileOnSave": false,
 }

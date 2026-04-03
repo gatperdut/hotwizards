@@ -12,11 +12,16 @@
       "name": "HWFE",
       "path": "hwfe",
     },
+    {
+      "name": "SHARED",
+      "path": "shared",
+    },
   ],
   "settings": {
     "files.exclude": {
       "hwbe": true,
       "hwfe": true,
+      "shared": true
     },
     "search.exclude": {
       "**/package-lock.json": true,

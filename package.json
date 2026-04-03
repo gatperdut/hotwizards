@@ -1,5 +1,11 @@
 {
+  "name": "hotwizards",
   "type": "module",
+  "workspaces": [
+    "hwbe",
+    "hwfe",
+    "shared"
+  ],
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.1.0",

@@ -6,8 +6,9 @@
     "target": "es2023",
     "removeComments": true,
     "emitDecoratorMetadata": true,
-    "rootDir": "./src",
+    "rootDir": "..",
     "outDir": "./dist",
+    "composite": false,
     "tsBuildInfoFile": "./dist/.tsbuildinfo"
   },
 }
