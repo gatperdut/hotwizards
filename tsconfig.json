@@ -17,5 +17,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
+    "importHelpers": true
   },
+  "compileOnSave": false
 }

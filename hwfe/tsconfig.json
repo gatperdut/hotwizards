@@ -3,9 +3,8 @@
   "compilerOptions": {
     "module": "preserve",
     "moduleResolution": "bundler",
-    "importHelpers": true,
+    "rootDir": "src"
   },
-  "compileOnSave": false,
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
@@ -13,4 +12,5 @@
     "strictTemplates": true
   },
   "files": [],
+  
 }
