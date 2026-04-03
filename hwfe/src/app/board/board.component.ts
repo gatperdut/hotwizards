@@ -16,7 +16,7 @@ export class BoardComponent {
 
   public tiles: number[] = Array.from({ length: 375 }, (_, i) => i);
 
-  public user: Wizard | undefined;
+  private user: Wizard | undefined;
 
   constructor() {
     this.httpClient.get<string>('localhost:3000/api/hello').subscribe((a) => {
