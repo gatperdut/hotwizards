@@ -5,30 +5,38 @@ on:
     branches:
       - master
     paths:
+      # Trigger if backend code changes...
       - "hwbe/**"
+      # ...OR if the shared library changes (since Backend depends on it)
+      - "shared/**"
+      # ...OR if the versioning bot updates package files
+      - "package.json"
+      - "package-lock.json"
   workflow_dispatch:
 
 jobs:
   build-and-deploy-hwbe:
+    # IMPORTANT: Only deploy if it's a real commit, 
+    # not the temporary 'changeset' markdown files.
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: hwbe
-
+    
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v4 # Note: Use v4 (v6 doesn't exist yet in 2026 stable)
 
       - name: Setup node.js
-        uses: actions/setup-node@v6.3.0
+        uses: actions/setup-node@v4
         with:
-          node-version: "24.14.1"
+          node-version: "24"
+          cache: 'npm'
 
       - name: Install dependencies
+        # Run install from the ROOT so it links @hw/shared properly
         run: npm install
 
       - name: Build
-        run: npm run build
+        # Use workspace command to build the backend
+        run: npm run build -w @hw/hwbe
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
@@ -36,7 +44,8 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "hwbe/dist/**,hwbe/package.json,hwbe/package-lock.json"
+          # We grab the built dist and the package files
+          source: "hwbe/dist/**,hwbe/package.json,package.json,package-lock.json"
           target: "/var/www/hwbe"
           strip_components: 1
 
@@ -51,8 +60,8 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
             cd /var/www/hwbe
-            npm install --omit=dev
+            # Install production deps using the workspace link
+            npm install --omit=dev -w @hw/hwbe
 
-            # Updated name here
-            pm2 restart hwbe --update-env || pm2 start dist/main.js --name hwbe
+            pm2 restart hwbe --update-env || pm2 start hwbe/dist/main.js --name hwbe
             pm2 save

@@ -23,6 +23,7 @@
     "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.30.0",
     "@eslint/js": "10.0.1",
     "eslint": "10.1.0",
     "eslint-config-prettier": "10.1.8",
