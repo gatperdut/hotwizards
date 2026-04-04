@@ -2,7 +2,7 @@
   "name": "@hw/hwfe",
   "description": "Hot Wizards Frontend",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "carlosrb",
   "private": true,
   "license": "MIT",
