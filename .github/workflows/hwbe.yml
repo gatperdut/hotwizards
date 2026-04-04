@@ -47,7 +47,6 @@ jobs:
             hwbe/dist/**,
             hwbe/package.json,
             hwbe/.env,
-            shared/package.json,
             package.json,
             package-lock.json
           target: "/var/www/hwbe"
