@@ -7,5 +7,9 @@ export class AppService {
     return { greeting: 'Hello World!!!!' };
   }
 
+  public getError(): void {
+    throw new Error('HWBE error');
+  }
+
   private user: Wizard | undefined;
 }

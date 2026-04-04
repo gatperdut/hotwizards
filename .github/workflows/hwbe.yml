@@ -45,7 +45,7 @@ jobs:
           npx @sentry/cli releases finalize "$RELEASE_NAME"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: "gatperdut"
+          SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwbe"
 
       - name: Create .env file
