@@ -22,7 +22,7 @@ export default [
       },
     },
     rules: {
-      // TODO
+      // TODO tweak more?
       // https://eslint.org/docs/latest/rules
       // https://typescript-eslint.io/rules/
       eqeqeq: ['error', 'always'],

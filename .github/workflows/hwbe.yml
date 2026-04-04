@@ -14,13 +14,14 @@ on:
 jobs:
   build-and-deploy-hwbe:
     runs-on: ubuntu-latest
+    environment: production
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Setup node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6.3.0
         with:
           node-version: "24"
           cache: 'npm'
@@ -31,29 +32,39 @@ jobs:
       - name: Build
         run: npm run build -w @hw/hwbe
 
+      - name: Create .env file
+        run: |
+          echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
+          echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
+          echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
+
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
         with:
-          host: ${{ vars.REMOTE_HOST }}
-          username: ${{ vars.REMOTE_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "hwbe/dist/**,hwbe/package.json,package.json,package-lock.json"
+          source: >
+            hwbe/dist/**,
+            hwbe/package.json,
+            hwbe/.env,
+            shared/package.json,
+            package.json,
+            package-lock.json
           target: "/var/www/hwbe"
-          strip_components: 1
+          strip_components: 0
 
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ vars.REMOTE_HOST }}
-          username: ${{ vars.REMOTE_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
             cd /var/www/hwbe
-            # Install production deps using the workspace link
             npm install --omit=dev -w @hw/hwbe
-
-            pm2 restart hwbe --update-env || pm2 start hwbe/dist/main.js --name hwbe
+            pm2 delete hwbe || true
+            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env
             pm2 save
