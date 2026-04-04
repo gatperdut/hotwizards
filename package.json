@@ -19,7 +19,7 @@
     "start:hwfe": "npm run start -w @hw/hwfe",
     "build": "npm run build --workspaces --if-present",
     "clean": "rm -rf **/dist",
-    "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules"
+    "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules hwfe/.angular/cache"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",

@@ -17,7 +17,7 @@
     "build:watch": "ng build --watch",
     "build:dev": "ng build --configuration development",
     "serve:prod": "npx serve dist/hwfe/browser",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist .angular/cache"
   },
   "packageManager": "npm@11.6.2",
   "dependencies": {
