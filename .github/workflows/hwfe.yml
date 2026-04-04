@@ -14,13 +14,14 @@ on:
 jobs:
   build-and-deploy-hwfe:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
 
       - name: Setup node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6.3.0
         with:
           node-version: "24"
           cache: 'npm'
@@ -31,24 +32,24 @@ jobs:
       - name: Build
         run: npm run build -w @hw/hwfe
 
-      - name: Generate sitemap
-        working-directory: hwfe
-        run: npx sitemap-generator-cli https://hotwizards.net --output dist/hwfe/browser/sitemap.xml
-
       - name: Cleanup
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ vars.REMOTE_HOST }}
-          username: ${{ vars.REMOTE_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: rm -rf /var/www/hwfe/*
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
         with:
-          host: ${{ vars.REMOTE_HOST }}
-          username: ${{ vars.REMOTE_USER }}
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "hwfe/dist/hwfe/browser/*"
           target: "/var/www/hwfe"
           strip_components: 4
+
+      - name: Generate sitemap
+        working-directory: hwfe
+        run: npx sitemap-generator-cli https://hotwizards.net --output dist/hwfe/browser/sitemap.xml

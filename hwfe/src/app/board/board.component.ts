@@ -19,8 +19,8 @@ export class BoardComponent {
   private user: Wizard | undefined;
 
   constructor() {
-    this.httpClient.get<string>('localhost:3000/api/hello').subscribe((a) => {
-      console.log(a);
+    this.httpClient.get<string>('/api/hello').subscribe((a) => {
+      console.log('message is', a);
     });
   }
 }
