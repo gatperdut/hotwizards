@@ -17,6 +17,6 @@ export class SidebarComponent {
   }
 
   public error(): void {
-    throw new Error('Error on purpose');
+    throw new Error('Another error on purpose');
   }
 }
