@@ -32,8 +32,9 @@ jobs:
       - name: Inject Sentry DSN
         working-directory: hwfe
         run: |
+          RELEASE_NAME="hwfe@$GITHUB_SHA"
           sed -i "s|HWFE_SENTRY_DSN|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
-          sed -i "s|HWFE_SENTRY_RELEASE|hwfe@${{ github.sha }}|" src/environments/environment.ts
+          sed -i "s|HWFE_SENTRY_RELEASE|$RELEASE_NAME|" src/environments/environment.ts
 
       - name: Build
         run: npm run build -w @hw/hwfe
@@ -41,12 +42,13 @@ jobs:
       - name: Upload sourcemaps
         working-directory: hwfe
         run: |
-          npx @sentry/cli releases new -p $SENTRY_PROJECT $GITHUB_SHA
+          RELEASE_NAME="hwfe@$GITHUB_SHA"
+          npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
           npx @sentry/cli sourcemaps upload dist/hwfe/browser \
             --project $SENTRY_PROJECT \
-            --release $GITHUB_SHA \
+            --release "$RELEASE_NAME" \
             --rewrite
-          npx @sentry/cli releases finalize $GITHUB_SHA
+          npx @sentry/cli releases finalize "$RELEASE_NAME"
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: "hot-wizards"
