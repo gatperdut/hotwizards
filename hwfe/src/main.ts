@@ -7,6 +7,7 @@ import { appConfig } from './app/app.config';
 if (environment.production) {
   Sentry.init({
     dsn: environment.sentryDsn,
+    release: environment.hwfeSentryRelease,
     integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
     tracesSampleRate: 0.1,
     tracePropagationTargets: ['localhost', 'hotwizards.net'],
