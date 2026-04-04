@@ -1,10 +1,10 @@
-import { ErrorController } from '@hw/hwbe/error.controller.js';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { ErrorController } from './error.controller.js';
 
 @Module({
   imports: [
