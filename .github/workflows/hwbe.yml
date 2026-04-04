@@ -15,6 +15,8 @@ jobs:
   build-and-deploy-hwbe:
     runs-on: ubuntu-latest
     environment: production
+    env:
+      RELEASE_NAME: "${{ github.sha }}"
     
     steps:
       - name: Checkout code
@@ -23,7 +25,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v6.3.0
         with:
-          node-version: "24"
+          node-version: "24.14.1"
           cache: 'npm'
 
       - name: Install dependencies
@@ -32,11 +34,27 @@ jobs:
       - name: Build
         run: npm run build -w @hw/hwbe
 
+      - name: Upload sourcemaps
+        working-directory: hwbe
+        run: |
+          npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
+          npx @sentry/cli sourcemaps upload hwbe/dist/hwbe/src \
+            --project $SENTRY_PROJECT \
+            --release "$RELEASE_NAME" \
+            --rewrite
+          npx @sentry/cli releases finalize "$RELEASE_NAME"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "hot-wizards"
+          SENTRY_PROJECT: "hwbe"
+
       - name: Create .env file
         run: |
           echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
           echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
           echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
+          echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
+          echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
@@ -47,15 +65,15 @@ jobs:
           source: >
             hwbe/dist/**,
             hwbe/package.json,
-            hwbe/.env,
-            shared/package.json,
+            .env,
             package.json,
             package-lock.json
+          rm: true
           target: "/var/www/hwbe"
           strip_components: 0
 
       - name: Restart pm2
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -66,5 +84,5 @@ jobs:
             cd /var/www/hwbe
             npm install --omit=dev -w @hw/hwbe
             pm2 delete hwbe || true
-            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env
+            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env --time
             pm2 save

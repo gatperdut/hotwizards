@@ -15,6 +15,8 @@ jobs:
   build-and-deploy-hwfe:
     runs-on: ubuntu-latest
     environment: production
+    env:
+      RELEASE_NAME: "${{ github.sha }}"
 
     steps:
       - name: Checkout code
@@ -23,17 +25,37 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v6.3.0
         with:
-          node-version: "24"
+          node-version: "24.14.1"
           cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
+      - name: Inject Sentry DSN
+        working-directory: hwfe
+        run: |
+          sed -i "s|HWFE_SENTRY_DSN|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
+          sed -i "s|HWFE_SENTRY_RELEASE|$RELEASE_NAME|" src/environments/environment.ts
+
       - name: Build
         run: npm run build -w @hw/hwfe
 
+      - name: Upload sourcemaps
+        working-directory: hwfe
+        run: |
+          npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
+          npx @sentry/cli sourcemaps upload dist/hwfe/browser \
+            --project $SENTRY_PROJECT \
+            --release "$RELEASE_NAME" \
+            --rewrite
+          npx @sentry/cli releases finalize "$RELEASE_NAME"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "hot-wizards"
+          SENTRY_PROJECT: "hwfe"
+
       - name: Cleanup
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
@@ -47,6 +69,7 @@ jobs:
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "hwfe/dist/hwfe/browser/*"
+          rm: true 
           target: "/var/www/hwfe"
           strip_components: 4
 
