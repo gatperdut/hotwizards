@@ -1,5 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import * as Sentry from '@sentry/nestjs';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
@@ -8,6 +10,17 @@ async function bootstrap(): Promise<void> {
   const configService = app.get(ConfigService);
 
   const production: boolean = configService.get<string>('HWBE_NODE_ENV') === 'production';
+
+  // Sentry
+  if (production) {
+    Sentry.init({
+      dsn: configService.get<string>('HWBE_SENTRY_DSN'),
+      integrations: [nodeProfilingIntegration()],
+      tracesSampleRate: 1.0,
+      profilesSampleRate: 1.0,
+      release: configService.get<string>('HWBE_SENTRY_RELEASE'),
+    });
+  }
 
   // CORS
   if (!production) {
@@ -21,8 +34,7 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   // Listen
-  const port: number = configService.get<number>('HWBE_PORT') ?? 3000;
-
+  const port: number = configService.get<number>('HWBE_PORT') as number;
   await app.listen(port);
 }
 

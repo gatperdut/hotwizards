@@ -15,6 +15,8 @@ jobs:
   build-and-deploy-hwbe:
     runs-on: ubuntu-latest
     environment: production
+    env:
+      RELEASE_NAME: "hwbe@${{ github.sha }}"
     
     steps:
       - name: Checkout code
@@ -32,11 +34,26 @@ jobs:
       - name: Build
         run: npm run build -w @hw/hwbe
 
+      - name: Upload sourcemaps
+        working-directory: hwbe
+        run: |
+          npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
+          npx @sentry/cli sourcemaps upload dist \
+            --project $SENTRY_PROJECT \
+            --release "$RELEASE_NAME" \
+            --rewrite
+          npx @sentry/cli releases finalize "$RELEASE_NAME"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "gatperdut"
+          SENTRY_PROJECT: "hwbe"
+
       - name: Create .env file
         run: |
           echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
           echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
           echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
+          echo "HWBE_SENTRY_DSN=${{ vars.HWBE_PORT }}" >> .env
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
