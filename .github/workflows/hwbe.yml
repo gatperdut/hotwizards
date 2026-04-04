@@ -25,7 +25,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v6.3.0
         with:
-          node-version: "24"
+          node-version: "24.14.1"
           cache: 'npm'
 
       - name: Install dependencies
@@ -66,8 +66,6 @@ jobs:
             hwbe/dist/**,
             hwbe/package.json,
             .env,
-            # Needed?
-            # shared/package.json,
             package.json,
             package-lock.json
           rm: true
