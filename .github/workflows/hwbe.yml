@@ -31,13 +31,25 @@ jobs:
       - name: Build
         run: npm run build -w @hw/hwbe
 
+      - name: Create .env file
+        run: |
+          echo "NODE_ENV=${{ vars.NODE_ENV }}" > hwbe/.env
+          echo "HWFE_URL=${{ vars.HWFE_URL }}" >> hwbe/.env
+          echo "PORT=${{ vars.PORT }}" >> hwbe/.env
+
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "hwbe/dist/**,hwbe/package.json,package.json,package-lock.json"
+          source: >
+            hwbe/dist/**,
+            hwbe/package.json,
+            hwbe/.env,
+            shared/package.json,
+            package.json,
+            package-lock.json
           target: "/var/www/hwbe"
           strip_components: 1
 
