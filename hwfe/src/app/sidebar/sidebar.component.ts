@@ -15,4 +15,8 @@ export class SidebarComponent {
   public snack(): void {
     this.matSnackBar.openFromComponent(PwaSnackComponent);
   }
+
+  public error(): void {
+    throw new Error('Error on purpose');
+  }
 }

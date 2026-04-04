@@ -51,11 +51,12 @@ jobs:
             shared/package.json,
             package.json,
             package-lock.json
+          rm: true
           target: "/var/www/hwbe"
           strip_components: 0
 
       - name: Restart pm2
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}

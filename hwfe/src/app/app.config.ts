@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  ErrorHandler,
   inject,
   isDevMode,
   provideAppInitializer,
@@ -9,6 +10,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
+import * as Sentry from '@sentry/angular';
 import { routes } from './app.routes';
 import { PwaService } from './pwa/services/pwa.service';
 
@@ -33,6 +35,13 @@ export const appConfig: ApplicationConfig = {
         appearance: 'outline',
         floatLabel: 'always',
       },
+    },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        // TODO test true to see "crash report" popup
+        showDialog: false,
+      }),
     },
   ],
 };
