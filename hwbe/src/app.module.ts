@@ -4,7 +4,6 @@ import { APP_FILTER } from '@nestjs/core';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { ErrorController } from './error.controller.js';
 
 @Module({
   imports: [
@@ -14,7 +13,8 @@ import { ErrorController } from './error.controller.js';
     }),
     SentryModule.forRoot(),
   ],
-  controllers: [AppController, ErrorController],
+  // controllers: [AppController, ErrorController],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_FILTER,
