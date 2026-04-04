@@ -41,7 +41,7 @@ jobs:
         working-directory: hwfe
         run: |
           npx @sentry/cli releases new -p $SENTRY_PROJECT $GITHUB_SHA
-          npx @sentry/cli releases upload-sourcemaps dist/hwfe/browser \
+          npx @sentry/cli sourcemaps upload dist/hwfe/browser \
             --project $SENTRY_PROJECT \
             --release $GITHUB_SHA \
             --rewrite
