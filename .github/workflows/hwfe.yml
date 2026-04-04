@@ -33,6 +33,7 @@ jobs:
         working-directory: hwfe
         run: |
           sed -i "s|HWFE_SENTRY_DSN|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
+          sed -i "s|HWFE_SENTRY_RELEASE|hwfe@${{ github.sha }}|" src/environments/environment.prod.ts
 
       - name: Build
         run: npm run build -w @hw/hwfe
