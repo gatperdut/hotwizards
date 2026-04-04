@@ -2,7 +2,7 @@
   "name": "@hw/hwbe",
   "description": "Hot Wizards Backend",
   "type": "commonjs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "carlosrb",
   "private": true,
   "license": "MIT",
