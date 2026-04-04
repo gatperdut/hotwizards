@@ -1,7 +1,7 @@
-// TODO add type or interface
-export const environment = {
+import { AppEnvironment } from '@hw/hwfe/environments/environment.model';
+
+export const environment: AppEnvironment = {
   production: true,
   sentryDsn: 'HWFE_SENTRY_DSN',
   hwfeSentryRelease: 'HWFE_SENTRY_RELEASE',
-  apiUrl: '/api',
 };
