@@ -20,7 +20,7 @@ export class BoardComponent {
 
   constructor() {
     this.httpClient.get<string>('/api/hello').subscribe((a) => {
-      console.log(a);
+      console.log('message is', a);
     });
   }
 }
