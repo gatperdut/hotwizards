@@ -38,7 +38,7 @@ jobs:
         working-directory: hwbe
         run: |
           npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
-          npx @sentry/cli sourcemaps upload dist \
+          npx @sentry/cli sourcemaps upload hwbe/dist/hwbe/src \
             --project $SENTRY_PROJECT \
             --release "$RELEASE_NAME" \
             --rewrite
@@ -53,7 +53,9 @@ jobs:
           echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
           echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
           echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
-          echo "HWBE_SENTRY_DSN=${{ vars.HWBE_PORT }}" >> .env
+          echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
+          # Needed?
+          echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
@@ -64,8 +66,9 @@ jobs:
           source: >
             hwbe/dist/**,
             hwbe/package.json,
-            hwbe/.env,
-            shared/package.json,
+            .env,
+            # Needed?
+            # shared/package.json,
             package.json,
             package-lock.json
           rm: true
@@ -84,5 +87,5 @@ jobs:
             cd /var/www/hwbe
             npm install --omit=dev -w @hw/hwbe
             pm2 delete hwbe || true
-            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env
+            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env --time
             pm2 save
