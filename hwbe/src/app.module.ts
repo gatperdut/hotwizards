@@ -1,3 +1,4 @@
+import { ErrorController } from '@hw/hwbe/error.controller.js';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -13,7 +14,7 @@ import { AppService } from './app.service.js';
     }),
     SentryModule.forRoot(),
   ],
-  controllers: [AppController],
+  controllers: [AppController, ErrorController],
   providers: [
     {
       provide: APP_FILTER,
