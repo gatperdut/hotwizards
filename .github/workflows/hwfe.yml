@@ -41,11 +41,14 @@ jobs:
         working-directory: hwfe
         run: |
           npx @sentry/cli releases new -p $SENTRY_PROJECT $GITHUB_SHA
-          npx @sentry/cli releases files $SENTRY_PROJECT upload-sourcemaps dist/hwfe/browser --rewrite --release $GITHUB_SHA
+          npx @sentry/cli releases upload-sourcemaps dist/hwfe/browser \
+            --project $SENTRY_PROJECT \
+            --release $GITHUB_SHA \
+            --rewrite
           npx @sentry/cli releases finalize $GITHUB_SHA
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: "gatperdut"
+          SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwfe"
 
       - name: Cleanup
