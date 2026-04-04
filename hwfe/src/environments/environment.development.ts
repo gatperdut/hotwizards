@@ -1,6 +1,7 @@
-export const environment = {
+import { AppEnvironment } from '@hw/hwfe/environments/environment.model';
+
+export const environment: AppEnvironment = {
   production: false,
-  sentryDsn: null,
-  hwfeSentryRelease: null,
-  apiUrl: '/api',
+  sentryDsn: undefined,
+  hwfeSentryRelease: undefined,
 };
