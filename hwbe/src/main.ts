@@ -7,12 +7,12 @@ async function bootstrap(): Promise<void> {
 
   const configService = app.get(ConfigService);
 
-  const production: boolean = configService.get<string>('NODE_ENV') === 'production';
+  const production: boolean = configService.get<string>('HWBE_NODE_ENV') === 'production';
 
   // CORS
   if (!production) {
     app.enableCors({
-      origin: configService.get<string>('HWFE_URL'),
+      origin: configService.get<string>('HWBE_CORS_ORIGIN'),
       credentials: true,
     });
   }
@@ -21,7 +21,7 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   // Listen
-  const port: number = configService.get<number>('PORT') ?? 3000;
+  const port: number = configService.get<number>('HWBE_PORT') ?? 3000;
 
   await app.listen(port);
 }
