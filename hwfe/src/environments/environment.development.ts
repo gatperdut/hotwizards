@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
-  sentryDsn: '',
+  sentryDsn: null,
+  hwfeSentryRelease: null,
   apiUrl: '/api',
 };
