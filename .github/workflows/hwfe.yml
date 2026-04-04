@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      RELEASE_NAME: "hwfe@${{ github.sha }}"
+      RELEASE_NAME: "${{ github.sha }}"
 
     steps:
       - name: Checkout code
