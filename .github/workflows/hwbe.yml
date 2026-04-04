@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      RELEASE_NAME: "hwbe@${{ github.sha }}"
+      RELEASE_NAME: "${{ github.sha }}"
     
     steps:
       - name: Checkout code
@@ -54,7 +54,6 @@ jobs:
           echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
           echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
           echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
-          # Needed?
           echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
 
       - name: Deploy
