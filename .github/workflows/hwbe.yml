@@ -43,14 +43,9 @@ jobs:
           host: ${{ vars.REMOTE_HOST }}
           username: ${{ vars.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: >
-            hwbe/dist/**,
-            hwbe/package.json,
-            hwbe/.env,
-            package.json,
-            package-lock.json
+          source: "hwbe/dist/**,hwbe/package.json,hwbe/.env,shared/package.json,package.json,package-lock.json"
           target: "/var/www/hwbe"
-          strip_components: 1
+          strip_components: 0
 
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.0.0
@@ -61,10 +56,9 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
             cd /var/www/hwbe
-            # Install production deps using the workspace link
+            sed -i '/"type": "module"/d' package.json
+            # This will now work because the folders 'hwbe' and 'shared' actually exist!
             npm install --omit=dev -w @hw/hwbe
-
             pm2 restart hwbe --update-env || pm2 start hwbe/dist/main.js --name hwbe
             pm2 save
