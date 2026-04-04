@@ -33,9 +33,9 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "NODE_ENV=${{ vars.NODE_ENV }}" > hwbe/.env
-          echo "HWFE_URL=${{ vars.HWFE_URL }}" >> hwbe/.env
-          echo "PORT=${{ vars.PORT }}" >> hwbe/.env
+          echo "NODE_ENV=${{ vars.NODE_ENV }}" > .env
+          echo "HWFE_URL=${{ vars.HWFE_URL }}" >> .env
+          echo "PORT=${{ vars.PORT }}" >> .env
 
       - name: Deploy
         uses: appleboy/scp-action@v1.0.0
@@ -57,8 +57,8 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe
-            sed -i '/"type": "module"/d' package.json
-            # This will now work because the folders 'hwbe' and 'shared' actually exist!
+            # sed -i '/"type": "module"/d' package.json
             npm install --omit=dev -w @hw/hwbe
-            pm2 restart hwbe --update-env || pm2 start hwbe/dist/main.js --name hwbe
+            pm2 delete hwbe || true
+            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env
             pm2 save
