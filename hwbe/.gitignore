@@ -2,6 +2,5 @@
 /dist
 
 .env
-.env.*
-!.env.example
-!.env.prod.example
+
+prisma/generated
