@@ -124,7 +124,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
-            source .env
+            more .env
             npx prisma migrate deploy
 
       - name: Restart pm2
