@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from 'hwbe/prisma/generated/client';
 import { PwaSnackComponent } from '../pwa/pwa-snack/pwa-snack.component';
 
 @Component({
@@ -25,6 +26,12 @@ export class SidebarComponent {
   public errorBE(): void {
     this.httpClient.get<string>('/api/error').subscribe((a) => {
       console.log('message is', a);
+    });
+  }
+
+  public user(): void {
+    this.httpClient.get<User>('/api/user').subscribe((a: User) => {
+      console.log('user is', a);
     });
   }
 }
