@@ -25,7 +25,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v6.3.0
         with:
-          node-version: "22"
+          node-version: "24.14.1"
           cache: 'npm'
 
       - name: Install dependencies
@@ -124,7 +124,6 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
-            mv prisma.config.js prisma.config.cjs || true
             npx prisma migrate deploy
 
       - name: Restart pm2
