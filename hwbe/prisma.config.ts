@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { defineConfig, env } from 'prisma/config';
 
 console.log(process.env);
+console.log('THIS ONE', process.env['HWBE_DB_URL']);
 
 console.log(env('HWBE_DB_URL'));
 
