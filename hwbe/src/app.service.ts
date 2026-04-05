@@ -1,4 +1,4 @@
-import { Wizard } from '@hw/shared';
+import { AppUser } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -11,5 +11,5 @@ export class AppService {
     throw new Error('HWBE error');
   }
 
-  private user: Wizard | undefined;
+  private user: AppUser | undefined;
 }
