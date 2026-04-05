@@ -43,7 +43,9 @@ jobs:
 
       - name: Prisma generate
         working-directory: hwbe
-        run: npx prisma generate 
+        run: |
+          source .env
+          npx prisma generate 
 
       - name: Build
         run: npm run build -w @hw/hwbe
@@ -85,8 +87,6 @@ jobs:
           source: >
             hwbe/dist/hwbe/**,
             hwbe/dist/shared/**
-            # !hwbe/dist/hwbe/prisma.config.js
-            # !hwbe/dist/hwbe/prisma.config..js.map
           target: "/var/www/hwbe"
           strip_components: 2
 
@@ -124,8 +124,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
-            source .env
-            npx prisma migrate deploy
+            npx prisma migrate deploy --schema ./prisma/schema.prisma
 
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.2.5
