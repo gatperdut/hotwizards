@@ -122,7 +122,7 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
             # npx prisma generate
-            npx prisma migrate deploy --env-file=.env
+            npx prisma migrate deploy --schema
 
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.2.5
