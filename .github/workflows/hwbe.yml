@@ -98,6 +98,18 @@ jobs:
           target: "/var/www/hwbe/hwbe"
           strip_components: 0
 
+      - name: Install dependencies 2
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hwbe
+            npm install --omit=dev -w @hw/hwbe
+
       - name: Database migration
         uses: appleboy/ssh-action@v1.2.5
         with:
