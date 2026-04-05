@@ -112,7 +112,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe
-            npm install --omit=dev -w @hw/hwbe
+            npm install --omit=dev
 
       - name: Database migration
         uses: appleboy/ssh-action@v1.2.5
@@ -124,7 +124,6 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
-            more .env
             npx prisma migrate deploy
 
       - name: Restart pm2
