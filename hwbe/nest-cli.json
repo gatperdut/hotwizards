@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": ".",
+  "sourceRoot": "src",
   "entryFile": "hwbe/src/main",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": [{ "include": "prisma/**/*", "outDir": "dist/hwbe" }]
+    "assets": [{ "include": "../prisma/**/*", "outDir": "dist/hwbe/prisma" }]
   },
   "generateOptions": {
     "spec": false
