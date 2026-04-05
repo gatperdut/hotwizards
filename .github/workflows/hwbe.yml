@@ -70,6 +70,7 @@ jobs:
           source: >
             package.json,
             package-lock.json,
+            hwbe/package.json
           rm: true
           target: "/var/www/hwbe"
           strip_components: 0
@@ -82,7 +83,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: >
             hwbe/dist/hwbe/**,
-            hwbe/dist/shared/**,
+            hwbe/dist/shared/**
           target: "/var/www/hwbe"
           strip_components: 2
 
@@ -108,7 +109,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe
-            npm install
+            npm install --omit=dev -w @hw/hwbe
 
       - name: Database migration
         uses: appleboy/ssh-action@v1.2.5
