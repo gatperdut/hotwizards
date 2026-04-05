@@ -121,8 +121,8 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hwbe/hwbe
-            npx prisma migrate deploy --schema
+            cd /var/www/hwbe
+            npx prisma migrate deploy
 
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.2.5
