@@ -1,1 +1,1 @@
-export { type Wizard } from './users/wizard.interface.js';
+export { type AppUser } from './users/user.interface.js';
