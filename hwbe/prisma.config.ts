@@ -1,5 +1,7 @@
 import { defineConfig } from 'prisma/config';
 
+console.log(process.env);
+
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
