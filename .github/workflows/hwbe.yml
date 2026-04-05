@@ -86,6 +86,7 @@ jobs:
           target: "/var/www/hwbe"
           strip_components: 2
 
+      # TODO Can this be merged with the "create env" step?
       - name: Deploy .env
         uses: appleboy/scp-action@v1.0.0
         with:
@@ -107,9 +108,8 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
-            # ln -sf /var/www/hwbe/.env .env
             # npx prisma generate
-            npx prisma migrate deploy
+            npx prisma migrate deploy --env-file=.env
 
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.2.5
