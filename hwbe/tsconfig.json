@@ -3,7 +3,6 @@
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "target": "es2023",
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "rootDir": "..",
