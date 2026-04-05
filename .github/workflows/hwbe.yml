@@ -32,11 +32,8 @@ jobs:
         run: npm install
 
       - name: Prisma generate
-        # working-directory: hwbe
-        run: |
-          tree
-          ls
-          npx prisma generate 
+        working-directory: hwbe
+        run: npx prisma generate 
 
       - name: Build
         run: npm run build -w @hw/hwbe
