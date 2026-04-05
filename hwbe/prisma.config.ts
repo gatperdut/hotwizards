@@ -1,6 +1,9 @@
-import { defineConfig } from 'prisma/config';
+import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
 
 console.log(process.env);
+
+console.log(env('HW_DB_URL'));
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
