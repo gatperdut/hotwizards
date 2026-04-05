@@ -54,14 +54,13 @@ jobs:
           SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwfe"
 
+      # TODO is this even needed, given the Deploy step has rm: true?
       - name: Cleanup
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # TODO swap with the script?
-          # rm: true
           script: rm -rf /var/www/hwfe/*
 
       - name: Deploy
