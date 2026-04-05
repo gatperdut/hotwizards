@@ -3,4 +3,4 @@
 
 .env
 
-prisma/generated
+generated

@@ -31,9 +31,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Prisma generate
-        working-directory: hwbe
-        run: npx prisma generate 
+      # - name: Prisma generate
+      #   working-directory: hwbe
+      #   run: npx prisma generate 
 
       - name: Build
         run: npm run build -w @hw/hwbe
@@ -69,11 +69,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: >
             hwbe/dist/**,
-            hwbe/package.json,
+            hwbe/prisma/generated/**
             hwbe/prisma/**,
-            .env,
+            hwbe/package.json,
             package.json,
-            package-lock.json
+            package-lock.json,
+            .env
           rm: true
           target: "/var/www/hwbe"
           strip_components: 0
@@ -90,7 +91,7 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe/dist/hwbe
             ln -sf /var/www/hwbe/.env .env
-            npx prisma generate
+            # npx prisma generate
             npx prisma migrate deploy
 
       - name: Restart pm2
