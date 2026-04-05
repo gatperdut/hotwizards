@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from 'hwbe/generated/client';
+import { PrismaClient } from 'generated/client.js';
 
 @Injectable()
 export class PrismaService extends PrismaClient {

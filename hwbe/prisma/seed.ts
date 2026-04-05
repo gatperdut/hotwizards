@@ -1,8 +1,8 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
+import { PrismaClient } from 'generated/client.js';
 import { Pool } from 'pg';
-import { PrismaClient } from '../generated/client';
-import { seedUsers } from './seeds/users.seed';
+import { seedUsers } from './seeds/users.seed.js';
 
 const connectiongString: string = `${process.env['HWBE_DB_URL']}`;
 
