@@ -96,9 +96,9 @@ jobs:
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: >
-            .env
+            hwbe/.env
           target: "/var/www/hwbe/hwbe"
-          strip_components: 0
+          strip_components: 1
 
       - name: Install dependencies 2
         uses: appleboy/ssh-action@v1.2.5
