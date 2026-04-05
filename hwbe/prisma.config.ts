@@ -7,6 +7,6 @@ export default defineConfig({
     seed: 'tsx prisma/seed.ts',
   },
   datasource: {
-    url: process.env['HWBE_DB_URL'],
+    url: 'djfidf',
   },
 });
