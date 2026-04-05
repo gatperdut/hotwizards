@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Wizard } from '@hw/shared';
+import { AppUser } from '@hw/shared';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { PanzoomDirective } from './directives/panzoom.directive';
 
@@ -16,7 +16,7 @@ export class BoardComponent {
 
   public tiles: number[] = Array.from({ length: 375 }, (_, i) => i);
 
-  private user: Wizard | undefined;
+  private user: AppUser | undefined;
 
   constructor() {
     this.httpClient.get<string>('/api/hello').subscribe((a) => {

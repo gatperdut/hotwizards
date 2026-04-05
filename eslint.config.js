@@ -28,7 +28,7 @@ export default [
       eqeqeq: ['error', 'always'],
       curly: ['warn', 'all'],
       'no-constant-condition': 'warn',
-      'no-console': 'warn',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
