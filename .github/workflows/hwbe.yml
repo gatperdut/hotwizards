@@ -126,6 +126,7 @@ jobs:
             cd /var/www/hwbe/hwbe
             rm ./prisma.config.js
             rm ./prisma.config.js.map
+            source .env
             npx prisma migrate deploy --schema ./prisma/schema.prisma
 
       - name: Restart pm2
