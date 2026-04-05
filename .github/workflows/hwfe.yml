@@ -60,6 +60,8 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # TODO swap with the script?
+          # rm: true
           script: rm -rf /var/www/hwfe/*
 
       - name: Deploy
