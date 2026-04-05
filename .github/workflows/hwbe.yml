@@ -61,23 +61,30 @@ jobs:
           echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
           echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
 
-      - name: Deploy
+      - name: Deploy shared
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: >
-            hwbe/dist/**,
-            hwbe/prisma/generated/**
-            hwbe/prisma/**,
-            hwbe/package.json,
             package.json,
             package-lock.json,
-            .env
           rm: true
           target: "/var/www/hwbe"
           strip_components: 0
+
+      - name: Deploy hwbe
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            hwbe/dist/hwbe/**,
+            hwbe/dist/shared/**,
+          target: "/var/www/hwbe"
+          strip_components: 2
 
       - name: Database migration
         uses: appleboy/ssh-action@v1.2.5
@@ -91,7 +98,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe/dist/hwbe
-            ln -sf /var/www/hwbe/.env .env
+            # ln -sf /var/www/hwbe/.env .env
             # npx prisma generate
             npx prisma migrate deploy
 
