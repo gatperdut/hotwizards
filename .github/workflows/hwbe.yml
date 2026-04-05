@@ -85,6 +85,8 @@ jobs:
           source: >
             hwbe/dist/hwbe/**,
             hwbe/dist/shared/**
+            !hwbe/dist/hwbe/prisma.config.js
+            !hwbe/dist/hwbe/prisma.config..js.map
           target: "/var/www/hwbe"
           strip_components: 2
 
