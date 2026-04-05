@@ -93,8 +93,8 @@ jobs:
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: >
-            hwbe/.env
-          target: "/var/www/hwbe"
+            .env
+          target: "/var/www/hwbe/hwbe"
           strip_components: 0
 
       - name: Database migration
