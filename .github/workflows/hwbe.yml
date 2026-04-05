@@ -84,5 +84,4 @@ jobs:
             cd /var/www/hwbe
             npm install --omit=dev -w @hw/hwbe
             pm2 delete hwbe || true
-            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env --time
-            pm2 save
+            pm2 start hwbe/dist/hwbe/src/main.js --name hwbe --update-env
