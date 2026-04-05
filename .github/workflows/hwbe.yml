@@ -32,7 +32,7 @@ jobs:
         run: npm install
 
       - name: Prisma generate
-        working-directory: hwbe
+        # working-directory: hwbe
         run: npx prisma generate 
 
       - name: Build
@@ -121,7 +121,6 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe/hwbe
-            # npx prisma generate
             npx prisma migrate deploy --schema
 
       - name: Restart pm2
