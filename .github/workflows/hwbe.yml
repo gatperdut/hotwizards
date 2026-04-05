@@ -33,7 +33,10 @@ jobs:
 
       - name: Prisma generate
         # working-directory: hwbe
-        run: npx prisma generate 
+        run: |
+          tree
+          ls
+          npx prisma generate 
 
       - name: Build
         run: npm run build -w @hw/hwbe
