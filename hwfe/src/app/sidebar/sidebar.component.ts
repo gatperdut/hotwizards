@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { User } from '@hw/prismagen';
+import { type User } from '@hw/prismagen';
 import { PwaSnackComponent } from '../pwa/pwa-snack/pwa-snack.component.js';
 
 @Component({
