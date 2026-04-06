@@ -13,6 +13,11 @@
   "main": "./generated/index.js",
   "types": "./generated/index.d.ts",
   "exports": {
-    ".": "./generated/index.js"
+    ".": {
+      "types": "./generated/index.d.ts",
+      "browser": "./generated/runtime/index-browser.js",
+      "import": "./generated/index.js",
+      "default": "./generated/index.js"
+    }
   }
 }
