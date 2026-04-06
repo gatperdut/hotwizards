@@ -34,8 +34,6 @@
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
       "angular.ng-template",
-      "firsttris.vscode-jest-runner",
-      "mrmlnc.vscode-scss",
     ],
   },
 }

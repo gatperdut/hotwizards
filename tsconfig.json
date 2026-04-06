@@ -2,8 +2,9 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": "./",
-    "target": "esnext",
-    "moduleResolution": "bundler",
+    "target": "es2024",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
     "declaration": false,
     "skipLibCheck": true,
@@ -21,7 +22,7 @@
     "paths": {
       "@hw/shared": ["shared/src/index.ts"],
       "@hw/hwbe/*": ["hwbe/src/*"],
-      "@hw/hwfe/*": ["hwfe/src/*"]
+      "@hw/hwfe/*": ["hwfe/src/*"],
     },
   },
   "compileOnSave": false,

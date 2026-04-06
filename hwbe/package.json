@@ -10,6 +10,9 @@
     "node": ">=24.0.0",
     "npm": ">=11.0.0"
   },
+  "imports": {
+    "#generated/*": "../generated/*"
+  },
   "scripts": {
     "start": "nest start --watch",
     "start:prod": "node dist/hwbe/src/main.js",
