@@ -26,7 +26,7 @@ jobs:
       - name: HWBE - Create .env file
         working-directory: hwbe
         run: |
-          echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
+          echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" >> .env
           echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
           echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
           echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
@@ -45,7 +45,8 @@ jobs:
           mv prismagen hw
           mv shared hw
           mv node_modules hw
-          mv hwbe/dist/hwbe hw 
+          mv hwbe/dist/hwbe hw
+          ls hwfe
           mv hwfe/dist/browser hw/hwfe
 
       - name: HWFE - Inject Sentry DSN
