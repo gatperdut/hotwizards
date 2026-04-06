@@ -13,6 +13,13 @@
       "options": {
         "parser": "angular"
       }
+    },
+    {
+      "files": ["*.json"],
+      "options": {
+        "parser": "jsonc",
+        "trailingComma": "none"
+      }
     }
   ]
 }

@@ -75,7 +75,7 @@
               "sourceMap": {
                 "scripts": true,
                 "styles": false,
-                "hidden": true
+                "hidden": false
               },
               "outputHashing": "all",
               "namedChunks": true

@@ -2,11 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist/out-tsc",
-    "types": [],
+    "types": []
   },
-  "include": [
-    "src/**/*.ts",
-    "../prismagen/generated/**/*.ts"
-  ],
-  "exclude": [],
+  "include": ["src/**/*.ts", "../prismagen/generated/**/*.ts"],
+  "exclude": []
 }
