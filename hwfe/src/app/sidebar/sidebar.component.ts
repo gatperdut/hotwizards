@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 // import { User } from '@hw/prismagen/browser';
 import { User } from '../../../../prismagen/generated/browser.js';
-import { PwaSnackComponent } from '../pwa/pwa-snack/pwa-snack.component.js';
+import { PwaSnackComponent } from '../pwa/pwa-snack/pwa-snack.component.ts';
 
 @Component({
   selector: 'app-sidebar',
