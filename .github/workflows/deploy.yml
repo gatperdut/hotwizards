@@ -10,7 +10,9 @@ jobs:
   deploy-common:
     runs-on: ubuntu-latest
     environment: production
-    
+    env:
+      RELEASE_NAME: "${{ github.sha }}"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
@@ -38,17 +40,9 @@ jobs:
         working-directory: hwbe
         run: |
           source .env
-          npx prisma generate 
+          npx prisma generate
 
-  deploy-hwbe:
-    needs: deploy-common
-    runs-on: ubuntu-latest
-    environment: production
-    env:
-      RELEASE_NAME: "${{ github.sha }}"
-    
-    steps:
-      - name: Build
+      - name: Build HWBE
         run: npm run build -w @hw/hwbe
 
       - name: Upload sourcemaps
@@ -138,8 +132,6 @@ jobs:
             cd /var/www/hwbe/hwbe
             npx prisma migrate deploy
 
-      # HWFE
-
       - name: Restart pm2
         uses: appleboy/ssh-action@v1.2.5
         with:
@@ -153,14 +145,6 @@ jobs:
             pm2 delete hwbe || true
             pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hwbe/hwbe
 
-  deploy-hwfe:
-    needs: deploy-common
-    runs-on: ubuntu-latest
-    environment: production
-    env:
-      RELEASE_NAME: "${{ github.sha }}"
-
-    steps:
       - name: Inject Sentry DSN
         working-directory: hwfe
         run: |
