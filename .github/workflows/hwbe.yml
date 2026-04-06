@@ -137,4 +137,4 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hwbe
             pm2 delete hwbe || true
-            pm2 start hwbe/src/main.js --name hwbe --update-env
+            pm2 start hwbe/src/main.js --name hwbe --update-env --cwd /var/www/hwbe/hwbe
