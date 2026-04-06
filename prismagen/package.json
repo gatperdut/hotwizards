@@ -2,7 +2,6 @@
   "name": "@hw/prismagen",
   "description": "Hot Wizards Prisma Generated",
   "type": "module",
-  "version": "0.0.1",
   "author": "carlosrb",
   "private": true,
   "license": "MIT",

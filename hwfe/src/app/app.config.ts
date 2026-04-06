@@ -10,7 +10,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
-import * as Sentry from '@sentry/angular';
+import { LazySentryErrorHandler } from '../lazy-error-handler.js';
 import { routes } from './app.routes.js';
 import { PwaService } from './pwa/services/pwa.service.js';
 
@@ -36,12 +36,15 @@ export const appConfig: ApplicationConfig = {
         floatLabel: 'always',
       },
     },
-    {
-      provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        // TODO test true to see "crash report" popup
-        showDialog: false,
-      }),
-    },
+    // Replace Sentry.createErrorHandler() with this:
+    { provide: ErrorHandler, useClass: LazySentryErrorHandler },
+    // ... other providers
+    // {
+    //   provide: ErrorHandler,
+    //   useValue: createErrorHandler({
+    //     // TODO test true to see "crash report" popup
+    //     showDialog: false,
+    //   }),
+    // },
   ],
 };

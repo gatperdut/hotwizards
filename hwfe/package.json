@@ -2,7 +2,6 @@
   "name": "@hw/hwfe",
   "description": "Hot Wizards Frontend",
   "type": "module",
-  "version": "0.2.0",
   "author": "carlosrb",
   "private": true,
   "license": "MIT",
@@ -15,6 +14,7 @@
     "start:prod": "ng serve --configuration production",
     "build": "ng build",
     "build:watch": "ng build --watch",
+    "build:stats": "ng build --stats-json",
     "build:dev": "ng build --configuration development",
     "serve:prod": "npx serve dist/hwfe/browser",
     "clean": "rm -rf dist .angular/cache"

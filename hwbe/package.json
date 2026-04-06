@@ -2,7 +2,6 @@
   "name": "@hw/hwbe",
   "description": "Hot Wizards Backend",
   "type": "module",
-  "version": "0.2.0",
   "author": "carlosrb",
   "private": true,
   "license": "MIT",
