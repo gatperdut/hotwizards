@@ -23,9 +23,6 @@ jobs:
           node-version: "24.14.1"
           cache: 'npm'
 
-      - name: Common - Install dependencies
-        run: npm install
-
       - name: HWBE - Create .env file
         working-directory: hwbe
         run: |
@@ -36,14 +33,63 @@ jobs:
           echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
           echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
 
-      - name: HWBE - Prisma generate
-        working-directory: hwbe
+      - name: Install and build
         run: |
-          source .env
-          npx prisma generate
+          npm install
+          npm run build -w @hw/hwbe
+          npm run build -w @hw/hwfe
 
-      - name: HWBE - Build
-        run: npm run build -w @hw/hwbe
+      - name: Prepare deployment
+        run: |
+          mkdir hw
+          mv prismagen hw
+          mv shared hw
+          mv node_modules hw
+          mv hwbe/dist/hwbe hw 
+          mv hwfe/dist/browser hw/hwfe
+
+      - name: HWFE - Inject Sentry DSN
+        working-directory: hwfe
+        run: |
+          sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
+          sed -i "s|HWFE_SENTRY_RELEASE_PLACEHOLDER|$RELEASE_NAME|" src/environments/environment.ts
+
+      - name: Deploy
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            hw
+          rm: true
+          target: "/var/www"
+          strip_components: 0
+
+      - name: HWBE - Database migration
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hw/hwbe
+            npx prisma migrate deploy
+
+      - name: HWBE - pm2
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hw/hwbe
+            pm2 delete hwbe || true
+            pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hw/hwbe
 
       - name: HWBE - Upload sourcemaps
         working-directory: hwbe
@@ -59,100 +105,6 @@ jobs:
           SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwbe"
 
-      - name: HWBE - Deploy shared
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: >
-            package.json,
-            package-lock.json,
-            hwbe/package.json
-          rm: true
-          target: "/var/www/hwbe"
-          strip_components: 0
-
-      - name: HWBE - Deploy prismagen
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: >
-            prismagen/**
-          target: "/var/www/hwbe"
-          strip_components: 0
-
-      - name: HWBE - Deploy
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: >
-            hwbe/dist/hwbe/**,
-            hwbe/dist/shared/**
-          target: "/var/www/hwbe"
-          strip_components: 2
-
-      - name: HWBE - Deploy .env
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: >
-            hwbe/.env
-          target: "/var/www/hwbe/hwbe"
-          strip_components: 1
-
-      - name: HWBE - Install dependencies 2
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hwbe
-            npm install --omit=dev
-
-      - name: HWBE - Database migration
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hwbe/hwbe
-            npx prisma migrate deploy
-
-      - name: HWBE - pm2
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hwbe/hwbe
-            pm2 delete hwbe || true
-            pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hwbe/hwbe
-
-      - name: HWFE - Inject Sentry DSN
-        working-directory: hwfe
-        run: |
-          sed -i "s|HWFE_SENTRY_DSN|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
-          sed -i "s|HWFE_SENTRY_RELEASE|$RELEASE_NAME|" src/environments/environment.ts
-
-      - name: HWFE - Build
-        run: npm run build -w @hw/hwfe
-
       - name: HWFE - Upload sourcemaps
         working-directory: hwfe
         run: |
@@ -167,16 +119,97 @@ jobs:
           SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwfe"
 
-      - name: HWFE - Deploy
-        uses: appleboy/scp-action@v1.0.0
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "hwfe/dist/hwfe/browser/*"
-          rm: true 
-          target: "/var/www/hwfe"
-          strip_components: 4
+      # - name: HWBE - Prisma generate
+      #   working-directory: hwbe
+      #   run: |
+      #     source .env
+      #     npx prisma generate
+
+      # - name: HWBE - Build
+      #   run: npm run build -w @hw/hwbe
+
+      
+
+
+      # - name: HWBE - Deploy shared
+      #   uses: appleboy/scp-action@v1.0.0
+      #   with:
+      #     host: ${{ vars.SSH_HOST }}
+      #     username: ${{ vars.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: >
+      #       package.json,
+      #       package-lock.json,
+      #       hwbe/package.json
+      #     rm: true
+      #     target: "/var/www/hwbe"
+      #     strip_components: 0
+
+      # - name: HWBE - Deploy prismagen
+      #   uses: appleboy/scp-action@v1.0.0
+      #   with:
+      #     host: ${{ vars.SSH_HOST }}
+      #     username: ${{ vars.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: >
+      #       prismagen/**
+      #     target: "/var/www/hwbe"
+      #     strip_components: 0
+
+      # - name: HWBE - Deploy
+      #   uses: appleboy/scp-action@v1.0.0
+      #   with:
+      #     host: ${{ vars.SSH_HOST }}
+      #     username: ${{ vars.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: >
+      #       hwbe/dist/hwbe/**,
+      #       hwbe/dist/shared/**
+      #     target: "/var/www/hwbe"
+      #     strip_components: 2
+
+      # - name: HWBE - Deploy .env
+      #   uses: appleboy/scp-action@v1.0.0
+      #   with:
+      #     host: ${{ vars.SSH_HOST }}
+      #     username: ${{ vars.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: >
+      #       hwbe/.env
+      #     target: "/var/www/hwbe/hwbe"
+      #     strip_components: 1
+
+      # - name: HWBE - Install dependencies 2
+      #   uses: appleboy/ssh-action@v1.2.5
+      #   with:
+      #     host: ${{ vars.SSH_HOST }}
+      #     username: ${{ vars.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       export NVM_DIR="$HOME/.nvm"
+      #       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+      #       cd /var/www/hwbe
+      #       npm install --omit=dev
+
+
+
+      
+
+      # - name: HWFE - Build
+      #   run: npm run build -w @hw/hwfe
+
+      
+
+      # - name: HWFE - Deploy
+      #   uses: appleboy/scp-action@v1.0.0
+      #   with:
+      #     host: ${{ vars.SSH_HOST }}
+      #     username: ${{ vars.SSH_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: "hwfe/dist/hwfe/browser/*"
+      #     rm: true 
+      #     target: "/var/www/hwfe"
+      #     strip_components: 4
 
       - name: HWFE - Generate sitemap
         working-directory: hwfe
