@@ -23,7 +23,8 @@
       "@hw/shared": ["shared/src/index.ts"],
       "@hw/hwbe/*": ["hwbe/src/*"],
       "@hw/hwfe/*": ["hwfe/src/*"],
-      "@hw/prismagen": ["prismagen/generated/index.d.ts"]
+      "@hw/prismagen/client": ["prismagen/generated/client.ts"],
+      "@hw/prismagen/browser": ["prismagen/generated/browser.ts"]
     },
   },
   "compileOnSave": false,

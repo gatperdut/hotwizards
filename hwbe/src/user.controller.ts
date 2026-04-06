@@ -1,4 +1,4 @@
-import { User } from '@hw/prismagen';
+import { User } from '@hw/prismagen/client';
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service.js';
 

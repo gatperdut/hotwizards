@@ -1,4 +1,4 @@
-import { PrismaClient } from '@hw/prismagen';
+import { PrismaClient } from '@hw/prismagen/client';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaPg } from '@prisma/adapter-pg';
