@@ -1,0 +1,209 @@
+name: Build and deploy Hot Wizards Backend
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  deploy-common:
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6.0.2
+
+      - name: Setup node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version: "24.14.1"
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Prisma generate
+        working-directory: hwbe
+        run: |
+          source .env
+          npx prisma generate 
+
+  deploy-hwbe:
+    needs: deploy-common
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      RELEASE_NAME: "${{ github.sha }}"
+    
+    steps:
+      - name: Create .env file
+        working-directory: hwbe
+        run: |
+          echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
+          echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
+          echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
+          echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
+          echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
+          echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
+
+      - name: Build
+        run: npm run build -w @hw/hwbe
+
+      - name: Upload sourcemaps
+        working-directory: hwbe
+        run: |
+          npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
+          npx @sentry/cli sourcemaps upload hwbe/dist/hwbe/src \
+            --project $SENTRY_PROJECT \
+            --release "$RELEASE_NAME" \
+            --rewrite
+          npx @sentry/cli releases finalize "$RELEASE_NAME"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "hot-wizards"
+          SENTRY_PROJECT: "hwbe"
+
+      - name: Deploy shared
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            package.json,
+            package-lock.json,
+            hwbe/package.json
+          rm: true
+          target: "/var/www/hwbe"
+          strip_components: 0
+
+      - name: Deploy prismagen
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            prismagen/**
+          target: "/var/www/hwbe"
+          strip_components: 0
+
+      - name: Deploy hwbe
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            hwbe/dist/hwbe/**,
+            hwbe/dist/shared/**
+          target: "/var/www/hwbe"
+          strip_components: 2
+
+      # TODO Can this be merged with the "create env" step?
+      - name: Deploy .env
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            hwbe/.env
+          target: "/var/www/hwbe/hwbe"
+          strip_components: 1
+
+      - name: Install dependencies 2
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hwbe
+            npm install --omit=dev
+
+      - name: Database migration
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hwbe/hwbe
+            npx prisma migrate deploy
+
+      # HWFE
+
+      - name: Restart pm2
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            cd /var/www/hwbe/hwbe
+            pm2 delete hwbe || true
+            pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hwbe/hwbe
+
+  deploy-hwfe:
+    needs: deploy-common
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      RELEASE_NAME: "${{ github.sha }}"
+
+    steps:
+      - name: Inject Sentry DSN
+        working-directory: hwfe
+        run: |
+          sed -i "s|HWFE_SENTRY_DSN|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
+          sed -i "s|HWFE_SENTRY_RELEASE|$RELEASE_NAME|" src/environments/environment.ts
+
+      - name: Build
+        run: npm run build -w @hw/hwfe
+
+      - name: Upload sourcemaps
+        working-directory: hwfe
+        run: |
+          npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
+          npx @sentry/cli sourcemaps upload dist/hwfe/browser \
+            --project $SENTRY_PROJECT \
+            --release "$RELEASE_NAME" \
+            --rewrite
+          npx @sentry/cli releases finalize "$RELEASE_NAME"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "hot-wizards"
+          SENTRY_PROJECT: "hwfe"
+
+      # TODO is this even needed, given the Deploy step has rm: true?
+      - name: Cleanup
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: rm -rf /var/www/hwfe/*
+
+      - name: Deploy
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "hwfe/dist/hwfe/browser/*"
+          rm: true 
+          target: "/var/www/hwfe"
+          strip_components: 4
+
+      - name: Generate sitemap
+        working-directory: hwfe
+        run: npx sitemap-generator-cli https://hotwizards.net --output dist/hwfe/browser/sitemap.xml
