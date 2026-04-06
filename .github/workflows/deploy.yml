@@ -46,8 +46,7 @@ jobs:
           mv shared hw
           mv node_modules hw
           mv hwbe/dist/hwbe hw
-          ls hwfe/dist
-          mv hwfe/dist/browser hw/hwfe
+          mv hwfe/dist/hwfe/browser hw/hwfe
 
       - name: HWFE - Inject Sentry DSN
         working-directory: hwfe
