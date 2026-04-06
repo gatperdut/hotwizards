@@ -120,7 +120,7 @@ jobs:
           SENTRY_ORG: 'hot-wizards'
           SENTRY_PROJECT: 'hwfe'
 
-      - name: HWBE - pm2
+      - name: HWFE - Sitemap generation
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
@@ -129,5 +129,5 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw
-            npx sitemap-generator-cli https://hotwizards.net --output hwfe/sitemap.xml
+            cd /var/www/hw/hwfe
+            npx sitemap-generator-cli https://hotwizards.net --output ./sitemap.xml
