@@ -1,4 +1,4 @@
-name: Build and deploy Hot Wizards
+name: Hot Wizards Github Action
 
 on:
   push:
@@ -7,26 +7,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy-common:
+  build-and-deploy-hw:
     runs-on: ubuntu-latest
     environment: production
     env:
       RELEASE_NAME: "${{ github.sha }}"
 
     steps:
-      - name: Checkout code
+      - name: Common - Checkout code
         uses: actions/checkout@v6.0.2
 
-      - name: Setup node.js
+      - name: Common - Setup node.js
         uses: actions/setup-node@v6.3.0
         with:
           node-version: "24.14.1"
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Common - Install dependencies
         run: npm install
 
-      - name: Create .env file
+      - name: HWBE - Create .env file
         working-directory: hwbe
         run: |
           echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" > .env
@@ -36,16 +36,16 @@ jobs:
           echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
           echo "SENTRY_RELEASE=$RELEASE_NAME" >> .env
 
-      - name: Prisma generate
+      - name: HWBE - Prisma generate
         working-directory: hwbe
         run: |
           source .env
           npx prisma generate
 
-      - name: Build HWBE
+      - name: HWBE - Build
         run: npm run build -w @hw/hwbe
 
-      - name: Upload sourcemaps
+      - name: HWBE - Upload sourcemaps
         working-directory: hwbe
         run: |
           npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
@@ -59,7 +59,7 @@ jobs:
           SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwbe"
 
-      - name: Deploy shared
+      - name: HWBE - Deploy shared
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
@@ -73,7 +73,7 @@ jobs:
           target: "/var/www/hwbe"
           strip_components: 0
 
-      - name: Deploy prismagen
+      - name: HWBE - Deploy prismagen
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
@@ -84,7 +84,7 @@ jobs:
           target: "/var/www/hwbe"
           strip_components: 0
 
-      - name: Deploy hwbe
+      - name: HWBE - Deploy
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
@@ -96,8 +96,7 @@ jobs:
           target: "/var/www/hwbe"
           strip_components: 2
 
-      # TODO Can this be merged with the "create env" step?
-      - name: Deploy .env
+      - name: HWBE - Deploy .env
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
@@ -108,7 +107,7 @@ jobs:
           target: "/var/www/hwbe/hwbe"
           strip_components: 1
 
-      - name: Install dependencies 2
+      - name: HWBE - Install dependencies 2
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
@@ -120,7 +119,7 @@ jobs:
             cd /var/www/hwbe
             npm install --omit=dev
 
-      - name: Database migration
+      - name: HWBE - Database migration
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
@@ -132,7 +131,7 @@ jobs:
             cd /var/www/hwbe/hwbe
             npx prisma migrate deploy
 
-      - name: Restart pm2
+      - name: HWBE - pm2
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
@@ -145,16 +144,16 @@ jobs:
             pm2 delete hwbe || true
             pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hwbe/hwbe
 
-      - name: Inject Sentry DSN
+      - name: HWFE - Inject Sentry DSN
         working-directory: hwfe
         run: |
           sed -i "s|HWFE_SENTRY_DSN|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
           sed -i "s|HWFE_SENTRY_RELEASE|$RELEASE_NAME|" src/environments/environment.ts
 
-      - name: Build
+      - name: HWFE - Build
         run: npm run build -w @hw/hwfe
 
-      - name: Upload sourcemaps
+      - name: HWFE - Upload sourcemaps
         working-directory: hwfe
         run: |
           npx @sentry/cli releases new -p $SENTRY_PROJECT "$RELEASE_NAME"
@@ -168,16 +167,7 @@ jobs:
           SENTRY_ORG: "hot-wizards"
           SENTRY_PROJECT: "hwfe"
 
-      # TODO is this even needed, given the Deploy step has rm: true?
-      - name: Cleanup
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: rm -rf /var/www/hwfe/*
-
-      - name: Deploy
+      - name: HWFE - Deploy
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
@@ -188,6 +178,6 @@ jobs:
           target: "/var/www/hwfe"
           strip_components: 4
 
-      - name: Generate sitemap
+      - name: HWFE - Generate sitemap
         working-directory: hwfe
         run: npx sitemap-generator-cli https://hotwizards.net --output dist/hwfe/browser/sitemap.xml
