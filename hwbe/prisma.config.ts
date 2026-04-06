@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import type { PrismaConfig } from 'prisma';
+import { env } from 'prisma/config';
 
 const config: PrismaConfig = {
   schema: 'prisma/schema.prisma',
@@ -8,7 +9,7 @@ const config: PrismaConfig = {
     seed: 'tsx prisma/seed.ts',
   },
   datasource: {
-    url: process.env['HWBE_DB_URL'],
+    url: env('HWBE_DB_URL'),
   },
 };
 
