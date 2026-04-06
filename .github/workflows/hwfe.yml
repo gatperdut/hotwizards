@@ -33,7 +33,7 @@ jobs:
         run: |
           ls
           npm install
-          ls
+          ls node_modules
 
       - name: Inject Sentry DSN
         working-directory: hwfe
@@ -42,9 +42,7 @@ jobs:
           sed -i "s|HWFE_SENTRY_RELEASE|$RELEASE_NAME|" src/environments/environment.ts
 
       - name: Build
-        working-directory: hwfe
-        # run: npm run build -w @hw/hwfe
-        run: npm run build
+        run: npm run build -w @hw/hwfe
 
       - name: Upload sourcemaps
         working-directory: hwfe
