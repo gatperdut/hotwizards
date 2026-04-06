@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AppUser } from '@hw/shared';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { PanzoomDirective } from './directives/panzoom.directive';
+import { SidebarComponent } from '../sidebar/sidebar.component.js';
+import { PanzoomDirective } from './directives/panzoom.directive.js';
 
 @Component({
   selector: 'app-board',

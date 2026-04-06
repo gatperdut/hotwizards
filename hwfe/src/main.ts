@@ -1,8 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { environment } from '@hw/hwfe/environments/environment';
 import * as Sentry from '@sentry/angular';
-import { AppComponent } from './app/app.component';
-import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component.js';
+import { appConfig } from './app/app.config.js';
+import { environment } from './environments/environment.js';
 
 if (environment.production) {
   Sentry.init({
