@@ -1,14 +1,11 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {
-  },
-  "include": [
-    "../shared/src/**/*"
-  ],
+  "compilerOptions": {},
+  "include": ["../shared/src/**/*"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  },
+  }
 }

@@ -6,9 +6,7 @@
     "rootDir": "..",
     "outDir": "./dist",
     "composite": false,
-    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo"
   },
-  "include": [
-    "../shared/src/**/*"
-  ]
+  "include": ["../shared/src/**/*"]
 }
