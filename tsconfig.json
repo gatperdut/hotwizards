@@ -25,8 +25,6 @@
       "@hw/hwfe/*": ["hwfe/src/*"],
       "@hw/prismagen/client": ["prismagen/generated/client.ts"],
       "@hw/prismagen/browser": ["prismagen/generated/browser.ts"],
-      "@hw/prismagen/*": ["prismagen/generated/*"]
-
     },
   },
   "compileOnSave": false,
