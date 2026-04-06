@@ -11,8 +11,8 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import * as Sentry from '@sentry/angular';
-import { routes } from './app.routes';
-import { PwaService } from './pwa/services/pwa.service';
+import { routes } from './app.routes.js';
+import { PwaService } from './pwa/services/pwa.service.js';
 
 export const appConfig: ApplicationConfig = {
   providers: [

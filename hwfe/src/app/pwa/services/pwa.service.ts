@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SwUpdate, VersionEvent, VersionReadyEvent } from '@angular/service-worker';
 import { filter, Observable, switchMap, tap } from 'rxjs';
-import { PwaSnackComponent } from '../pwa-snack/pwa-snack.component';
+import { PwaSnackComponent } from '../pwa-snack/pwa-snack.component.js';
 
 @Injectable({ providedIn: 'root' })
 export class PwaService {
@@ -15,7 +15,7 @@ export class PwaService {
     }
 
     setInterval((): void => {
-      this.swUpdate.checkForUpdate();
+      void this.swUpdate.checkForUpdate();
     }, 60 * 1000);
 
     this.swUpdate.versionUpdates
@@ -25,7 +25,7 @@ export class PwaService {
           return this.matSnackBar.openFromComponent(PwaSnackComponent).onAction();
         }),
         tap((): void => {
-          this.swUpdate.activateUpdate().then((): void => location.reload());
+          void this.swUpdate.activateUpdate().then((): void => location.reload());
         }),
       )
       .subscribe();

@@ -1,4 +1,4 @@
-import { AppEnvironment } from '@hw/hwfe/environments/environment.model';
+import { AppEnvironment } from '@hw/hwfe/environments/environment.model.js';
 
 export const environment: AppEnvironment = {
   production: true,
