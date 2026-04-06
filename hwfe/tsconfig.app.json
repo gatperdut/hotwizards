@@ -4,6 +4,6 @@
     "outDir": "dist/out-tsc",
     "types": []
   },
-  "include": ["src/**/*.ts", "../prismagen/generated/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": []
 }
