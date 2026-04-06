@@ -16,12 +16,17 @@
       "name": "SHARED",
       "path": "shared",
     },
+    {
+      "name": "PRISMAGEN",
+      "path": "prismagen"
+    }
   ],
   "settings": {
     "files.exclude": {
       "hwbe": true,
       "hwfe": true,
-      "shared": true
+      "shared": true,
+      "prismagen": true
     },
     "search.exclude": {
       "**/package-lock.json": true,

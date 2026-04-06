@@ -1,6 +1,6 @@
+import { User } from '@hw/prismagen';
 import { AppUser } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
-import { User } from 'generated/client.js';
 import { PrismaService } from './prisma/prisma.service.js';
 
 @Injectable()
