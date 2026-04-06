@@ -13,15 +13,5 @@
   "exports": {
     "./client": "./generated/client.ts",
     "./browser": "./generated/browser.ts"
-  },
-  "typesVersions": {
-    "*": {
-      "client": [
-        "./generated/client.ts"
-      ],
-      "browser": [
-        "./generated/browser.ts"
-      ]
-    }
   }
 }
