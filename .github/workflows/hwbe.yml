@@ -78,6 +78,18 @@ jobs:
           target: "/var/www/hwbe"
           strip_components: 0
 
+      - name: Deploy prismagen
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: >
+            prismagen/**
+          rm: true
+          target: "/var/www/hwbe"
+          strip_components: 0
+
       - name: Deploy hwbe
         uses: appleboy/scp-action@v1.0.0
         with:
