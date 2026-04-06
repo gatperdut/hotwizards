@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 // import { User } from '@hw/prismagen/browser';
-import { User } from '../../../../prismagen/generated/browser.js';
-import { PwaSnackComponent } from '../pwa/pwa-snack/pwa-snack.component.ts';
+import { User } from '../../../../prismagen/generated/browser.ts';
+import { PwaSnackComponent } from '../pwa/pwa-snack/pwa-snack.component.js';
 
 @Component({
   selector: 'app-sidebar',
