@@ -33,7 +33,8 @@ jobs:
         run: |
           ls
           npm install
-          ls node_modules
+          ls node_modules/@hw
+          ls node_modules/@hw/prismagen/generated
 
       - name: Inject Sentry DSN
         working-directory: hwfe
