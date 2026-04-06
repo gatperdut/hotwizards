@@ -5,8 +5,7 @@
     "types": [],
   },
   "include": [
-    "src/**/*.ts",
-    "../prismagen/generated/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [],
 }
