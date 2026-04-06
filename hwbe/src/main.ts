@@ -35,6 +35,8 @@ async function bootstrap(): Promise<void> {
 
   // Listen
   const port: number = configService.get<number>('HWBE_PORT') as number;
+  console.log('Running on PORT', port);
+
   await app.listen(port);
 }
 
