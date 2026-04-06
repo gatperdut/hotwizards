@@ -1,4 +1,4 @@
-import { User } from '@hw/prismagen';
+import { User } from '@hw/prismagen/client';
 import { AppUser } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service.js';

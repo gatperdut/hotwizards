@@ -1,4 +1,4 @@
-import { PrismaClient } from '@hw/prismagen';
+import { PrismaClient } from '@hw/prismagen/client';
 import * as bcrypt from 'bcrypt';
 
 type NamedUserSeed = {
