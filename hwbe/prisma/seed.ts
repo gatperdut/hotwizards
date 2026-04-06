@@ -1,6 +1,6 @@
+import { PrismaClient } from '@hw/prismagen';
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
-import { PrismaClient } from 'generated/client.js';
 import { Pool } from 'pg';
 import { seedUsers } from './seeds/users.seed.js';
 

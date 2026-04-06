@@ -10,9 +10,6 @@
     "node": ">=24.0.0",
     "npm": ">=11.0.0"
   },
-  "imports": {
-    "#generated/*": "../generated/*"
-  },
   "scripts": {
     "start": "nest start --watch",
     "start:prod": "node dist/hwbe/src/main.js",
@@ -21,6 +18,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@hw/prismagen": "file:../prismagen",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",

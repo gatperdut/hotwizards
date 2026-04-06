@@ -1,5 +1,5 @@
+import { PrismaClient } from '@hw/prismagen';
 import * as bcrypt from 'bcrypt';
-import { PrismaClient } from 'generated/client.js';
 
 type NamedUserSeed = {
   handle: string;

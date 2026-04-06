@@ -1,0 +1,18 @@
+{
+  "name": "@hw/prismagen",
+  "description": "Hot Wizards Prisma Generated",
+  "type": "module",
+  "version": "0.0.1",
+  "author": "carlosrb",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.0.0"
+  },
+  "main": "./generated/index.js",
+  "types": "./generated/index.d.ts",
+  "exports": {
+    ".": "./generated/index.js"
+  }
+}

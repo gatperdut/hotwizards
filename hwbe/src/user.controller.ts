@@ -1,5 +1,5 @@
+import { User } from '@hw/prismagen';
 import { Controller, Get } from '@nestjs/common';
-import { User } from 'generated/client.js';
 import { AppService } from './app.service.js';
 
 @Controller('user')
