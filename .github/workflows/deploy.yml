@@ -33,17 +33,17 @@ jobs:
           echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
           echo "SENTRY_RELEASE=${{ github.sha }}" >> .env
 
-      - name: Install and build
-        run: |
-          npm install
-          npm run build -w @hw/hwbe
-          npm run build -w @hw/hwfe
-
       - name: HWFE - Inject Sentry DSN
         working-directory: hwfe
         run: |
           sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
           sed -i "s|HWFE_SENTRY_RELEASE_PLACEHOLDER|${{ github.sha }}|" src/environments/environment.ts
+
+      - name: Install and build
+        run: |
+          npm install
+          npm run build -w @hw/hwbe
+          npm run build -w @hw/hwfe
 
       - name: Prepare deployment
         run: |
