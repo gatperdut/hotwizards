@@ -86,7 +86,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: >
             prismagen/**
-          rm: true
           target: "/var/www/hwbe"
           strip_components: 0
 
