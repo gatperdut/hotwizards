@@ -7,6 +7,7 @@ on:
     paths:
       - "hwfe/**"
       - "shared/**"
+      - "prismagen/**"
       - "package.json"
       - "package-lock.json"
   workflow_dispatch:

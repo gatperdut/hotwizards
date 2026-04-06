@@ -11,16 +11,17 @@
     "npm": ">=11.0.0"
   },
   "workspaces": [
-    "shared",
     "hwbe",
-    "hwfe"
+    "hwfe",
+    "shared",
+    "prismagen"
   ],
   "scripts": {
     "start:hwbe": "npm run start -w @hw/hwbe",
     "start:hwfe": "npm run start -w @hw/hwfe",
     "build": "npm run build --workspaces --if-present",
     "clean": "rm -rf **/dist",
-    "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules hwfe/.angular/cache"
+    "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules hwfe/.angular/cache prismagen/generated"
   },
   "devDependencies": {
     "@changesets/cli": "^2.30.0",
