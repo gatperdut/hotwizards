@@ -14,10 +14,9 @@
     "start:prod": "node dist/hwbe/src/main.js",
     "start:debug": "nest start --watch --debug",
     "build": "nest build",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist out-tsc node_modules package-lock.json .tsbuildinfo"
   },
   "dependencies": {
-    "@hw/prismagen": "file:../prismagen",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",

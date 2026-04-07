@@ -10,7 +10,7 @@
     "npm": ">=11.0.0"
   },
   "exports": {
-    "./client": "./generated/client.ts",
-    "./browser": "./generated/browser.ts"
+    "./client": "./src/client.ts",
+    "./browser": "./src/browser.ts"
   }
 }

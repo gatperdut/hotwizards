@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
     "strict": true,
-    "baseUrl": "./",
     "target": "es2024",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
-    "declaration": false,
+    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -20,12 +19,19 @@
     "noImplicitReturns": true,
     "importHelpers": true,
     "paths": {
-      "@hw/shared": ["shared/src/index.ts"],
-      "@hw/hwbe/*": ["hwbe/src/*"],
-      "@hw/hwfe/*": ["hwfe/src/*"],
-      "@hw/prismagen/client": ["prismagen/generated/client.ts"],
-      "@hw/prismagen/browser": ["prismagen/generated/browser.ts"]
+      "@hw/shared": ["./shared/src/index.ts"],
+      "@hw/hwbe/*": ["./hwbe/src/*"],
+      "@hw/hwfe/*": ["./hwfe/src/*"],
+      "@hw/prismagen/client": ["./prismagen/src/client.ts"],
+      "@hw/prismagen/browser": ["./prismagen/src/browser.ts"]
     }
   },
+  "files": [],
+  "references": [
+    { "path": "./hwbe/tsconfig.json" },
+    { "path": "./hwfe/tsconfig.json" },
+    { "path": "./shared/tsconfig.json" },
+    { "path": "./prismagen/tsconfig.json" }
+  ],
   "compileOnSave": false
 }
