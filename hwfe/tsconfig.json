@@ -1,11 +1,16 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": {},
-  "include": ["../shared/src/**/*"],
+  "rootDir": ".",
+  "compilerOptions": {
+    "rootDir": "..",
+    "outDir": "./out-tsc/app",
+    "types": [],
+    "composite": true
+  },
   "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": ["src/**/*.ts", "../shared/src/**/*.ts", "../prismagen/src/**/*.ts"]
 }

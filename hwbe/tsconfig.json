@@ -1,12 +1,18 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "composite": true,
+    "rootDir": "..",
     "removeComments": true,
     "emitDecoratorMetadata": true,
-    "rootDir": "..",
-    "outDir": "./dist",
-    "composite": false,
-    "tsBuildInfoFile": "./dist/.tsbuildinfo"
+    "outDir": "out-tsc",
+    "tsBuildInfoFile": ".tsbuildinfo"
   },
-  "include": ["../shared/src/**/*"]
+  "include": [
+    "src/**/*.ts",
+    "prisma.config.ts",
+    "prisma/**/*.ts",
+    "../shared/src/**/*.ts",
+    "../prismagen/src/**/*.ts"
+  ]
 }

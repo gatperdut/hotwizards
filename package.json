@@ -13,8 +13,9 @@
   "scripts": {
     "start:hwbe": "npm run start -w @hw/hwbe",
     "start:hwfe": "npm run start -w @hw/hwfe",
-    "clean": "rm -rf **/dist",
-    "clean:all": "rm -rf node_modules package-lock.json **/dist **/node_modules hwfe/.angular/cache prismagen/generated"
+    "clean:hwbe": "npm run clean -w @hw/hwbe",
+    "clean:hwfe": "npm run clean -w @hw/hwfe",
+    "clean:all": "npm run clean:hwbe && npm run clean:hwfe"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

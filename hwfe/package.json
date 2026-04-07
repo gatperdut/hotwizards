@@ -17,9 +17,8 @@
     "build:stats": "ng build --stats-json",
     "build:dev": "ng build --configuration development",
     "serve:prod": "npx serve dist/hwfe/browser",
-    "clean": "rm -rf dist .angular/cache"
+    "clean": "rm -rf dist node_modules package-lock.json .angular"
   },
-  "packageManager": "npm@11.6.2",
   "dependencies": {
     "@angular/cdk": "^21.2.4",
     "@angular/common": "^21.2.0",
@@ -30,7 +29,6 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
     "@angular/service-worker": "^21.2.0",
-    "@hw/prismagen": "file:../prismagen",
     "@panzoom/panzoom": "^4.6.1",
     "@sentry/angular": "^10.47.0",
     "rxjs": "~7.8.0"
