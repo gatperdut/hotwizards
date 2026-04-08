@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "paths": {
-      "@hw/shared": ["./shared/src/index.ts"],
+      "@hw/shared": ["./shared/src/*"],
       "@hw/hwbe/*": ["./hwbe/src/*"],
       "@hw/hwfe/*": ["./hwfe/src/*"],
       "@hw/prismagen/client": ["./prismagen/src/client.ts"],
