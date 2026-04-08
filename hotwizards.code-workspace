@@ -19,12 +19,6 @@
     {
       "name": "PRISMAGEN",
       "path": "prismagen",
-      "settings": {
-        "search.exclude": {
-          "src": true,
-          "src/**": true,
-        },
-      },
     },
   ],
   "settings": {
@@ -39,10 +33,18 @@
       "**/node_modules": true,
       "**/dist": true,
       "**/out-tsc": true,
+      "**/.angular": true,
     },
     "angular.log": "verbose",
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "angular.ng-template"],
+    "recommendations": [
+      "Angular.ng-template",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "github.vscode-github-actions",
+      "Prisma.prisma",
+      "rangav.vscode-thunder-client",
+    ],
   },
 }

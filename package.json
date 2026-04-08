@@ -12,9 +12,11 @@
   "workspaces": ["hwbe", "hwfe", "shared", "prismagen"],
   "scripts": {
     "hwbe:start": "npm run start -w @hw/hwbe",
+    "hwbe:build": "npm run build -w @hw/hwbe",
     "hwbe:clean": "npm run clean -w @hw/hwbe",
     "hwbe:prismagen": "npm run prismagen -w @hw/hwbe",
-    "start:hwfe": "npm run start -w @hw/hwfe",
+    "hwfe:start": "npm run start -w @hw/hwfe",
+    "hwfe:build": "npm run build -w @hw/hwfe",
     "hwfe:clean": "npm run clean -w @hw/hwfe",
     "prismagen:clean": "npm run clean -w @hw/prismagen",
     "clean": "rm -rf node_modules package-lock.json",
