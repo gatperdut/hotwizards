@@ -14,6 +14,7 @@
     "start:prod": "node dist/hwbe/src/main.js",
     "start:debug": "nest start --watch --debug",
     "build": "nest build",
+    "prismagen": "npx prisma generate",
     "clean": "rm -rf dist out-tsc node_modules package-lock.json"
   },
   "dependencies": {

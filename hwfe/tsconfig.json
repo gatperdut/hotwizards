@@ -6,7 +6,6 @@
     "moduleResolution": "bundler",
     "outDir": "out-tsc",
     "types": [],
-    "composite": true,
     "isolatedModules": true,
     "importHelpers": true,
     // Maybe back to root tsconfig:
@@ -20,5 +19,6 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src/**/*.ts", "../shared/src/**/*.ts", "../prismagen/src/**/*.ts"]
+  "include": ["src/**/*.ts"]
+  // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

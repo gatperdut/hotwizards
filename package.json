@@ -11,11 +11,14 @@
   },
   "workspaces": ["hwbe", "hwfe", "shared", "prismagen"],
   "scripts": {
-    "start:hwbe": "npm run start -w @hw/hwbe",
+    "hwbe:start": "npm run start -w @hw/hwbe",
+    "hwbe:clean": "npm run clean -w @hw/hwbe",
+    "hwbe:prismagen": "npm run prismagen -w @hw/hwbe",
     "start:hwfe": "npm run start -w @hw/hwfe",
-    "clean:hwbe": "npm run clean -w @hw/hwbe",
-    "clean:hwfe": "npm run clean -w @hw/hwfe",
-    "clean:all": "npm run clean:hwbe && npm run clean:hwfe && rm -rf node_modules package-lock.json"
+    "hwfe:clean": "npm run clean -w @hw/hwfe",
+    "prismagen:clean": "npm run clean -w @hw/prismagen",
+    "clean": "rm -rf node_modules package-lock.json",
+    "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run prismagen:clean && npm run clean"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
