@@ -62,8 +62,7 @@ jobs:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: >
-            hw
+          source: hw
           rm: true
           target: '/var/www'
           strip_components: 0
@@ -77,8 +76,8 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw/hwbe
-            npx prisma migrate deploy
+            cd /var/www/hw
+            npm run hwbe:prisma:migrate:deploy
 
       - name: HWBE - pm2
         uses: appleboy/ssh-action@v1.2.5
@@ -89,9 +88,8 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw/hwbe
-            pm2 delete hwbe || true
-            pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hw/hwbe
+            cd /var/www/hw
+            pm2 start hwbe/src/main.js --name hwbe --update-env --cwd /var/www/hw/hwbe
 
       - name: HWBE - Upload sourcemaps
         working-directory: hwbe
@@ -130,5 +128,5 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw/hwfe
-            npx sitemap-generator-cli https://hotwizards.net --output ./sitemap.xml
+            cd /var/www/hw
+            npx sitemap-generator-cli https://hotwizards.net --output ./hwfe/sitemap.xml
