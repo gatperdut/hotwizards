@@ -92,7 +92,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             pm2 delete hwbe || true
-            pm2 start hwbe/src/main.js --name hwbe --update-env --cwd /var/www/hw
+            pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hw/hwbe
 
       - name: HWBE - Upload sourcemaps
         working-directory: hwbe
@@ -131,5 +131,5 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw
-            npx sitemap-generator-cli https://hotwizards.net --output ./hwfe/sitemap.xml
+            cd /var/www/hw/hwfe
+            npx sitemap-generator-cli https://hotwizards.net --output sitemap.xml
