@@ -14,7 +14,7 @@
     "start:prod": "node dist/hwbe/src/main.js",
     "start:debug": "nest start --watch --debug",
     "build": "nest build",
-    "clean": "rm -rf dist out-tsc node_modules package-lock.json .tsbuildinfo"
+    "clean": "rm -rf dist out-tsc node_modules package-lock.json"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -46,7 +46,6 @@
     "supertest": "^7.0.0",
     "ts-loader": "^9.5.2",
     "tsx": "^4.21.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
+    "tsconfig-paths": "^4.2.0"
   }
 }

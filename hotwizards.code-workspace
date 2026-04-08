@@ -34,7 +34,6 @@
       "**/dist": true,
     },
     "angular.log": "verbose",
-    "js/ts.tsdk.path": "ROOT/node_modules/typescript/lib",
   },
   "extensions": {
     "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "angular.ng-template"],

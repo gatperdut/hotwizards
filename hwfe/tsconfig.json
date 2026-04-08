@@ -1,11 +1,19 @@
 {
   "extends": "../tsconfig.json",
-  "rootDir": ".",
   "compilerOptions": {
     "rootDir": "..",
-    "outDir": "./out-tsc/app",
+    "module": "preserve",
+    "moduleResolution": "bundler",
+    "outDir": "out-tsc",
     "types": [],
-    "composite": true
+    "composite": true,
+    "isolatedModules": true,
+    "importHelpers": true,
+    // Maybe back to root tsconfig:
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true
   },
   "angularCompilerOptions": {
     "strictInjectionParameters": true,

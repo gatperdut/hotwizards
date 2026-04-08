@@ -1,4 +1,3 @@
 /dist
 /.env
 /out-tsc
-.tsbuildinfo
