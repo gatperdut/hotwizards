@@ -56,7 +56,6 @@ jobs:
           mv node_modules hw
           mv hwbe/dist/hwbe hw
           mv hwbe/package.json hw/hwbe
-          mv hwbe/package-lock.json hw/hwbe
           mv hwbe/.env hw/hwbe
           mv hwfe/dist/hwfe/browser hw/hwfe
 
