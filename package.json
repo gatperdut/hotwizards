@@ -22,10 +22,14 @@
     "clean": "rm -rf node_modules package-lock.json",
     "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run prismagen:clean && npm run clean"
   },
+  "dependencies": {
+    "rxjs": "^7.8.2"
+  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.1.0",
     "eslint-config-prettier": "10.1.8",
+    "prettier": "^3.8.1",
     "tslib": "^2.3.0",
     "typescript-eslint": "8.58.0",
     "typescript": "^5.9.2"

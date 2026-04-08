@@ -1,4 +1,4 @@
-name: Hot Wizards Github Action
+name: Build and deploy Hot Wizards
 
 on:
   push:
