@@ -49,6 +49,8 @@ jobs:
       - name: Prepare deployment
         run: |
           mkdir hw
+          mv package.json hw
+          mv package.lock.json hw
           mv prismagen hw
           mv shared hw
           mv node_modules hw
@@ -64,8 +66,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: hw
           rm: true
-          target: '/var/www'
-          strip_components: 0
+          target: '/var/www/hw'
+          strip_components: 1
 
       - name: HWBE - Database migration
         uses: appleboy/ssh-action@v1.2.5
