@@ -91,9 +91,8 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw
             pm2 delete hwbe || true
-            pm2 start hwbe/src/main.js --name hwbe --update-env --cwd /var/www/hw/hwbe
+            pm2 start hwbe/src/main.js --name hwbe --update-env --cwd /var/www/hw
 
       - name: HWBE - Upload sourcemaps
         working-directory: hwbe
