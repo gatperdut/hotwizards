@@ -1,12 +1,16 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "composite": true,
     "rootDir": "..",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "composite": true,
     "removeComments": true,
+    "incremental": true,
     "emitDecoratorMetadata": true,
-    "outDir": "out-tsc",
-    "tsBuildInfoFile": ".tsbuildinfo"
+    "outDir": "out-tsc"
   },
   "include": [
     "src/**/*.ts",

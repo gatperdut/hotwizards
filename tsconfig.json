@@ -2,22 +2,9 @@
   "compilerOptions": {
     "strict": true,
     "target": "es2024",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "resolvePackageJsonExports": true,
-    "declaration": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "incremental": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
-    "importHelpers": true,
     "paths": {
       "@hw/shared": ["./shared/src/index.ts"],
       "@hw/hwbe/*": ["./hwbe/src/*"],
@@ -26,12 +13,10 @@
       "@hw/prismagen/browser": ["./prismagen/src/browser.ts"]
     }
   },
-  "files": [],
   "references": [
     { "path": "./hwbe/tsconfig.json" },
     { "path": "./hwfe/tsconfig.json" },
     { "path": "./shared/tsconfig.json" },
     { "path": "./prismagen/tsconfig.json" }
-  ],
-  "compileOnSave": false
+  ]
 }
