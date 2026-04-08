@@ -42,6 +42,7 @@ jobs:
       - name: Install and build
         run: |
           npm install
+          npx --workspace=@hw/hwbe -- prisma generate
           npm run build -w @hw/hwbe
           npm run build -w @hw/hwfe
 

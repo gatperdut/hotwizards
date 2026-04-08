@@ -9,6 +9,9 @@
     "node": ">=24.0.0",
     "npm": ">=11.0.0"
   },
+  "scripts": {
+    "clean": "rm -rf src/*"
+  },
   "exports": {
     "./client": "./src/client.ts",
     "./browser": "./src/browser.ts"

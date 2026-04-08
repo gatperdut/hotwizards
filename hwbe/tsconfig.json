@@ -2,21 +2,15 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "rootDir": "..",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
-    "composite": true,
     "removeComments": true,
     "incremental": true,
     "emitDecoratorMetadata": true,
     "outDir": "out-tsc"
   },
-  "include": [
-    "src/**/*.ts",
-    "prisma.config.ts",
-    "prisma/**/*.ts",
-    "../shared/src/**/*.ts",
-    "../prismagen/src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "prisma.config.ts", "prisma/**/*.ts"]
+  // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

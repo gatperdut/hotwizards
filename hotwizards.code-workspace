@@ -2,7 +2,7 @@
   "folders": [
     {
       "name": "ROOT",
-      "path": "./",
+      "path": ".",
     },
     {
       "name": "HWBE",
@@ -19,6 +19,12 @@
     {
       "name": "PRISMAGEN",
       "path": "prismagen",
+      "settings": {
+        "search.exclude": {
+          "src": true,
+          "src/**": true,
+        },
+      },
     },
   ],
   "settings": {
@@ -32,6 +38,7 @@
       "**/package-lock.json": true,
       "**/node_modules": true,
       "**/dist": true,
+      "**/out-tsc": true,
     },
     "angular.log": "verbose",
   },
