@@ -1,9 +1,9 @@
 import { User } from '@hw/prismagen/client';
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service.js';
+import { AppService } from '../app.service.js';
 
-@Controller('user')
-export class UserController {
+@Controller('users')
+export class UsersController {
   constructor(private readonly appService: AppService) {}
 
   @Get()

@@ -6,7 +6,6 @@ import { AppModule } from './app.module.js';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
-
   const configService = app.get(ConfigService);
 
   const production: boolean = configService.get<string>('HWBE_NODE_ENV') === 'production';
@@ -35,7 +34,6 @@ async function bootstrap(): Promise<void> {
 
   // Listen
   const port: number = configService.get<number>('HWBE_PORT') as number;
-
   await app.listen(port);
 }
 

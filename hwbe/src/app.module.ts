@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
-import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { ErrorController } from './error.controller.js';
+import { HealthController } from './health.controller.js';
 import { PrismaModule } from './prisma/prisma.module.js';
-import { UserController } from './user.controller.js';
+import { UsersController } from './users/users.controller.js';
 
 @Module({
   imports: [
@@ -18,7 +17,7 @@ import { UserController } from './user.controller.js';
     // Needed in AppModule at all? Maybe should be global?
     PrismaModule,
   ],
-  controllers: [AppController, ErrorController, UserController],
+  controllers: [HealthController, UsersController],
   providers: [
     {
       provide: APP_FILTER,
