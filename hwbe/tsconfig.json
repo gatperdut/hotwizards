@@ -4,6 +4,7 @@
     "rootDir": "..",
     "module": "nodenext",
     "moduleResolution": "nodenext",
+    "composite": true,
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "removeComments": true,
@@ -11,6 +12,11 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "prisma.config.ts", "prisma/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "prisma.config.ts",
+    "prisma/**/*.ts",
+    "../shared/src/health/health-status.dto.ts"
+  ]
   // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

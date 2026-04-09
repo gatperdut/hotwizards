@@ -3,22 +3,15 @@ import prettierConfig from 'eslint-config-prettier';
 import tseslint from 'typescript-eslint';
 
 export default [
+  js.configs.recommended,
+  ...tseslint.configs.strict,
   {
     ignores: ['**/dist/**', '**/node_modules/**'],
-  },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
     files: ['**/*.ts'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        project: [
-          './hwbe/tsconfig.json',
-          './hwfe/tsconfig.json',
-          './shared/tsconfig.json',
-          './prismagen/tsconfig.json',
-        ],
+        project: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -31,13 +24,14 @@ export default [
       'no-constant-condition': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
+      '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/no-unsafe-declaration-merging': 'error',
-      '@typescript-eslint/no-unused-private-class-members': 'warn',
+      '@typescript-eslint/no-unused-private-class-members': ['warn'],
       '@typescript-eslint/explicit-member-accessibility': [
         'warn',
         {

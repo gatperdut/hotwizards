@@ -4,6 +4,7 @@
     "rootDir": "..",
     "module": "preserve",
     "moduleResolution": "bundler",
+    "composite": true,
     "outDir": "out-tsc",
     "types": [],
     "isolatedModules": true,

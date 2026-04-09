@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "strict": true,
+    "strictPropertyInitialization": false,
     "target": "es2024",
     "skipLibCheck": true,
     "experimentalDecorators": true,
@@ -15,7 +16,7 @@
   "references": [
     { "path": "./hwbe/tsconfig.json" },
     { "path": "./hwfe/tsconfig.json" },
-    { "path": "../shared" },
-    { "path": "../prismagen" }
+    { "path": "./shared/tsconfig.json" },
+    { "path": "./prismagen/tsconfig.json" }
   ]
 }
