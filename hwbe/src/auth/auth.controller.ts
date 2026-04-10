@@ -20,7 +20,7 @@ export class AuthController {
   }
 
   @Post('verify-token')
-  public verifyToken(@Body() body: AuthVerifyTokenDto): AuthTokenPayload {
-    return this.authService.verifyToken(body);
+  public async verifyToken(@Body() body: AuthVerifyTokenDto): Promise<AuthTokenPayload> {
+    return await this.authService.verifyToken(body);
   }
 }

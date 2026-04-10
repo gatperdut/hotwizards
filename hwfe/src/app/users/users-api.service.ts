@@ -36,7 +36,7 @@ export class UsersApiService {
   public availabilityEmail(params: UserAvailabilityEmailDto): Observable<boolean> {
     return this.httpClient
       .get<UserAvailabilityResponseDto>('/api/users/availability-email', {
-        params: params,
+        params: { ...params },
       })
       .pipe(map((availability: UserAvailabilityResponseDto): boolean => availability.available));
   }
@@ -44,7 +44,7 @@ export class UsersApiService {
   public availabilityHandle(params: UserAvailabilityHandleDto): Observable<boolean> {
     return this.httpClient
       .get<UserAvailabilityResponseDto>('/api/users/availability-handle', {
-        params: params,
+        params: { ...params },
       })
       .pipe(map((availability: UserAvailabilityResponseDto): boolean => availability.available));
   }
