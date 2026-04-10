@@ -1,37 +1,31 @@
 import { User } from '@hw/prismagen/client';
 import { AuthLoginDto, AuthRegisterDto, AuthVerifyTokenDto } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
+import { compare, genSalt, hash } from 'bcrypt';
 import { UsersService } from '../users/users.service.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 import { AuthToken } from './types/auth-token.type.js';
 
-// TODO use jwtService (@nestjs/jwt) instead of jsonwebtoken directly
 @Injectable()
 export class AuthService {
   private readonly jwtSecret: string = 'supersecretkey'; // TODO .env
 
-  constructor(private usersService: UsersService) {
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {
     // Empty
   }
 
   public async hashPassword(password: string): Promise<string> {
-    const salt: string = await bcrypt.genSalt();
+    const salt: string = await genSalt();
 
-    return bcrypt.hash(password, salt);
+    return hash(password, salt);
   }
 
-  public generateToken(userId: number): string {
-    return jwt.sign(
-      {
-        userId: userId,
-      },
-      this.jwtSecret,
-      {
-        expiresIn: '12h',
-      },
-    );
+  private async generateToken(userId: number): Promise<string> {
+    return await this.jwtService.signAsync({ sub: { userId: userId } });
   }
 
   public async register(params: AuthRegisterDto): Promise<AuthToken> {
@@ -43,7 +37,8 @@ export class AuthService {
       admin: false,
     });
 
-    const token: string = this.generateToken(user.id);
+    // TODO .toString....-_-
+    const token: string = await this.generateToken(user.id);
 
     return { token: token };
   }
@@ -51,18 +46,20 @@ export class AuthService {
   public async login(params: AuthLoginDto): Promise<AuthToken> {
     const user = await this.usersService.byEmail({ email: params.email });
 
-    if (!user || !(await bcrypt.compare(params.password, user.password))) {
+    if (!user || !(await compare(params.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token: string = this.generateToken(user.id);
+    const token: string = await this.generateToken(user.id);
 
     return { token: token };
   }
 
-  public verifyToken(params: AuthVerifyTokenDto): AuthTokenPayload {
+  public async verifyToken(params: AuthVerifyTokenDto): Promise<AuthTokenPayload> {
     try {
-      return jwt.verify(params.token, this.jwtSecret) as AuthTokenPayload;
+      return await this.jwtService.verifyAsync(params.token, {
+        secret: 'YOUR_SECRET_KEY',
+      });
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }

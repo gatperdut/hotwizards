@@ -1,0 +1,5 @@
+@reference "../../../styles.css";
+
+.app-input {
+  @apply rounded-tr-3xl rounded-bl-lg bg-transparent border-4 focus:border-0 focus:outline-0 focus:bg-amber-500 border-amber-500 h-10 px-1.5 text-gray-200 text-lg;
+}

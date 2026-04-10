@@ -17,6 +17,7 @@
     "hwbe:prisma:gen": "npm run prisma:gen -w @hw/hwbe",
     "hwbe:prisma:migrate:dev": "npm run prisma:migrate:dev -w @hw/hwbe",
     "hwbe:prisma:migrate:deploy": "npm run prisma:migrate:deploy -w @hw/hwbe",
+    "hwbe:prisma:studio": "npm run prisma:studio -w @hw/hwbe",
     "hwfe:start": "npm run start -w @hw/hwfe",
     "hwfe:build": "npm run build -w @hw/hwfe",
     "hwfe:clean": "npm run clean -w @hw/hwfe",
