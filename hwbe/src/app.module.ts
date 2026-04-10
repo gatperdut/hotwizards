@@ -4,9 +4,10 @@ import { APP_FILTER } from '@nestjs/core';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppService } from './app.service.js';
 import { AuthMiddleware } from './auth/auth.middleware.js';
+import { AuthModule } from './auth/auth.module.js';
 import { HealthController } from './health.controller.js';
 import { PrismaModule } from './prisma/prisma.module.js';
-import { UsersController } from './users/users.controller.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
@@ -17,8 +18,10 @@ import { UsersController } from './users/users.controller.js';
     SentryModule.forRoot(),
     // Needed in AppModule at all? Maybe should be global?
     PrismaModule,
+    AuthModule,
+    UsersModule,
   ],
-  controllers: [HealthController, UsersController],
+  controllers: [HealthController],
   providers: [
     {
       provide: APP_FILTER,
@@ -32,6 +35,8 @@ export class AppModule {
     consumer
       .apply(AuthMiddleware)
       .exclude(
+        // Health
+        { path: 'health', method: RequestMethod.GET },
         // Auth
         { path: 'auth/login', method: RequestMethod.POST },
         { path: 'auth/register', method: RequestMethod.POST },
@@ -40,6 +45,6 @@ export class AppModule {
         { path: 'users/available-email', method: RequestMethod.GET },
         { path: 'users/available-display-name', method: RequestMethod.GET },
       )
-      .forRoutes('*');
+      .forRoutes('*splat');
   }
 }

@@ -40,4 +40,8 @@ export class LoginComponent {
   public emailError$ = toObservable(this.loginForm.email().errors).pipe(
     map((errors) => errors.at(0)),
   );
+
+  public create(): void {
+    console.log(this.loginForm().value());
+  }
 }

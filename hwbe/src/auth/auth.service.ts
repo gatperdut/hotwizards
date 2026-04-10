@@ -1,20 +1,20 @@
+import { User } from '@hw/prismagen/client';
+import { AuthRegisterDto } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { User } from 'src/generated/client';
-import { UserService } from 'src/user/user.service';
-import { AuthLoginDto } from './dto/auth-login.dto';
-import { AuthRegisterDto } from './dto/auth-register.dto';
-import { AuthVerifyTokenDto } from './dto/auth-verify-token.dto';
-import { AuthTokenPayload } from './types/auth-token-payload.type';
-import { AuthToken } from './types/auth-token.type';
+import { UsersService } from '../users/users.service.js';
+import { AuthLoginDto } from './dto/auth-login.dto.js';
+import { AuthVerifyTokenDto } from './dto/auth-verify-token.dto.js';
+import { AuthTokenPayload } from './types/auth-token-payload.type.js';
+import { AuthToken } from './types/auth-token.type.js';
 
 // TODO use jwtService (@nestjs/jwt) instead of jsonwebtoken directly
 @Injectable()
 export class AuthService {
   private readonly jwtSecret: string = 'supersecretkey'; // TODO .env
 
-  constructor(private userService: UserService) {
+  constructor(private usersService: UsersService) {
     // Empty
   }
 
@@ -39,7 +39,7 @@ export class AuthService {
   public async register(params: AuthRegisterDto): Promise<AuthToken> {
     const hashedPassword: string = await this.hashPassword(params.password);
 
-    const user: User = await this.userService.create({
+    const user: User = await this.usersService.create({
       ...params,
       password: hashedPassword,
       admin: false,
@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   public async login(params: AuthLoginDto): Promise<AuthToken> {
-    const user = await this.userService.byEmail({ email: params.email });
+    const user = await this.usersService.byEmail({ email: params.email });
 
     if (!user || !(await bcrypt.compare(params.password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');

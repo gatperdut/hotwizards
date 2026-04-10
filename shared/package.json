@@ -11,5 +11,8 @@
   },
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "class-validator": "^0.15.1"
   }
 }
