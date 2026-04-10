@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-offline',
+  selector: 'app-button',
   imports: [],
-  templateUrl: './offline.component.html',
-  styleUrl: './offline.component.css',
+  templateUrl: './button.component.html',
+  styleUrl: './button.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OfflineComponent {}
+export class ButtonComponent {}
