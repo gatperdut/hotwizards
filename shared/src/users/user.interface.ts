@@ -1,3 +1,4 @@
+// TODO drop?
 export interface AppUser {
   id: number;
   handle: string;

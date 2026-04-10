@@ -16,11 +16,16 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'board',
+        redirectTo: 'login',
       },
       {
         path: 'board',
         loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),
+      },
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('./auth/login/login.component.js').then((m) => m.LoginComponent),
       },
     ],
   },

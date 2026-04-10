@@ -45,6 +45,7 @@
       "github.vscode-github-actions",
       "Prisma.prisma",
       "rangav.vscode-thunder-client",
+      "csstools.postcss",
     ],
   },
 }

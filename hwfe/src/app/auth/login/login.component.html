@@ -1,0 +1,25 @@
+<div class="p-20 flex flex-col items-center justify-center gap-4 w-screen h-screen">
+  <input
+    class="app-input"
+    autocomplete="off"
+    style="caret-shape: block"
+    type="email"
+    [formField]="loginForm.email"
+  />
+  <input
+    class="app-input"
+    style="caret-shape: block"
+    autocomplete="off"
+    type="password"
+    [formField]="loginForm.password"
+  />
+
+  @if (loginForm.email().pending()) {
+    LOADING.........
+  }
+
+  @let err = emailError$ | async;
+  @if (err) {
+    {{ err | json }}
+  }
+</div>
