@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HealthStatusDto } from '@hw/shared';
+import { type HealthStatusDto } from '@hw/shared';
 import { map, shareReplay } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

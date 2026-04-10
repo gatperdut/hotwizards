@@ -12,11 +12,6 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist"
   },
-  "include": [
-    "src/**/*.ts",
-    "prisma.config.ts",
-    "prisma/**/*.ts",
-    "../shared/src/health/health-status.dto.ts"
-  ]
+  "include": ["src/**/*.ts", "prisma.config.ts", "prisma/**/*.ts"]
   // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }
