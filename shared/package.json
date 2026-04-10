@@ -9,10 +9,15 @@
     "node": ">=24.0.0",
     "npm": ">=11.0.0"
   },
-  "exports": {
-    ".": "./dist/src/index.js"
+  "scripts": {
+    "start": "npx tsc --watch",
+    "build": "npx tsc",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "class-validator": "^0.15.1"
+  },
+  "exports": {
+    ".": "./dist/shared/src/index.js"
   }
 }

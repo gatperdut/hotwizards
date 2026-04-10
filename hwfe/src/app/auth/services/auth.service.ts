@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { type AuthRegisterDto } from '@hw/shared';
+import { AuthLoginDto, AuthToken, type AuthRegisterDto } from '@hw/shared';
 import { User } from 'hw/prismagen/browser';
 import { catchError, EMPTY, Observable, of, switchMap, tap } from 'rxjs';
 import { UsersApiService } from '../../users/users-api.service';
@@ -17,34 +17,32 @@ export class AuthService {
   public user: WritableSignal<User | null> = signal<User | null>(null);
 
   public register(userRegisterDto: AuthRegisterDto): Observable<User> {
-    return this.httpClient
-      .post<AuthTokenService>(`${environment.apiUrl}/auth/register`, userRegisterDto)
-      .pipe(
-        catchError((): Observable<never> => {
-          this.matSnackBar.open('Something went wrong during registration');
+    return this.httpClient.post<AuthToken>('/api/auth/register', userRegisterDto).pipe(
+      catchError((): Observable<never> => {
+        this.matSnackBar.open('Something went wrong during registration');
 
-          return EMPTY;
-        }),
-        tap({
-          next: (authToken: AuthToken): void => {
-            this.authTokenService.set(authToken.token);
-          },
-        }),
-        switchMap((): Observable<User> => {
-          return this.userApiService.me();
-        }),
-        tap({
-          next: (user: User): void => {
-            this.user.set(user);
+        return EMPTY;
+      }),
+      tap({
+        next: (authToken: AuthToken): void => {
+          this.authTokenService.set(authToken.token);
+        },
+      }),
+      switchMap((): Observable<User> => {
+        return this.userApiService.me();
+      }),
+      tap({
+        next: (user: User): void => {
+          this.user.set(user);
 
-            this.matSnackBar.open(`Welcome, ${user.handle}!`);
-          },
-        }),
-      );
+          this.matSnackBar.open(`Welcome, ${user.handle}!`);
+        },
+      }),
+    );
   }
 
-  public login(userLoginDto: UserLoginDto): Observable<User> {
-    return this.httpClient.post<AuthToken>(`${environment.apiUrl}/auth/login`, userLoginDto).pipe(
+  public login(userLoginDto: AuthLoginDto): Observable<User> {
+    return this.httpClient.post<AuthToken>(`/api/auth/login`, userLoginDto).pipe(
       catchError((): Observable<never> => {
         this.matSnackBar.open('Incorrect credentials');
 
@@ -69,7 +67,7 @@ export class AuthService {
   }
 
   private verifyToken(token: string): Observable<boolean> {
-    return this.httpClient.post<boolean>(`${environment.apiUrl}/auth/verify-token`, {
+    return this.httpClient.post<boolean>(`/api/auth/verify-token`, {
       token: token,
     });
   }

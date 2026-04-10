@@ -1,8 +1,6 @@
-import { AuthRegisterDto } from '@hw/shared';
+import { AuthLoginDto, AuthRegisterDto, AuthVerifyTokenDto } from '@hw/shared';
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
-import { AuthLoginDto } from './dto/auth-login.dto.js';
-import { AuthVerifyTokenDto } from './dto/auth-verify-token.dto.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 
 @Controller('auth')

@@ -1,7 +1,9 @@
+import {
+  UserAvailabilityEmailDto,
+  UserAvailabilityHandleDto,
+  UserAvailabilityResponseDto,
+} from '@hw/shared';
 import { Controller, Get, Query } from '@nestjs/common';
-import { UserAvailabilityHandleDto } from './dto/user-availability-display-name.dto.js';
-import { UserAvailabilityEmailDto } from './dto/user-availability-email.dto.js';
-import { UserAvailabilityResponseDto } from './dto/user-availability-response.dto.js';
 import { UsersService } from './users.service.js';
 
 @Controller('users')
