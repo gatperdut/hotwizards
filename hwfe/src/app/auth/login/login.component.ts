@@ -2,8 +2,8 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { email, form, FormField, minLength, required, validateAsync } from '@angular/forms/signals';
-import { LoginDto } from '@hw/shared';
 import { map } from 'rxjs';
+import { AuthLoginDto } from '../../../../../shared/dist/shared/src/auth/auth-login.dto';
 import { UsersApiService } from '../../users/users-api.service';
 
 @Component({
@@ -16,7 +16,7 @@ import { UsersApiService } from '../../users/users-api.service';
 export class LoginComponent {
   private usersApiService = inject(UsersApiService);
 
-  private loginModel = signal<LoginDto>({
+  private loginModel = signal<AuthLoginDto>({
     email: '',
     password: '',
   });

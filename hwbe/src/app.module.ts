@@ -43,7 +43,7 @@ export class AppModule {
         { path: 'auth/verify-token', method: RequestMethod.POST },
         // User
         { path: 'users/available-email', method: RequestMethod.GET },
-        { path: 'users/available-display-name', method: RequestMethod.GET },
+        { path: 'users/available-handle', method: RequestMethod.GET },
       )
       .forRoutes('*splat');
   }

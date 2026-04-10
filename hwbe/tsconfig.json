@@ -12,6 +12,16 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "prisma.config.ts", "prisma/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "prisma.config.ts",
+    "prisma/**/*.ts",
+    "../shared/src/users/user-availability-handle.dto.ts",
+    "../shared/src/users/user-availability-email.dto.ts",
+    "../shared/src/users/user-availability-response.dto.ts",
+    "../shared/src/users/user-by-email.dto.ts",
+    "../shared/src/users/user-by-id.dto.ts",
+    "../shared/src/users/user-create.dto.ts"
+  ]
   // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

@@ -1,11 +1,9 @@
 import { User } from '@hw/prismagen/client';
-import { AuthRegisterDto } from '@hw/shared';
+import { AuthLoginDto, AuthRegisterDto, AuthVerifyTokenDto } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { UsersService } from '../users/users.service.js';
-import { AuthLoginDto } from './dto/auth-login.dto.js';
-import { AuthVerifyTokenDto } from './dto/auth-verify-token.dto.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 import { AuthToken } from './types/auth-token.type.js';
 
