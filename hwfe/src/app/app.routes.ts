@@ -1,15 +1,17 @@
 import { Routes } from '@angular/router';
-import { HealthGuard } from './health/health.guard.js';
+import { OfflineGuard } from './health/offline.guard.js';
+import { OnlineGuard } from './health/online.guard.js';
 
 export const routes: Routes = [
   {
     path: 'offline',
+    canActivate: [OfflineGuard],
     loadComponent: () =>
       import('./health/offline/offline.component.js').then((m) => m.OfflineComponent),
   },
   {
     path: '',
-    canActivate: [HealthGuard],
+    canActivate: [OnlineGuard],
     children: [
       {
         path: '',
@@ -21,5 +23,9 @@ export const routes: Routes = [
         loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];
