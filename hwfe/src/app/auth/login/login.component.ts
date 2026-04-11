@@ -2,14 +2,16 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthLoginDto } from '@hw/shared';
 import { from, map, switchMap } from 'rxjs';
+import { ButtonComponent } from '../../ui/button/button.component';
+import { LinkComponent } from '../../ui/link/link.component';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormField, AsyncPipe, JsonPipe, RouterLink],
+  imports: [FormField, AsyncPipe, JsonPipe, ButtonComponent, LinkComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,25 +20,23 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  private loginModel = signal<AuthLoginDto>({
+  private model = signal<AuthLoginDto>({
     email: '',
     password: '',
   });
 
-  public loginForm = form(this.loginModel, (schemaPath) => {
+  public form = form(this.model, (schemaPath) => {
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Invalid email' });
 
     required(schemaPath.password, { message: 'Password is required' });
   });
 
-  public emailError$ = toObservable(this.loginForm.email().errors).pipe(
-    map((errors) => errors.at(0)),
-  );
+  public emailError$ = toObservable(this.form.email().errors).pipe(map((errors) => errors.at(0)));
 
   public login(): void {
     this.authService
-      .login(this.loginForm().value())
+      .login(this.form().value())
       .pipe(switchMap(() => from(this.router.navigate(['/board']))))
       .subscribe();
   }

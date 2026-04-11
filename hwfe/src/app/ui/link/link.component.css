@@ -1,0 +1,12 @@
+@reference "../../../styles.css";
+
+.app-link {
+  @apply bg-transparent
+         focus:outline-0
+         text-gray-200
+         text-lg
+         underline
+         decoration-dashed
+         underline-offset-10
+         decoration-amber-500;
+}

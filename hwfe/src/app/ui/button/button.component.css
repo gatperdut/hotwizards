@@ -1,0 +1,27 @@
+@reference "../../../styles.css";
+
+.app-button {
+  @apply rounded-tr-3xl
+         rounded-bl-lg
+         border-4
+         border-amber-500
+         bg-amber-500
+         px-6
+         h-10
+         text-lg
+         font-bold
+         text-gray-900
+         transition-all
+         cursor-pointer
+         hover:bg-transparent
+         hover:text-amber-500
+         active:scale-95;
+
+  &:disabled {
+    @apply border-gray-600
+           bg-gray-600
+           text-gray-400
+           opacity-70
+           scale-100;
+  }
+}

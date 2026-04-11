@@ -9,15 +9,17 @@ import {
 } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { email, form, FormField, minLength, required, validateAsync } from '@angular/forms/signals';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthRegisterDto } from '@hw/shared';
 import { debounceTime, from, map, of, switchMap } from 'rxjs';
+import { ButtonComponent } from '../../ui/button/button.component';
+import { LinkComponent } from '../../ui/link/link.component';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
-  imports: [FormField, AsyncPipe, JsonPipe, RouterLink],
+  imports: [FormField, AsyncPipe, JsonPipe, ButtonComponent, LinkComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +29,7 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  private registerModel = signal<AuthRegisterDto>({
+  private model = signal<AuthRegisterDto>({
     handle: '',
     email: '',
     password: '',
@@ -63,7 +65,7 @@ export class RegisterComponent {
     });
   }
 
-  public registerForm = form(this.registerModel, (schemaPath) => {
+  public form = form(this.model, (schemaPath) => {
     required(schemaPath.handle, { message: 'Handle is required' });
     validateAsync(schemaPath.handle, {
       params: ({ value }) => value(),
@@ -89,13 +91,11 @@ export class RegisterComponent {
     minLength(schemaPath.password, 8, { message: 'Minimum length 8 characters' });
   });
 
-  public emailError$ = toObservable(this.registerForm.email().errors).pipe(
-    map((errors) => errors.at(0)),
-  );
+  public emailError$ = toObservable(this.form.email().errors).pipe(map((errors) => errors.at(0)));
 
   public register(): void {
     this.authService
-      .register(this.registerModel())
+      .register(this.model())
       .pipe(switchMap(() => from(this.router.navigate(['/board']))))
       .subscribe();
   }
