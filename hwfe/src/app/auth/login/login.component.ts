@@ -1,17 +1,18 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { email, form, FormField, required } from '@angular/forms/signals';
+import { form, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthLoginDto } from '@hw/shared';
 import { from, map, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { LinkComponent } from '../../ui/link/link.component';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormField, AsyncPipe, JsonPipe, ButtonComponent, LinkComponent],
+  imports: [AsyncPipe, JsonPipe, ButtonComponent, LinkComponent, InputTextComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +28,6 @@ export class LoginComponent {
 
   public form = form(this.model, (schemaPath) => {
     required(schemaPath.email, { message: 'Email is required' });
-    email(schemaPath.email, { message: 'Invalid email' });
 
     required(schemaPath.password, { message: 'Password is required' });
   });
