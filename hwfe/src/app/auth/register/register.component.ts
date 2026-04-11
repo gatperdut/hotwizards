@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { email, form, FormField, minLength, required, validateAsync } from '@angular/forms/signals';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthRegisterDto } from '@hw/shared';
 import { debounceTime, from, map, of, switchMap } from 'rxjs';
 import { UsersApiService } from '../../users/users-api.service';
@@ -17,7 +17,7 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
-  imports: [FormField, AsyncPipe, JsonPipe],
+  imports: [FormField, AsyncPipe, JsonPipe, RouterLink],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

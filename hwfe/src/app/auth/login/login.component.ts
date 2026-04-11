@@ -2,14 +2,14 @@ import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthLoginDto } from '@hw/shared';
 import { from, map, switchMap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormField, AsyncPipe, JsonPipe],
+  imports: [FormField, AsyncPipe, JsonPipe, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
