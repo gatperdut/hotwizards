@@ -42,8 +42,8 @@ export class AppModule {
         { path: 'auth/register', method: RequestMethod.POST },
         { path: 'auth/verify-token', method: RequestMethod.POST },
         // User
-        { path: 'users/available-email', method: RequestMethod.GET },
-        { path: 'users/available-handle', method: RequestMethod.GET },
+        { path: 'users/availability-email', method: RequestMethod.GET },
+        { path: 'users/availability-handle', method: RequestMethod.GET },
       )
       .forRoutes('*splat');
   }

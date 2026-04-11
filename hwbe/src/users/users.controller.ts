@@ -19,7 +19,7 @@ export class UsersController {
     return { available: !(await this.usersService.availabilityEmail(params)) };
   }
 
-  @Get('availability-display-name')
+  @Get('availability-handle')
   public async availabilityHandle(
     @Query() params: UserAvailabilityHandleDto,
   ): Promise<UserAvailabilityResponseDto> {

@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { User } from '@hw/prismagen/browser';
 import { AuthLoginDto, AuthToken, type AuthRegisterDto } from '@hw/shared';
-import { User } from 'hw/prismagen/browser';
 import { catchError, EMPTY, Observable, of, switchMap, tap } from 'rxjs';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthTokenService } from './auth-token.service';
@@ -49,11 +49,11 @@ export class AuthService {
         return EMPTY;
       }),
       tap({
-        next: (authToken: AuthToken): void => {
+        next: (authToken): void => {
           this.authTokenService.set(authToken.token);
         },
       }),
-      switchMap((): Observable<User> => {
+      switchMap(() => {
         return this.userApiService.me();
       }),
       tap({
@@ -80,11 +80,11 @@ export class AuthService {
     }
 
     return this.verifyToken(token).pipe(
-      switchMap((): Observable<User> => {
+      switchMap(() => {
         return this.userApiService.me();
       }),
       tap({
-        next: (user: User): void => {
+        next: (user): void => {
           this.user.set(user);
 
           this.matSnackBar.open(`Welcome back, ${user.handle}!`);

@@ -1,4 +1,4 @@
-<div class="p-20 flex flex-col items-center justify-center gap-4 w-screen h-screen">
+<div class="flex flex-col gap-4">
   <input
     class="app-input"
     autocomplete="off"
@@ -14,14 +14,10 @@
     [formField]="loginForm.password"
   />
 
-  @if (loginForm.email().pending()) {
-    LOADING.........
-  }
-
   @let err = emailError$ | async;
   @if (err) {
     {{ err | json }}
   }
 
-  <button (click)="create()">CREATE</button>
+  <button (click)="login()">LOGIN</button>
 </div>

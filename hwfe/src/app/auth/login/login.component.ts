@@ -1,10 +1,11 @@
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { email, form, FormField, minLength, required, validateAsync } from '@angular/forms/signals';
+import { email, form, FormField, required } from '@angular/forms/signals';
+import { Router } from '@angular/router';
 import { AuthLoginDto } from '@hw/shared';
-import { map } from 'rxjs';
-import { UsersApiService } from '../../users/users-api.service';
+import { from, map, switchMap } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,8 @@ import { UsersApiService } from '../../users/users-api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  private usersApiService = inject(UsersApiService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   private loginModel = signal<AuthLoginDto>({
     email: '',
@@ -24,24 +26,18 @@ export class LoginComponent {
   public loginForm = form(this.loginModel, (schemaPath) => {
     required(schemaPath.email, { message: 'Email is required' });
     email(schemaPath.email, { message: 'Invalid email' });
-    validateAsync(schemaPath.email, {
-      params: ({ value }) => value(),
-      factory: this.usersApiService.availableEmailResource,
-      onSuccess: (available: boolean) => {
-        return available ? null : { kind: 'taken', message: 'Email is already taken' };
-      },
-      onError: () => ({ kind: 'networkError', message: 'Network failed' }),
-    });
 
     required(schemaPath.password, { message: 'Password is required' });
-    minLength(schemaPath.password, 8, { message: 'Minimum length 8 characters' });
   });
 
   public emailError$ = toObservable(this.loginForm.email().errors).pipe(
     map((errors) => errors.at(0)),
   );
 
-  public create(): void {
-    console.log(this.loginForm().value());
+  public login(): void {
+    this.authService
+      .login(this.loginForm().value())
+      .pipe(switchMap(() => from(this.router.navigate(['/board']))))
+      .subscribe();
   }
 }

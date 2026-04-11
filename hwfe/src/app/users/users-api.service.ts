@@ -1,29 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, ResourceRef, Signal } from '@angular/core';
-import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { inject, Injectable } from '@angular/core';
+import { User } from '@hw/prismagen/browser';
 import {
   type UserAvailabilityEmailDto,
   type UserAvailabilityHandleDto,
   type UserAvailabilityResponseDto,
 } from '@hw/shared';
-import { User } from 'hw/prismagen/browser';
-import { debounceTime, map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UsersApiService {
   private httpClient = inject(HttpClient);
-
-  public availableEmailResource(
-    query: Signal<string | undefined>,
-  ): ResourceRef<boolean | undefined> {
-    const query$ = toObservable(query).pipe(debounceTime(400));
-    const debounced = toSignal(query$);
-
-    return rxResource<boolean, string | undefined>({
-      params: () => debounced(),
-      stream: () => of(true).pipe(map(() => 'crb@gmail.com' !== query())),
-    });
-  }
 
   public me(): Observable<User> {
     return this.httpClient.get<User>('/api/users/me');
