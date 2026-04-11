@@ -4,14 +4,14 @@
     autocomplete="off"
     style="caret-shape: block"
     type="email"
-    [formField]="loginForm.email"
+    [formField]="form.email"
   />
   <input
     class="app-input"
     style="caret-shape: block"
     autocomplete="off"
     type="password"
-    [formField]="loginForm.password"
+    [formField]="form.password"
   />
 
   @let err = emailError$ | async;
@@ -19,17 +19,11 @@
     {{ err | json }}
   }
 
-  <button
-    class="rounded-tr-3xl rounded-bl-lg border-4 border-amber-500 bg-amber-500 px-6 h-10 text-lg font-bold text-gray-900 transition-all hover:bg-transparent hover:text-amber-500 active:scale-95"
+  <app-button
+    label="Login"
+    [disabled]="form().invalid() || !form().touched()"
     (click)="login()"
-  >
-    LOGIN
-  </button>
+  ></app-button>
 
-  <a
-    class="bg-transparent focus:outline-0 text-gray-200 text-lg underline decoration-dashed underline-offset-10 decoration-amber-500"
-    routerLink="/auth/register"
-  >
-    Register instead
-  </a>
+  <app-link label="Register instead" to="/auth/register"></app-link>
 </div>

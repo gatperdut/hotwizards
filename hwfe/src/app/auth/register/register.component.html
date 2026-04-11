@@ -5,7 +5,7 @@
     class="app-input"
     style="caret-shape: block"
     autocomplete="off"
-    [formField]="registerForm.handle"
+    [formField]="form.handle"
   />
 
   <input
@@ -13,17 +13,17 @@
     autocomplete="off"
     style="caret-shape: block"
     type="email"
-    [formField]="registerForm.email"
+    [formField]="form.email"
   />
   <input
     class="app-input"
     style="caret-shape: block"
     autocomplete="off"
     type="password"
-    [formField]="registerForm.password"
+    [formField]="form.password"
   />
 
-  @if (registerForm.email().pending()) {
+  @if (form.email().pending()) {
     LOADING.........
   }
 
@@ -32,17 +32,11 @@
     {{ err | json }}
   }
 
-  <button
-    class="rounded-tr-3xl rounded-bl-lg border-4 border-amber-500 bg-amber-500 px-6 h-10 text-lg font-bold text-gray-900 transition-all hover:bg-transparent hover:text-amber-500 active:scale-95"
+  <app-button
+    label="Register"
+    [disabled]="form().invalid() || !form().dirty()"
     (click)="register()"
-  >
-    Register
-  </button>
+  ></app-button>
 
-  <a
-    class="bg-transparent focus:outline-0 text-gray-200 text-lg underline decoration-dashed underline-offset-10 decoration-amber-500"
-    routerLink="/auth/login"
-  >
-    Already have an account?
-  </a>
+  <app-link label="Already have an account" to="/auth/login"></app-link>
 </div>
