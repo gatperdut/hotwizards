@@ -1,29 +1,59 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Primaries */
-  --color-primary: oklch(45.42% 0.1273 255.1);
-  --color-accent: oklch(71.31% 0.1586 238.2);
-  --color-warn: oklch(56.34% 0.2076 22.2);
-  --color-success: oklch(68.89% 0.1785 149.3);
-  --color-secondary: oklch(54.74% 0.0291 244.8);
-  --color-info: oklch(79.27% 0.171 70.7);
-  --color-warn-yellow: oklch(84.42% 0.1722 84.9);
+  --color-background: oklch(20.8% 0.042 265.755); /* slate-900 */
 
-  /* Neutrals */
-  --color-white: oklch(100% 0 0);
-  --color-black: oklch(0% 0 0);
-  --color-grey-light: oklch(97.84% 0.0011 197.1);
-  --color-grey: oklch(69.32% 0.0242 248.2);
-  --color-dark-grey: oklch(34.11% 0.0108 271.1);
-  --color-text: oklch(28.46% 0.0246 251.1);
-  --color-text-grey: oklch(54.74% 0.0291 244.8);
-  --color-bg-secondary: oklch(94.33% 0.0045 214.3);
-  --color-chart-line: oklch(91.045% 0.01195 231.986);
-  --color-chart-label: oklch(86.331% 0.01466 231.488);
+  --color-primary: oklch(76.9% 0.188 70.08); /* amber-500; */
+  --color-secondary: oklch(60.9% 0.126 221.723); /* cyan-600 */
+  --color-warning: oklch(50.5% 0.213 27.518); /* red-700 */
 
-  --icon-size-12: 0.75rem;
-  --icon-size-16: 1rem;
-  --icon-size-20: 1.25rem;
-  --icon-size-24: 1.5rem;
+  --color-off-light: oklch(87.2% 0.01 258.338); /* gray-300 */
+  --color-off-medium: oklch(44.6% 0.03 256.802); /* gray-600 */
+  --color-off-dark: oklch(21% 0.034 264.665); /* gray-900 */
+}
+
+.text-scream {
+  @apply text-6xl
+       text-warning;
+}
+
+.text-h1 {
+  @apply text-3xl
+       text-primary;
+}
+
+.text-h2 {
+  @apply text-2xl
+       text-off-light;
+}
+
+.text-body {
+  @apply text-lg
+       text-off-light;
+}
+
+.text-body-muted {
+  @apply text-lg
+       text-off-medium;
+}
+
+.text-small {
+  @apply text-off-light;
+}
+
+.text-code {
+  @apply font-mono
+       text-primary;
+}
+
+.spinner {
+  @apply h-5
+         w-5
+         animate-spin
+         rounded-full
+         border-2
+         border-primary
+         border-t-transparent
+         group-focus-within:border-off-dark
+         group-focus-within:border-t-transparent;
 }

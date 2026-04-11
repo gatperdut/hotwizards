@@ -10,5 +10,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class ButtonComponent {
   public label = input.required<string>();
 
-  public disabled = input.required<boolean>();
+  public type = input<'primary' | 'secondary' | 'warning'>('primary');
+
+  public disabled = input<boolean>(false);
 }

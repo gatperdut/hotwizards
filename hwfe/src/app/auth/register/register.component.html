@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4 justify-center items-center">
-  <div class="text-xl text-gray-200">Create an account</div>
+  <div class="text-xl text-off-light">Create an account</div>
 
   <app-input-text
     [field]="form.handle"
@@ -33,7 +33,7 @@
 
   <app-button
     label="Register"
-    [disabled]="form().invalid() || !form().dirty()"
+    [disabled]="form().invalid() || !form().dirty() || form().pending()"
     (click)="register()"
   ></app-button>
 
