@@ -18,7 +18,7 @@
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
     "prisma:studio": "npx prisma studio",
-    "clean": "rm -rf dist out-tsc node_modules package-lock.json"
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
