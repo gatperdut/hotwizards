@@ -5,7 +5,7 @@
     "module": "preserve",
     "moduleResolution": "bundler",
     "composite": true,
-    "outDir": "out-tsc",
+    "outDir": "dist",
     "types": [],
     "isolatedModules": true,
     "importHelpers": true,

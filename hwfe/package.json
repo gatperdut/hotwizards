@@ -17,7 +17,7 @@
     "build:stats": "ng build --stats-json",
     "build:dev": "ng build --configuration development",
     "serve:prod": "npx serve dist/hwfe/browser",
-    "clean": "rm -rf dist node_modules package-lock.json .angular"
+    "clean": "rm -rf .angular"
   },
   "dependencies": {
     "@angular/aria": "^21.2.6",
