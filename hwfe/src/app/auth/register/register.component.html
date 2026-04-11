@@ -1,32 +1,31 @@
 <div class="flex flex-col gap-4 justify-center items-center">
   <div class="text-xl text-gray-200">Create an account</div>
 
-  <input
-    class="app-input"
-    style="caret-shape: block"
+  <app-input-text
+    [field]="form.handle"
+    label="Handle"
+    type="text"
     autocomplete="off"
-    [formField]="form.handle"
-  />
+    placeholder="Who are you?"
+  ></app-input-text>
 
-  <input
-    class="app-input"
-    autocomplete="off"
-    style="caret-shape: block"
+  <app-input-text
+    [field]="form.email"
+    label="Email"
     type="email"
-    [formField]="form.email"
-  />
-  <input
-    class="app-input"
-    style="caret-shape: block"
-    autocomplete="off"
+    autocomplete="username"
+    placeholder="Your email address"
+  ></app-input-text>
+
+  <app-input-text
+    [field]="form.password"
+    label="Password"
     type="password"
-    [formField]="form.password"
-  />
+    autocomplete="new-password"
+    placeholder="Your password"
+  ></app-input-text>
 
-  @if (form.email().pending()) {
-    LOADING.........
-  }
-
+  {{ form.handle() }}
   @let err = emailError$ | async;
   @if (err) {
     {{ err | json }}
@@ -38,5 +37,5 @@
     (click)="register()"
   ></app-button>
 
-  <app-link label="Already have an account" to="/auth/login"></app-link>
+  <app-link label="Already have an account?" to="/auth/login"></app-link>
 </div>

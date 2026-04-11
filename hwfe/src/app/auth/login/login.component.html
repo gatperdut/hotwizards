@@ -1,18 +1,19 @@
 <div class="flex flex-col gap-4 justify-center items-center">
-  <input
-    class="app-input"
-    autocomplete="off"
-    style="caret-shape: block"
-    type="email"
-    [formField]="form.email"
-  />
-  <input
-    class="app-input"
-    style="caret-shape: block"
-    autocomplete="off"
-    type="password"
-    [formField]="form.password"
-  />
+  <app-input-text
+    [field]="form.email"
+    label="Handle or email address"
+    type="text"
+    autocomplete="username"
+    placeholder="Identifier"
+  ></app-input-text>
+
+  <app-input-text
+    [field]="form.password"
+    label="Password"
+    type="text"
+    autocomplete="current-password"
+    placeholder="Your password"
+  ></app-input-text>
 
   @let err = emailError$ | async;
   @if (err) {

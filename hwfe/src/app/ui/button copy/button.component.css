@@ -18,9 +18,10 @@
          active:scale-95;
 
   &:disabled {
-    @apply border-gray-700
-         bg-gray-600
-         text-gray-400
-         scale-100;
+    @apply border-gray-600
+           bg-gray-600
+           text-gray-400
+           opacity-70
+           scale-100;
   }
 }

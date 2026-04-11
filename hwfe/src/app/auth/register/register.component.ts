@@ -8,18 +8,19 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { email, form, FormField, minLength, required, validateAsync } from '@angular/forms/signals';
+import { email, form, minLength, required, validateAsync } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthRegisterDto } from '@hw/shared';
 import { debounceTime, from, map, of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { LinkComponent } from '../../ui/link/link.component';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
-  imports: [FormField, AsyncPipe, JsonPipe, ButtonComponent, LinkComponent],
+  imports: [AsyncPipe, JsonPipe, ButtonComponent, LinkComponent, InputTextComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
