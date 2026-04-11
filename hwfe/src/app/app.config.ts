@@ -1,3 +1,4 @@
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import {
   ApplicationConfig,
   ErrorHandler,
@@ -12,6 +13,7 @@ import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { SentryLazyErrorHandler } from '../sentry-lazy-error-handler.class.js';
 import { routes } from './app.routes.js';
+import { AuthInterceptor } from './auth/interceptors/auth.interceptor.js';
 import { PwaService } from './pwa/services/pwa.service.js';
 
 export const appConfig: ApplicationConfig = {
@@ -22,6 +24,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerImmediately',
     }),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideAppInitializer((): void => {
       inject(PwaService);
     }),

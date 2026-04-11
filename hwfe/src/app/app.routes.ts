@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { AuthenticatedGuard } from './auth/guards/authenticated.guard.js';
+import { UnuthenticatedGuard } from './auth/guards/unauthenticated.guard.js';
 import { OfflineGuard } from './health/offline.guard.js';
 import { OnlineGuard } from './health/online.guard.js';
 
@@ -12,30 +14,43 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [OnlineGuard],
+    loadComponent: () => import('./auth/auth.component.js').then((m) => m.AuthComponent),
     children: [
       {
+        path: 'auth',
+        canActivate: [UnuthenticatedGuard],
+        children: [
+          {
+            path: 'login',
+            loadComponent: () =>
+              import('./auth/login/login.component.js').then((m) => m.LoginComponent),
+          },
+          {
+            path: 'register',
+            loadComponent: () =>
+              import('./auth/register/register.component.js').then((m) => m.RegisterComponent),
+          },
+        ],
+      },
+      {
         path: '',
-        pathMatch: 'full',
-        redirectTo: 'login',
-      },
-      {
-        path: 'board',
-        loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),
-      },
-      {
-        path: 'login',
-        loadComponent: () =>
-          import('./auth/login/login.component.js').then((m) => m.LoginComponent),
-      },
-      {
-        path: 'register',
-        loadComponent: () =>
-          import('./auth/register/register.component.js').then((m) => m.RegisterComponent),
+        canActivate: [AuthenticatedGuard],
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'board',
+          },
+          {
+            path: 'board',
+            loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),
+          },
+        ],
       },
     ],
   },
   {
     path: '**',
-    redirectTo: '',
+    redirectTo: 'auth/login',
   },
 ];
