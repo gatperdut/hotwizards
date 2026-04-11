@@ -1,51 +1,28 @@
 @reference "../../../styles.css";
 
-/* TODO define in typography */
-.app-input-text-label {
-  @apply text-sm
-       text-gray-200;
-}
-
 .app-input-text {
   @apply rounded-tr-3xl
          rounded-bl-lg
          bg-transparent
          border-4
-         focus:border-transparent
          focus:outline-0
-         focus:bg-amber-500
-         border-amber-500
+         focus:bg-primary
+         border-primary
+         focus:text-off-dark
          h-10
          pl-2
          pr-11
-         px-1.5
-         text-gray-200
-         text-lg
-         placeholder:text-gray-600;
+         placeholder:text-off-medium;
 
   &::selection {
-    @apply bg-gray-700
-           text-amber-500;
+    @apply bg-off-medium
+           text-primary;
   }
 
   &:disabled {
-    @apply border-gray-700
-           text-gray-400
-           placeholder:text-gray-600;
+    @apply border-off-medium
+           placeholder:text-off-medium;
   }
 
   caret-shape: block;
-}
-
-/* TODO define in utils? */
-.app-input-text-spinner {
-  @apply h-5
-         w-5
-         animate-spin
-         rounded-full
-         border-2
-         border-amber-500
-         border-t-transparent
-         group-focus-within:border-gray-900
-         group-focus-within:border-t-transparent;
 }

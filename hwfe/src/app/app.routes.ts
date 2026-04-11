@@ -6,6 +6,11 @@ import { OnlineGuard } from './health/online.guard.js';
 
 export const routes: Routes = [
   {
+    path: 'showcase',
+    loadComponent: () =>
+      import('./showcase/showcase.component.js').then((m) => m.ShowcaseComponent),
+  },
+  {
     path: 'offline',
     canActivate: [OfflineGuard],
     loadComponent: () =>

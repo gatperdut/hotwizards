@@ -1,19 +1,27 @@
 <div class="flex flex-col">
-  <label class="bg-primary" [for]="id" class="app-input-text-label">{{ label() }}</label>
+  <label [for]="id" class="text-small">{{ label() }}</label>
 
   <div class="relative flex items-center group">
     <input
       [id]="id"
-      class="app-input-text w-full pr-12"
+      class="app-input-text text-body"
       [type]="type()"
       [formField]="field()"
       [placeholder]="placeholder()"
       [autocomplete]="autocomplete()"
+      [aria-invalid]="state().touched() && state().errors()[0] ? 'true' : null"
+      [aria-describedby]="state().touched() && state().errors()[0] ? `error-${id}` : null"
     />
 
-    @if (!state().pending()) {
-      <div class="absolute right-4">
-        <div class="app-input-text-spinner"></div>
+    <div class="relative right-8" [class]="{ invisible: state().pending() }">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <div class="h-3">
+    @if (state().touched() && state().errors()[0]) {
+      <div role="alert" [id]="`error-${id}`" class="text-warning">
+        {{ state().errors()[0].message }}
       </div>
     }
   </div>
