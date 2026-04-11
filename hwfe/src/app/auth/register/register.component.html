@@ -32,5 +32,17 @@
     {{ err | json }}
   }
 
-  <button (click)="register()">Register</button>
+  <button
+    class="rounded-tr-3xl rounded-bl-lg border-4 border-amber-500 bg-amber-500 px-6 h-10 text-lg font-bold text-gray-900 transition-all hover:bg-transparent hover:text-amber-500 active:scale-95"
+    (click)="register()"
+  >
+    Register
+  </button>
+
+  <a
+    class="bg-transparent focus:outline-0 text-gray-200 text-lg underline decoration-dashed underline-offset-10 decoration-amber-500"
+    routerLink="/auth/login"
+  >
+    Already have an account?
+  </a>
 </div>
