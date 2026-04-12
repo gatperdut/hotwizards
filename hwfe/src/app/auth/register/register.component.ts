@@ -14,6 +14,7 @@ import { debounceTime, from, of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { LinkComponent } from '../../ui/link/link.component';
+import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthService } from '../services/auth.service';
 
@@ -28,6 +29,7 @@ export class RegisterComponent {
   private usersApiService = inject(UsersApiService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private toastService = inject(ToastService);
 
   private model = signal<AuthRegisterDto>({
     handle: '',
@@ -96,5 +98,13 @@ export class RegisterComponent {
       .register(this.model())
       .pipe(switchMap(() => from(this.router.navigate(['/board']))))
       .subscribe();
+  }
+
+  public toast(): void {
+    this.toastService.show({
+      message: 'Account created! Welcome aboard.',
+      duration: 5000,
+      actions: [{ label: 'Login', callback: (): void => console.log('Go to login') }],
+    });
   }
 }
