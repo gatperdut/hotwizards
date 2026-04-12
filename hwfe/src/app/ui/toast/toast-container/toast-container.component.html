@@ -1,32 +1,30 @@
-<div
-  class="fixed bottom-0 sm:bottom-6 left-0 sm:left-1/2 sm:-translate-x-1/2 z-9999 flex flex-col-reverse gap-2 w-full sm:w-[90%] sm:max-w-md p-4 sm:p-0 pointer-events-none"
->
+<div class="app-toast-container-wrapper">
   @for (toast of toastService.queue(); track toast.id) {
     <div
-      (mouseenter)="toastService.pauseTimer(toast)"
-      (mouseleave)="toastService.startTimer(toast)"
-      class="pointer-events-auto relative overflow-hidden flex items-center justify-between gap-4 px-5 py-4 bg-gray-900 text-white rounded-lg sm:rounded-xl shadow-2xl border border-white/10 animate-slide-up group"
+      (click)="toastService.remove(toast.id)"
+      (mouseenter)="toastService.pauseTimer(toast.id)"
+      (mouseleave)="toastService.startTimer(toast.id, toast.duration)"
+      class="app-toast-container-toast"
+      [class]="toast.type"
     >
-      <span class="text-sm font-medium">{{ toast.message }}</span>
+      <span class="typ-toast">{{ toast.message }}</span>
 
       <div class="flex items-center gap-3">
         @for (action of toast.actions; track action.label) {
-          <button
-            (click)="action.callback(); toastService.remove(toast)"
-            [class]="action.colorClass || 'text-blue-400'"
-            class="text-xs font-bold uppercase tracking-widest hover:brightness-125 transition-all"
-          >
-            {{ action.label }}
-          </button>
+          <app-button
+            [label]="action.label"
+            [type]="action.type"
+            (click)="action.callback()"
+          ></app-button>
         }
       </div>
 
-      @if (toast.duration > 0) {
+      @if (toast.timerId) {
         <div
-          class="absolute bottom-0 left-0 h-1 bg-blue-500/40 transition-all ease-linear"
-          [style.width.%]="100"
-          [style.transition-duration.ms]="toast.duration"
-          [class.paused]="toast.timerId === undefined"
+          class="app-toast-container-fuse"
+          [class]="toast.type"
+          [style.animation-duration.ms]="toast.duration"
+          [style.animation-play-state]="'running'"
         ></div>
       }
     </div>

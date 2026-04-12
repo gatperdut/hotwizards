@@ -9,7 +9,6 @@
          cursor-pointer
          active:scale-95
          transition-all
-         min-w-45
          truncate;
 
   @apply border-primary

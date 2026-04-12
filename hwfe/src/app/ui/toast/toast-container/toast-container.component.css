@@ -1,3 +1,83 @@
+@reference "../../../../styles.css";
+
+.app-toast-container-wrapper {
+  @apply fixed
+         bottom-3
+         sm:bottom-6
+         z-9999
+         flex
+         flex-col-reverse
+         gap-2
+         p-0
+         left-[3%]
+         w-[94%]
+         sm:left-1/2
+         sm:-translate-x-1/2
+         sm:w-[90%]
+         sm:max-w-lg
+         md:max-w-xl
+         lg:max-w-2xl
+         xl:max-w-3xl
+         pointer-events-none;
+}
+
+.app-toast-container-toast {
+  @apply cursor-pointer
+         rounded-tr-3xl
+         rounded-bl-lg
+         border-primary
+         border-4
+         pointer-events-auto
+         relative
+         overflow-hidden
+         flex
+         items-center
+         justify-between
+         gap-4
+         pl-4
+         pr-2
+         pt-2
+         pb-3
+         bg-background;
+
+  &.secondary {
+    @apply border-secondary;
+  }
+
+  &.warning {
+    @apply border-warning;
+  }
+
+  animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes shrink {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+.app-toast-container-fuse {
+  @apply absolute
+         bottom-0
+         left-0
+         h-1
+         bg-primary;
+
+  &.secondary {
+    @apply bg-secondary;
+  }
+
+  &.warning {
+    @apply bg-warning;
+  }
+
+  animation: shrink linear forwards;
+}
+
 @keyframes slide-up {
   from {
     transform: translateY(100%);
@@ -7,14 +87,4 @@
     transform: translateY(0);
     opacity: 1;
   }
-}
-
-.animate-slide-up {
-  animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.paused {
-  width: 100% !important;
-  background-color: rgb(59 130 246);
-  transition: none !important;
 }

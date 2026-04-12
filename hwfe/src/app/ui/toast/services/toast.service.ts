@@ -1,21 +1,25 @@
 import { Injectable, signal } from '@angular/core';
 
-export interface ToastAction {
+interface ToastActionCreate {
   label: string;
   callback: () => void;
-  colorClass?: string;
+  type?: 'primary' | 'secondary' | 'warning';
 }
 
-export interface ToastCreate {
+type ToastAction = Required<ToastActionCreate>;
+
+interface ToastCreate {
   message: string;
   duration?: number;
-  actions?: ToastAction[];
+  type?: 'primary' | 'secondary' | 'warning';
+  actions?: ToastActionCreate[];
 }
 
-interface Toast extends Required<ToastCreate> {
+type Toast = Required<ToastCreate> & {
   id: number;
   timerId?: number;
-}
+  actions: ToastAction[];
+};
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
@@ -23,40 +27,49 @@ export class ToastService {
 
   public show(data: ToastCreate): void {
     const id = Date.now();
-    const duration = data.duration ?? 4000;
+    const duration =
+      data.duration === undefined ? 4000 : data.duration === Infinity ? 0 : data.duration;
+    const type = data.type || 'primary';
     const actions = data.actions || [];
 
-    const toast: Toast = { ...data, id, duration, actions };
+    const toast: Toast = {
+      ...data,
+      id,
+      type,
+      duration,
+      actions: [...actions.map((action) => ({ ...action, type: action.type || 'primary' }))],
+    };
 
-    this.queue.update((toasts) => [...toasts, toast]);
+    this.queue.update((items) => [...items, toast]);
 
     if (duration > 0) {
-      this.startTimer(toast);
+      this.startTimer(id, duration);
     }
   }
 
-  public startTimer(toast: Toast): void {
-    toast.timerId = setTimeout(() => this.remove(toast), toast.duration);
-    this.updateToastTimer(toast);
+  public startTimer(id: number, duration: number): void {
+    if (!duration) {
+      return;
+    }
+
+    const timerId = setTimeout(() => this.remove(id), duration);
+    this.updateTimer(id, timerId);
   }
 
-  public pauseTimer(toast: Toast): void {
-    const snack = this.queue().find((s) => s.id === toast.id);
-    if (snack?.timerId) {
-      clearTimeout(snack.timerId);
-      this.updateToastTimer(toast);
+  public pauseTimer(id: number): void {
+    const toast = this.queue().find((s) => s.id === id);
+
+    if (toast?.timerId) {
+      clearTimeout(toast.timerId);
+      this.updateTimer(id, undefined);
     }
   }
 
-  private updateToastTimer(toast: Toast): void {
-    this.queue.update((toasts) =>
-      toasts.map((someToast) =>
-        someToast.id === toast.id ? { ...someToast, timerId: toast.timerId } : someToast,
-      ),
-    );
+  private updateTimer(id: number, timerId?: number): void {
+    this.queue.update((items) => items.map((s) => (s.id === id ? { ...s, timerId } : s)));
   }
 
-  public remove(toast: Toast): void {
-    this.queue.update((toasts) => toasts.filter((someToast) => someToast.id !== toast.id));
+  public remove(id: number): void {
+    this.queue.update((items) => items.filter((s) => s.id !== id));
   }
 }

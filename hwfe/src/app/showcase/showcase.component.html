@@ -31,7 +31,7 @@
       label="Empty enabled"
       type="text"
       autocomplete="off"
-      placeholder="Identifier"
+      placeholder="Placeholder"
     ></app-input-text>
 
     <app-input-text
@@ -39,7 +39,7 @@
       label="Filled enabled"
       type="text"
       autocomplete="off"
-      placeholder="Identifier"
+      placeholder="Placeholder"
     ></app-input-text>
 
     <app-input-text
@@ -47,7 +47,7 @@
       label="Disabled"
       type="text"
       autocomplete="off"
-      placeholder="Identifier"
+      placeholder="Placeholder"
     ></app-input-text>
   </div>
 
@@ -56,5 +56,18 @@
     <app-link label="Link primary" [to]="[]"></app-link>
     and a
     <app-link label="Link secondary" type="secondary" [to]="[]"></app-link>
+    .
+  </div>
+
+  <div class="flex flex-row gap-2 flex-wrap">
+    <app-button label="Toast infinite" (click)="toastInfinite()"></app-button>
+
+    <app-button label="Toast 4s" (click)="toast4s()"></app-button>
+
+    <app-button label="Toast with actions" (click)="toastWithActions()"></app-button>
+
+    <app-button label="Secondary toast" type="secondary" (click)="toastSecondary()"></app-button>
+
+    <app-button label="Warning toast" type="warning" (click)="toastWarning()"></app-button>
   </div>
 </div>

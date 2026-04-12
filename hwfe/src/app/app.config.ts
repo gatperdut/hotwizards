@@ -7,14 +7,13 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { SentryLazyErrorHandler } from '../sentry-lazy-error-handler.class.js';
 import { routes } from './app.routes.js';
 import { AuthInterceptor } from './auth/interceptors/auth.interceptor.js';
-import { PwaService } from './pwa/services/pwa.service.js';
+import { PwaService } from './services/pwa.service.js';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,13 +31,6 @@ export const appConfig: ApplicationConfig = {
       const iconRegistry = inject(MatIconRegistry);
       iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
     }),
-    {
-      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {
-        appearance: 'outline',
-        floatLabel: 'always',
-      },
-    },
     { provide: ErrorHandler, useClass: SentryLazyErrorHandler },
   ],
 };
