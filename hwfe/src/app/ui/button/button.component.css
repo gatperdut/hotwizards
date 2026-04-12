@@ -9,59 +9,48 @@
          cursor-pointer
          active:scale-95
          transition-all
-         text-lg
-         font-semibold
          min-w-45
          truncate;
 
   @apply border-primary
-         bg-primary
-         text-off-dark;
+         bg-primary;
 
   &:hover:not(:disabled) {
-    @apply bg-transparent
-           text-primary;
+    @apply bg-transparent;
   }
 
   &:disabled {
     @apply border-primary/20
            bg-primary/10
-           text-off-medium
            cursor-default
            scale-100;
   }
 
   &.secondary {
     @apply border-secondary
-           bg-secondary
-           text-off-light;
+           bg-secondary;
 
     &:hover:not(:disabled) {
-      @apply bg-transparent
-             text-secondary;
+      @apply bg-transparent;
     }
 
     &:disabled {
       @apply border-secondary/20
-             bg-secondary/10
-             text-off-medium;
+             bg-secondary/10;
     }
   }
 
   &.warning {
     @apply border-warning
-           bg-warning
-           text-off-light;
+           bg-warning;
 
     &:hover:not(:disabled) {
-      @apply bg-transparent
-             text-warning;
+      @apply bg-transparent;
     }
 
     &:disabled {
       @apply border-warning/20
-             bg-warning/10
-             text-off-medium;
+             bg-warning/10;
     }
   }
 }

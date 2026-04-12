@@ -1,20 +1,19 @@
-<div class="m-5 flex flex-col gap-1">
-  <div class="text-scream">text-scream</div>
+<div class="m-5 flex flex-col gap-10">
+  <div class="typ-scream">typ-scream</div>
 
-  <div class="text-h1">text-h1</div>
+  <div class="typ-h1">typ-h1</div>
 
-  <div class="text-h2">text-h2</div>
+  <div class="typ-h2">typ-h2</div>
 
-  <div class="text-body">text-body</div>
+  <div class="typ-body">typ-body</div>
 
-  <div class="text-body-muted">text-body-muted</div>
+  <div class="typ-small">typ-small</div>
 
-  <div class="text-small">text-small</div>
+  <div class="typ-code">typ-code</div>
 
-  <div class="text-code">text-code</div>
+  <div class="flex flex-row gap-2 flex-wrap">
+    <app-button label="Primary enabled"></app-button>
 
-  <app-button label="Primary enabled"></app-button>
-  <div class="flex flex-row gap-1 flex-wrap">
     <app-button label="Primary disabled" [disabled]="true"></app-button>
 
     <app-button label="Secondary enabled" type="secondary"></app-button>
@@ -26,11 +25,36 @@
     <app-button label="Warning disabled" [disabled]="true" type="warning"></app-button>
   </div>
 
-  <app-input-text
-    [field]="form.test"
-    label="Handle or email address"
-    type="text"
-    autocomplete="username"
-    placeholder="Identifier"
-  ></app-input-text>
+  <div class="flex flex-row gap-2 flex-wrap">
+    <app-input-text
+      [field]="form.emptyEnabled"
+      label="Empty enabled"
+      type="text"
+      autocomplete="off"
+      placeholder="Identifier"
+    ></app-input-text>
+
+    <app-input-text
+      [field]="form.filledEnabled"
+      label="Filled enabled"
+      type="text"
+      autocomplete="off"
+      placeholder="Identifier"
+    ></app-input-text>
+
+    <app-input-text
+      [field]="form.disabled"
+      label="Disabled"
+      type="text"
+      autocomplete="off"
+      placeholder="Identifier"
+    ></app-input-text>
+  </div>
+
+  <div class="typ-body">
+    Some text with a
+    <app-link label="Link primary" [to]="[]"></app-link>
+    and a
+    <app-link label="Link secondary" type="secondary" [to]="[]"></app-link>
+  </div>
 </div>
