@@ -1,49 +1,99 @@
 @import 'tailwindcss';
 
 @theme {
+  /* Colors */
   --color-background: oklch(20.8% 0.042 265.755); /* slate-900 */
-
   --color-primary: oklch(76.9% 0.188 70.08); /* amber-500; */
   --color-secondary: oklch(60.9% 0.126 221.723); /* cyan-600 */
   --color-warning: oklch(50.5% 0.213 27.518); /* red-700 */
-
   --color-off-light: oklch(87.2% 0.01 258.338); /* gray-300 */
   --color-off-medium: oklch(44.6% 0.03 256.802); /* gray-600 */
   --color-off-dark: oklch(21% 0.034 264.665); /* gray-900 */
+  /* Font sizes */
+  --text-scream: 3.75rem; /* 6xl */
+  --text-h1: 1.875rem; /* 3xl */
+  --text-h2: 1.5rem; /* 2xl */
+  --text-body: 1.125rem; /* lg */
+  --text-small: 0.95rem /* -- */;
 }
 
-.text-scream {
-  @apply text-6xl
-       text-warning;
+.typ-scream {
+  @apply text-scream
+         text-warning;
 }
 
-.text-h1 {
-  @apply text-3xl
-       text-primary;
+.typ-h1 {
+  @apply text-h1
+         text-primary;
 }
 
-.text-h2 {
-  @apply text-2xl
-       text-off-light;
+.typ-h2 {
+  @apply text-h2
+         text-off-light;
 }
 
-.text-body {
-  @apply text-lg
-       text-off-light;
+.typ-body {
+  @apply text-body
+         text-off-light;
 }
 
-.text-body-muted {
-  @apply text-lg
-       text-off-medium;
+.typ-small {
+  @apply text-small
+         text-off-light;
 }
 
-.text-small {
-  @apply text-off-light;
-}
-
-.text-code {
+.typ-code {
   @apply font-mono
-       text-primary;
+         text-primary;
+}
+
+.typ-input {
+  @apply text-body
+         text-off-light
+         focus:text-background
+         placeholder:text-off-medium
+         disabled:text-off-medium
+         selection:text-primary;
+}
+
+.typ-error {
+  @apply text-small
+         text-warning;
+}
+
+.typ-button {
+  @apply text-lg
+         text-off-dark
+         font-semibold
+         hover:not-disabled:text-primary
+         disabled:text-off-medium;
+
+  &.secondary {
+    @apply text-off-light
+           hover:not-disabled:text-secondary
+           disabled:text-off-medium;
+  }
+
+  &.warning {
+    @apply text-off-light
+           hover:not-disabled:text-warning
+           disabled:text-off-medium;
+  }
+}
+
+.typ-link {
+  @apply text-body
+         text-off-light
+         underline
+         decoration-dashed
+         underline-offset-10
+         decoration-primary
+         hover:text-primary;
+
+  &.secondary {
+    @apply decoration-secondary
+           hover:text-secondary;
+  }
 }
 
 .spinner {

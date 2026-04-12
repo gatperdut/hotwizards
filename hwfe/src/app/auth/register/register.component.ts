@@ -1,4 +1,3 @@
-import { AsyncPipe, JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,7 +10,7 @@ import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { email, form, minLength, required, validateAsync } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthRegisterDto } from '@hw/shared';
-import { debounceTime, from, map, of, switchMap } from 'rxjs';
+import { debounceTime, from, of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { LinkComponent } from '../../ui/link/link.component';
@@ -20,7 +19,7 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-register',
-  imports: [AsyncPipe, JsonPipe, ButtonComponent, LinkComponent, InputTextComponent],
+  imports: [ButtonComponent, LinkComponent, InputTextComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -91,8 +90,6 @@ export class RegisterComponent {
     required(schemaPath.password, { message: 'Password is required' });
     minLength(schemaPath.password, 8, { message: 'Minimum length 8 characters' });
   });
-
-  public emailError$ = toObservable(this.form.email().errors).pipe(map((errors) => errors.at(0)));
 
   public register(): void {
     this.authService

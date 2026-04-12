@@ -10,16 +10,16 @@ import { Field, FormField } from '@angular/forms/signals';
 })
 export class InputTextComponent {
   public field = input.required<Field<string, string | number>>();
-
   public label = input.required<string>();
-
   public type = input<'text' | 'password' | 'email'>('text');
-
   public autocomplete = input<'username' | 'new-password' | 'current-password' | 'off'>('off');
-
   public placeholder = input<string | undefined>(undefined);
 
   public id = `app-input-text-${Math.random().toString(36).substring(2, 9)}`;
 
   public state = computed(() => this.field()());
+
+  public error = computed(() => this.state().errors()[0]);
+
+  public displayError = computed(() => this.state().touched() && this.error());
 }

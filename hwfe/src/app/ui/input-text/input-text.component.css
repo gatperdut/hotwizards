@@ -8,20 +8,16 @@
          focus:outline-0
          focus:bg-primary
          border-primary
-         focus:text-off-dark
          h-10
          pl-2
-         pr-11
-         placeholder:text-off-medium;
+         pr-11;
 
   &::selection {
-    @apply bg-off-medium
-           text-primary;
+    @apply bg-off-medium;
   }
 
   &:disabled {
-    @apply border-off-medium
-           placeholder:text-off-medium;
+    @apply border-off-medium;
   }
 
   caret-shape: block;

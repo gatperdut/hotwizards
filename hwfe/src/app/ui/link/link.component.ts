@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, UrlTree } from '@angular/router';
 
 @Component({
   selector: 'app-link',
@@ -11,5 +11,7 @@ import { RouterLink } from '@angular/router';
 export class LinkComponent {
   public label = input.required<string>();
 
-  public to = input.required<string>();
+  public type = input<'primary' | 'secondary'>('primary');
+
+  public to = input.required<string | string[] | UrlTree | undefined>();
 }

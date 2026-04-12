@@ -1,41 +1,37 @@
-<div class="flex flex-col gap-4 justify-center items-center">
-  <div class="text-xl text-off-light">Create an account</div>
+<div class="flex flex-col gap-6 justify-center items-center">
+  <div class="typ-h1">Create an account</div>
 
-  <app-input-text
-    [field]="form.handle"
-    label="Handle"
-    type="text"
-    autocomplete="off"
-    placeholder="Who are you?"
-  ></app-input-text>
+  <div class="flex flex-col justify-center items-center">
+    <app-input-text
+      [field]="form.handle"
+      label="Handle"
+      type="text"
+      autocomplete="off"
+      placeholder="Who are you?"
+    ></app-input-text>
 
-  <app-input-text
-    [field]="form.email"
-    label="Email"
-    type="email"
-    autocomplete="username"
-    placeholder="Your email address"
-  ></app-input-text>
+    <app-input-text
+      [field]="form.email"
+      label="Email"
+      type="email"
+      autocomplete="username"
+      placeholder="Your email address"
+    ></app-input-text>
 
-  <app-input-text
-    [field]="form.password"
-    label="Password"
-    type="password"
-    autocomplete="new-password"
-    placeholder="Your password"
-  ></app-input-text>
+    <app-input-text
+      [field]="form.password"
+      label="Password"
+      type="password"
+      autocomplete="new-password"
+      placeholder="Your password"
+    ></app-input-text>
 
-  {{ form.handle() }}
-  @let err = emailError$ | async;
-  @if (err) {
-    {{ err | json }}
-  }
-
-  <app-button
-    label="Register"
-    [disabled]="form().invalid() || !form().dirty() || form().pending()"
-    (click)="register()"
-  ></app-button>
+    <app-button
+      label="Register"
+      [disabled]="form().invalid() || form().pending()"
+      (click)="register()"
+    ></app-button>
+  </div>
 
   <app-link label="Already have an account?" to="/auth/login"></app-link>
 </div>

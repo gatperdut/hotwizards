@@ -1,32 +1,29 @@
-<div class="flex flex-col gap-4 justify-center items-center">
-  <div class="text-h1">Register</div>
+<div class="flex flex-col gap-6 justify-center items-center">
+  <div class="typ-h1">Login</div>
 
-  <app-input-text
-    [field]="form.email"
-    label="Handle or email address"
-    type="text"
-    autocomplete="username"
-    placeholder="Identifier"
-  ></app-input-text>
+  <div class="flex flex-col justify-center items-center">
+    <app-input-text
+      [field]="form.email"
+      label="Handle or email address"
+      type="text"
+      autocomplete="username"
+      placeholder="Identifier"
+    ></app-input-text>
 
-  <app-input-text
-    [field]="form.password"
-    label="Password"
-    type="text"
-    autocomplete="current-password"
-    placeholder="Your password"
-  ></app-input-text>
+    <app-input-text
+      [field]="form.password"
+      label="Password"
+      type="text"
+      autocomplete="current-password"
+      placeholder="Your password"
+    ></app-input-text>
 
-  @let err = emailError$ | async;
-  @if (err) {
-    {{ err | json }}
-  }
-
-  <app-button
-    label="Login"
-    [disabled]="form().invalid() || !form().touched() || form().pending()"
-    (click)="login()"
-  ></app-button>
+    <app-button
+      label="Login"
+      [disabled]="form().invalid() || !form().touched() || form().pending()"
+      (click)="login()"
+    ></app-button>
+  </div>
 
   <app-link label="Register instead" to="/auth/register"></app-link>
 </div>
