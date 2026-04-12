@@ -63,21 +63,24 @@
 
 .typ-button {
   @apply text-lg
-         text-off-dark
          font-semibold
+         text-off-dark
+         focus:text-primary
          hover:not-disabled:text-primary
+         not-hover:not-disabled:text-off-dark
          disabled:text-off-medium;
 
   &.secondary {
     @apply text-off-light
+           focus:text-secondary
            hover:not-disabled:text-secondary
-           disabled:text-off-medium;
+           not-hover:not-disabled:text-off-light;
   }
 
   &.warning {
-    @apply text-off-light
+    @apply focus:text-warning
            hover:not-disabled:text-warning
-           disabled:text-off-medium;
+           not-hover:not-disabled:text-off-light;
   }
 }
 
@@ -94,6 +97,11 @@
     @apply decoration-secondary
            hover:text-secondary;
   }
+}
+
+.typ-toast {
+  @apply text-body
+         text-off-light;
 }
 
 .spinner {

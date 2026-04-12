@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { User } from '@hw/prismagen/browser';
 import { AuthLoginDto, AuthToken, type AuthRegisterDto } from '@hw/shared';
 import { catchError, EMPTY, Observable, of, switchMap, tap } from 'rxjs';
+import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthTokenService } from './auth-token.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private httpClient = inject(HttpClient);
-  private matSnackBar = inject(MatSnackBar);
+  private toastService = inject(ToastService);
   private authTokenService = inject(AuthTokenService);
   private userApiService = inject(UsersApiService);
 
@@ -19,7 +19,7 @@ export class AuthService {
   public register(userRegisterDto: AuthRegisterDto): Observable<User> {
     return this.httpClient.post<AuthToken>('/api/auth/register', userRegisterDto).pipe(
       catchError((): Observable<never> => {
-        this.matSnackBar.open('Something went wrong during registration');
+        this.toastService.show({ message: 'Something went wrong during registration' });
 
         return EMPTY;
       }),
@@ -35,7 +35,7 @@ export class AuthService {
         next: (user: User): void => {
           this.user.set(user);
 
-          this.matSnackBar.open(`Welcome, ${user.handle}!`);
+          this.toastService.show({ message: `Welcome, ${user.handle}!` });
         },
       }),
     );
@@ -44,7 +44,7 @@ export class AuthService {
   public login(userLoginDto: AuthLoginDto): Observable<User> {
     return this.httpClient.post<AuthToken>(`/api/auth/login`, userLoginDto).pipe(
       catchError((): Observable<never> => {
-        this.matSnackBar.open('Incorrect credentials');
+        this.toastService.show({ message: 'Incorrect credentials' });
 
         return EMPTY;
       }),
@@ -60,7 +60,7 @@ export class AuthService {
         next: (user: User): void => {
           this.user.set(user);
 
-          this.matSnackBar.open(`Welcome back, ${user.handle}!`);
+          this.toastService.show({ message: `Welcome back, ${user.handle}!` });
         },
       }),
     );
@@ -87,19 +87,19 @@ export class AuthService {
         next: (user): void => {
           this.user.set(user);
 
-          this.matSnackBar.open(`Welcome back, ${user.handle}!`);
+          this.toastService.show({ message: `Welcome back, ${user.handle}!` });
         },
         error: (): void => {
           this.authTokenService.clear();
 
-          this.matSnackBar.open('Credentials expired, login again.');
+          this.toastService.show({ message: 'Credentials expired, login again.' });
         },
       }),
     );
   }
 
   public logout(): void {
-    this.matSnackBar.open(`Farewell, ${this.user()?.handle}!`);
+    this.toastService.show({ message: `Farewell, ${this.user()?.handle}!` });
 
     this.authTokenService.clear();
 
