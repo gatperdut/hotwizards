@@ -7,7 +7,7 @@
          z-9999
          flex
          flex-col-reverse
-         gap-sm
+         gap-hw-small
          p-0
          left-[3%]
          w-[94%]
@@ -33,11 +33,11 @@
          flex
          items-center
          justify-between
-         gap-avg
-         pl-avg
-         pr-sm
-         pt-sm
-         pb-sm
+         gap-hw-average
+         p-hw-average
+         pr-hw-small
+         pt-hw-small
+         pb-hw-small
          bg-background;
 
   &.secondary {
