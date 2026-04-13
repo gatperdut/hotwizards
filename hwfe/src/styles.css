@@ -31,9 +31,17 @@ body {
   --text-h2: 1.5rem; /* 2xl */
   --text-body: 1.125rem; /* lg */
   --text-small: 0.95rem /* -- */;
-  /* Leading */
+  /* Leadings */
   --leading-scream: 0.9;
   --leading-others: 1;
+  /* Spacings */
+  --spacing-xxsm: 0.125rem;
+  --spacing-xsm: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-avg: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xlg: 1.75rem;
+  --spacing-xxlarge: 1.75rem;
 }
 
 .typ-scream {

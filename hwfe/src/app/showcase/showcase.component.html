@@ -1,4 +1,4 @@
-<div class="m-5 flex flex-col gap-10">
+<div class="m-5 flex flex-col gap-xlg">
   <div class="typ-scream">typ-scream typ-scream typ-scream</div>
 
   <div class="typ-h1">typ-h1 typ-h1 typ-h1 typ-h1 typ-h1</div>
@@ -13,7 +13,7 @@
 
   <div class="typ-code">typ-code typ-code typ-code typ-code typ-code typ-code typ-code</div>
 
-  <div class="flex flex-row gap-2 flex-wrap">
+  <div class="flex flex-row gap-sm flex-wrap">
     <app-button label="Primary enabled"></app-button>
 
     <app-button label="Primary disabled" [disabled]="true"></app-button>
@@ -27,7 +27,7 @@
     <app-button label="Warning disabled" [disabled]="true" type="warning"></app-button>
   </div>
 
-  <div class="flex flex-row gap-2 flex-wrap">
+  <div class="flex flex-row gap-sm flex-wrap">
     <app-input-text
       [field]="form.emptyEnabled"
       label="Empty enabled"
@@ -61,7 +61,7 @@
     .
   </div>
 
-  <div class="flex flex-row gap-2 flex-wrap">
+  <div class="flex flex-row gap-sm flex-wrap">
     <app-button label="Toast infinite" (click)="toastInfinite()"></app-button>
 
     <app-button label="Toast 4s" (click)="toast4s()"></app-button>

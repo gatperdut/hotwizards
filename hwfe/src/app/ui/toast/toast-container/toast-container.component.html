@@ -9,7 +9,7 @@
     >
       <span class="typ-toast">{{ toast.message }}</span>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-xsm">
         @for (action of toast.actions; track action.label) {
           <app-button
             [label]="action.label"
