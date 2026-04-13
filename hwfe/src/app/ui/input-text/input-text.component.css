@@ -9,7 +9,7 @@
          focus:bg-primary
          border-primary
          h-10
-         pl-sm;
+         pl-hw-small;
 
   &::selection {
     @apply bg-off-medium;

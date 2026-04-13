@@ -1,10 +1,10 @@
-<div class="flex flex-col gap-xxsm">
+<div class="flex flex-col">
   <label [for]="id" class="typ-small">{{ label() }}</label>
 
   <div class="relative flex group">
     <input
       [id]="id"
-      class="app-input-text typ-input"
+      class="app-input-text typ-input w-full"
       [type]="type()"
       [formField]="field()"
       [placeholder]="placeholder()"
@@ -14,16 +14,15 @@
       (focus)="state().markAsTouched()"
     />
 
-    <div class="relative top-2.5 right-8" [class]="{ invisible: state().pending() }">
+    <div
+      class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
+      [class.invisible]="!state().pending()"
+    >
       <div class="spinner"></div>
     </div>
   </div>
 
-  <div class="h-5">
-    @if (displayError()) {
-      <div role="alert" [id]="`error-${id}`" class="typ-error">
-        {{ error().message }}
-      </div>
-    }
+  <div role="alert" [id]="`error-${id}`" class="typ-error" [class]="{ invisible: !displayError() }">
+    {{ error() ? error().message : 'Placeholder' }}
   </div>
 </div>

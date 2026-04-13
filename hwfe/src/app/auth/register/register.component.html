@@ -1,7 +1,7 @@
-<div class="flex flex-col gap-avg justify-center items-center">
-  <div class="typ-h1">Create an account</div>
+<div class="flex flex-col items-stretch gap-hw-large w-full">
+  <div class="typ-h1 text-center">Create an account</div>
 
-  <div class="flex flex-col justify-center items-center gap-xsm">
+  <div class="flex flex-col items-stretch gap-hw-xxsmall w-full">
     <app-input-text
       [field]="form.handle"
       label="Handle"
@@ -30,8 +30,9 @@
       label="Register"
       [disabled]="form().invalid() || form().pending()"
       (click)="register()"
+      class="self-center"
     ></app-button>
   </div>
 
-  <app-link label="Already have an account?" to="/auth/login"></app-link>
+  <app-link class="self-center" label="Already have an account?" to="/auth/login"></app-link>
 </div>

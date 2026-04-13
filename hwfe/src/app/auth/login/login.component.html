@@ -1,7 +1,7 @@
-<div class="flex flex-col gap-avg justify-center items-center">
-  <div class="typ-h1">Login</div>
+<div class="flex flex-col items-stretch gap-hw-large w-full">
+  <div class="typ-h1 text-center">Login</div>
 
-  <div class="flex flex-col justify-center items-center gap-xsm">
+  <div class="flex flex-col items-stretch gap-hw-xxsmall w-full">
     <app-input-text
       [field]="form.email"
       label="Handle or email address"
@@ -22,8 +22,9 @@
       label="Login"
       [disabled]="form().invalid() || !form().touched() || form().pending()"
       (click)="login()"
+      class="self-center"
     ></app-button>
   </div>
 
-  <app-link label="Register instead" to="/auth/register"></app-link>
+  <app-link class="self-center" label="Register instead" to="/auth/register"></app-link>
 </div>
