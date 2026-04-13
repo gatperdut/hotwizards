@@ -99,12 +99,4 @@ export class RegisterComponent {
       .pipe(switchMap(() => from(this.router.navigate(['/board']))))
       .subscribe();
   }
-
-  public toast(): void {
-    this.toastService.show({
-      message: 'Account created! Welcome aboard.',
-      duration: Infinity,
-      actions: [{ label: 'Login', callback: (): void => console.log('Go to login') }],
-    });
-  }
 }

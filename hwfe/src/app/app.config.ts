@@ -7,7 +7,6 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { SentryLazyErrorHandler } from '../sentry-lazy-error-handler.class.js';
@@ -26,10 +25,6 @@ export const appConfig: ApplicationConfig = {
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     provideAppInitializer((): void => {
       inject(PwaService);
-    }),
-    provideAppInitializer((): void => {
-      const iconRegistry = inject(MatIconRegistry);
-      iconRegistry.setDefaultFontSetClass('material-symbols-outlined');
     }),
     { provide: ErrorHandler, useClass: SentryLazyErrorHandler },
   ],

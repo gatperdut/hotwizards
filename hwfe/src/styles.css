@@ -1,5 +1,21 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Asimovian';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/asimovian-v2-latin-ext-regular.woff2') format('woff2');
+}
+
+html {
+  font-family: 'Asimovian', sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
 @theme {
   /* Colors */
   --color-background: oklch(20.8% 0.042 265.755); /* slate-900 */
@@ -15,36 +31,45 @@
   --text-h2: 1.5rem; /* 2xl */
   --text-body: 1.125rem; /* lg */
   --text-small: 0.95rem /* -- */;
+  /* Leading */
+  --leading-scream: 0.9;
+  --leading-others: 1;
 }
 
 .typ-scream {
   @apply text-scream
-         text-warning;
+         text-warning
+         leading-scream;
 }
 
 .typ-h1 {
   @apply text-h1
-         text-primary;
+         text-primary
+         leading-others;
 }
 
 .typ-h2 {
   @apply text-h2
-         text-off-light;
+         text-off-light
+         leading-others;
 }
 
 .typ-body {
   @apply text-body
-         text-off-light;
+         text-off-light
+         leading-others;
 }
 
 .typ-small {
   @apply text-small
-         text-off-light;
+         text-off-light
+         leading-others;
 }
 
 .typ-code {
   @apply font-mono
-         text-primary;
+         text-primary
+         leading-others;
 }
 
 .typ-input {

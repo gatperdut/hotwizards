@@ -54,7 +54,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.css", "src/material-theme.scss"]
+            "styles": ["src/styles.css"]
           },
           "configurations": {
             "production": {
