@@ -1,4 +1,8 @@
 import { Routes } from '@angular/router';
+import { AuthenticatedGuard } from './auth/guards/authenticated.guard.js';
+import { UnuthenticatedGuard } from './auth/guards/unauthenticated.guard.js';
+import { OfflineGuard } from './health/offline.guard.js';
+import { OnlineGuard } from './health/online.guard.js';
 
 export const routes: Routes = [
   {
@@ -8,18 +12,18 @@ export const routes: Routes = [
   },
   {
     path: 'offline',
-    // canActivate: [OfflineGuard],
+    canActivate: [OfflineGuard],
     loadComponent: () =>
       import('./health/offline/offline.component.js').then((m) => m.OfflineComponent),
   },
   {
     path: '',
-    // canActivate: [OnlineGuard],
+    canActivate: [OnlineGuard],
     loadComponent: () => import('./auth/auth.component.js').then((m) => m.AuthComponent),
     children: [
       {
         path: 'auth',
-        // canActivate: [UnuthenticatedGuard],
+        canActivate: [UnuthenticatedGuard],
         children: [
           {
             path: 'login',
@@ -35,7 +39,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        // canActivate: [AuthenticatedGuard],
+        canActivate: [AuthenticatedGuard],
         children: [
           {
             path: '',
