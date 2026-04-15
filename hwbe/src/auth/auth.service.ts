@@ -1,11 +1,10 @@
 import { User } from '@hw/prismagen/client';
-import { AuthLoginDto, AuthRegisterDto, AuthVerifyTokenDto } from '@hw/shared';
+import { AuthLoginDto, AuthRegisterDto, AuthToken, AuthVerifyTokenDto } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
 import { UsersService } from '../users/users.service.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
-import { AuthToken } from './types/auth-token.type.js';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +29,8 @@ export class AuthService {
     const hashedPassword: string = await this.hashPassword(params.password);
 
     const user: User = await this.usersService.create({
-      ...params,
+      handle: params.handle,
+      email: params.email,
       password: hashedPassword,
       admin: false,
     });

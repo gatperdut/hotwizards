@@ -2,7 +2,7 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class AuthLoginDto {
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail({ require_tld: false })
   email: string;
 
   @IsNotEmpty()

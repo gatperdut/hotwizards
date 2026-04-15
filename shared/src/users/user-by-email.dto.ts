@@ -1,6 +1,6 @@
 import { IsEmail } from 'class-validator';
 
 export class UserByEmailDto {
-  @IsEmail()
+  @IsEmail({ require_tld: false })
   email!: string;
 }

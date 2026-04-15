@@ -10,7 +10,7 @@ export class UnuthenticatedGuard implements CanActivate {
 
   public canActivate(): Observable<UrlTree | boolean> {
     return this.authService.loginAuto().pipe(
-      switchMap(() => of(this.router.createUrlTree(['/board']))),
+      switchMap(() => of(this.router.createUrlTree(['/home']))),
       catchError(() => of(true)),
     );
   }

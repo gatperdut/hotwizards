@@ -34,7 +34,7 @@ export class LoginComponent {
   public login(): void {
     this.authService
       .login(this.form().value())
-      .pipe(switchMap(() => from(this.router.navigate(['/board']))))
+      .pipe(switchMap(() => from(this.router.navigate(['/home']))))
       .subscribe();
   }
 }

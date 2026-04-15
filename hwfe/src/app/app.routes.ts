@@ -18,13 +18,14 @@ export const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [OnlineGuard], // One declaration for everything below
+    canActivate: [OnlineGuard],
     children: [
       {
         path: 'auth',
         canActivate: [UnuthenticatedGuard],
         loadComponent: () => import('./auth/auth.component.js').then((m) => m.AuthComponent),
         children: [
+          { path: '', pathMatch: 'full', redirectTo: 'login' },
           {
             path: 'login',
             loadComponent: () =>
@@ -45,6 +46,10 @@ export const routes: Routes = [
           {
             path: 'board',
             loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),
+          },
+          {
+            path: 'home',
+            loadComponent: () => import('./home/home.component.js').then((m) => m.HomeComponent),
           },
         ],
       },

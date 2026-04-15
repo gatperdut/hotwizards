@@ -1,3 +1,5 @@
-import * as jwt from 'jsonwebtoken';
-
-export type AuthTokenPayload = jwt.JwtPayload;
+export type AuthTokenPayload = {
+  sub: number;
+  iat: number;
+  exp: number;
+};
