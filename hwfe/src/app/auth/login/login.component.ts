@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { form, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthLoginDto } from '@hw/shared';
@@ -10,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ButtonComponent, LinkComponent, InputTextComponent],
+  imports: [ButtonComponent, LinkComponent, InputTextComponent, FormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

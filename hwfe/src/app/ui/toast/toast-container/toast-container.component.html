@@ -13,7 +13,7 @@
         @for (action of toast.actions; track action.label) {
           <app-button
             [label]="action.label"
-            [type]="action.type"
+            [color]="action.type"
             (click)="action.callback()"
           ></app-button>
         }
