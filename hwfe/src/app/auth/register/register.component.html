@@ -26,6 +26,14 @@
       placeholder="Your password"
     ></app-input-text>
 
+    <app-input-text
+      [field]="form.passwordRepeat"
+      label="Confirm your password"
+      type="password"
+      autocomplete="new-password"
+      placeholder="Your password"
+    ></app-input-text>
+
     <app-button
       label="Register"
       [disabled]="form().invalid() || form().pending()"

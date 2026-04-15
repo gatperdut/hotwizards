@@ -17,7 +17,7 @@ export class UsersController {
   }
 
   @Get('me')
-  public me(@UserCurrent() user: User): PlayerDto {
+  public me(@UserCurrent() user: User) {
     return plainToInstance(PlayerDto, user, { excludeExtraneousValues: true });
   }
 

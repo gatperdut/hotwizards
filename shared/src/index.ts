@@ -1,12 +1,13 @@
 export { AuthLoginDto } from './auth/auth-login.dto.js';
 export { AuthRegisterDto } from './auth/auth-register.dto.js';
-export { AuthToken } from './auth/auth-token.type.js';
+export { AuthToken } from './auth/auth-token.interface.js';
 export { AuthVerifyTokenDto } from './auth/auth-verify-token.dto.js';
-export { HealthStatusDto } from './health/health-status.dto.js';
+export { HealthStatus } from './health/health-status.interface.js';
+export { Match } from './match.validator.js';
 export { PlayerDto } from './users/player.dto.js';
 export { UserAvailabilityEmailDto } from './users/user-availability-email.dto.js';
 export { UserAvailabilityHandleDto } from './users/user-availability-handle.dto.js';
-export { UserAvailabilityResponseDto } from './users/user-availability-response.dto.js';
+export { UserAvailabilityResponse as UserAvailabilityResponseDto } from './users/user-availability-response.interface.js';
 export { UserByEmailDto } from './users/user-by-email.dto.js';
 export { UserByIdDto } from './users/user-by-id.dto.js';
 export { UserCreateDto } from './users/user-create.dto.js';

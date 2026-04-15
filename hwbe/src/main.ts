@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as Sentry from '@sentry/nestjs';
@@ -28,6 +29,10 @@ async function bootstrap(): Promise<void> {
       credentials: true,
     });
   }
+
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
+  );
 
   // Global prefix
   app.setGlobalPrefix('api');

@@ -34,7 +34,7 @@ export class AuthMiddleware implements NestMiddleware {
     const authTokenPayload: AuthTokenPayload = await this.authService.verifyToken({ token: token });
 
     req.user = (await this.usersService.byId({
-      id: parseInt(authTokenPayload.sub as string),
+      id: authTokenPayload.sub,
     })) as User;
 
     next();

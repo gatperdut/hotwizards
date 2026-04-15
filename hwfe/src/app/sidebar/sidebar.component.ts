@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../auth/services/auth.service';
 
 @Component({
@@ -10,8 +11,13 @@ import { AuthService } from '../auth/services/auth.service';
 })
 export class SidebarComponent {
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   public logout(): void {
     this.authService.logout();
+  }
+
+  public toHome(): void {
+    void this.router.navigate(['/home']);
   }
 }

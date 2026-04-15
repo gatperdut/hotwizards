@@ -6,7 +6,7 @@ export class UserCreateDto {
   handle!: string;
 
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail({ require_tld: false })
   email!: string;
 
   @IsNotEmpty()

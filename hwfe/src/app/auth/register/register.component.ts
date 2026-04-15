@@ -7,14 +7,13 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { email, form, minLength, required, validateAsync } from '@angular/forms/signals';
+import { email, form, minLength, required, validate, validateAsync } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { AuthRegisterDto } from '@hw/shared';
 import { debounceTime, from, of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { LinkComponent } from '../../ui/link/link.component';
-import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthService } from '../services/auth.service';
 
@@ -29,12 +28,12 @@ export class RegisterComponent {
   private usersApiService = inject(UsersApiService);
   private authService = inject(AuthService);
   private router = inject(Router);
-  private toastService = inject(ToastService);
 
   private model = signal<AuthRegisterDto>({
     handle: '',
     email: '',
     password: '',
+    passwordRepeat: '',
   });
 
   public availableEmailResource(
@@ -91,12 +90,26 @@ export class RegisterComponent {
 
     required(schemaPath.password, { message: 'Password is required' });
     minLength(schemaPath.password, 8, { message: 'Minimum length 8 characters' });
+
+    required(schemaPath.passwordRepeat, { message: 'Enter your password again' });
+    validate(schemaPath.passwordRepeat, ({ value, valueOf }) => {
+      const passwordRepeat = value();
+      const password = valueOf(schemaPath.password);
+
+      if (passwordRepeat !== password) {
+        return {
+          kind: 'passwordMismatch',
+          message: 'Passwords do not match',
+        };
+      }
+      return null;
+    });
   });
 
   public register(): void {
     this.authService
       .register(this.model())
-      .pipe(switchMap(() => from(this.router.navigate(['/board']))))
+      .pipe(switchMap(() => from(this.router.navigate(['/home']))))
       .subscribe();
   }
 }
