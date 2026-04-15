@@ -1,7 +1,7 @@
 <div class="flex flex-col items-stretch gap-hw-large w-full">
   <div class="typ-h1 text-center">Login</div>
 
-  <div class="flex flex-col items-stretch gap-hw-xxsmall w-full">
+  <form (ngSubmit)="login()" class="flex flex-col items-stretch gap-hw-xxsmall w-full">
     <app-input-text
       [field]="form.email"
       label="Handle or email address"
@@ -13,18 +13,18 @@
     <app-input-text
       [field]="form.password"
       label="Password"
-      type="text"
+      type="password"
       autocomplete="current-password"
       placeholder="Your password"
     ></app-input-text>
 
     <app-button
+      type="submit"
       label="Login"
       [disabled]="form().invalid() || !form().touched() || form().pending()"
-      (click)="login()"
       class="self-center"
     ></app-button>
-  </div>
+  </form>
 
   <app-link class="self-center" label="Register instead" to="/auth/register"></app-link>
 </div>

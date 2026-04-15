@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from '@hw/prismagen/browser';
 import { AuthLoginDto, AuthToken, type AuthRegisterDto } from '@hw/shared';
-import { catchError, EMPTY, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, Observable, switchMap, tap, throwError } from 'rxjs';
 import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';
 import { AuthTokenService } from './auth-token.service';
@@ -13,6 +14,7 @@ export class AuthService {
   private toastService = inject(ToastService);
   private authTokenService = inject(AuthTokenService);
   private userApiService = inject(UsersApiService);
+  private router = inject(Router);
 
   public user: WritableSignal<User | null> = signal<User | null>(null);
 
@@ -44,7 +46,7 @@ export class AuthService {
   public login(userLoginDto: AuthLoginDto): Observable<User> {
     return this.httpClient.post<AuthToken>(`/api/auth/login`, userLoginDto).pipe(
       catchError((): Observable<never> => {
-        this.toastService.show({ message: 'Incorrect credentials' });
+        this.toastService.show({ message: 'Incorrect credentials', type: 'warning' });
 
         return EMPTY;
       }),
@@ -76,24 +78,22 @@ export class AuthService {
     const token: string = this.authTokenService.get();
 
     if (!token) {
-      return of(null);
+      return throwError(() => new Error('Credentials not found'));
     }
 
     return this.verifyToken(token).pipe(
+      catchError(() => {
+        this.authTokenService.clear();
+
+        this.toastService.show({ message: 'Credentials expired, login again', type: 'warning' });
+
+        throw new Error('Credentials expired');
+      }),
       switchMap(() => {
         return this.userApiService.me();
       }),
-      tap({
-        next: (user): void => {
-          this.user.set(user);
-
-          this.toastService.show({ message: `Welcome back, ${user.handle}!` });
-        },
-        error: (): void => {
-          this.authTokenService.clear();
-
-          this.toastService.show({ message: 'Credentials expired, login again.' });
-        },
+      tap((user): void => {
+        this.user.set(user);
       }),
     );
   }
@@ -104,5 +104,7 @@ export class AuthService {
     this.authTokenService.clear();
 
     this.user.set(null);
+
+    void this.router.navigate(['/auth/login']);
   }
 }

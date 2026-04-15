@@ -18,12 +18,12 @@ export const routes: Routes = [
   },
   {
     path: '',
-    canActivate: [OnlineGuard],
-    loadComponent: () => import('./auth/auth.component.js').then((m) => m.AuthComponent),
+    canActivate: [OnlineGuard], // One declaration for everything below
     children: [
       {
         path: 'auth',
         canActivate: [UnuthenticatedGuard],
+        loadComponent: () => import('./auth/auth.component.js').then((m) => m.AuthComponent),
         children: [
           {
             path: 'login',
@@ -41,11 +41,7 @@ export const routes: Routes = [
         path: '',
         canActivate: [AuthenticatedGuard],
         children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'board',
-          },
+          { path: '', pathMatch: 'full', redirectTo: 'board' },
           {
             path: 'board',
             loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),

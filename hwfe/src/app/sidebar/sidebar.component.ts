@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { AuthService } from '../auth/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,4 +8,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './sidebar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  private authService = inject(AuthService);
+
+  public logout(): void {
+    this.authService.logout();
+  }
+}

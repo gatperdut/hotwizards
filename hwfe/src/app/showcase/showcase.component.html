@@ -18,13 +18,13 @@
 
     <app-button label="Primary disabled" [disabled]="true"></app-button>
 
-    <app-button label="Secondary enabled" type="secondary"></app-button>
+    <app-button label="Secondary enabled" color="secondary"></app-button>
 
-    <app-button label="Secondary disabled" [disabled]="true" type="secondary"></app-button>
+    <app-button label="Secondary disabled" [disabled]="true" color="secondary"></app-button>
 
-    <app-button label="Warning enabled" type="warning"></app-button>
+    <app-button label="Warning enabled" color="warning"></app-button>
 
-    <app-button label="Warning disabled" [disabled]="true" type="warning"></app-button>
+    <app-button label="Warning disabled" [disabled]="true" color="warning"></app-button>
   </div>
 
   <div class="flex flex-row gap-hw-small flex-wrap">
@@ -68,8 +68,8 @@
 
     <app-button label="Toast with actions" (click)="toastWithActions()"></app-button>
 
-    <app-button label="Secondary toast" type="secondary" (click)="toastSecondary()"></app-button>
+    <app-button label="Secondary toast" color="secondary" (click)="toastSecondary()"></app-button>
 
-    <app-button label="Warning toast" type="warning" (click)="toastWarning()"></app-button>
+    <app-button label="Warning toast" color="warning" (click)="toastWarning()"></app-button>
   </div>
 </div>

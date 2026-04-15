@@ -8,9 +8,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonComponent {
+  public type = input<'button' | 'submit'>('button');
+
   public label = input.required<string>();
 
-  public type = input<'primary' | 'secondary' | 'warning'>('primary');
+  public color = input<'primary' | 'secondary' | 'warning'>('primary');
 
   public disabled = input<boolean>(false);
 }
