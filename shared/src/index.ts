@@ -3,6 +3,7 @@ export { AuthRegisterDto } from './auth/auth-register.dto.js';
 export { AuthToken } from './auth/auth-token.type.js';
 export { AuthVerifyTokenDto } from './auth/auth-verify-token.dto.js';
 export { HealthStatusDto } from './health/health-status.dto.js';
+export { PlayerDto } from './users/player.dto.js';
 export { UserAvailabilityEmailDto } from './users/user-availability-email.dto.js';
 export { UserAvailabilityHandleDto } from './users/user-availability-handle.dto.js';
 export { UserAvailabilityResponseDto } from './users/user-availability-response.dto.js';

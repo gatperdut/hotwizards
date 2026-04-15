@@ -1,10 +1,18 @@
-<div class="flex flex-col items-center w-full min-h-dvh p-hw-average">
+<div class="flex flex-col items-center w-full min-h-dvh p-hw-average bg-background">
   <div class="grow"></div>
 
-  <div class="flex flex-col items-stretch gap-hw-average w-full max-w-sm shrink-0">
-    <div class="typ-scream text-center">Hot Wizards</div>
+  <div
+    class="flex flex-col justify-center items-center gap-hw-xlarge landscape:flex-row landscape:justify-between w-full max-w-sm landscape:max-w-xl"
+  >
+    <div
+      class="typ-scream landscape:[writing-mode:vertical-lr] landscape:rotate-180 landscape:whitespace-nowrap text-center"
+    >
+      Hot Wizards
+    </div>
 
-    <router-outlet></router-outlet>
+    <div class="w-full max-w-md">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 
   <div class="grow-2"></div>
