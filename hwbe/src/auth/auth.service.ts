@@ -9,8 +9,6 @@ import { AuthToken } from './types/auth-token.type.js';
 
 @Injectable()
 export class AuthService {
-  private readonly jwtSecret: string = 'supersecretkey'; // TODO .env
-
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
@@ -25,7 +23,7 @@ export class AuthService {
   }
 
   private async generateToken(userId: number): Promise<string> {
-    return await this.jwtService.signAsync({ sub: { userId: userId } });
+    return await this.jwtService.signAsync({ sub: userId });
   }
 
   public async register(params: AuthRegisterDto): Promise<AuthToken> {
@@ -58,7 +56,7 @@ export class AuthService {
   public async verifyToken(params: AuthVerifyTokenDto): Promise<AuthTokenPayload> {
     try {
       return await this.jwtService.verifyAsync(params.token, {
-        secret: 'YOUR_SECRET_KEY',
+        secret: 'YOUR_SECRET_KEY', // TODO .env
       });
     } catch {
       throw new UnauthorizedException('Invalid or expired token');

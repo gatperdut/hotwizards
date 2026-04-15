@@ -21,7 +21,8 @@
     "../shared/src/users/user-availability-response.dto.ts",
     "../shared/src/users/user-by-email.dto.ts",
     "../shared/src/users/user-by-id.dto.ts",
-    "../shared/src/users/user-create.dto.ts"
+    "../shared/src/users/user-create.dto.ts",
+    "../shared/src/users/player.dto.ts"
   ]
   // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

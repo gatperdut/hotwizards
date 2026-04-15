@@ -1,27 +1,22 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { AuthTokenService } from '../services/auth-token.service';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  private authTokenService = inject(AuthTokenService);
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const authTokenService = inject(AuthTokenService);
+  const excludedUrls = ['/health', '/auth/login', '/auth/register'];
 
-  private excludedUrls = ['/health', '/auth/login', '/auth/register'];
+  const token = authTokenService.get();
 
-  public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = this.authTokenService.get();
-
-    if (!token || this.excludedUrls.some((url) => req.url.includes(url))) {
-      return next.handle(req);
-    }
-
-    return next.handle(
-      req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    );
+  if (!token || excludedUrls.some((url) => req.url.includes(url))) {
+    return next(req);
   }
-}
+
+  const authReq = req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return next(authReq);
+};
