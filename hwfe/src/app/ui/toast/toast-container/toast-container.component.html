@@ -5,7 +5,7 @@
       (mouseenter)="toastService.pauseTimer(toast.id)"
       (mouseleave)="toastService.startTimer(toast.id, toast.duration)"
       class="app-toast-container-toast"
-      [class]="toast.type"
+      [class]="toast.color"
     >
       <span class="typ-toast">{{ toast.message }}</span>
 
@@ -13,7 +13,7 @@
         @for (action of toast.actions; track action.label) {
           <app-button
             [label]="action.label"
-            [color]="action.type"
+            [color]="action.color"
             (click)="action.callback()"
           ></app-button>
         }
@@ -22,7 +22,7 @@
       @if (toast.timerId) {
         <div
           class="app-toast-container-fuse"
-          [class]="toast.type"
+          [class]="toast.color"
           [style.animation-duration.ms]="toast.duration"
           [style.animation-play-state]="'running'"
         ></div>

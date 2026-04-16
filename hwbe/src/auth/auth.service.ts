@@ -1,7 +1,7 @@
 import { User } from '@hw/prismagen/client';
 import { AuthLoginDto, AuthRegisterDto, AuthToken, AuthVerifyTokenDto } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
 import { UsersService } from '../users/users.service.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
@@ -21,8 +21,10 @@ export class AuthService {
     return hash(password, salt);
   }
 
-  private async generateToken(userId: number): Promise<string> {
-    return await this.jwtService.signAsync({ sub: userId });
+  private generateToken(userId: number, rememberMe: boolean): string {
+    const options: JwtSignOptions | undefined = rememberMe ? { expiresIn: '7d' } : undefined;
+
+    return this.jwtService.sign({ sub: userId }, options);
   }
 
   public async register(params: AuthRegisterDto): Promise<AuthToken> {
@@ -36,7 +38,7 @@ export class AuthService {
     });
 
     // TODO .toString....-_-
-    const token: string = await this.generateToken(user.id);
+    const token: string = this.generateToken(user.id, false);
 
     return { token: token };
   }
@@ -48,7 +50,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token: string = await this.generateToken(user.id);
+    const token: string = this.generateToken(user.id, false);
 
     return { token: token };
   }

@@ -46,7 +46,7 @@ export class AuthService {
   public login(userLoginDto: AuthLoginDto): Observable<User> {
     return this.httpClient.post<AuthToken>(`/api/auth/login`, userLoginDto).pipe(
       catchError((): Observable<never> => {
-        this.toastService.show({ message: 'Incorrect credentials', type: 'warning' });
+        this.toastService.show({ message: 'Incorrect credentials', color: 'warning' });
 
         return EMPTY;
       }),
@@ -85,7 +85,7 @@ export class AuthService {
       catchError(() => {
         this.authTokenService.clear();
 
-        this.toastService.show({ message: 'Credentials expired, login again', type: 'warning' });
+        this.toastService.show({ message: 'Credentials expired, login again', color: 'warning' });
 
         throw new Error('Credentials expired');
       }),
