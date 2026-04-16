@@ -5,13 +5,14 @@ import { Router } from '@angular/router';
 import { AuthLoginDto } from '@hw/shared';
 import { from, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { LinkComponent } from '../../ui/link/link.component';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ButtonComponent, LinkComponent, InputTextComponent, FormsModule],
+  imports: [ButtonComponent, LinkComponent, InputTextComponent, FormsModule, CheckboxComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,9 +21,10 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  private model = signal<AuthLoginDto>({
+  public model = signal<AuthLoginDto>({
     email: '',
     password: '',
+    rememberMe: false,
   });
 
   public form = form(this.model, (schemaPath) => {
@@ -33,7 +35,7 @@ export class LoginComponent {
 
   public login(): void {
     this.authService
-      .login(this.form().value())
+      .login(this.model())
       .pipe(switchMap(() => from(this.router.navigate(['/home']))))
       .subscribe();
   }

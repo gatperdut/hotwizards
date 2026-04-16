@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { disabled, form } from '@angular/forms/signals';
 import { ButtonComponent } from '../ui/button/button.component';
+import { CheckboxComponent } from '../ui/checkbox/checkbox.component';
 import { InputTextComponent } from '../ui/input-text/input-text.component';
 import { LinkComponent } from '../ui/link/link.component';
 import { ToastService } from '../ui/toast/services/toast.service';
 
 @Component({
   selector: 'app-showcase',
-  imports: [ButtonComponent, InputTextComponent, LinkComponent],
+  imports: [ButtonComponent, InputTextComponent, LinkComponent, CheckboxComponent],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +21,7 @@ export class ShowcaseComponent {
       emptyEnabled: '',
       filledEnabled: 'Sample input',
       disabled: '',
+      boolean: false,
     }),
     (s) => {
       disabled(s.disabled, () => true);
@@ -39,18 +41,18 @@ export class ShowcaseComponent {
       message: 'Yes or no?',
       duration: 0,
       actions: [
-        { label: 'Yes', type: 'primary', callback: (): void => {} },
-        { label: 'No', type: 'warning', callback: (): void => {} },
-        { label: 'Maybe', type: 'secondary', callback: (): void => {} },
+        { label: 'Yes', color: 'primary', callback: (): void => {} },
+        { label: 'No', color: 'warning', callback: (): void => {} },
+        { label: 'Maybe', color: 'secondary', callback: (): void => {} },
       ],
     });
   }
 
   public toastSecondary(): void {
-    this.toastService.show({ message: 'Secondary toast', type: 'secondary' });
+    this.toastService.show({ message: 'Secondary toast', color: 'secondary' });
   }
 
   public toastWarning(): void {
-    this.toastService.show({ message: 'Warning toast', type: 'warning' });
+    this.toastService.show({ message: 'Warning toast', color: 'warning' });
   }
 }

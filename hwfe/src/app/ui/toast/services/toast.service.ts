@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 interface ToastActionCreate {
   label: string;
   callback: () => void;
-  type?: 'primary' | 'secondary' | 'warning';
+  color?: 'primary' | 'secondary' | 'warning';
 }
 
 type ToastAction = Required<ToastActionCreate>;
@@ -11,7 +11,7 @@ type ToastAction = Required<ToastActionCreate>;
 interface ToastCreate {
   message: string;
   duration?: number;
-  type?: 'primary' | 'secondary' | 'warning';
+  color?: 'primary' | 'secondary' | 'warning';
   actions?: ToastActionCreate[];
 }
 
@@ -29,15 +29,15 @@ export class ToastService {
     const id = Date.now();
     const duration =
       data.duration === undefined ? 4000 : data.duration === Infinity ? 0 : data.duration;
-    const type = data.type || 'primary';
+    const color = data.color || 'primary';
     const actions = data.actions || [];
 
     const toast: Toast = {
       ...data,
       id,
-      type,
+      color: color,
       duration,
-      actions: [...actions.map((action) => ({ ...action, type: action.type || 'primary' }))],
+      actions: [...actions.map((action) => ({ ...action, color: action.color || 'primary' }))],
     };
 
     this.queue.update((items) => [...items, toast]);

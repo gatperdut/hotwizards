@@ -13,7 +13,7 @@ import { AuthService } from './auth.service.js';
     JwtModule.register({
       global: true,
       secret: 'YOUR_SECRET_KEY', // TODO .env
-      signOptions: { expiresIn: '12h' },
+      signOptions: { expiresIn: '1d' },
     }),
     ConfigModule,
     PrismaModule,

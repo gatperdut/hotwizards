@@ -57,7 +57,7 @@
     Some text with a
     <app-link label="Link primary" [to]="[]"></app-link>
     and a
-    <app-link label="Link secondary" type="secondary" [to]="[]"></app-link>
+    <app-link label="Link secondary" color="secondary" [to]="[]"></app-link>
     .
   </div>
 
@@ -71,5 +71,17 @@
     <app-button label="Secondary toast" color="secondary" (click)="toastSecondary()"></app-button>
 
     <app-button label="Warning toast" color="warning" (click)="toastWarning()"></app-button>
+  </div>
+
+  <div class="flex flex-row gap-hw-small flex-wrap">
+    <app-checkbox [field]="form.boolean" label="Primary checkbox"></app-checkbox>
+
+    <app-checkbox
+      [field]="form.boolean"
+      color="secondary"
+      label="Secondary checkbox"
+    ></app-checkbox>
+
+    <app-checkbox [field]="form.boolean" color="warning" label="Warning checkbox"></app-checkbox>
   </div>
 </div>
