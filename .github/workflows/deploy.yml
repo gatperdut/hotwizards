@@ -31,6 +31,8 @@ jobs:
           echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
           echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
           echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
+          echo "HWBE_JWT_KEY=${{ secrets.HWBE_JWT_KEY }}" >> .env
+          echo "HWBE_JWT_EXPIRES_IN=${{ vars.HWBE_JWT_EXPIRES_IN }}" >> .env
           echo "SENTRY_RELEASE=${{ github.sha }}" >> .env
 
       - name: HWFE - Inject Sentry DSN

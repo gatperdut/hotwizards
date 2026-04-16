@@ -1,3 +1,3 @@
-export class HealthStatus {
+export interface HealthStatus {
   status: string;
 }

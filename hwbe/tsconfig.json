@@ -22,7 +22,8 @@
     "../shared/src/users/user-by-email.dto.ts",
     "../shared/src/users/user-by-id.dto.ts",
     "../shared/src/users/user-create.dto.ts",
-    "../shared/src/users/player.dto.ts"
+    "../shared/src/users/player.dto.ts",
+    "src/auth/types/auth-token-payload.type.ts"
   ]
   // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

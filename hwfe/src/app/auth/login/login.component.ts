@@ -22,13 +22,13 @@ export class LoginComponent {
   private router = inject(Router);
 
   public model = signal<AuthLoginDto>({
-    email: '',
+    identifier: '',
     password: '',
     rememberMe: false,
   });
 
   public form = form(this.model, (schemaPath) => {
-    required(schemaPath.email, { message: 'Email is required' });
+    required(schemaPath.identifier, { message: 'An identifier is required' });
 
     required(schemaPath.password, { message: 'Password is required' });
   });

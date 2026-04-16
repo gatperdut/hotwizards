@@ -74,14 +74,16 @@
   </div>
 
   <div class="flex flex-row gap-hw-small flex-wrap">
-    <app-checkbox [field]="form.boolean" label="Primary checkbox"></app-checkbox>
+    <app-checkbox [field]="form.checkbox1" label="Primary checkbox"></app-checkbox>
 
     <app-checkbox
-      [field]="form.boolean"
+      [field]="form.checkbox2"
       color="secondary"
       label="Secondary checkbox"
     ></app-checkbox>
 
-    <app-checkbox [field]="form.boolean" color="warning" label="Warning checkbox"></app-checkbox>
+    <app-checkbox [field]="form.checkbox3" color="warning" label="Warning checkbox"></app-checkbox>
+
+    <app-checkbox [field]="form.checkbox4" color="primary" label="Disabled checkbox"></app-checkbox>
   </div>
 </div>

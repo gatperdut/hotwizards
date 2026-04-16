@@ -16,7 +16,6 @@ export default [
       },
     },
     rules: {
-      // TODO tweak more?
       // https://eslint.org/docs/latest/rules
       // https://typescript-eslint.io/rules/
       eqeqeq: ['error', 'always'],
