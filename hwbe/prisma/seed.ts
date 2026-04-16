@@ -4,11 +4,11 @@ import 'dotenv/config';
 import { Pool } from 'pg';
 import { seedUsers } from './seeds/users.seed.js';
 
-const connectiongString: string = `${process.env['HWBE_DB_URL']}`;
+const connectionString: string = process.env['HWBE_DB_URL'] as string;
 
-const pool = new Pool({ connectionString: connectiongString });
+const pool = new Pool({ connectionString: connectionString });
 
-const adapter: PrismaPg = new PrismaPg({ connectionString: connectiongString });
+const adapter: PrismaPg = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter: adapter });
 

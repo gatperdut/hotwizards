@@ -8,6 +8,3 @@ export { PlayerDto } from './users/player.dto.js';
 export { UserAvailabilityEmailDto } from './users/user-availability-email.dto.js';
 export { UserAvailabilityHandleDto } from './users/user-availability-handle.dto.js';
 export { UserAvailabilityResponse as UserAvailabilityResponseDto } from './users/user-availability-response.interface.js';
-export { UserByEmailDto } from './users/user-by-email.dto.js';
-export { UserByIdDto } from './users/user-by-id.dto.js';
-export { UserCreateDto } from './users/user-create.dto.js';

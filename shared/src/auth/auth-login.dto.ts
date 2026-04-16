@@ -1,10 +1,9 @@
 import { Type } from 'class-transformer';
-import { IsBoolean, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class AuthLoginDto {
   @IsNotEmpty()
-  @IsEmail({ require_tld: false })
-  email: string;
+  identifier: string;
 
   @IsNotEmpty()
   @IsString()

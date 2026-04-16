@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { disabled, form } from '@angular/forms/signals';
+import { disabled, form, required } from '@angular/forms/signals';
 import { ButtonComponent } from '../ui/button/button.component';
 import { CheckboxComponent } from '../ui/checkbox/checkbox.component';
 import { InputTextComponent } from '../ui/input-text/input-text.component';
@@ -19,12 +19,17 @@ export class ShowcaseComponent {
   public form = form(
     signal({
       emptyEnabled: '',
-      filledEnabled: 'Sample input',
+      filledEnabled: 'With required validation',
       disabled: '',
-      boolean: false,
+      checkbox1: false,
+      checkbox2: false,
+      checkbox3: false,
+      checkbox4: true,
     }),
     (s) => {
+      required(s.filledEnabled, { message: "See? It's required" });
       disabled(s.disabled, () => true);
+      disabled(s.checkbox4, () => true);
     },
   );
 
