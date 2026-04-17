@@ -1,3 +1,4 @@
+import { HwUser, HwUserExt } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -25,11 +26,31 @@ export class UsersService {
     });
   }
 
-  public byId(id: number) {
-    return this.prismaService.user.findUnique({ where: { id: id } });
+  public me(id: number): Promise<HwUser | null> {
+    return this.prismaService.user.findUnique({
+      where: { id: id },
+      select: { id: true, handle: true, email: true, admin: true, createdAt: true },
+    });
   }
 
-  public create(handle: string, email: string, hashedPassword: string, admin: boolean) {
+  public byIds(ids: number[]): Promise<HwUserExt[]> {
+    return this.prismaService.user.findMany({
+      where: { id: { in: ids } },
+      select: {
+        id: true,
+        handle: true,
+        admin: true,
+        createdAt: true,
+      },
+    });
+  }
+
+  public create(
+    handle: string,
+    email: string,
+    hashedPassword: string,
+    admin: boolean,
+  ): Promise<HwUser> {
     return this.prismaService.user.create({
       data: { handle: handle, email: email, password: hashedPassword, admin: admin },
     });

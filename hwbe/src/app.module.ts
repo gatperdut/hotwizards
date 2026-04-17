@@ -5,6 +5,7 @@ import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AppService } from './app.service.js';
 import { AuthMiddleware } from './auth/auth.middleware.js';
 import { AuthModule } from './auth/auth.module.js';
+import { CampaignsModule } from './campaigns/campaigns.module.js';
 import { HealthController } from './health.controller.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './users/users.module.js';
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module.js';
     PrismaModule,
     AuthModule,
     UsersModule,
+    CampaignsModule,
   ],
   controllers: [HealthController],
   providers: [

@@ -1,8 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '@hw/prismagen/browser';
-import { AuthLoginDto, AuthToken, type AuthRegisterDto } from '@hw/shared';
+import { AuthLoginDto, AuthToken, HwUser, type AuthRegisterDto } from '@hw/shared';
 import { catchError, EMPTY, Observable, switchMap, tap, throwError } from 'rxjs';
 import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';
@@ -16,9 +15,11 @@ export class AuthService {
   private userApiService = inject(UsersApiService);
   private router = inject(Router);
 
-  public user: WritableSignal<User | null> = signal<User | null>(null);
+  public user = signal<HwUser | null>(null);
 
-  public register(userRegisterDto: AuthRegisterDto): Observable<User> {
+  public userId = computed(() => this.user()?.id as number);
+
+  public register(userRegisterDto: AuthRegisterDto): Observable<HwUser> {
     return this.httpClient.post<AuthToken>('/api/auth/register', userRegisterDto).pipe(
       catchError((): Observable<never> => {
         this.toastService.show({ message: 'Something went wrong during registration' });
@@ -30,11 +31,11 @@ export class AuthService {
           this.authTokenService.set(authToken.token);
         },
       }),
-      switchMap((): Observable<User> => {
+      switchMap((): Observable<HwUser> => {
         return this.userApiService.me();
       }),
       tap({
-        next: (user: User): void => {
+        next: (user: HwUser): void => {
           this.user.set(user);
 
           this.toastService.show({ message: `Welcome, ${user.handle}!` });
@@ -43,7 +44,7 @@ export class AuthService {
     );
   }
 
-  public login(userLoginDto: AuthLoginDto): Observable<User> {
+  public login(userLoginDto: AuthLoginDto): Observable<HwUser> {
     return this.httpClient.post<AuthToken>(`/api/auth/login`, userLoginDto).pipe(
       catchError((): Observable<never> => {
         this.toastService.show({ message: 'Incorrect credentials', color: 'warning' });
@@ -59,7 +60,7 @@ export class AuthService {
         return this.userApiService.me();
       }),
       tap({
-        next: (user: User): void => {
+        next: (user: HwUser): void => {
           this.user.set(user);
 
           this.toastService.show({ message: `Welcome back, ${user.handle}!` });
@@ -74,7 +75,7 @@ export class AuthService {
     });
   }
 
-  public loginAuto(): Observable<User | null> {
+  public loginAuto(): Observable<HwUser | null> {
     const token: string = this.authTokenService.get();
 
     if (!token) {

@@ -1,5 +1,4 @@
-import { User } from '@hw/prismagen/client';
-import { AuthToken } from '@hw/shared';
+import { AuthToken, HwUser } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
@@ -32,7 +31,7 @@ export class AuthService {
   public async register(handle: string, email: string, password: string): Promise<AuthToken> {
     const hashedPassword: string = await this.hashPassword(password);
 
-    const user: User = await this.usersService.create(handle, email, hashedPassword, false);
+    const user: HwUser = await this.usersService.create(handle, email, hashedPassword, false);
 
     const token: string = this.generateToken(user.id, false);
 

@@ -12,18 +12,6 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist"
   },
-  "include": [
-    "src/**/*.ts",
-    "prisma.config.ts",
-    "prisma/**/*.ts",
-    "../shared/src/users/user-availability-handle.dto.ts",
-    "../shared/src/users/user-availability-email.dto.ts",
-    "../shared/src/users/user-availability-response.interface.ts",
-    "../shared/src/users/user-by-email.dto.ts",
-    "../shared/src/users/user-by-id.dto.ts",
-    "../shared/src/users/user-create.dto.ts",
-    "../shared/src/users/player.dto.ts",
-    "src/auth/types/auth-token-payload.type.ts"
-  ]
+  "include": ["src/**/*.ts", "prisma.config.ts", "prisma/**/*.ts"]
   // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

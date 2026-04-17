@@ -27,7 +27,7 @@ model Campaign {
   createdAt DateTime @default(now())
 
   masterId Int
-  master   User @relation("CampaignMaster", fields: [masterId], references: [id])
+  master   User @relation("CampaignMaster", fields: [masterId], references: [id], onDelete: Cascade)
 
   members CampaignMember[]
 }
@@ -44,10 +44,10 @@ model CampaignMember {
   status MembershipStatus @default(PENDING)
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   campaignId Int
-  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@unique([userId, campaignId])
 }

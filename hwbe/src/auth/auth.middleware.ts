@@ -1,4 +1,3 @@
-import { User } from '@hw/prismagen/client';
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { UsersService } from '../users/users.service.js';
@@ -33,7 +32,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     const authTokenPayload: AuthTokenPayload = await this.authService.verifyToken(token);
 
-    req.user = (await this.usersService.byId(authTokenPayload.sub)) as User;
+    req.user = await this.usersService.me(authTokenPayload.sub);
 
     next();
   }

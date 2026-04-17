@@ -1,17 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent {
-  private router = inject(Router);
-
-  public toBoard(): void {
-    void this.router.navigate(['/board']);
-  }
-}
+export class HomeComponent {}

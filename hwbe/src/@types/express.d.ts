@@ -1,7 +1,7 @@
-import { User } from 'src/generated/client';
+import { HwUser } from '@hw/shared';
 
 declare module 'express' {
   interface Request {
-    user?: User;
+    user: HwUser | null;
   }
 }

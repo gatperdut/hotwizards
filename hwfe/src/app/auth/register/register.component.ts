@@ -36,7 +36,7 @@ export class RegisterComponent {
     passwordRepeat: '',
   });
 
-  public availableEmailResource(
+  private availableEmailResource(
     query: Signal<string | undefined>,
   ): ResourceRef<boolean | undefined> {
     const query$ = toObservable(query).pipe(debounceTime(400));
@@ -51,7 +51,7 @@ export class RegisterComponent {
     });
   }
 
-  public availableHandleResource(
+  private availableHandleResource(
     query: Signal<string | undefined>,
   ): ResourceRef<boolean | undefined> {
     const query$ = toObservable(query).pipe(debounceTime(400));
