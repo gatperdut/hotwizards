@@ -35,6 +35,10 @@ export class MyCampaignsComponent {
             ...new Set(campaigns.flatMap((campaign) => [campaign.masterId, ...campaign.memberIds])),
           ];
 
+          const membershipIds = [
+            ...new Set(campaigns.flatMap((campaign) => campaign.membershipIds)),
+          ];
+
           return this.usersApiService.get(userIds).pipe(
             map((usersExt) => {
               const userId = this.authService.userId();

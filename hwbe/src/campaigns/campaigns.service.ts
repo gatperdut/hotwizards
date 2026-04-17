@@ -29,12 +29,26 @@ export class CampaignsService {
       },
     });
 
+    const memberships = await this.prismaService.membership.findMany({
+      where: {
+        campaignId: { in: campaigns.map((campaign) => campaign.id) },
+        userId: {
+          in: [
+            ...new Set(
+              campaigns.flatMap((campaign) => campaign.members.map((member) => member.userId)),
+            ),
+          ],
+        },
+      },
+    });
+
     return campaigns.map(
       (campaign): HwCampaign => ({
         id: campaign.id,
         name: campaign.name,
         masterId: campaign.masterId,
         memberIds: campaign.members.map((member) => member.userId),
+        membershipIds: memberships.map((membership) => membership.id),
         createdAt: campaign.createdAt,
       }),
     );

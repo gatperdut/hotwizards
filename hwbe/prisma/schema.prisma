@@ -17,8 +17,8 @@ model User {
   admin     Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  masteredCampaigns Campaign[]       @relation("CampaignMaster")
-  memberships       CampaignMember[]
+  masterships Campaign[]   @relation("CampaignMaster")
+  memberships Membership[]
 }
 
 model Campaign {
@@ -29,7 +29,7 @@ model Campaign {
   masterId Int
   master   User @relation("CampaignMaster", fields: [masterId], references: [id], onDelete: Cascade)
 
-  members CampaignMember[]
+  members Membership[]
 }
 
 enum MembershipStatus {
@@ -37,7 +37,7 @@ enum MembershipStatus {
   ACCEPTED
 }
 
-model CampaignMember {
+model Membership {
   id       Int      @id @default(autoincrement())
   joinedAt DateTime @default(now())
 
