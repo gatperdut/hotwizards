@@ -1,7 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { form } from '@angular/forms/signals';
+import { debounce, form } from '@angular/forms/signals';
 import { HwCampaign, HwCampaignSearchDto, HwMembershipStatus, HwUserAny } from '@hw/shared';
 import { forkJoin, map, switchMap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
@@ -37,7 +37,9 @@ export class MyCampaignsComponent {
     term: '',
   });
 
-  public form = form(this.model);
+  public form = form(this.model, (schemaPath) => {
+    debounce(schemaPath.term, 400);
+  });
 
   private campaignsResource = rxResource<MyCampaign[], HwCampaignSearchDto>({
     params: () => this.model(),
