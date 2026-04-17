@@ -41,7 +41,7 @@ export class MyCampaignsComponent {
     debounce(schemaPath.term, 400);
   });
 
-  private campaignsResource = rxResource<MyCampaign[], HwCampaignSearchDto>({
+  private resource = rxResource<MyCampaign[], HwCampaignSearchDto>({
     params: () => this.model(),
     stream: (request) =>
       this.campaignsApiService.mine().pipe(
@@ -93,5 +93,5 @@ export class MyCampaignsComponent {
       ),
   });
 
-  public campaigns = computed(() => this.campaignsResource.value() ?? []);
+  public campaigns = computed(() => this.resource.value() ?? []);
 }
