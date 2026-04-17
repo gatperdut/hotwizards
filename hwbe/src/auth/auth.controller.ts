@@ -1,4 +1,4 @@
-import { AuthLoginDto, AuthRegisterDto, AuthVerifyTokenDto } from '@hw/shared';
+import { HwAuthLoginDto, HwAuthRegisterDto, HwAuthVerifyTokenDto } from '@hw/shared';
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
@@ -10,17 +10,17 @@ export class AuthController {
   }
 
   @Post('login')
-  public async login(@Body() body: AuthLoginDto) {
+  public async login(@Body() body: HwAuthLoginDto) {
     return this.authService.login(body.identifier, body.password, body.rememberMe);
   }
 
   @Post('register')
-  public async register(@Body() body: AuthRegisterDto) {
+  public async register(@Body() body: HwAuthRegisterDto) {
     return this.authService.register(body.handle, body.email, body.password);
   }
 
   @Post('verify-token')
-  public async verifyToken(@Body() body: AuthVerifyTokenDto): Promise<AuthTokenPayload> {
+  public async verifyToken(@Body() body: HwAuthVerifyTokenDto): Promise<AuthTokenPayload> {
     return await this.authService.verifyToken(body.token);
   }
 }

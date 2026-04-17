@@ -1,4 +1,4 @@
-import { HwUser } from '@hw/shared';
+import { HwCampaign, HwUser } from '@hw/shared';
 import { Controller, Get } from '@nestjs/common';
 import { UserCurrent } from '../users/user-current.decorator.js';
 import { CampaignsService } from './campaigns.service.js';
@@ -8,7 +8,7 @@ export class CampaignsController {
   constructor(private readonly campaignsService: CampaignsService) {}
 
   @Get('mine')
-  public mine(@UserCurrent() user: HwUser) {
+  public mine(@UserCurrent() user: HwUser): Promise<HwCampaign[]> {
     return this.campaignsService.search(user.id);
   }
 }

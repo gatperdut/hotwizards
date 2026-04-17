@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsInt, IsPositive } from 'class-validator';
 
-export class UsersByIdsDto {
+export class HwUsersByIdsDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsInt({ each: true })

@@ -27,17 +27,6 @@ export class CampaignsService {
           },
         },
       },
-      // select: {
-      //   id: true,
-      //   name: true,
-      //   masterId: true,
-      //   createdAt: true,
-      //   members: {
-      //     select: {
-      //       userId: true,
-      //     },
-      //   },
-      // },
     });
 
     return campaigns.map(

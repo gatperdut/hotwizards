@@ -1,7 +1,7 @@
 import { Match } from '@hw/shared';
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-export class AuthRegisterDto {
+export class HwAuthRegisterDto {
   @IsNotEmpty()
   @IsString()
   handle: string;

@@ -2,27 +2,27 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map, switchMap } from 'rxjs';
-import { AuthService } from '../auth/services/auth.service';
-import { UsersApiService } from '../users/users-api.service';
-import { CampaignsApiService } from './services/campaigns-api.service';
+import { AuthService } from '../../auth/services/auth.service';
+import { UsersApiService } from '../../users/users-api.service';
+import { CampaignsApiService } from '../services/campaigns-api.service';
 
-export type CampaignSearchDto = {
+export type MyCampaignsSearchDto = {
   name: string;
 };
 
 @Component({
-  selector: 'app-campaigns',
+  selector: 'app-my-campaigns',
   imports: [JsonPipe],
-  templateUrl: './campaigns.component.html',
-  styleUrl: './campaigns.component.css',
+  templateUrl: './my-campaigns.component.html',
+  styleUrl: './my-campaigns.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CampaignsComponent {
+export class MyCampaignsComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private usersApiService = inject(UsersApiService);
   private authService = inject(AuthService);
 
-  private model = signal<CampaignSearchDto>({
+  private model = signal<MyCampaignsSearchDto>({
     name: '',
   });
 

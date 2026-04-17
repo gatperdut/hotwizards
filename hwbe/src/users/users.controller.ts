@@ -1,10 +1,10 @@
 import {
   HwUser,
+  HwUserAvailabilityEmailDto,
+  HwUserAvailabilityHandleDto,
+  HwUserAvailabilityResponse,
   HwUserExt,
-  UserAvailabilityEmailDto,
-  UserAvailabilityHandleDto,
-  UserAvailabilityResponse,
-  UsersByIdsDto,
+  HwUsersByIdsDto,
 } from '@hw/shared';
 import { Controller, Get, Query } from '@nestjs/common';
 import { UserCurrent } from './user-current.decorator.js';
@@ -20,21 +20,21 @@ export class UsersController {
   }
 
   @Get('by-ids')
-  public byIds(@Query() params: UsersByIdsDto): Promise<HwUserExt[]> {
+  public byIds(@Query() params: HwUsersByIdsDto): Promise<HwUserExt[]> {
     return this.usersService.byIds(params.ids);
   }
 
   @Get('availability-email')
   public async availabilityEmail(
-    @Query() params: UserAvailabilityEmailDto,
-  ): Promise<UserAvailabilityResponse> {
-    return { available: !(await this.usersService.availabilityEmail(params.email)) };
+    @Query() params: HwUserAvailabilityEmailDto,
+  ): Promise<HwUserAvailabilityResponse> {
+    return { available: !(await this.usersService.byEmail(params.email)) };
   }
 
   @Get('availability-handle')
   public async availabilityHandle(
-    @Query() params: UserAvailabilityHandleDto,
-  ): Promise<UserAvailabilityResponse> {
-    return { available: !(await this.usersService.availabilityHandle(params.handle)) };
+    @Query() params: HwUserAvailabilityHandleDto,
+  ): Promise<HwUserAvailabilityResponse> {
+    return { available: !(await this.usersService.byHandle(params.handle)) };
   }
 }

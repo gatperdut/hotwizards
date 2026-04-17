@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
-export class AuthLoginDto {
+export class HwAuthLoginDto {
   @IsNotEmpty()
   identifier: string;
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { form, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import { AuthLoginDto } from '@hw/shared';
+import { HwAuthLoginDto } from '@hw/shared';
 import { from, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
@@ -21,7 +21,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  public model = signal<AuthLoginDto>({
+  public model = signal<HwAuthLoginDto>({
     identifier: '',
     password: '',
     rememberMe: false,

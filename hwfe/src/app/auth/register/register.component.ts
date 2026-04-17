@@ -9,7 +9,7 @@ import {
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { email, form, minLength, required, validate, validateAsync } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import { AuthRegisterDto } from '@hw/shared';
+import { HwAuthRegisterDto } from '@hw/shared';
 import { debounceTime, from, of, switchMap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
@@ -29,7 +29,7 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  private model = signal<AuthRegisterDto>({
+  private model = signal<HwAuthRegisterDto>({
     handle: '',
     email: '',
     password: '',
