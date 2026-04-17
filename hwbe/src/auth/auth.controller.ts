@@ -11,16 +11,16 @@ export class AuthController {
 
   @Post('login')
   public async login(@Body() body: AuthLoginDto) {
-    return this.authService.login(body);
+    return this.authService.login(body.identifier, body.password, body.rememberMe);
   }
 
   @Post('register')
   public async register(@Body() body: AuthRegisterDto) {
-    return this.authService.register(body);
+    return this.authService.register(body.handle, body.email, body.password);
   }
 
   @Post('verify-token')
   public async verifyToken(@Body() body: AuthVerifyTokenDto): Promise<AuthTokenPayload> {
-    return await this.authService.verifyToken(body);
+    return await this.authService.verifyToken(body.token);
   }
 }
