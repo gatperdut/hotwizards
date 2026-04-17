@@ -12,7 +12,7 @@ import { UsersService } from './users.service.js';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private usersService: UsersService) {}
 
   @Get('me')
   public me(@UserCurrent() user: HwUser): HwUser {

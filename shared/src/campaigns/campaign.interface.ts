@@ -3,5 +3,6 @@ export interface HwCampaign {
   name: string;
   masterId: number;
   memberIds: number[];
+  membershipIds: number[];
   createdAt: Date;
 }

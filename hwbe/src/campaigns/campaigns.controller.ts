@@ -5,7 +5,7 @@ import { CampaignsService } from './campaigns.service.js';
 
 @Controller('campaigns')
 export class CampaignsController {
-  constructor(private readonly campaignsService: CampaignsService) {}
+  constructor(private campaignsService: CampaignsService) {}
 
   @Get('mine')
   public mine(@UserCurrent() user: HwUser): Promise<HwCampaign[]> {
