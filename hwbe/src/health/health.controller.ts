@@ -1,10 +1,10 @@
-import { HealthStatus } from '@hw/shared';
+import { HwHealthStatus } from '@hw/shared';
 import { Controller, Get } from '@nestjs/common';
 
 @Controller('health')
 export class HealthController {
   @Get()
-  public status(): HealthStatus {
+  public status(): HwHealthStatus {
     return { status: 'ok' };
   }
 }

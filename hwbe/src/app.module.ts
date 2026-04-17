@@ -6,7 +6,7 @@ import { AppService } from './app.service.js';
 import { AuthMiddleware } from './auth/auth.middleware.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CampaignsModule } from './campaigns/campaigns.module.js';
-import { HealthController } from './health.controller.js';
+import { HealthModule } from './health/health.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -19,11 +19,12 @@ import { UsersModule } from './users/users.module.js';
     SentryModule.forRoot(),
     // Needed in AppModule at all? Maybe should be global?
     PrismaModule,
+    HealthModule,
     AuthModule,
     UsersModule,
     CampaignsModule,
   ],
-  controllers: [HealthController],
+  controllers: [],
   providers: [
     {
       provide: APP_FILTER,

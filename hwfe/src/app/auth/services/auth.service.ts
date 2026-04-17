@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthLoginDto, AuthToken, HwUser, type AuthRegisterDto } from '@hw/shared';
+import { HwAuthLoginDto, HwAuthResponse, HwUser, type HwAuthRegisterDto } from '@hw/shared';
 import { catchError, EMPTY, Observable, switchMap, tap, throwError } from 'rxjs';
 import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';
@@ -19,51 +19,33 @@ export class AuthService {
 
   public userId = computed(() => this.user()?.id as number);
 
-  public register(userRegisterDto: AuthRegisterDto): Observable<HwUser> {
-    return this.httpClient.post<AuthToken>('/api/auth/register', userRegisterDto).pipe(
+  public register(userRegisterDto: HwAuthRegisterDto): Observable<HwAuthResponse> {
+    return this.httpClient.post<HwAuthResponse>('/api/auth/register', userRegisterDto).pipe(
       catchError((): Observable<never> => {
         this.toastService.show({ message: 'Something went wrong during registration' });
 
         return EMPTY;
       }),
-      tap({
-        next: (authToken: AuthToken): void => {
-          this.authTokenService.set(authToken.token);
-        },
-      }),
-      switchMap((): Observable<HwUser> => {
-        return this.userApiService.me();
-      }),
-      tap({
-        next: (user: HwUser): void => {
-          this.user.set(user);
-
-          this.toastService.show({ message: `Welcome, ${user.handle}!` });
-        },
+      tap((authResponse: HwAuthResponse): void => {
+        this.user.set(authResponse.user);
+        this.authTokenService.set(authResponse.token);
+        this.toastService.show({ message: `Welcome, ${authResponse.user.handle}!` });
       }),
     );
   }
 
-  public login(userLoginDto: AuthLoginDto): Observable<HwUser> {
-    return this.httpClient.post<AuthToken>(`/api/auth/login`, userLoginDto).pipe(
+  public login(userLoginDto: HwAuthLoginDto): Observable<HwAuthResponse> {
+    return this.httpClient.post<HwAuthResponse>(`/api/auth/login`, userLoginDto).pipe(
       catchError((): Observable<never> => {
         this.toastService.show({ message: 'Incorrect credentials', color: 'warning' });
 
         return EMPTY;
       }),
       tap({
-        next: (authToken): void => {
-          this.authTokenService.set(authToken.token);
-        },
-      }),
-      switchMap(() => {
-        return this.userApiService.me();
-      }),
-      tap({
-        next: (user: HwUser): void => {
-          this.user.set(user);
-
-          this.toastService.show({ message: `Welcome back, ${user.handle}!` });
+        next: (authResponse): void => {
+          this.user.set(authResponse.user);
+          this.authTokenService.set(authResponse.token);
+          this.toastService.show({ message: `Welcome back, ${authResponse.user.handle}!` });
         },
       }),
     );

@@ -1,4 +1,4 @@
-import { AuthToken, HwUser } from '@hw/shared';
+import { HwAuthResponse, HwUser } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
@@ -12,9 +12,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {
-    // Empty
-  }
+  ) {}
 
   public async hashPassword(password: string): Promise<string> {
     const salt: string = await genSalt();
@@ -28,21 +26,30 @@ export class AuthService {
     return this.jwtService.sign({ sub: userId }, options);
   }
 
-  public async register(handle: string, email: string, password: string): Promise<AuthToken> {
+  public async register(handle: string, email: string, password: string): Promise<HwAuthResponse> {
     const hashedPassword: string = await this.hashPassword(password);
 
     const user: HwUser = await this.usersService.create(handle, email, hashedPassword, false);
 
     const token: string = this.generateToken(user.id, false);
 
-    return { token: token };
+    return {
+      user: {
+        id: user.id,
+        handle: user.handle,
+        email: user.email,
+        admin: user.admin,
+        createdAt: user.createdAt,
+      },
+      token: token,
+    };
   }
 
   public async login(
     identifier: string,
     password: string,
     rememberMe: boolean,
-  ): Promise<AuthToken> {
+  ): Promise<HwAuthResponse> {
     const user = await this.usersService.byIdentifier(identifier);
 
     if (!user || !(await compare(password, user.password))) {
@@ -51,7 +58,16 @@ export class AuthService {
 
     const token: string = this.generateToken(user.id, rememberMe);
 
-    return { token: token };
+    return {
+      user: {
+        id: user.id,
+        handle: user.handle,
+        email: user.email,
+        admin: user.admin,
+        createdAt: user.createdAt,
+      },
+      token: token,
+    };
   }
 
   public async verifyToken(token: string): Promise<AuthTokenPayload> {

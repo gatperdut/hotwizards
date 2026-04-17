@@ -2,10 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   HwUser,
+  HwUserAvailabilityEmailDto,
+  HwUserAvailabilityHandleDto,
+  HwUserAvailabilityResponse,
   HwUserExt,
-  type UserAvailabilityEmailDto,
-  type UserAvailabilityHandleDto,
-  type UserAvailabilityResponse,
 } from '@hw/shared';
 import { map, Observable } from 'rxjs';
 
@@ -21,19 +21,19 @@ export class UsersApiService {
     return this.httpClient.get<HwUserExt[]>(`/api/users/by-ids`, { params: { ids: ids } });
   }
 
-  public availabilityEmail(params: UserAvailabilityEmailDto): Observable<boolean> {
+  public availabilityEmail(params: HwUserAvailabilityEmailDto): Observable<boolean> {
     return this.httpClient
-      .get<UserAvailabilityResponse>('/api/users/availability-email', {
+      .get<HwUserAvailabilityResponse>('/api/users/availability-email', {
         params: { ...params },
       })
-      .pipe(map((availability: UserAvailabilityResponse): boolean => availability.available));
+      .pipe(map((availability: HwUserAvailabilityResponse): boolean => availability.available));
   }
 
-  public availabilityHandle(params: UserAvailabilityHandleDto): Observable<boolean> {
+  public availabilityHandle(params: HwUserAvailabilityHandleDto): Observable<boolean> {
     return this.httpClient
-      .get<UserAvailabilityResponse>('/api/users/availability-handle', {
+      .get<HwUserAvailabilityResponse>('/api/users/availability-handle', {
         params: { ...params },
       })
-      .pipe(map((availability: UserAvailabilityResponse): boolean => availability.available));
+      .pipe(map((availability: HwUserAvailabilityResponse): boolean => availability.available));
   }
 }

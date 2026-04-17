@@ -1,3 +1,3 @@
-export interface UserAvailabilityResponse {
+export interface HwUserAvailabilityResponse {
   available: boolean;
 }
