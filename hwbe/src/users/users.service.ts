@@ -1,23 +1,19 @@
-import { UserAvailabilityEmailDto, UserAvailabilityHandleDto } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { UserCreateDto } from './types/user-create.type.js';
 
 @Injectable()
 export class UsersService {
-  constructor(private prismaService: PrismaService) {
-    // Empty
-  }
+  constructor(private prismaService: PrismaService) {}
 
-  public availabilityHandle(params: UserAvailabilityHandleDto) {
+  public availabilityHandle(handle: string) {
     return this.prismaService.user.findUnique({
-      where: params,
+      where: { handle: handle },
     });
   }
 
-  public availabilityEmail(params: UserAvailabilityEmailDto) {
+  public availabilityEmail(email: string) {
     return this.prismaService.user.findUnique({
-      where: params,
+      where: { email: email },
     });
   }
 
@@ -33,7 +29,9 @@ export class UsersService {
     return this.prismaService.user.findUnique({ where: { id: id } });
   }
 
-  public create(params: UserCreateDto) {
-    return this.prismaService.user.create({ data: params });
+  public create(handle: string, email: string, hashedPassword: string, admin: boolean) {
+    return this.prismaService.user.create({
+      data: { handle: handle, email: email, password: hashedPassword, admin: admin },
+    });
   }
 }

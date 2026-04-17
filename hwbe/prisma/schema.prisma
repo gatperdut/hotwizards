@@ -16,4 +16,38 @@ model User {
   password  String
   admin     Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  masteredCampaigns Campaign[]       @relation("CampaignMaster")
+  memberships       CampaignMember[]
+}
+
+model Campaign {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  masterId Int
+  master   User @relation("CampaignMaster", fields: [masterId], references: [id])
+
+  members CampaignMember[]
+}
+
+enum MembershipStatus {
+  PENDING
+  ACCEPTED
+}
+
+model CampaignMember {
+  id       Int      @id @default(autoincrement())
+  joinedAt DateTime @default(now())
+
+  status MembershipStatus @default(PENDING)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  campaignId Int
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+
+  @@unique([userId, campaignId])
 }

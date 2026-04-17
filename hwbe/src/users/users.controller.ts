@@ -12,9 +12,7 @@ import { UsersService } from './users.service.js';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {
-    // Empty
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
   public me(@UserCurrent() user: User) {
@@ -25,13 +23,13 @@ export class UsersController {
   public async availabilityEmail(
     @Query() params: UserAvailabilityEmailDto,
   ): Promise<UserAvailabilityResponseDto> {
-    return { available: !(await this.usersService.availabilityEmail(params)) };
+    return { available: !(await this.usersService.availabilityEmail(params.email)) };
   }
 
   @Get('availability-handle')
   public async availabilityHandle(
     @Query() params: UserAvailabilityHandleDto,
   ): Promise<UserAvailabilityResponseDto> {
-    return { available: !(await this.usersService.availabilityHandle(params)) };
+    return { available: !(await this.usersService.availabilityHandle(params.handle)) };
   }
 }

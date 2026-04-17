@@ -9,6 +9,4 @@ import { UsersService } from './users.service.js';
   imports: [PrismaModule],
   exports: [UsersService],
 })
-export class UsersModule {
-  // Empty
-}
+export class UsersModule {}

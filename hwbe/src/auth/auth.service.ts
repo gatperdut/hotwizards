@@ -1,5 +1,5 @@
 import { User } from '@hw/prismagen/client';
-import { AuthLoginDto, AuthRegisterDto, AuthToken, AuthVerifyTokenDto } from '@hw/shared';
+import { AuthToken } from '@hw/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
@@ -29,36 +29,35 @@ export class AuthService {
     return this.jwtService.sign({ sub: userId }, options);
   }
 
-  public async register(params: AuthRegisterDto): Promise<AuthToken> {
-    const hashedPassword: string = await this.hashPassword(params.password);
+  public async register(handle: string, email: string, password: string): Promise<AuthToken> {
+    const hashedPassword: string = await this.hashPassword(password);
 
-    const user: User = await this.usersService.create({
-      handle: params.handle,
-      email: params.email,
-      password: hashedPassword,
-      admin: false,
-    });
+    const user: User = await this.usersService.create(handle, email, hashedPassword, false);
 
     const token: string = this.generateToken(user.id, false);
 
     return { token: token };
   }
 
-  public async login(params: AuthLoginDto): Promise<AuthToken> {
-    const user = await this.usersService.byIdentifier(params.identifier);
+  public async login(
+    identifier: string,
+    password: string,
+    rememberMe: boolean,
+  ): Promise<AuthToken> {
+    const user = await this.usersService.byIdentifier(identifier);
 
-    if (!user || !(await compare(params.password, user.password))) {
+    if (!user || !(await compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token: string = this.generateToken(user.id, params.rememberMe);
+    const token: string = this.generateToken(user.id, rememberMe);
 
     return { token: token };
   }
 
-  public async verifyToken(params: AuthVerifyTokenDto): Promise<AuthTokenPayload> {
+  public async verifyToken(token: string): Promise<AuthTokenPayload> {
     try {
-      return await this.jwtService.verifyAsync(params.token, {
+      return await this.jwtService.verifyAsync(token, {
         secret: this.configService.get('HWBE_JWT_KEY'),
       });
     } catch {
