@@ -17,6 +17,8 @@
     "prisma:gen": "npx prisma generate",
     "prisma:migrate:dev": "npx prisma migrate dev",
     "prisma:migrate:deploy": "npx prisma migrate deploy",
+    "prisma:migrate:reset": "npx prisma migrate reset",
+    "prisma:db:seed": "npx prisma db seed",
     "prisma:studio": "npx prisma studio",
     "clean": "rm -rf dist"
   },

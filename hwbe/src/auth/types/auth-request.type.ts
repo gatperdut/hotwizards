@@ -1,3 +1,3 @@
-import { User } from '@hw/prismagen/client';
+import { HwUser } from '@hw/shared';
 
-export type AuthRequest = Request & { user: User };
+export type AuthRequest = Request & { user: HwUser };

@@ -17,6 +17,8 @@
     "hwbe:prisma:gen": "npm run prisma:gen -w @hw/hwbe",
     "hwbe:prisma:migrate:dev": "npm run prisma:migrate:dev -w @hw/hwbe",
     "hwbe:prisma:migrate:deploy": "npm run prisma:migrate:deploy -w @hw/hwbe",
+    "hwbe:prisma:migrate:reset": "npm run prisma:migrate:reset -w @hw/hwbe",
+    "hwbe:prisma:db:seed": "npm run prisma:db:seed -w @hw/hwbe",
     "hwbe:prisma:studio": "npm run prisma:studio -w @hw/hwbe",
     "hwfe:start": "npm run start -w @hw/hwfe",
     "hwfe:start:wifi": "npm run start:wifi -w @hw/hwfe",
