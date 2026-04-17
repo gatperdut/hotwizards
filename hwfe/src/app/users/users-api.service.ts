@@ -6,6 +6,7 @@ import {
   HwUserAvailabilityHandleDto,
   HwUserAvailabilityResponse,
   HwUserExt,
+  type HwUsersByIdsDto,
 } from '@hw/shared';
 import { map, Observable } from 'rxjs';
 
@@ -17,8 +18,8 @@ export class UsersApiService {
     return this.httpClient.get<HwUser>('/api/users/me');
   }
 
-  public get(ids: number[]): Observable<HwUserExt[]> {
-    return this.httpClient.get<HwUserExt[]>(`/api/users/by-ids`, { params: { ids: ids } });
+  public get(params: HwUsersByIdsDto): Observable<HwUserExt[]> {
+    return this.httpClient.get<HwUserExt[]>(`/api/users/by-ids`, { params: { ...params } });
   }
 
   public availabilityEmail(params: HwUserAvailabilityEmailDto): Observable<boolean> {
