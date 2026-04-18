@@ -15,6 +15,7 @@ export class InputTextComponent {
   public autocomplete = input<'username' | 'new-password' | 'current-password' | 'off'>('off');
   public placeholder = input<string | undefined>(undefined);
   public loading = input<boolean>(false);
+  public hasValidation = input<boolean>(true);
 
   public id = `app-input-text-${Math.random().toString(36).substring(2, 9)}`;
 
@@ -22,5 +23,5 @@ export class InputTextComponent {
 
   public error = computed(() => this.state().errors()[0]);
 
-  public displayError = computed(() => this.state().touched() && this.error());
+  public errorVisibility = computed(() => this.state().touched() && this.error());
 }

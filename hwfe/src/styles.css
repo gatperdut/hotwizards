@@ -190,3 +190,12 @@ body {
   --sep-dir: to bottom;
   border-right-width: 4px;
 }
+
+/* Flips */
+.flipped-x {
+  scale: -1 1;
+}
+
+.flipped-y {
+  scale: 1 -1;
+}

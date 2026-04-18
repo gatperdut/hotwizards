@@ -8,8 +8,11 @@
          focus:outline-0
          focus:bg-primary
          border-primary
-         h-10
-         pl-hw-small;
+         h-10;
+
+  &.has-validation {
+    @apply pl-hw-small;
+  }
 
   &::selection {
     @apply bg-off-medium;
