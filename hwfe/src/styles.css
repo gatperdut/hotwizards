@@ -10,6 +10,7 @@
 
 html {
   font-family: 'Asimovian', sans-serif;
+  scrollbar-gutter: stable both-edges;
 }
 
 body {
@@ -156,4 +157,36 @@ body {
          border-t-transparent
          group-focus-within:border-off-dark
          group-focus-within:border-t-transparent;
+}
+
+/* Separators */
+.separator-t,
+.separator-b,
+.separator-l,
+.separator-r {
+  border-image-source: linear-gradient(
+    var(--sep-dir, to right),
+    transparent,
+    var(--color-secondary),
+    transparent
+  );
+  border-image-slice: 1;
+}
+
+.separator-t {
+  --sep-dir: to right;
+  border-top-width: 4px;
+}
+.separator-b {
+  --sep-dir: to right;
+  border-bottom-width: 4px;
+}
+
+.separator-l {
+  --sep-dir: to bottom;
+  border-left-width: 4px;
+}
+.separator-r {
+  --sep-dir: to bottom;
+  border-right-width: 4px;
 }
