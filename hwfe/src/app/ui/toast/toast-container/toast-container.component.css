@@ -23,10 +23,7 @@
 
 .app-toast-container-toast {
   @apply cursor-pointer
-         rounded-tr-3xl
-         rounded-bl-lg
          border-primary
-         border-4
          pointer-events-auto
          relative
          overflow-hidden

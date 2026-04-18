@@ -210,3 +210,17 @@ body {
 .flipped-y {
   scale: 1 -1;
 }
+
+/* Text */
+.hw-truncate {
+  @apply truncate
+         w-0
+         min-w-full;
+}
+
+/* Borders */
+.hw-border {
+  @apply rounded-tr-3xl
+         rounded-bl-lg
+         border-4;
+}

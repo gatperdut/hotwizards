@@ -16,7 +16,7 @@
       <app-paginator [(page)]="page" [pages]="pages()"></app-paginator>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average auto-rows-[300px]">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
       @for (campaign of campaigns(); track campaign.id) {
         <app-campaign [campaign]="campaign"> </app-campaign>
       }

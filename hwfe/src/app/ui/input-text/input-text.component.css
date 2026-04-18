@@ -1,10 +1,7 @@
 @reference "../../../styles.css";
 
 .app-input-text {
-  @apply rounded-tr-3xl
-         rounded-bl-lg
-         bg-transparent
-         border-4
+  @apply bg-transparent
          focus:outline-0
          focus:bg-primary
          border-primary
