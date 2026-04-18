@@ -4,6 +4,7 @@ export { HwAuthResponse } from './auth/auth-response.interface.js';
 export { HwAuthVerifyTokenDto } from './auth/auth-verify-token.dto.js';
 export { HwCampaignSearchDto } from './campaigns/campaign-search.dto.js';
 export { HwCampaign } from './campaigns/campaign.interface.js';
+export { ToArray } from './decorators/to-array.decorator.js';
 export { HwHealthStatus } from './health/health-status.interface.js';
 export { Match } from './match.validator.js';
 export { HwMembershipStatus } from './memberships/membership-status.enum.js';

@@ -44,7 +44,7 @@ export class MyCampaignsComponent {
   private resource = rxResource<MyCampaign[], HwCampaignSearchDto>({
     params: () => this.model(),
     stream: (request) =>
-      this.campaignsApiService.mine().pipe(
+      this.campaignsApiService.mine(request.params).pipe(
         switchMap((campaigns) => {
           const userIds = [
             ...new Set(campaigns.flatMap((campaign) => [campaign.masterId, ...campaign.memberIds])),
@@ -94,4 +94,6 @@ export class MyCampaignsComponent {
   });
 
   public campaigns = computed(() => this.resource.value() ?? []);
+
+  public loading = computed(() => this.resource.isLoading());
 }

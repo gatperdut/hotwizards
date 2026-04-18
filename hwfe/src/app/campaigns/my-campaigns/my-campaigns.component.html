@@ -2,9 +2,8 @@
   <div class="typ-h1 self-center">MY CAMPAIGNS</div>
 
   <div class="gap-hw-average">
-    <app-campaigns-filter [form]="form"></app-campaigns-filter>
+    <app-campaigns-filter [form]="form" [loading]="loading()"></app-campaigns-filter>
 
     <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ campaigns() | json }}</pre>
-    {{ model() | json }}
   </div>
 </div>
