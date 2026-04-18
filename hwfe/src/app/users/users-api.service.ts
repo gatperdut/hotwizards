@@ -8,7 +8,7 @@ import {
   HwUserExt,
   type HwUsersByIdsDto,
 } from '@hw/shared';
-import { map, Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UsersApiService {
@@ -19,6 +19,10 @@ export class UsersApiService {
   }
 
   public get(params: HwUsersByIdsDto): Observable<HwUserExt[]> {
+    if (!params.ids.length) {
+      return of([]);
+    }
+
     return this.httpClient.get<HwUserExt[]>(`/api/users/by-ids`, { params: { ...params } });
   }
 

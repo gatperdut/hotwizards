@@ -12,4 +12,6 @@ import { InputTextComponent } from '../../ui/input-text/input-text.component';
 })
 export class CampaignsFilterComponent {
   public form = input.required<FieldTree<HwCampaignSearchDto>>();
+
+  public loading = input.required<boolean>();
 }

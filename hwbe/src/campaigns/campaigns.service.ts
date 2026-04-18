@@ -6,17 +6,49 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class CampaignsService {
   constructor(private prismaService: PrismaService) {}
 
-  public async search(userId: number): Promise<HwCampaign[]> {
+  public async search(userId: number, term: string = ''): Promise<HwCampaign[]> {
     const campaigns = await this.prismaService.campaign.findMany({
       where: {
-        OR: [
-          { masterId: userId },
+        AND: [
           {
-            members: {
-              some: {
-                userId: userId,
+            OR: [
+              { masterId: userId },
+              {
+                members: {
+                  some: { userId: userId },
+                },
               },
-            },
+            ],
+          },
+          {
+            OR: [
+              {
+                name: {
+                  contains: term,
+                  mode: 'insensitive',
+                },
+              },
+              {
+                master: {
+                  handle: {
+                    contains: term,
+                    mode: 'insensitive',
+                  },
+                },
+              },
+              {
+                members: {
+                  some: {
+                    user: {
+                      handle: {
+                        contains: term,
+                        mode: 'insensitive',
+                      },
+                    },
+                  },
+                },
+              },
+            ],
           },
         ],
       },
