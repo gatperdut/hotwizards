@@ -1,6 +1,12 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { AppCardAction, CardComponent } from '../../ui/card/card.component';
+import { DialogService } from '../../ui/dialog/services/dialog.service';
+import {
+  CampaignInviteDialogComponent,
+  CampaignInviteDialogData,
+  CampaignInviteDialogResult,
+} from '../campaign-invite-dialog/campaign-invite-dialog.component';
 import { MyCampaign } from '../types/my-campaign.type';
 
 @Component({
@@ -11,6 +17,8 @@ import { MyCampaign } from '../types/my-campaign.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CampaignComponent {
+  private dialogService = inject(DialogService);
+
   public campaign = input.required<MyCampaign>();
 
   public master = computed(() => this.campaign().master);
@@ -27,7 +35,17 @@ export class CampaignComponent {
     {
       label: 'Invite',
       action: (): void => {
-        console.log('Invite');
+        this.dialogService
+          .open<
+            CampaignInviteDialogComponent,
+            CampaignInviteDialogData,
+            CampaignInviteDialogResult
+          >(CampaignInviteDialogComponent, {
+            name: this.campaign().name,
+          })
+          .afterClosed$.subscribe((confirmed) => {
+            console.log('DIALOG RESULT', confirmed);
+          });
       },
     },
   ]);

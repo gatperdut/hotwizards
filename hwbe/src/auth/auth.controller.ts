@@ -5,9 +5,7 @@ import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {
-    // Empty
-  }
+  constructor(private authService: AuthService) {}
 
   @Post('login')
   public async login(@Body() body: HwAuthLoginDto) {
