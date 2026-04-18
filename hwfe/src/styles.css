@@ -223,3 +223,8 @@ body {
          rounded-bl-lg
          border-4;
 }
+
+/* Scrolling */
+.no-scroll {
+  @apply overflow-hidden touch-none;
+}

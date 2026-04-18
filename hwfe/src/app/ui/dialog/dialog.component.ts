@@ -4,6 +4,8 @@ import {
   computed,
   contentChild,
   input,
+  OnDestroy,
+  OnInit,
   output,
 } from '@angular/core';
 import { DialogActionsDirective } from './dialog-actions.directive';
@@ -15,9 +17,17 @@ import { DialogActionsDirective } from './dialog-actions.directive';
   styleUrl: './dialog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogComponent {
+export class DialogComponent implements OnInit, OnDestroy {
   public size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
   public close = output();
+
+  public ngOnInit(): void {
+    document.body.classList.add('no-scroll');
+  }
+
+  public ngOnDestroy(): void {
+    document.body.classList.remove('no-scroll');
+  }
 
   private appDialogActions = contentChild(DialogActionsDirective);
 
