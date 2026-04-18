@@ -2,8 +2,14 @@ import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form } from '@angular/forms/signals';
-import { HwCampaign, HwCampaignSearchDto, HwMembershipStatus, HwUserAny } from '@hw/shared';
-import { forkJoin, map, switchMap } from 'rxjs';
+import {
+  HwCampaign,
+  HwCampaignSearchDto,
+  HwMembershipStatus,
+  HwUserAny,
+  PaginationMeta,
+} from '@hw/shared';
+import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { UsersApiService } from '../../users/users-api.service';
@@ -41,10 +47,21 @@ export class MyCampaignsComponent {
     debounce(schemaPath.term, 400);
   });
 
+  public meta = signal<PaginationMeta>({
+    page: 0,
+    pageSize: 10,
+    pages: 0,
+    total: 0,
+  });
+
   private resource = rxResource<MyCampaign[], HwCampaignSearchDto>({
     params: () => this.model(),
     stream: (request) =>
       this.campaignsApiService.mine(request.params).pipe(
+        tap((response) => {
+          this.meta.set(response.meta);
+        }),
+        map((response) => response.items),
         switchMap((campaigns) => {
           const userIds = [
             ...new Set(campaigns.flatMap((campaign) => [campaign.masterId, ...campaign.memberIds])),

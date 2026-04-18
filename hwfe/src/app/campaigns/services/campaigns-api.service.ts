@@ -1,19 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwCampaign, HwCampaignSearchDto } from '@hw/shared';
+import { HwCampaign, HwCampaignSearchDto, Paginated } from '@hw/shared';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CampaignsApiService {
   private httpClient = inject(HttpClient);
 
-  public mine(dto: HwCampaignSearchDto): Observable<HwCampaign[]> {
+  public mine(dto: HwCampaignSearchDto): Observable<Paginated<HwCampaign>> {
     const params: Partial<HwCampaignSearchDto> = {};
 
-    if (dto.term?.length > 1) {
-      params.term = dto.term?.slice(0, 50);
+    if (dto.term) {
+      params.term = dto.term;
     }
 
-    return this.httpClient.get<HwCampaign[]>('/api/campaigns/mine', { params: params });
+    if (dto.page) {
+      params.page = dto.page;
+    }
+
+    if (dto.pageSize) {
+      params.pageSize = dto.pageSize;
+    }
+
+    return this.httpClient.get<Paginated<HwCampaign>>('/api/campaigns/mine', {
+      params: { ...params },
+    });
   }
 }
