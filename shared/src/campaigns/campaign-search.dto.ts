@@ -1,11 +1,10 @@
 import { Transform } from 'class-transformer';
-import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
+import { PaginationDto } from '../pagination/pagination.dto.js';
 
-export class HwCampaignSearchDto {
+export class HwCampaignSearchDto extends PaginationDto {
   @IsOptional()
   @IsString()
-  @MinLength(2)
-  @MaxLength(50)
   @Transform(({ value }) => value?.trim())
   term: string;
 }
