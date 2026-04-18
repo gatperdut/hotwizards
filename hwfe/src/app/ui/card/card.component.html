@@ -1,0 +1,24 @@
+<div class="hw-border h-full flex flex-col p-hw-average gap-hw-average" [class]="color()">
+  <div
+    class="pb-hw-average hw-truncate typ-h2 separator-b"
+    [class]="`separator-${separatorColor()}`"
+  >
+    {{ title() }}
+  </div>
+
+  <div class="grow">
+    <ng-content select="[appCardBody]"></ng-content>
+  </div>
+
+  <div
+    class="pt-hw-average border-t border-off-medium flex flex-row items-center justify-end gap-hw-small"
+  >
+    @for (action of actions(); track $index) {
+      <app-button
+        [label]="action.label"
+        [color]="action.color || 'primary'"
+        (click)="action.action()"
+      ></app-button>
+    }
+  </div>
+</div>

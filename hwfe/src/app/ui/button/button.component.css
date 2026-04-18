@@ -1,10 +1,7 @@
 @reference "../../../styles.css";
 
 .app-button {
-  @apply rounded-tr-3xl
-         rounded-bl-lg
-         border-4
-         px-4
+  @apply px-4
          h-10
          cursor-pointer
          active:scale-95

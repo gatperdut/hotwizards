@@ -4,7 +4,7 @@
       (click)="toastService.remove(toast.id)"
       (mouseenter)="toastService.pauseTimer(toast.id)"
       (mouseleave)="toastService.startTimer(toast.id, toast.duration)"
-      class="app-toast-container-toast"
+      class="app-toast-container-toast hw-border"
       [class]="toast.color"
     >
       <span class="typ-toast">{{ toast.message }}</span>

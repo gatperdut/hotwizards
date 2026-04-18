@@ -1,43 +1,65 @@
-<div
-  class="rounded-tr-3xl rounded-bl-lg border-4 border-primary/50 flex flex-col h-full p-hw-average gap-hw-small hover:border-secondary/50 transition-colors"
->
-  <div
-    class="typ-h2 truncate w-0 min-w-full text- secondary separator-b separator-secondary pb-hw-average"
-  >
-    {{ campaign().name }}
-  </div>
-
-  <div class="grow flex flex-col gap-hw-average pt-hw-small">
+<app-card [title]="campaign().name" [actions]="actions()">
+  <div appCardBody class="flex flex-col gap-hw-average">
     <div class="flex flex-row items-center gap-hw-small">
       <div
-        class="size-10 rounded-full border border-primary bg-off-low shrink-0 bg-cover bg-center bg-no-repeat relative overflow-hidden"
+        class="size-10 rounded-full bg-cover bg-center"
         [style.background-image]="'url(/characters/zargon.png)'"
       ></div>
-      <div class="min-w-0">
-        <span class="typ-small block">Master</span>
-        <div class="typ-body font-bold truncate">{{ campaign().master.handle }}</div>
+
+      <div class="grow">
+        <div class="typ-small truncate opacity-70">Master</div>
+        <div class="typ-body font-bold hw-truncate">
+          {{ master().handle }}
+        </div>
       </div>
     </div>
 
-    <div class="flex flex-col gap-hw-tiny">
-      <span class="typ-small text-off-medium uppercase tracking-tighter">Active Members</span>
-      <div class="flex flex-wrap gap-2">
-        @for (member of campaign().members; track member.id) {
-          <div
-            class="size-8 rounded-full border border-off-medium bg-background flex items-center justify-center overflow-hidden"
-            [title]="member.handle"
-          >
-            <span class="typ-small opacity-50">{{ member.handle.charAt(0) }}</span>
+    <div class="flex flex-col xl:flex-row gap-hw-average">
+      @if (activeMembers().length) {
+        <ng-container
+          *ngTemplateOutlet="
+            listOutlet;
+            context: { members: activeMembers(), title: 'Active members' }
+          "
+        ></ng-container>
+      }
+
+      @if (pendingMembers().length) {
+        <ng-container
+          *ngTemplateOutlet="
+            listOutlet;
+            context: { members: pendingMembers(), title: 'Pending members' }
+          "
+        ></ng-container>
+      }
+
+      @if (!activeMembers().length && !pendingMembers().length) {
+        <span class="typ-body">No members invited yet</span>
+      }
+    </div>
+  </div>
+
+  <ng-template #listOutlet let-members="members" let-title="title">
+    <div class="flex flex-col gap-hw-small grow">
+      <span class="typ-body">{{ title }}</span>
+
+      <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
+        @for (member of members; track member.id) {
+          <div class="flex flex-row items-center gap-hw-small min-w-0">
+            <div
+              class="size-10 rounded-full bg-cover bg-center"
+              [style.background-image]="'url(/characters/zargon.png)'"
+            ></div>
+
+            <div class="min-w-0 grow">
+              <div class="typ-small truncate opacity-70">Barbarian</div>
+              <div class="typ-body font-bold truncate">
+                {{ member.handle }}
+              </div>
+            </div>
           </div>
         }
       </div>
     </div>
-  </div>
-
-  <div
-    class="mt-auto pt-hw-small border-t border-off-low flex items-center justify-end gap-hw-small"
-  >
-    <button class="typ-button secondary py-1 px-4 text-sm">VIEW</button>
-    <button class="typ-button primary py-1 px-4 text-sm">JOIN</button>
-  </div>
-</div>
+  </ng-template>
+</app-card>

@@ -1,0 +1,13 @@
+@reference "../../../styles.css";
+
+.primary {
+  @apply border-primary;
+}
+
+.secondary {
+  @apply border-secondary;
+}
+
+.warning {
+  @apply border-warning;
+}
