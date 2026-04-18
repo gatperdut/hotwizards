@@ -1,6 +1,8 @@
 <div class="flex flex-col gap-hw-large">
-  <div class="typ-h1 text-center sticky top-0 py-hw-average bg-background z-1 w-full separator-b">
-    MY CAMPAIGNS
+  <div
+    class="typ-h1 text-center sticky top-0 py-hw-average bg-background z-1 w-full separator-b separator-secondary"
+  >
+    My Campaigns
   </div>
 
   <div class="flex flex-col gap-hw-average">
@@ -12,6 +14,12 @@
       ></app-campaigns-filter>
 
       <app-paginator [(page)]="page" [pages]="pages()"></app-paginator>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average auto-rows-[300px]">
+      @for (campaign of campaigns(); track campaign.id) {
+        <app-campaign [campaign]="campaign"> </app-campaign>
+      }
     </div>
 
     <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ meta() | json }}</pre>
