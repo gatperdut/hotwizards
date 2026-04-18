@@ -8,6 +8,4 @@ import { PrismaService } from './prisma.service.js';
   imports: [ConfigModule],
   exports: [PrismaService],
 })
-export class PrismaModule {
-  // Empty
-}
+export class PrismaModule {}
