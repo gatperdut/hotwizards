@@ -45,7 +45,7 @@ body {
   --spacing-hw-average: 1rem;
   --spacing-hw-large: 1.5rem;
   --spacing-hw-xlarge: 1.75rem;
-  --spacing-hw-xxlarge: 1.75rem;
+  --spacing-hw-xxlarge: 2rem;
 }
 
 .typ-scream {
@@ -164,13 +164,25 @@ body {
 .separator-b,
 .separator-l,
 .separator-r {
+  --sep-color: var(--color-primary);
+
   border-image-source: linear-gradient(
     var(--sep-dir, to right),
     transparent,
-    var(--color-secondary),
+    var(--sep-color),
     transparent
   );
   border-image-slice: 1;
+}
+
+.separator-primary {
+  --sep-color: var(--color-primary);
+}
+.separator-secondary {
+  --sep-color: var(--color-secondary);
+}
+.separator-warning {
+  --sep-color: var(--color-warning);
 }
 
 .separator-t {
@@ -181,7 +193,6 @@ body {
   --sep-dir: to right;
   border-bottom-width: 4px;
 }
-
 .separator-l {
   --sep-dir: to bottom;
   border-left-width: 4px;

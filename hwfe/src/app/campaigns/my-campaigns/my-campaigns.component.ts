@@ -9,34 +9,20 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form } from '@angular/forms/signals';
-import {
-  HwCampaign,
-  HwCampaignSearchDto,
-  HwMembershipStatus,
-  HwUserAny,
-  PaginationMeta,
-} from '@hw/shared';
+import { HwCampaignSearchDto, HwUserAny, PaginationMeta } from '@hw/shared';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
 import { UsersApiService } from '../../users/users-api.service';
+import { CampaignComponent } from '../campaign/campaign.component';
 import { CampaignsFilterComponent } from '../campaigns-filter/campaigns-filter.component';
 import { CampaignsApiService } from '../services/campaigns-api.service';
-
-type MyMember = HwUserAny & {
-  status: HwMembershipStatus;
-  joinedAt: Date;
-};
-
-type MyCampaign = Omit<HwCampaign, 'masterId' | 'memberIds' | 'membershipIds'> & {
-  master: HwUserAny;
-  members: MyMember[];
-};
+import { MyCampaign, MyMember } from '../types/my-campaign.type';
 
 @Component({
   selector: 'app-my-campaigns',
-  imports: [CampaignsFilterComponent, PaginatorComponent, JsonPipe],
+  imports: [CampaignsFilterComponent, PaginatorComponent, CampaignComponent, JsonPipe],
   templateUrl: './my-campaigns.component.html',
   styleUrl: './my-campaigns.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,7 +42,6 @@ export class MyCampaignsComponent {
 
   public model = signal<HwCampaignSearchDto>({
     term: '',
-    pageSize: 1,
   });
 
   public form = form(this.model, (schemaPath) => {

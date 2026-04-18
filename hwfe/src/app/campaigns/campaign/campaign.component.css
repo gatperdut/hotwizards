@@ -1,0 +1,8 @@
+@reference "../../../styles.css";
+
+.card {
+  @apply rounded-tr-3xl
+         rounded-bl-lg
+         border-4
+         border-primary;
+}
