@@ -62,7 +62,7 @@ export class CampaignsService {
       where: where,
       skip: page * pageSize,
       take: pageSize,
-      // orderBy: { name: 'asc' },
+      orderBy: { name: 'asc' },
       include: {
         members: {
           select: {

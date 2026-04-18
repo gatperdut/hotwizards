@@ -1,5 +1,5 @@
 <div class="flex flex-col">
-  <label [for]="id" class="typ-small">{{ label() }}</label>
+  <label [for]="id" class="typ-small truncate w-0 min-w-full">{{ label() }}</label>
 
   <div class="relative flex group">
     <input
@@ -9,9 +9,10 @@
       [formField]="field()"
       [placeholder]="placeholder()"
       [autocomplete]="autocomplete()"
-      [aria-invalid]="displayError() ? 'true' : null"
-      [aria-describedby]="displayError() ? `error-${id}` : null"
+      [aria-invalid]="errorVisibility() ? 'true' : null"
+      [aria-describedby]="errorVisibility() ? `error-${id}` : null"
       (focus)="state().markAsTouched()"
+      [class]="{ 'has-validation': hasValidation() }"
     />
 
     <div
@@ -22,7 +23,14 @@
     </div>
   </div>
 
-  <div role="alert" [id]="`error-${id}`" class="typ-error" [class]="{ invisible: !displayError() }">
-    {{ error() ? error().message : 'Placeholder' }}
-  </div>
+  @if (hasValidation()) {
+    <div
+      role="alert"
+      [id]="`error-${id}`"
+      class="typ-error truncate w-0 min-w-full"
+      [class]="{ invisible: !errorVisibility() }"
+    >
+      {{ error() ? error().message : 'Placeholder' }}
+    </div>
+  }
 </div>
