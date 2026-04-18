@@ -9,9 +9,6 @@ export class HealthService {
 
   public health$ = this.httpClient.get<HwHealthStatus>('/api/health').pipe(
     map(() => true),
-    // tap(() => {
-    //   throw new Error('Forced HealthStatus error.');
-    // }),
     shareReplay(1),
   );
 }

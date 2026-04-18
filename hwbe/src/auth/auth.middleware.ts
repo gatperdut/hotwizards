@@ -9,9 +9,7 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
-  ) {
-    // Empty
-  }
+  ) {}
 
   public async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     if (req.method === 'OPTIONS') {

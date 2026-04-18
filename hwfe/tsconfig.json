@@ -9,7 +9,6 @@
     "types": [],
     "isolatedModules": true,
     "importHelpers": true,
-    // Maybe back to root tsconfig:
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -21,5 +20,4 @@
     "strictTemplates": true
   },
   "include": ["src/**/*.ts"]
-  // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

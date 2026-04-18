@@ -13,5 +13,4 @@
     "outDir": "dist"
   },
   "include": ["src/**/*.ts", "prisma.config.ts", "prisma/**/*.ts"]
-  // "references": [{ "path": "../shared/tsconfig.json" }, { "path": "../prismagen/tsconfig.json" }]
 }

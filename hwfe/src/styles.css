@@ -84,7 +84,6 @@ body {
          leading-others;
 }
 
-/* TODO Possibly typ-input-text, although it may be useful for e.g. numerical inputs */
 .typ-input {
   @apply text-body
          text-off-light
