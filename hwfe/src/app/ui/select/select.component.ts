@@ -1,5 +1,12 @@
-import { JsonPipe } from '@angular/common';
-import { Component, ElementRef, HostListener, input, model, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  input,
+  model,
+  ModelSignal,
+  signal,
+} from '@angular/core';
 import { debounce, Field, form } from '@angular/forms/signals';
 import { InputTextComponent } from '../input-text/input-text.component';
 import { TagComponent } from '../tag/tag.component';
@@ -7,30 +14,31 @@ import { TagComponent } from '../tag/tag.component';
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [InputTextComponent, TagComponent, JsonPipe],
+  imports: [InputTextComponent, TagComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css',
 })
 export class SelectComponent {
-  public label = input.required<string>();
-  public placeholder = input<string>('Select...');
+  public label = input<string>();
+  public placeholder = input<string>('Make your selection');
   public options = input.required<any[] | undefined>();
   public trackFn = input.required<(item: any) => string | number>();
   public displayFn = input.required<(item: any) => string>();
   public form = input.required<Field<any>>();
-  public searchField = model.required<string>();
+  public searchField = model<string>();
   public multiple = input<boolean>(false);
   public loading = input<boolean>(false);
-  public searchable = input<boolean>(true);
 
   constructor(private eRef: ElementRef) {}
 
   public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   public isOpen = signal(false);
 
-  public searchForm = form(this.searchField, (schemaPath) => {
-    debounce(schemaPath, 400);
-  });
+  public searchForm = this.searchField
+    ? form(this.searchField as ModelSignal<string>, (schemaPath) => {
+        debounce(schemaPath, 400);
+      })
+    : undefined;
 
   public toggle(): void {
     if (this.form()().disabled()) {
