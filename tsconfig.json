@@ -10,7 +10,7 @@
       "@hw/shared": ["./shared/src/*"],
       "@hw/hwbe/*": ["./hwbe/src/*"],
       "@hw/hwfe/*": ["./hwfe/src/*"],
-      "hw/prismagen/*": ["./prismagen/src/*"]
+      "@hw/prismagen/*": ["./prismagen/src/*"]
     }
   },
   "references": [

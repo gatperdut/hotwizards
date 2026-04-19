@@ -5,6 +5,8 @@ import {
   HwUserAvailabilityResponse,
   HwUserExt,
   HwUsersByIdsDto,
+  HwUserSearchDto,
+  Paginated,
 } from '@hw/shared';
 import { Controller, Get, Query } from '@nestjs/common';
 import { UserCurrent } from './user-current.decorator.js';
@@ -17,6 +19,11 @@ export class UsersController {
   @Get('me')
   public me(@UserCurrent() user: HwUser): HwUser {
     return user;
+  }
+
+  @Get()
+  public search(@Query() params: HwUserSearchDto): Promise<Paginated<HwUserExt>> {
+    return this.usersService.search(params.term, params.page, params.pageSize);
   }
 
   @Get('by-ids')
