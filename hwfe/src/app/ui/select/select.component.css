@@ -3,6 +3,7 @@
   top: anchor(bottom);
   left: anchor(left);
   width: anchor-size(width);
+  position-try-fallbacks: flip-block;
 }
 
 .app-select {

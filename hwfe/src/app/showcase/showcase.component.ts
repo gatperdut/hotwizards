@@ -72,7 +72,7 @@ export class ShowcaseComponent {
   public selectItems = [...Array(10)].map((_item, index) => {
     return {
       id: index,
-      name: `Item ${index}`,
+      name: `Item ${index}`.repeat(index === 2 ? 10 : 1),
     };
   });
 
