@@ -1,5 +1,7 @@
 <div class="flex flex-col relative">
-  <div class="typ-small mb-hw-xxsmall">{{ label() }}</div>
+  @if (label()) {
+    <div class="typ-small mb-hw-xxsmall">{{ label() }}</div>
+  }
 
   <div class="relative flex group">
     <button
@@ -37,7 +39,7 @@
         [style.position-anchor]="`--${id}`"
         class="anchored fixed mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
       >
-        @if (searchable()) {
+        @if (searchForm) {
           <app-input-text
             [field]="searchForm"
             placeholder="Search by name"
@@ -62,6 +64,4 @@
       </div>
     }
   </div>
-
-  {{ searchForm().value() | json }}
 </div>
