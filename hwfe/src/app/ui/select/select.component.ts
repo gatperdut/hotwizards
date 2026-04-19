@@ -25,7 +25,7 @@ export class SelectComponent {
   public trackFn = input.required<(item: any) => string | number>();
   public displayFn = input.required<(item: any) => string>();
   public form = input.required<Field<any>>();
-  public searchField = model<string>();
+  public searchField = model.required<string>();
   public multiple = input<boolean>(false);
   public loading = input<boolean>(false);
 
@@ -34,11 +34,9 @@ export class SelectComponent {
   public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   public isOpen = signal(false);
 
-  public searchForm = this.searchField
-    ? form(this.searchField as ModelSignal<string>, (schemaPath) => {
-        debounce(schemaPath, 400);
-      })
-    : undefined;
+  public searchForm = form(this.searchField as ModelSignal<string>, (schemaPath) => {
+    debounce(schemaPath, 400);
+  });
 
   public toggle(): void {
     if (this.form()().disabled()) {

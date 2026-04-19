@@ -9,7 +9,7 @@
       [style.anchor-name]="`--${id}`"
       (click)="toggle()"
       [disabled]="form()().disabled()"
-      class="bg-transparent cursor-pointer border-primary min-h-10 h-fit w-full hw-border pl-hw-small text-left"
+      class="app-select bg-transparent cursor-pointer border-primary min-h-10 h-fit w-full hw-border pl-hw-small text-left disabled:border-primary/20"
     >
       <div class="flex flex-row flex-wrap gap-hw-small py-hw-small pr-9 typ-input">
         @if (multiple()) {
@@ -29,7 +29,7 @@
         @if (loading()) {
           <div class="spinner"></div>
         } @else {
-          <span class="typ-input">a</span>
+          <span class="typ-input caret">a</span>
         }
       </div>
     </button>
@@ -39,14 +39,12 @@
         [style.position-anchor]="`--${id}`"
         class="anchored fixed mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
       >
-        @if (searchForm) {
-          <app-input-text
-            [field]="searchForm"
-            placeholder="Search by name"
-            [loading]="false"
-            [hasValidation]="false"
-          ></app-input-text>
-        }
+        <app-input-text
+          [field]="searchForm"
+          placeholder="Search by name"
+          [loading]="false"
+          [hasValidation]="false"
+        ></app-input-text>
 
         <ul class="max-h-48 overflow-y-auto custom-scrollbar">
           @for (option of options(); track trackFn()(option)) {
