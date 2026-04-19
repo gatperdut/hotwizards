@@ -15,6 +15,7 @@ export interface SelectOption {
   styleUrl: './select.component.css',
 })
 export class SelectComponent {
+  id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   label = input.required<string>();
   placeholder = input<string>('Select...');
   options = input<SelectOption[]>([]); // These come from your API via the parent
