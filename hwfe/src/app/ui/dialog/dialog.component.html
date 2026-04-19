@@ -1,31 +1,6 @@
-<!-- <div class="fixed inset-0 z-2 flex items-center justify-center backdrop-blur-xs">
-  <div class="w-full hw-border border-primary bg-background max-w-[95vw]" [class]="sizeClass()">
-    <div class="flex flex-col max-h-[95vh]">
-      <div class="p-hw-average pb-0">
-        <div class="flex flex-row justify-between items-center">
-          <ng-content select="[appDialogTitle]"></ng-content>
-        </div>
-        <div class="separator-b separator-secondary mt-hw-small"></div>
-      </div>
-
-      <div class="p-hw-average overflow-y-auto">
-        <ng-content select="[appDialogContent]"></ng-content>
-      </div>
-
-      @if (hasActions()) {
-        <div class="p-hw-average">
-          <div class="flex justify-end gap-hw-small">
-            <ng-content select="[appDialogActions]"></ng-content>
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-</div> -->
-
 <div class="fixed inset-0 z-2 flex items-center justify-center p-4 backdrop-blur-xs">
   <div
-    class="w-full hw-border border-primary bg-background max-w-[95vw] max-h-full flex flex-col"
+    class="w-full hw-border border-primary bg-background max-h-full flex flex-col"
     [class]="sizeClass()"
   >
     <div class="p-hw-average pb-0 shrink-0">
