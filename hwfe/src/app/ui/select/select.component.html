@@ -29,7 +29,10 @@
         @if (loading()) {
           <div class="spinner"></div>
         } @else {
-          <span class="typ-input caret">a</span>
+          <app-icon
+            [name]="isOpen() ? 'chevron-up' : 'chevron-down'"
+            class="typ-input caret"
+          ></app-icon>
         }
       </div>
     </button>
