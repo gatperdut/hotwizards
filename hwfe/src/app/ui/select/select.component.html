@@ -17,20 +17,18 @@
 
     @if (isOpen()) {
       <div
-        class="absolute z-50 w-full top-11 bg-background hw-border border-primary shadow-2xl overflow-hidden animate-in"
+        class="flex flex-col gap-hw-small absolute z-1 w-full top-11 bg-background hw-border border-primary p-hw-small"
       >
         @if (searchable()) {
-          <div class="p-hw-small">
-            <app-input-text
-              [field]="searchform.term"
-              placeholder="Search by name"
-              [loading]="loading()"
-              [hasValidation]="false"
-            ></app-input-text>
-          </div>
+          <app-input-text
+            [field]="searchform.term"
+            placeholder="Search by name"
+            [loading]="loading()"
+            [hasValidation]="false"
+          ></app-input-text>
         }
 
-        <ul class="max-h-48 overflow-y-auto py-1 custom-scrollbar">
+        <ul class="max-h-48 overflow-y-auto custom-scrollbar">
           @for (opt of filteredOptions(); track opt.value) {
             <li
               (click)="select(opt)"

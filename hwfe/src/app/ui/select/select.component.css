@@ -25,30 +25,3 @@
 li[hover~='bg-primary']:hover {
   @apply bg-primary text-background;
 }
-
-/* Scrollbar styling to keep it minimalistic */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-background;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-primary rounded-full;
-}
-
-/* Smooth entry animation */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-in {
-  animation: fade-in 0.15s ease-out;
-}
