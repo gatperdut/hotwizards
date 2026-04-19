@@ -18,7 +18,16 @@ import { DialogActionsDirective } from './dialog-actions.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogComponent implements OnInit, OnDestroy {
-  public size = input<'sm' | 'md' | 'lg' | 'xl'>('md');
+  public sizeClass = input<
+    | 'max-w-sm'
+    | 'max-w-md'
+    | 'max-w-lg'
+    | 'max-w-xl'
+    | 'max-w-2xl'
+    | 'max-w-3xl'
+    | 'max-w-4xl'
+    | 'max-w-5xl'
+  >('max-w-md');
   public close = output();
 
   public ngOnInit(): void {
@@ -32,14 +41,4 @@ export class DialogComponent implements OnInit, OnDestroy {
   private appDialogActions = contentChild(DialogActionsDirective);
 
   public hasActions = computed(() => !!this.appDialogActions());
-
-  public sizeClass = computed(() => {
-    const map = {
-      sm: 'max-w-md',
-      md: 'max-w-2xl',
-      lg: 'max-w-4xl',
-      xl: 'max-w-6xl',
-    };
-    return map[this.size()];
-  });
 }
