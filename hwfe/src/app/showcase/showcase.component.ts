@@ -99,4 +99,17 @@ export class ShowcaseComponent {
 
   public itemsModel2 = signal<SelectItem[]>([]);
   public itemsForm2 = form(this.itemsModel2);
+  public searchModel2 = signal<string>('');
+  public options2 = computed(() =>
+    this.selectItems.filter((item) => item.name.toLocaleLowerCase().includes(this.searchModel2())),
+  );
+
+  public itemsModel3 = signal<SelectItem[]>([]);
+  public itemsForm3 = form(this.itemsModel2, (schemaPath) => {
+    disabled(schemaPath);
+  });
+  public searchModel3 = signal<string>('');
+  public options3 = computed(() =>
+    this.selectItems.filter((item) => item.name.toLocaleLowerCase().includes(this.searchModel2())),
+  );
 }

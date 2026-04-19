@@ -105,7 +105,20 @@
       label="Select from static list"
       placeholder="Select items"
       [form]="itemsForm2"
-      [options]="selectItems"
+      [(searchField)]="searchModel2"
+      [options]="options2()"
+      [trackFn]="trackFn"
+      [displayFn]="displayFn"
+      [multiple]="true"
+      class="w-[300px] max-w-[500px]"
+    />
+
+    <app-select
+      label="Disabled select"
+      placeholder="Select items"
+      [form]="itemsForm3"
+      [(searchField)]="searchModel3"
+      [options]="options3()"
       [trackFn]="trackFn"
       [displayFn]="displayFn"
       [multiple]="true"
