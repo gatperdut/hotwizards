@@ -86,4 +86,30 @@
 
     <app-checkbox [field]="form.checkbox4" color="primary" label="Disabled checkbox"></app-checkbox>
   </div>
+
+  <div class="flex flex-row gap-hw-small flex-wrap">
+    <app-select
+      label="Select with api call"
+      placeholder="Select items"
+      [form]="itemsForm1"
+      [(searchField)]="searchModel1"
+      [options]="options1()"
+      [trackFn]="trackFn"
+      [displayFn]="displayFn"
+      [multiple]="true"
+      [loading]="resource.isLoading()"
+      class="w-[300px] max-w-[500px]"
+    />
+
+    <app-select
+      label="Select from static list"
+      placeholder="Select items"
+      [form]="itemsForm2"
+      [options]="selectItems"
+      [trackFn]="trackFn"
+      [displayFn]="displayFn"
+      [multiple]="true"
+      class="w-[300px] max-w-[500px]"
+    />
+  </div>
 </div>
