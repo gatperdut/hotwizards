@@ -25,3 +25,12 @@
 li[hover~='bg-primary']:hover {
   @apply bg-primary text-background;
 }
+
+.dropdown {
+  position: fixed; /* Takes it out of the dialog's overflow flow */
+  top: anchor(bottom);
+  left: anchor(left);
+  width: anchor-size(width);
+  margin-top: 4px;
+  z-index: 9999;
+}

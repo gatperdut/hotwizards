@@ -4,6 +4,8 @@
   <div class="relative flex group">
     <button
       type="button"
+      #trigger
+      [style.anchor-name]="`--${id}`"
       (click)="toggle()"
       [disabled]="field()().disabled()"
       class="app-select-trigger typ-input w-full hw-border pl-hw-small pr-10 text-left"
@@ -17,7 +19,8 @@
 
     @if (isOpen()) {
       <div
-        class="flex flex-col gap-hw-small absolute z-1 w-full top-11 bg-background hw-border border-primary p-hw-small"
+        [style.position-anchor]="`--${id}`"
+        class="dropdown flex flex-col gap-hw-small absolute z-1 w-full top-11 bg-background hw-border border-primary p-hw-small"
       >
         @if (searchable()) {
           <app-input-text
