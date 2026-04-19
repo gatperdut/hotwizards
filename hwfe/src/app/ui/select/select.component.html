@@ -10,7 +10,9 @@
       [class.active]="isOpen()"
     >
       <span class="truncate">{{ displayText() }}</span>
-      <div class="spinner absolute right-3" *ngIf="loading()"></div>
+      @if (loading()) {
+        <div class="spinner absolute right-3"></div>
+      }
     </button>
 
     @if (isOpen()) {
@@ -18,15 +20,13 @@
         class="absolute z-50 w-full top-11 bg-background hw-border border-primary shadow-2xl overflow-hidden animate-in"
       >
         @if (searchable()) {
-          <div class="p-2 separator-b separator-primary">
-            <input
-              type="text"
-              class="w-full bg-off-dark/30 typ-small p-2 outline-none border-none placeholder:text-off-medium"
-              placeholder="Search..."
-              [value]="searchTerm()"
-              (input)="searchTerm.set($any($event.target).value)"
-              autofocus
-            />
+          <div class="p-hw-small">
+            <app-input-text
+              [field]="searchform.term"
+              placeholder="Search by name"
+              [loading]="loading()"
+              [hasValidation]="false"
+            ></app-input-text>
           </div>
         }
 
@@ -37,7 +37,9 @@
               class="px-hw-small py-2 cursor-pointer typ-body hover:bg-primary hover:text-background flex justify-between"
             >
               {{ opt.label }}
-              <span *ngIf="multiple() && field()().value().includes(opt.value)">✓</span>
+              @if (multiple() && field()().value().includes(opt.value)) {
+                <span>✓</span>
+              }
             </li>
           } @empty {
             <li class="px-hw-small py-2 typ-small text-off-medium italic">No results found</li>
