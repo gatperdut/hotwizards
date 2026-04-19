@@ -9,7 +9,7 @@ import { Field, FormField } from '@angular/forms/signals';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputTextComponent {
-  public field = input.required<Field<string, string>>();
+  public field = input.required<Field<string>>();
   public label = input<string | undefined>(undefined);
   public type = input<'text' | 'password' | 'email'>('text');
   public autocomplete = input<'username' | 'new-password' | 'current-password' | 'off'>('off');

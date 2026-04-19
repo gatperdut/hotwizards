@@ -1,4 +1,4 @@
-<app-dialog sizeClass="max-w-5xl" (close)="ref.close()">
+<app-dialog sizeClass="max-w-md" (close)="ref.close()">
   <span appDialogTitle class="typ-h2 text-warning">Invite</span>
 
   <span appDialogContent>
@@ -6,12 +6,13 @@
       <app-select
         label="Assigned Role"
         placeholder="Select a designation"
-        [field]="form"
+        [form]="usersForm"
         [(searchField)]="searchModel"
         [options]="options()"
         [trackFn]="trackFn"
         [displayFn]="displayFn"
         [multiple]="true"
+        [loading]="resource.isLoading()"
       />
 
       <!-- <app-select
@@ -26,7 +27,7 @@
       /> -->
       <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
 
-      {{ form().value() | json }}
+      {{ usersForm().value() | json }}
     </div>
   </span>
 

@@ -41,7 +41,7 @@ export class CampaignComponent {
             CampaignInviteDialogData,
             CampaignInviteDialogResult
           >(CampaignInviteDialogComponent, {
-            name: this.campaign().name,
+            campaign: this.campaign(),
           })
           .afterClosed$.subscribe((confirmed) => {
             console.log('DIALOG RESULT', confirmed);
