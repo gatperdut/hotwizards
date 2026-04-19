@@ -1,6 +1,7 @@
 import { Component, computed, ElementRef, HostListener, input, signal } from '@angular/core';
 import { Field, form } from '@angular/forms/signals';
 import { InputTextComponent } from '../input-text/input-text.component';
+import { TagComponent } from '../tag/tag.component';
 
 export interface SelectOption {
   label: string;
@@ -10,44 +11,45 @@ export interface SelectOption {
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [InputTextComponent],
+  imports: [InputTextComponent, TagComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css',
 })
 export class SelectComponent {
-  id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
-  label = input.required<string>();
-  placeholder = input<string>('Select...');
-  options = input<SelectOption[]>([]); // These come from your API via the parent
-  field = input.required<Field<any>>();
-  multiple = input<boolean>(false);
-  loading = input<boolean>(false);
-  searchable = input<boolean>(true); // New input to toggle search
-
-  isOpen = signal(false);
-
-  public searchModel = signal({
-    term: '',
-  });
-
-  public searchform = form(this.searchModel);
+  public label = input.required<string>();
+  public placeholder = input<string>('Select...');
+  public options = input<SelectOption[]>([]);
+  public field = input.required<Field<any>>();
+  public multiple = input<boolean>(false);
+  public loading = input<boolean>(false);
+  public searchable = input<boolean>(true);
 
   constructor(private eRef: ElementRef) {}
 
-  // Filter options based on search term
-  filteredOptions = computed(() => {
-    const term = this.searchModel().term;
+  public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
+  public isOpen = signal(false);
+  private model = signal({
+    term: '',
+  });
+  public form = form(this.model);
+
+  public filteredOptions = computed(() => {
+    const term = this.model().term;
     const opts = this.options();
-    if (!term) return opts;
+
+    if (!term) {
+      return opts;
+    }
     return opts.filter((o) => o.label.toLowerCase().includes(term));
   });
 
-  currentValue = computed(() => this.field()().value());
+  public currentValue = computed(() => this.field()().value());
 
-  displayText = computed(() => {
+  public displayText = computed(() => {
     const val = this.currentValue();
     const opts = this.options();
-    if (this.multiple() && Array.isArray(val)) {
+
+    if (this.multiple()) {
       return (
         opts
           .filter((o) => val.includes(o.value))
@@ -55,29 +57,36 @@ export class SelectComponent {
           .join(', ') || this.placeholder()
       );
     }
+
     return opts.find((o) => o.value === val)?.label || this.placeholder();
   });
 
-  toggle() {
-    if (this.field()().disabled()) return;
+  public toggle(): void {
+    if (this.field()().disabled()) {
+      return;
+    }
+
     this.isOpen.update((v) => !v);
+
     if (this.isOpen()) {
-      this.searchModel.update((value) => ({ ...value, term: '' }));
+      this.model.update((value) => ({ ...value, term: '' }));
     } else {
       this.field()().markAsTouched();
     }
   }
 
-  select(option: SelectOption) {
+  public select(option: SelectOption): void {
     if (this.multiple()) {
-      const current = Array.isArray(this.currentValue()) ? [...this.currentValue()] : [];
-      const index = current.indexOf(option.value);
+      const currentValue = this.currentValue();
+
+      const index = currentValue.indexOf(option.value);
       if (index >= 0) {
-        current.splice(index, 1);
+        currentValue.splice(index, 1);
       } else {
-        current.push(option.value);
+        currentValue.push(option.value);
       }
-      this.field()().value.set(current);
+
+      this.field()().value.set([...currentValue]);
     } else {
       this.field()().value.set(option.value);
       this.isOpen.set(false);
@@ -86,7 +95,7 @@ export class SelectComponent {
   }
 
   @HostListener('document:click', ['$event'])
-  onClickOutside(event: Event) {
+  public onClickOutside(event: Event): void {
     if (!this.eRef.nativeElement.contains(event.target)) {
       this.isOpen.set(false);
     }

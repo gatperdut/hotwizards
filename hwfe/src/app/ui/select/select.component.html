@@ -1,52 +1,55 @@
-<div class="flex flex-col relative">
+<div class="flex flex-col">
   <label class="typ-small mb-hw-xxsmall">{{ label() }}</label>
 
-  <div class="relative flex group">
-    <button
-      type="button"
-      #trigger
-      [style.anchor-name]="`--${id}`"
-      (click)="toggle()"
-      [disabled]="field()().disabled()"
-      class="app-select-trigger typ-input w-full hw-border pl-hw-small pr-10 text-left"
-      [class.active]="isOpen()"
-    >
-      <span class="truncate">{{ displayText() }}</span>
-      @if (loading()) {
-        <div class="spinner absolute right-3"></div>
+  <button
+    type="button"
+    [style.anchor-name]="`--${id}`"
+    (click)="toggle()"
+    [disabled]="field()().disabled()"
+    class="bg-transparent cursor-pointer border-primary min-h-10 h-fit typ-input w-full hw-border pl-hw-small text-left"
+  >
+    <div class="flex flex-row flex-wrap gap-hw-small py-hw-small">
+      @for (value of field()().value(); track value) {
+        <app-tag [label]="value"></app-tag>
+      } @empty {
+        <div>Nothing selected</div>
       }
-    </button>
+    </div>
 
-    @if (isOpen()) {
-      <div
-        [style.position-anchor]="`--${id}`"
-        class="dropdown flex flex-col gap-hw-small absolute z-1 w-full top-11 bg-background hw-border border-primary p-hw-small"
-      >
-        @if (searchable()) {
-          <app-input-text
-            [field]="searchform.term"
-            placeholder="Search by name"
-            [loading]="loading()"
-            [hasValidation]="false"
-          ></app-input-text>
-        }
-
-        <ul class="max-h-48 overflow-y-auto custom-scrollbar">
-          @for (opt of filteredOptions(); track opt.value) {
-            <li
-              (click)="select(opt)"
-              class="px-hw-small py-2 cursor-pointer typ-body hover:bg-primary hover:text-background flex justify-between"
-            >
-              {{ opt.label }}
-              @if (multiple() && field()().value().includes(opt.value)) {
-                <span>✓</span>
-              }
-            </li>
-          } @empty {
-            <li class="px-hw-small py-2 typ-small text-off-medium italic">No results found</li>
-          }
-        </ul>
-      </div>
+    @if (loading()) {
+      <div class="spinner absolute right-3"></div>
     }
-  </div>
+  </button>
+
+  @if (isOpen()) {
+    <div
+      [style.position-anchor]="`--${id}`"
+      class="anchored fixed mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
+    >
+      @if (searchable()) {
+        <app-input-text
+          [field]="form.term"
+          placeholder="Search by name"
+          [loading]="loading()"
+          [hasValidation]="false"
+        ></app-input-text>
+      }
+
+      <ul class="max-h-48 overflow-y-auto custom-scrollbar">
+        @for (opt of filteredOptions(); track opt.value) {
+          <li
+            (click)="select(opt)"
+            class="px-hw-small py-2 cursor-pointer typ-body hover:bg-secondary hover:text-background flex justify-between"
+          >
+            {{ opt.label }}
+            @if (multiple() && field()().value().includes(opt.value)) {
+              <span>✓</span>
+            }
+          </li>
+        } @empty {
+          <li class="px-hw-small py-2 typ-small text-off-medium italic">No results found</li>
+        }
+      </ul>
+    </div>
+  }
 </div>

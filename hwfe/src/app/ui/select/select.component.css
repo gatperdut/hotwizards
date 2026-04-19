@@ -1,36 +1,6 @@
-@reference "../../../styles.css";
-
-.app-select-trigger {
-  @apply bg-transparent
-         cursor-pointer
-         focus:outline-0
-         border-primary
-         h-10
-         transition-all;
-
-  &.active {
-    @apply bg-primary text-background;
-  }
-
-  &.has-error {
-    @apply border-warning;
-  }
-
-  &:disabled {
-    @apply border-off-medium cursor-not-allowed text-off-medium;
-  }
-}
-
-/* List Item Hover - specific override since parent is bg-primary when open */
-li[hover~='bg-primary']:hover {
-  @apply bg-primary text-background;
-}
-
-.dropdown {
-  position: fixed; /* Takes it out of the dialog's overflow flow */
+.anchored {
+  position: fixed;
   top: anchor(bottom);
   left: anchor(left);
   width: anchor-size(width);
-  margin-top: 4px;
-  z-index: 9999;
 }

@@ -1,0 +1,24 @@
+<div
+  class="flex items-center gap-hw-xsmall px-hw-small py-1 bg-off-dark border-2 border-secondary rounded-tr-xl rounded-bl-md animate-in fade-in zoom-in-95 duration-200"
+>
+  <span class="typ-small whitespace-nowrap">
+    {{ label() }}
+  </span>
+
+  @if (action) {
+    <button
+      type="button"
+      (click)="action()"
+      class="flex items-center justify-center hover:text-warning transition-colors cursor-pointer"
+      aria-label="Remove tag"
+    >
+      <ng-content select="[icon]">
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+          <path
+            d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
+          />
+        </svg>
+      </ng-content>
+    </button>
+  }
+</div>
