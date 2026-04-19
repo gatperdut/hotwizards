@@ -8,13 +8,21 @@
     [disabled]="field()().disabled()"
     class="bg-transparent cursor-pointer border-primary min-h-10 h-fit typ-input w-full hw-border pl-hw-small text-left"
   >
-    <div class="flex flex-row flex-wrap gap-hw-small py-hw-small">
-      @for (value of field()().value(); track value) {
-        <app-tag [label]="value"></app-tag>
-      } @empty {
-        <div>Nothing selected</div>
+    @if (multiple()) {
+      <div class="flex flex-row flex-wrap gap-hw-small py-hw-small">
+        @for (value of field()().value(); track value) {
+          <app-tag [label]="value"></app-tag>
+        } @empty {
+          <div class="opacity-70">{{ placeholder() }}</div>
+        }
+      </div>
+    } @else {
+      @if (field()().value()) {
+        {{ field()().value() }}
+      } @else {
+        <div class="opacity-70">{{ placeholder() }}</div>
       }
-    </div>
+    }
 
     @if (loading()) {
       <div class="spinner absolute right-3"></div>

@@ -66,13 +66,13 @@ export class SelectComponent {
       return;
     }
 
+    if (this.isOpen()) {
+      this.model.set({ term: '' });
+    }
+
     this.isOpen.update((v) => !v);
 
-    if (this.isOpen()) {
-      this.model.update((value) => ({ ...value, term: '' }));
-    } else {
-      this.field()().markAsTouched();
-    }
+    this.field()().markAsTouched();
   }
 
   public select(option: SelectOption): void {
