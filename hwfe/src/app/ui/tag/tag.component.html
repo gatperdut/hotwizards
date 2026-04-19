@@ -5,20 +5,14 @@
     {{ label() }}
   </span>
 
-  @if (action) {
+  @let iconName = icon();
+  @if (iconName) {
     <button
       type="button"
-      (click)="action()"
-      class="flex items-center justify-center hover:text-warning transition-colors cursor-pointer"
-      aria-label="Remove tag"
+      (click)="callback.emit()"
+      class="flex items-center justify-center hover:text-warning cursor-pointer"
     >
-      <ng-content select="[icon]">
-        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-          <path
-            d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
-          />
-        </svg>
-      </ng-content>
+      <app-icon [name]="iconName" size="w-4 h-4" />
     </button>
   }
 </div>

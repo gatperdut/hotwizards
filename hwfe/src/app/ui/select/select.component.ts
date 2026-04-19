@@ -38,7 +38,7 @@ export class SelectComponent {
     debounce(schemaPath, 400);
   });
 
-  public toggle(): void {
+  public open(): void {
     if (this.form()().disabled()) {
       return;
     }
@@ -48,7 +48,7 @@ export class SelectComponent {
     this.form()().markAsTouched();
   }
 
-  public select(option: any): void {
+  public toggle(option: any): void {
     if (this.multiple()) {
       const currentValue: any[] = this.form()().value();
 

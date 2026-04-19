@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { IconName } from '../icon/icon-registry';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-tag',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './tag.component.html',
   styleUrl: './tag.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TagComponent {
   public label = input.required<string>();
-
-  public callback = input<() => void>();
-
-  public action = this.callback();
+  public icon = input<IconName>();
+  public callback = output<void>();
 }
