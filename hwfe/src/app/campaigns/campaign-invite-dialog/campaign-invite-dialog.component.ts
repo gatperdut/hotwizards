@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { form, required } from '@angular/forms/signals';
+import { form } from '@angular/forms/signals';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogActionsDirective } from '../../ui/dialog/dialog-actions.directive';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -25,16 +25,12 @@ export class CampaignInviteDialogComponent {
   public data = inject<CampaignInviteDialogData>(APP_DIALOG_DATA);
   public ref = inject<DialogRef<CampaignInviteDialogResult>>(DialogRef);
 
-  public model = signal<{ roleField: string; techStackField: string }>({
-    roleField: '',
+  public model = signal<{ roleField: string[]; techStackField: string }>({
+    roleField: [],
     techStackField: '',
   });
 
-  public form = form(this.model, (schemaPath) => {
-    required(schemaPath.roleField, { message: 'An identifier is required' });
-
-    required(schemaPath.techStackField, { message: 'Password is required' });
-  });
+  public form = form(this.model);
 
   /**
    * 2. Define your Options
