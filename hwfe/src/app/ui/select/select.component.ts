@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
-import { Component, ElementRef, HostListener, input, model, output, signal } from '@angular/core';
-import { Field, form } from '@angular/forms/signals';
+import { Component, ElementRef, HostListener, input, model, signal } from '@angular/core';
+import { debounce, Field, form } from '@angular/forms/signals';
 import { InputTextComponent } from '../input-text/input-text.component';
 import { TagComponent } from '../tag/tag.component';
 
@@ -17,35 +17,34 @@ export class SelectComponent {
   public options = input.required<any[] | undefined>();
   public trackFn = input.required<(item: any) => string | number>();
   public displayFn = input.required<(item: any) => string>();
-  public field = input.required<Field<any>>();
-  public searchField = model.required<{ term: string }>();
+  public form = input.required<Field<any>>();
+  public searchField = model.required<string>();
   public multiple = input<boolean>(false);
   public loading = input<boolean>(false);
-  public searchable = input<boolean>(true); // = equivalent to presence of searchField
-  public search = output<string>();
+  public searchable = input<boolean>(true);
 
   constructor(private eRef: ElementRef) {}
 
   public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   public isOpen = signal(false);
 
-  public form = form(this.searchField);
+  public searchForm = form(this.searchField, (schemaPath) => {
+    debounce(schemaPath, 400);
+  });
 
   public toggle(): void {
-    if (this.field()().disabled()) {
+    if (this.form()().disabled()) {
       return;
     }
 
-    this.searchField.set({ term: '' });
-
-    this.isOpen.update((v) => !v);
-
-    this.field()().markAsTouched();
+    this.searchField.set('');
+    this.isOpen.update((open) => !open);
+    this.form()().markAsTouched();
   }
 
   public select(option: any): void {
     if (this.multiple()) {
-      const currentValue: any[] = this.field()().value();
+      const currentValue: any[] = this.form()().value();
 
       const index = currentValue.findIndex(
         (someOption) => this.trackFn()(option) === this.trackFn()(someOption),
@@ -56,11 +55,22 @@ export class SelectComponent {
         currentValue.push(option);
       }
 
-      this.field()().value.set([...currentValue]);
+      this.form()().value.set([...currentValue]);
     } else {
-      this.field()().value.set(option);
+      this.form()().value.set(option);
       this.isOpen.set(false);
-      this.field()().markAsTouched();
+      this.form()().markAsTouched();
+    }
+  }
+
+  public isSelected(option: any): boolean {
+    if (this.multiple()) {
+      const current: any[] = this.form()().value();
+
+      const id = this.trackFn()(option);
+      return current.some((someOption) => this.trackFn()(someOption) === id);
+    } else {
+      return this.form() && this.trackFn()(this.form()) === this.trackFn()(option);
     }
   }
 
