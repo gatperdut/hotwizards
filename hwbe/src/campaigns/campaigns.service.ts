@@ -1,6 +1,6 @@
+import { Prisma } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
-import { CampaignWhereInput } from 'hw/prismagen/models.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class CampaignsService {
     page: number = 0,
     pageSize: number = 10,
   ): Promise<Paginated<HwCampaign>> {
-    const where: CampaignWhereInput = {
+    const where: Prisma.CampaignWhereInput = {
       AND: [
         {
           OR: [

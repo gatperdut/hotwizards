@@ -18,5 +18,6 @@ export { HwUserAvailabilityEmailDto } from './users/user-availability-email.dto.
 export { HwUserAvailabilityHandleDto } from './users/user-availability-handle.dto.js';
 export { HwUserAvailabilityResponse } from './users/user-availability-response.interface.js';
 export { HwUserExt } from './users/user-ext.interface.js';
+export { HwUserSearchDto } from './users/user-search.dto.js';
 export { HwUser } from './users/user.interface.js';
 export { HwUsersByIdsDto } from './users/users-by-ids.dto.js';

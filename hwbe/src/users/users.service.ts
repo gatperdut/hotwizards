@@ -1,4 +1,5 @@
-import { HwUser, HwUserExt } from '@hw/shared';
+import { Prisma } from '@hw/prismagen/client';
+import { HwUser, HwUserExt, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UserExtSelect } from './user-ext.select.js';
@@ -20,6 +21,45 @@ export class UsersService {
       where: { email: email },
       select: UserExtSelect,
     });
+  }
+
+  public async search(
+    term: string = '',
+    page: number = 0,
+    pageSize: number = 10,
+  ): Promise<Paginated<HwUserExt>> {
+    const where: Prisma.UserWhereInput = {
+      handle: {
+        contains: term,
+        mode: 'insensitive',
+      },
+    };
+
+    const users = await this.prismaService.user.findMany({
+      where: where,
+      skip: page * pageSize,
+      take: pageSize,
+      orderBy: { handle: 'asc' },
+    });
+
+    const total: number = await this.prismaService.user.count({ where: where });
+
+    return {
+      items: users.map(
+        (user): HwUserExt => ({
+          id: user.id,
+          handle: user.handle,
+          admin: user.admin,
+          createdAt: user.createdAt,
+        }),
+      ),
+      meta: {
+        page: page || 0,
+        pageSize: pageSize || 10,
+        total: total,
+        pages: Math.ceil(total / (pageSize || 10)),
+      },
+    };
   }
 
   public byIdentifier(identifier: string): Promise<(HwUser & { password: string }) | null> {

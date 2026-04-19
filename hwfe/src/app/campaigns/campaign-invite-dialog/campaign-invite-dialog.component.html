@@ -1,7 +1,30 @@
 <app-dialog sizeClass="max-w-5xl" (close)="ref.close()">
   <span appDialogTitle class="typ-h2 text-warning">Invite</span>
 
-  <span appDialogContent> </span>
+  <span appDialogContent>
+    <app-select
+      label="Assigned Role"
+      placeholder="Select a designation"
+      [field]="form.roleField"
+      [options]="roleOptions"
+      [multiple]="true"
+    />
+
+    <app-select
+      label="Known Technologies"
+      placeholder="Select expertise..."
+      [multiple]="true"
+      [field]="form.techStackField"
+      [options]="techOptions"
+    />
+    <div>HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
+    <div>HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
+    <div>HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
+    <div>HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
+    <div>HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
+    <div>HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
+    {{ form().value() | json }}
+  </span>
 
   <div appDialogActions class="contents">
     <app-button label="Confirm" (click)="ref.close(true)"></app-button>
