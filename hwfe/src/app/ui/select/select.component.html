@@ -43,7 +43,7 @@
           <app-input-text
             [field]="searchForm"
             placeholder="Search by name"
-            [loading]="loading()"
+            [loading]="false"
             [hasValidation]="false"
           ></app-input-text>
         }
@@ -58,7 +58,13 @@
               {{ displayFn()(option) }}
             </li>
           } @empty {
-            <li class="typ-small italic">No results found</li>
+            <li class="typ-small italic">
+              @if (loading()) {
+                <div>Loading</div>
+              } @else {
+                <div>No results found</div>
+              }
+            </li>
           }
         </ul>
       </div>

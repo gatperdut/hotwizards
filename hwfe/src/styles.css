@@ -153,9 +153,11 @@ body {
          rounded-full
          border-2
          border-primary
-         border-t-transparent
-         group-focus-within:border-off-dark
-         group-focus-within:border-t-transparent;
+         border-t-transparent;
+
+  &.grouped {
+    @apply group-focus-within:border-off-dark;
+  }
 }
 
 /* Separators */

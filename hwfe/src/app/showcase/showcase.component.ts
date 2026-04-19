@@ -1,14 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { disabled, form, required } from '@angular/forms/signals';
+import { delay, map, of } from 'rxjs';
 import { ButtonComponent } from '../ui/button/button.component';
 import { CheckboxComponent } from '../ui/checkbox/checkbox.component';
 import { InputTextComponent } from '../ui/input-text/input-text.component';
 import { LinkComponent } from '../ui/link/link.component';
+import { SelectComponent } from '../ui/select/select.component';
 import { ToastService } from '../ui/toast/services/toast.service';
+
+type SelectItem = {
+  id: number;
+  name: string;
+};
 
 @Component({
   selector: 'app-showcase',
-  imports: [ButtonComponent, InputTextComponent, LinkComponent, CheckboxComponent],
+  imports: [ButtonComponent, InputTextComponent, LinkComponent, CheckboxComponent, SelectComponent],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -60,4 +68,35 @@ export class ShowcaseComponent {
   public toastWarning(): void {
     this.toastService.show({ message: 'Warning toast', color: 'warning' });
   }
+
+  public selectItems = [...Array(10)].map((_item, index) => {
+    return {
+      id: index,
+      name: `Item ${index}`,
+    };
+  });
+
+  public itemsModel1 = signal<SelectItem[]>([]);
+  public itemsForm1 = form(this.itemsModel1);
+  public searchModel1 = signal<string>('');
+  public trackFn = (user: SelectItem): number => {
+    return user.id;
+  };
+  public displayFn = (user: SelectItem): string => {
+    return user.name;
+  };
+  public resource = rxResource<SelectItem[], string>({
+    params: () => this.searchModel1(),
+    stream: (request) => {
+      return of(request).pipe(
+        delay(1000),
+        map(() => this.selectItems.filter((item) => item.name.includes(request.params))),
+      );
+    },
+  });
+
+  public options1 = computed(() => this.resource.value());
+
+  public itemsModel2 = signal<SelectItem[]>([]);
+  public itemsForm2 = form(this.itemsModel2);
 }
