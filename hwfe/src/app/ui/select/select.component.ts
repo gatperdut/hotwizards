@@ -8,13 +8,14 @@ import {
   signal,
 } from '@angular/core';
 import { debounce, Field, form } from '@angular/forms/signals';
+import { IconComponent } from '../icon/icon.component';
 import { InputTextComponent } from '../input-text/input-text.component';
 import { TagComponent } from '../tag/tag.component';
 
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [InputTextComponent, TagComponent],
+  imports: [InputTextComponent, TagComponent, IconComponent, IconComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css',
 })

@@ -1,35 +1,49 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
-import { IconName, Icons } from './icon-registry';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { IconService } from './services/icon.service';
 
 @Component({
   selector: 'app-icon',
   imports: [],
-  template: '',
+  templateUrl: './icon.component.html',
+  styleUrl: './icon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[innerHTML]': 'svgContent()',
-    class: 'inline-block leading-none shrink-0',
+    '[innerHTML]': 'safeSvg()',
+    '[class]': 'classes() + " shrink-0 fill-current"',
   },
 })
 export class IconComponent {
+  private iconService = inject(IconService);
   private sanitizer = inject(DomSanitizer);
 
-  public name = input.required<IconName>();
-  public size = input<string>('w-5 h-5');
-  public stroke = input<number>(1.5);
+  public name = input.required<string>();
+  public classes = input<string>('w-4 h-4');
 
-  public svgContent = computed(() => {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg"
-           fill="none"
-           viewBox="0 0 24 24"
-           stroke-width="${this.stroke()}"
-           stroke="currentColor"
-           class="${this.size()}">
-        ${Icons[this.name()]}
-      </svg>
-    `;
-    return this.sanitizer.bypassSecurityTrustHtml(svg);
-  });
+  constructor() {
+    effect(() => {
+      const iconName = this.name();
+      this.iconService.getIcon(iconName).subscribe({
+        next: (svg) => this.rawSvg.set(svg),
+        error: () => {
+          console.error(`Icon "${iconName}" not found.`);
+          this.rawSvg.set('');
+        },
+      });
+    });
+  }
+
+  private rawSvg = signal<string>('');
+
+  protected safeSvg = computed<SafeHtml>(() =>
+    this.sanitizer.bypassSecurityTrustHtml(this.rawSvg()),
+  );
 }
