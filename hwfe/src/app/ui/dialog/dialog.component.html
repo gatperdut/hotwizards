@@ -10,7 +10,10 @@
       <div class="separator-b separator-secondary mt-hw-small"></div>
     </div>
 
-    <div class="p-hw-average overflow-y-auto min-h-0" [class]="{ 'pb-0': hasActions() }">
+    <div
+      class="p-hw-average overflow-y-auto min-h-0 custom-scrollbar"
+      [class]="{ 'pb-0': hasActions() }"
+    >
       <ng-content select="[appDialogContent]"></ng-content>
     </div>
 

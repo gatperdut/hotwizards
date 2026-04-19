@@ -228,3 +228,14 @@ body {
 .no-scroll {
   @apply overflow-hidden touch-none;
 }
+
+/* Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded-full;
+}
