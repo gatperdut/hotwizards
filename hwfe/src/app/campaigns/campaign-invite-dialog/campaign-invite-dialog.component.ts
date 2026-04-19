@@ -45,6 +45,18 @@ export class CampaignInviteDialogComponent {
     { label: 'Engineer', value: 'eng' },
     { label: 'Designer', value: 'des' },
     { label: 'Stellar Navigator', value: 'nav' },
+    { label: 'Architect 2', value: 'arch 2' },
+    { label: 'Engineer 2', value: 'eng 2' },
+    { label: 'Designer 2', value: 'des 2' },
+    { label: 'Stellar Navigator 2', value: 'nav 2' },
+    { label: 'Architect 3', value: 'arch 3' },
+    { label: 'Engineer 3', value: 'eng 3' },
+    { label: 'Designer 3', value: 'des 3' },
+    { label: 'Stellar Navigator 3', value: 'nav 3' },
+    { label: 'Architect 4', value: 'arch 4' },
+    { label: 'Engineer 4', value: 'eng 4' },
+    { label: 'Designer 4', value: 'des 4' },
+    { label: 'Stellar Navigator 4', value: 'nav 4' },
   ];
 
   techOptions: SelectOption[] = [

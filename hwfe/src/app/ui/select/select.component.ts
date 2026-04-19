@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, ElementRef, HostListener, input, signal } from '@angular/core';
-import { Field } from '@angular/forms/signals';
+import { Field, form } from '@angular/forms/signals';
+import { InputTextComponent } from '../input-text/input-text.component';
 
 export interface SelectOption {
   label: string;
@@ -10,7 +10,7 @@ export interface SelectOption {
 @Component({
   selector: 'app-select',
   standalone: true,
-  imports: [CommonModule],
+  imports: [InputTextComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css',
 })
@@ -24,13 +24,18 @@ export class SelectComponent {
   searchable = input<boolean>(true); // New input to toggle search
 
   isOpen = signal(false);
-  searchTerm = signal('');
+
+  public searchModel = signal({
+    term: '',
+  });
+
+  public searchform = form(this.searchModel);
 
   constructor(private eRef: ElementRef) {}
 
   // Filter options based on search term
   filteredOptions = computed(() => {
-    const term = this.searchTerm().toLowerCase();
+    const term = this.searchModel().term;
     const opts = this.options();
     if (!term) return opts;
     return opts.filter((o) => o.label.toLowerCase().includes(term));
@@ -56,7 +61,7 @@ export class SelectComponent {
     if (this.field()().disabled()) return;
     this.isOpen.update((v) => !v);
     if (this.isOpen()) {
-      this.searchTerm.set(''); // Reset search when opening
+      this.searchModel.update((value) => ({ ...value, term: '' }));
     } else {
       this.field()().markAsTouched();
     }

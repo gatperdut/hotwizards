@@ -1,5 +1,7 @@
 <div class="flex flex-col">
-  <label [for]="id" class="typ-small truncate w-0 min-w-full">{{ label() }}</label>
+  @if (label()) {
+    <label [for]="id" class="typ-small truncate w-0 min-w-full">{{ label() }}</label>
+  }
 
   <div class="relative flex group">
     <input
