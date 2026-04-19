@@ -12,7 +12,7 @@
       <div class="flex flex-row flex-wrap gap-hw-small py-hw-small pr-9">
         @if (multiple()) {
           @for (value of field()().value(); track value) {
-            <app-tag [label]="value"></app-tag>
+            <app-tag [label]="displayFn()(value)"></app-tag>
           } @empty {
             <div class="opacity-70">{{ placeholder() }}</div>
           }
@@ -47,13 +47,13 @@
         }
 
         <ul class="max-h-48 overflow-y-auto custom-scrollbar">
-          @for (opt of filteredOptions(); track opt.value) {
+          @for (option of options(); track trackFn()(option)) {
             <li
-              (click)="select(opt)"
+              (click)="select(option)"
               class="px-hw-small py-2 cursor-pointer typ-body hover:bg-secondary hover:text-background flex justify-between"
             >
-              {{ opt.label }}
-              @if (multiple() && field()().value().includes(opt.value)) {
+              {{ displayFn()(option) }}
+              @if (multiple() && field()().value().includes(trackFn()(option))) {
                 <span>✓</span>
               }
             </li>
@@ -64,4 +64,6 @@
       </div>
     }
   </div>
+
+  {{ form().value() | json }}
 </div>

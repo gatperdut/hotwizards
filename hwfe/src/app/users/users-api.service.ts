@@ -6,6 +6,8 @@ import {
   HwUserAvailabilityHandleDto,
   HwUserAvailabilityResponse,
   HwUserExt,
+  HwUserSearchDto,
+  Paginated,
   type HwUsersByIdsDto,
 } from '@hw/shared';
 import { map, Observable, of } from 'rxjs';
@@ -24,6 +26,10 @@ export class UsersApiService {
     }
 
     return this.httpClient.get<HwUserExt[]>(`/api/users/by-ids`, { params: { ...params } });
+  }
+
+  public search(params: HwUserSearchDto): Observable<Paginated<HwUserExt>> {
+    return this.httpClient.get<Paginated<HwUserExt>>(`/api/users`, { params: { ...params } });
   }
 
   public availabilityEmail(params: HwUserAvailabilityEmailDto): Observable<boolean> {

@@ -6,59 +6,25 @@
       <app-select
         label="Assigned Role"
         placeholder="Select a designation"
-        [field]="form.roleField"
-        [options]="roleOptions"
+        [field]="form"
+        [(searchField)]="searchModel"
+        [options]="options()"
+        [trackFn]="trackFn"
+        [displayFn]="displayFn"
         [multiple]="true"
       />
 
-      <app-select
+      <!-- <app-select
         label="Known Technologies"
         placeholder="Select expertise..."
         [multiple]="false"
         [field]="form.techStackField"
         [options]="techOptions"
+        [trackFn]="trackFn"
+        [displayFn]="displayFn"
         [searchable]="false"
-      />
+      /> -->
       <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <!-- <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div> -->
 
       {{ form().value() | json }}
     </div>
