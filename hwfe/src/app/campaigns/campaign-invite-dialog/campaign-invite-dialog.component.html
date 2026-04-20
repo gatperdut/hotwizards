@@ -1,35 +1,33 @@
-<app-dialog sizeClass="max-w-md" (close)="ref.close()">
-  <span appDialogTitle class="typ-h2 text-warning">Invite</span>
+<app-dialog sizeClass="max-w-md">
+  <form (ngSubmit)="invite()">
+    <ng-template appDialogTitle>
+      <div class="typ-h2">Invite</div>
+    </ng-template>
 
-  <span appDialogContent>
-    <div class="flex flex-col gap-hw-average">
-      <app-select
-        placeholder="Select users"
-        [form]="usersForm"
-        [(searchField)]="searchModel"
-        [options]="options()"
-        [trackFn]="trackFn"
-        [displayFn]="displayFn"
-        [multiple]="true"
-        [loading]="resource.isLoading()"
-      />
+    <ng-template appDialogContent>
+      <div class="flex flex-col gap-hw-average">
+        <div class="typ-body">Select the users to invite to your campaign.</div>
+        <app-select
+          placeholder="Select users"
+          [form]="form"
+          [(searchField)]="searchModel"
+          [options]="options()"
+          [trackFn]="trackFn"
+          [displayFn]="displayFn"
+          [multiple]="true"
+          [loading]="resource.isLoading()"
+        />
+      </div>
+    </ng-template>
 
-      <!-- <app-select
-        label="Known Technologies"
-        placeholder="Select expertise"
-        [multiple]="false"
-        [field]="form.techStackField"
-        [options]="techOptions"
-        [trackFn]="trackFn"
-        [displayFn]="displayFn"
-      /> -->
-      <div class="typ-body">HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA HOLA</div>
-
-      {{ usersForm().value() | json }}
-    </div>
-  </span>
-
-  <div appDialogActions class="contents">
-    <app-button label="Confirm" (click)="ref.close(true)"></app-button>
-  </div>
+    <ng-template appDialogActions>
+      <app-button label="Cancel" type="button" (click)="dialogRef.close(false)"></app-button>
+      <app-button
+        label="Invite"
+        type="submit"
+        (click)="invite()"
+        [disabled]="form().invalid()"
+      ></app-button>
+    </ng-template>
+  </form>
 </app-dialog>

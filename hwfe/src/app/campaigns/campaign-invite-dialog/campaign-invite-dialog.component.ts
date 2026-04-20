@@ -1,13 +1,15 @@
-import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { form } from '@angular/forms/signals';
+import { form, minLength } from '@angular/forms/signals';
 import { HwUserExt } from '@hw/shared';
 import { map } from 'rxjs';
+import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { ButtonComponent } from '../../ui/button/button.component';
-import { DialogActionsDirective } from '../../ui/dialog/dialog-actions.directive';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
+import { DialogActionsDirective } from '../../ui/dialog/directives/dialog-actions.directive';
+import { DialogContentDirective } from '../../ui/dialog/directives/dialog-content.directive';
+import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { UsersApiService } from '../../users/users-api.service';
@@ -21,18 +23,28 @@ export type CampaignInviteDialogResult = boolean;
 
 @Component({
   selector: 'app-campaign-invite-dialog',
-  imports: [DialogComponent, DialogActionsDirective, ButtonComponent, SelectComponent, JsonPipe],
+  imports: [
+    DialogComponent,
+    DialogTitleDirective,
+    DialogContentDirective,
+    DialogActionsDirective,
+    ButtonComponent,
+    SelectComponent,
+  ],
   templateUrl: './campaign-invite-dialog.component.html',
   styleUrl: './campaign-invite-dialog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CampaignInviteDialogComponent {
   public data = inject<CampaignInviteDialogData>(APP_DIALOG_DATA);
-  public ref = inject<DialogRef<CampaignInviteDialogResult>>(DialogRef);
+  public dialogRef = inject<DialogRef<CampaignInviteDialogResult>>(DialogRef);
   private usersApiService = inject(UsersApiService);
+  private membershipsApiService = inject(MembershipsApiService);
 
-  public usersModel = signal<HwUserExt[]>([]);
-  public usersForm = form(this.usersModel);
+  public model = signal<HwUserExt[]>([]);
+  public form = form(this.model, (schemaPath) => {
+    minLength(schemaPath, 1);
+  });
   public searchModel = signal<string>('');
   public trackFn = (user: HwUserExt): number => {
     return user.id;
@@ -54,4 +66,15 @@ export class CampaignInviteDialogComponent {
   });
 
   public options = computed(() => this.resource.value() || []);
+
+  public invite(): void {
+    this.membershipsApiService
+      .invite({ campaignId: this.data.campaign.id, userIds: this.model().map((user) => user.id) })
+
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+        },
+      });
+  }
 }
