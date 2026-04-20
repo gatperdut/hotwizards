@@ -1,6 +1,6 @@
 import { Campaign } from '@hw/prismagen/client';
 import { HwMembership, HwMembershipCreateDto, HwMembershipsByIdsDto } from '@hw/shared';
-import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { OwnedCampaign } from '../campaigns/owned-campaign.decorator.js';
 import { OwnedCampaignGuard } from '../campaigns/owned-campaign.guard.js';
 import { MembershipsService } from './memberships.service.js';
@@ -16,9 +16,7 @@ export class MembershipsController {
 
   @Post()
   @UseGuards(OwnedCampaignGuard)
-  public invite(@OwnedCampaign() campaign: Campaign, @Query() params: HwMembershipCreateDto) {
-    console.log('campaign', campaign);
-    console.log('params', params);
+  public invite(@OwnedCampaign() campaign: Campaign, @Body() params: HwMembershipCreateDto) {
     return this.membershipsService.invite(campaign.id, params.userIds);
   }
 }
