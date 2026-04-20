@@ -16,7 +16,9 @@ export class MembershipsController {
 
   @Post()
   @UseGuards(OwnedCampaignGuard)
-  public invite(@OwnedCampaign() campaign: Campaign, params: HwMembershipCreateDto) {
+  public invite(@OwnedCampaign() campaign: Campaign, @Query() params: HwMembershipCreateDto) {
+    console.log('campaign', campaign);
+    console.log('params', params);
     return this.membershipsService.invite(campaign.id, params.userIds);
   }
 }
