@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsPositive } from 'class-validator';
 
-export class HwOwnedCampaignDto {
+export class HwCampaignPartialDto {
   @IsInt()
   @IsPositive()
   @Type(() => Number)
