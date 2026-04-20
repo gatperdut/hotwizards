@@ -21,7 +21,12 @@
     </ng-template>
 
     <ng-template appDialogActions>
-      <app-button label="Cancel" type="button" (click)="dialogRef.close(false)"></app-button>
+      <app-button
+        label="Cancel"
+        type="button"
+        appearance="outlined"
+        (click)="dialogRef.close(false)"
+      ></app-button>
       <app-button
         label="Invite"
         type="submit"

@@ -22,7 +22,41 @@
            scale-100;
   }
 
-  &.secondary {
+  &.outlined {
+    @apply bg-transparent text-primary;
+
+    &:hover:not(:disabled) {
+      @apply bg-primary text-white; /* Fills on hover */
+    }
+
+    &:disabled {
+      @apply bg-transparent border-primary/20 text-primary/20;
+    }
+
+    &.secondary {
+      @apply border-secondary text-secondary bg-transparent;
+
+      &:hover:not(:disabled) {
+        @apply bg-secondary text-white;
+      }
+      &:disabled {
+        @apply border-secondary/20 text-secondary/20;
+      }
+    }
+
+    &.warning {
+      @apply border-warning text-warning bg-transparent;
+
+      &:hover:not(:disabled) {
+        @apply bg-warning text-white;
+      }
+      &:disabled {
+        @apply border-warning/20 text-warning/20;
+      }
+    }
+  }
+
+  &.secondary:not(.outlined) {
     @apply border-secondary
            bg-secondary;
 
@@ -36,7 +70,7 @@
     }
   }
 
-  &.warning {
+  &.warning:not(.outlined) {
     @apply border-warning
            bg-warning;
 
