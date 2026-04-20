@@ -5,7 +5,7 @@
   >
     <div class="p-hw-average pb-0 shrink-0">
       <div class="flex flex-row justify-between items-center">
-        <ng-content select="[appDialogTitle]"></ng-content>
+        <ng-container [ngTemplateOutlet]="titleTemplate()"></ng-container>
       </div>
       <div class="separator-b separator-secondary mt-hw-small"></div>
     </div>
@@ -14,13 +14,13 @@
       class="p-hw-average overflow-y-auto min-h-0 custom-scrollbar overflow-visible"
       [class]="{ 'pb-0': hasActions() }"
     >
-      <ng-content select="[appDialogContent]"></ng-content>
+      <ng-container [ngTemplateOutlet]="contentTemplate()"></ng-container>
     </div>
 
     @if (hasActions()) {
       <div class="p-hw-average">
         <div class="flex flex-row flex-wrap justify-end gap-hw-small">
-          <ng-content select="[appDialogActions]"></ng-content>
+          <ng-container [ngTemplateOutlet]="actionsTemplate()"></ng-container>
         </div>
       </div>
     }

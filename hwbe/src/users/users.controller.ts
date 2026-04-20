@@ -1,3 +1,4 @@
+import { User } from '@hw/prismagen/client';
 import {
   HwUser,
   HwUserAvailabilityEmailDto,
@@ -9,7 +10,7 @@ import {
   Paginated,
 } from '@hw/shared';
 import { Controller, Get, Query } from '@nestjs/common';
-import { UserCurrent } from './user-current.decorator.js';
+import { CurrentUser } from './current-user.decorator.js';
 import { UsersService } from './users.service.js';
 
 @Controller('users')
@@ -17,7 +18,7 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('me')
-  public me(@UserCurrent() user: HwUser): HwUser {
+  public me(@CurrentUser() user: User): HwUser {
     return user;
   }
 

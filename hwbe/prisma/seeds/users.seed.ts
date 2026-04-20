@@ -6,7 +6,7 @@ type NamedUserSeed = {
   initials: string;
 };
 
-export async function seedUsers(prisma: PrismaClient): Promise<void> {
+export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
   const salt: string = await bcrypt.genSalt();
 
   const namedUserSeeds: NamedUserSeed[] = [
@@ -35,7 +35,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
   for (const namedUserSeed of namedUserSeeds) {
     const email: string = `${namedUserSeed.initials}@gmail.com`;
 
-    await prisma.user.upsert({
+    await prismaClient.user.upsert({
       where: { email: email },
       update: {},
       create: {
@@ -49,7 +49,7 @@ export async function seedUsers(prisma: PrismaClient): Promise<void> {
   for (let i: number = 0; i < 10; i++) {
     const email: string = `email${i}@gmail.com`;
 
-    await prisma.user.upsert({
+    await prismaClient.user.upsert({
       where: { email: email },
       update: {},
       create: {
