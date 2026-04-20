@@ -27,6 +27,30 @@
     <app-button label="Warning disabled" [disabled]="true" color="warning"></app-button>
   </div>
 
+  <div class="flex flex-row gap-2 flex-wrap">
+    <app-button label="Primary enabled" appearance="outlined"></app-button>
+
+    <app-button label="Primary disabled" appearance="outlined" [disabled]="true"></app-button>
+
+    <app-button label="Secondary enabled" appearance="outlined" color="secondary"></app-button>
+
+    <app-button
+      label="Secondary disabled"
+      appearance="outlined"
+      [disabled]="true"
+      color="secondary"
+    ></app-button>
+
+    <app-button label="Warning enabled" appearance="outlined" color="warning"></app-button>
+
+    <app-button
+      label="Warning disabled"
+      appearance="outlined"
+      [disabled]="true"
+      color="warning"
+    ></app-button>
+  </div>
+
   <div class="flex flex-row gap-hw-small flex-wrap">
     <app-input-text
       [field]="form.emptyEnabled"
