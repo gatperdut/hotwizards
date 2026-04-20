@@ -1,3 +1,4 @@
+import { Klass } from '@hw/prismagen/client';
 import { HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -14,7 +15,11 @@ export class MembershipsService {
     });
   }
 
-  public async invite(campaignId: number, userIds: number[]) {
+  public async invite(campaignId: number, masterId: number, userIds: number[]) {
+    if (userIds.includes(masterId)) {
+      throw new BadRequestException('You cannot invite yourself to your own campaign');
+    }
+
     const existingUsers = await this.prismaService.user.findMany({
       where: { id: { in: userIds } },
       select: { id: true },
@@ -41,4 +46,6 @@ export class MembershipsService {
       })),
     });
   }
+
+  public async accept(campaignId: number, userId: number, klass: Klass) {}
 }
