@@ -9,7 +9,7 @@
   @if (iconName) {
     <button
       type="button"
-      (click)="callback.emit()"
+      (click)="$event.stopPropagation(); callback.emit()"
       class="flex items-center justify-center hover:text-warning cursor-pointer"
     >
       <app-icon name="x-mark" />
