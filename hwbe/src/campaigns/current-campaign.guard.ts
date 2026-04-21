@@ -1,20 +1,13 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
 import { HwRequest } from '../auth/types/hw-request.type.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
-export class OwnedCampaignGuard implements CanActivate {
+export class CurrentCampaignGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {}
 
-  public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<HwRequest>();
-    const user = request.user;
+  public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
+    const request = executionContext.switchToHttp().getRequest<HwRequest>();
 
     const campaignId = parseInt(request.params.campaignId || request.body.campaignId);
 
@@ -30,11 +23,7 @@ export class OwnedCampaignGuard implements CanActivate {
       throw new NotFoundException('Campaign not found');
     }
 
-    if (campaign.masterId !== user.id) {
-      throw new ForbiddenException('You are not the master of this campaign');
-    }
-
-    request.ownedCampaign = campaign;
+    request.campaign = campaign;
 
     return true;
   }

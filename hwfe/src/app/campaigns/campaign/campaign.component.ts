@@ -31,7 +31,7 @@ export class CampaignComponent {
   public master = computed(() => this.campaign().master);
 
   public activeMembers = computed(() =>
-    this.campaign().members.filter((member) => member.status === 'ACCEPTED'),
+    this.campaign().members.filter((member) => member.status === 'ACTIVE'),
   );
 
   public pendingMembers = computed(() =>

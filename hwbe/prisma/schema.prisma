@@ -34,7 +34,7 @@ model Campaign {
 
 enum MembershipStatus {
   PENDING
-  ACCEPTED
+  ACTIVE
 }
 
 enum Klass {
