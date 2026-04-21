@@ -2,12 +2,13 @@ import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { CampaignsController } from './campaigns.controller.js';
 import { CampaignsService } from './campaigns.service.js';
-import { OwnedCampaignGuard } from './owned-campaign.guard.js';
+import { CurrentCampaignGuard } from './current-campaign.guard.js';
+import { MasteredCampaignGuard } from './mastered-campaign.guard.js';
 
 @Module({
   controllers: [CampaignsController],
-  providers: [CampaignsService, OwnedCampaignGuard],
+  providers: [CampaignsService, CurrentCampaignGuard, MasteredCampaignGuard],
   imports: [PrismaModule],
-  exports: [CampaignsService, OwnedCampaignGuard],
+  exports: [CampaignsService, CurrentCampaignGuard, MasteredCampaignGuard],
 })
 export class CampaignsModule {}

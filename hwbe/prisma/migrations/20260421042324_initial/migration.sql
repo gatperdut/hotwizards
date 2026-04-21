@@ -1,5 +1,8 @@
 -- CreateEnum
-CREATE TYPE "MembershipStatus" AS ENUM ('PENDING', 'ACCEPTED');
+CREATE TYPE "MembershipStatus" AS ENUM ('PENDING', 'ACTIVE');
+
+-- CreateEnum
+CREATE TYPE "Klass" AS ENUM ('BARBARIAN', 'WIZARD', 'ELF', 'DWARF');
 
 -- CreateTable
 CREATE TABLE "User" (

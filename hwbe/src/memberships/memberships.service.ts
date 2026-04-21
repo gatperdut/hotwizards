@@ -47,5 +47,10 @@ export class MembershipsService {
     });
   }
 
-  public async accept(campaignId: number, userId: number, klass: Klass) {}
+  public async activate(membershipId: number, klass: Klass) {
+    // return this.prismaService.membership.update({
+    //   where: { id: membershipId },
+    //   data: { status: MembershipStatus.ACTIVE, klass: klass },
+    // });
+  }
 }

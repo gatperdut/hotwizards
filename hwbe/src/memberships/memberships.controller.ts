@@ -1,14 +1,18 @@
-import { User } from '@hw/prismagen/client';
+import { Membership, User } from '@hw/prismagen/client';
 import {
   HwMembership,
-  HwMembershipAcceptDto,
+  HwMembershipActivateDto,
   HwMembershipCreateDto,
   HwMembershipsByIdsDto,
 } from '@hw/shared';
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { OwnedCampaignGuard } from '../campaigns/owned-campaign.guard.js';
+import { CurrentCampaignGuard } from '../campaigns/current-campaign.guard.js';
+import { MasteredCampaignGuard } from '../campaigns/mastered-campaign.guard.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
+import { CurrentMembership } from './current-membership.decorator.js';
+import { CurrentMembershipGuard } from './current-membership.guard.js';
 import { MembershipsService } from './memberships.service.js';
+import { PendingMembershipGuard } from './pending-membership.guard.js';
 
 @Controller('memberships')
 export class MembershipsController {
@@ -20,13 +24,17 @@ export class MembershipsController {
   }
 
   @Post()
-  @UseGuards(OwnedCampaignGuard)
+  @UseGuards(CurrentCampaignGuard, MasteredCampaignGuard)
   public invite(@CurrentUser() user: User, @Body() params: HwMembershipCreateDto) {
     return this.membershipsService.invite(params.campaignId, user.id, params.userIds);
   }
 
-  @Post('accept')
-  public accept(@CurrentUser() user: User, @Body() params: HwMembershipAcceptDto) {
-    return this.membershipsService.accept(params.campaignId, user.id, params.klass);
+  @Post('activate')
+  @UseGuards(CurrentCampaignGuard, CurrentMembershipGuard, PendingMembershipGuard)
+  public activate(
+    @CurrentMembership() membership: Membership,
+    @Body() params: HwMembershipActivateDto,
+  ) {
+    return this.membershipsService.activate(membership.id, params.klass);
   }
 }

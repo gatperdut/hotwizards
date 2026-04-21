@@ -16,9 +16,9 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
       masterId: carlos.id,
       members: {
         create: [
-          { userId: josep.id, status: MembershipStatus.ACCEPTED },
-          { userId: victor.id, status: MembershipStatus.ACCEPTED },
-          { userId: vicent.id, status: MembershipStatus.ACCEPTED },
+          { userId: josep.id, status: MembershipStatus.ACTIVE },
+          { userId: victor.id, status: MembershipStatus.ACTIVE },
+          { userId: vicent.id, status: MembershipStatus.ACTIVE },
         ],
       },
     },
