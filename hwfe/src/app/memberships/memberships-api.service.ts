@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   HwMembership,
+  HwMembershipAcceptDto,
+  HwMembershipAcceptResponse,
   HwMembershipCreateDto,
   HwMembershipCreateResponse,
   HwMembershipsByIdsDto,
@@ -30,5 +32,9 @@ export class MembershipsApiService {
       .pipe(
         this.apiNotificationService.notify('Invitations sent', 'Invitations could not be sent'),
       );
+  }
+
+  public accept(params: HwMembershipAcceptDto) {
+    return this.httpClient.post<HwMembershipAcceptResponse>('/api/memberships/accept', params);
   }
 }

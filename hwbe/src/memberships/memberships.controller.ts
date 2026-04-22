@@ -1,7 +1,7 @@
 import { Membership, User } from '@hw/prismagen/client';
 import {
   HwMembership,
-  HwMembershipActivateDto,
+  HwMembershipAcceptDto,
   HwMembershipCreateDto,
   HwMembershipsByIdsDto,
 } from '@hw/shared';
@@ -29,12 +29,12 @@ export class MembershipsController {
     return this.membershipsService.invite(params.campaignId, user.id, params.userIds);
   }
 
-  @Post('activate')
+  @Post('accept')
   @UseGuards(CurrentCampaignGuard, CurrentMembershipGuard, PendingMembershipGuard)
-  public activate(
+  public accept(
     @CurrentMembership() membership: Membership,
-    @Body() params: HwMembershipActivateDto,
+    @Body() params: HwMembershipAcceptDto,
   ) {
-    return this.membershipsService.activate(membership.id, params.klass);
+    return this.membershipsService.accept(membership.id, params.klass, params.name);
   }
 }

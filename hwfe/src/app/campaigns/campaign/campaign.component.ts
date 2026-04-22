@@ -4,15 +4,15 @@ import { AuthService } from '../../auth/services/auth.service';
 import { AppCardAction, CardComponent } from '../../ui/card/card.component';
 import { DialogService } from '../../ui/dialog/services/dialog.service';
 import {
+  CampaignInviteAcceptDialogComponent,
+  CampaignInviteAcceptDialogData,
+  CampaignInviteAcceptDialogResult,
+} from '../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component';
+import {
   CampaignInviteDialogComponent,
   CampaignInviteDialogData,
   CampaignInviteDialogResult,
 } from '../campaign-invite-dialog/campaign-invite-dialog.component';
-import {
-  CampaignJoinDialogComponent,
-  CampaignJoinDialogData,
-  CampaignJoinDialogResult,
-} from '../campaign-join-dialog/campaign-join-dialog.component';
 import { MyCampaign } from '../types/my-campaign.type';
 
 @Component({
@@ -84,10 +84,10 @@ export class CampaignComponent {
       label: 'Join',
       action: (): void => {
         this.dialogService.open<
-          CampaignJoinDialogComponent,
-          CampaignJoinDialogData,
-          CampaignJoinDialogResult
-        >(CampaignJoinDialogComponent, {
+          CampaignInviteAcceptDialogComponent,
+          CampaignInviteAcceptDialogData,
+          CampaignInviteAcceptDialogResult
+        >(CampaignInviteAcceptDialogComponent, {
           campaign: this.campaign(),
         });
       },
