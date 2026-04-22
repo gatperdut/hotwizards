@@ -23,10 +23,10 @@ export class SelectComponent {
   public label = input<string>();
   public placeholder = input<string>('Make your selection');
   public options = input.required<any[] | undefined>();
-  public trackFn = input.required<(item: any) => string | number>();
-  public displayFn = input.required<(item: any) => string>();
+  public trackFn = input<(item: any) => string | number>((item) => item);
+  public displayFn = input<(item: any) => string>((item) => item);
   public form = input.required<Field<any>>();
-  public searchField = model.required<string>();
+  public searchField = model<string>();
   public multiple = input<boolean>(false);
   public loading = input<boolean>(false);
 
@@ -35,9 +35,11 @@ export class SelectComponent {
   public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   public isOpen = signal(false);
 
-  public searchForm = form(this.searchField as ModelSignal<string>, (schemaPath) => {
-    debounce(schemaPath, 400);
-  });
+  public searchForm = this.searchField()
+    ? form(this.searchField as ModelSignal<string>, (schemaPath) => {
+        debounce(schemaPath, 400);
+      })
+    : undefined;
 
   public open(): void {
     if (this.form()().disabled()) {
