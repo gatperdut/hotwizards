@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Gender, Klass } from '@hw/prismagen/enums';
 
 @Injectable({ providedIn: 'root' })
-export class KlassService {
+export class KlassesService {
   public name(klass: Klass): string {
     switch (klass) {
       case 'BARBARIAN':

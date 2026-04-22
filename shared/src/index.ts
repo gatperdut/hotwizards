@@ -5,6 +5,8 @@ export { HwAuthVerifyTokenDto } from './auth/auth-verify-token.dto.js';
 export { HwCampaignPartialDto } from './campaigns/campaign-partial.dto.js';
 export { HwCampaignSearchDto } from './campaigns/campaign-search.dto.js';
 export { HwCampaign } from './campaigns/campaign.interface.js';
+export { HwCharacter } from './characters/character.interface.js';
+export { HwCharactersByIdsDto } from './characters/characters-by-ids.dto.js';
 export { ToArray } from './decorators/to-array.decorator.js';
 export { HwHealthStatus } from './health/health-status.interface.js';
 export { Match } from './match.validator.js';

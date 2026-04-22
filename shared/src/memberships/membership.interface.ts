@@ -1,9 +1,10 @@
-import { HwMembershipStatus } from './membership-status.enum.js';
+import { MembershipStatus } from '@hw/prismagen/enums.js';
 
 export interface HwMembership {
   id: number;
   userId: number;
   campaignId: number;
-  status: HwMembershipStatus;
+  characterId?: number;
+  status: MembershipStatus;
   joinedAt: Date;
 }

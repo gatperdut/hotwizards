@@ -1,7 +1,8 @@
-import { HwCampaign, HwMembershipStatus, HwUserAny } from '@hw/shared';
+import { MembershipStatus } from '@hw/prismagen/browser';
+import { HwCampaign, HwUserAny } from '@hw/shared';
 
 export type MyMember = HwUserAny & {
-  status: HwMembershipStatus;
+  status: MembershipStatus;
   joinedAt: Date;
 };
 
