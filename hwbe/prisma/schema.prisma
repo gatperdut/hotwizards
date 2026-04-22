@@ -37,6 +37,11 @@ enum MembershipStatus {
   ACTIVE
 }
 
+enum Gender {
+  MALE
+  FEMALE
+}
+
 enum Klass {
   BARBARIAN
   WIZARD

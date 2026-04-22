@@ -1,9 +1,18 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  Signal,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { form, maxLength } from '@angular/forms/signals';
-import { Klass } from '@hw/prismagen/enums';
+import { form, maxLength, required } from '@angular/forms/signals';
+import { Gender, Klass } from '@hw/prismagen/browser';
 import { HwMembershipAcceptDto } from '@hw/shared';
+import { GenderService } from '../../characters/services/gender.service';
+import { KlassService } from '../../characters/services/klass.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -13,6 +22,7 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
+import { SelectComponent } from '../../ui/select/select.component';
 import { MyCampaign } from '../types/my-campaign.type';
 
 export type CampaignInviteAcceptDialogData = {
@@ -30,6 +40,7 @@ export type CampaignInviteAcceptDialogResult = boolean;
     DialogActionsDirective,
     ButtonComponent,
     InputTextComponent,
+    SelectComponent,
     FormsModule,
     JsonPipe,
   ],
@@ -41,17 +52,34 @@ export class CampaignInviteAcceptDialogComponent {
   public data = inject<CampaignInviteAcceptDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CampaignInviteAcceptDialogResult>>(DialogRef);
   private membershipsApiService = inject(MembershipsApiService);
-
-  public klasses = Object.values(Klass);
+  public klassService = inject(KlassService);
+  private genderService = inject(GenderService);
 
   public model = signal<HwMembershipAcceptDto>({
     campaignId: this.data.campaign.id,
     klass: Klass.BARBARIAN,
+    gender: Gender.MALE,
     name: '',
   });
 
   public form = form(this.model, (schemaPath) => {
+    required(schemaPath.name);
     maxLength(schemaPath.name, 12);
+  });
+
+  public klasses = Object.values(Klass);
+
+  public genders = Object.values(Gender);
+
+  public portraits: Signal<Record<Klass, string>> = computed(() => {
+    const gender = this.model().gender;
+
+    return {
+      BARBARIAN: this.klassService.portrait('BARBARIAN', gender),
+      DWARF: this.klassService.portrait('DWARF', gender),
+      ELF: this.klassService.portrait('ELF', gender),
+      WIZARD: this.klassService.portrait('WIZARD', gender),
+    };
   });
 
   public selected(klass: Klass): boolean {
@@ -62,12 +90,7 @@ export class CampaignInviteAcceptDialogComponent {
     this.model.update((value) => ({ ...value, klass: klass }));
   }
 
-  public trackFn = (klass: Klass): string => {
-    return klass;
-  };
-  public displayFn = (klass: Klass): string => {
-    return klass;
-  };
+  public genderDisplayFn = (gender: Gender): string => this.genderService.name(gender);
 
   public accept(): void {
     this.membershipsApiService.accept(this.model()).subscribe({

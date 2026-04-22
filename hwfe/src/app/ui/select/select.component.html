@@ -20,7 +20,7 @@
           }
         } @else {
           <div [class]="{ 'opacity-70': !form()().value() }">
-            {{ form()().value() || placeholder() }}
+            {{ displayFn()(form()().value()) || placeholder() }}
           </div>
         }
       </div>
@@ -42,12 +42,14 @@
         [style.position-anchor]="`--${id}`"
         class="anchored fixed mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
       >
-        <app-input-text
-          [field]="searchForm"
-          placeholder="Search by name"
-          [loading]="false"
-          [hasValidation]="false"
-        ></app-input-text>
+        @if (searchForm) {
+          <app-input-text
+            [field]="searchForm"
+            placeholder="Search by name"
+            [loading]="false"
+            [hasValidation]="false"
+          ></app-input-text>
+        }
 
         <ul class="max-h-48 overflow-y-auto custom-scrollbar">
           @for (option of options(); track trackFn()(option)) {
