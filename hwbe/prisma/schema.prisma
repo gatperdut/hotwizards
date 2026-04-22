@@ -59,7 +59,18 @@ model Membership {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   campaignId Int
-  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign   Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  character  Character?
 
   @@unique([userId, campaignId])
+}
+
+model Character {
+  id     Int    @id @default(autoincrement())
+  name   String
+  klass  Klass
+  gender Gender
+
+  membershipId Int        @unique
+  membership   Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
 }

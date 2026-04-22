@@ -12,6 +12,7 @@ import { debounce, form } from '@angular/forms/signals';
 import { HwCampaignSearchDto, HwUserAny, PaginationMeta } from '@hw/shared';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
+import { CharactersApiService } from '../../characters/services/characters-api.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
 import { UsersApiService } from '../../users/users-api.service';
@@ -28,9 +29,10 @@ import { MyCampaign, MyMember } from '../types/my-campaign.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyCampaignsComponent {
-  private campaignsApiService = inject(CampaignsApiService);
   private usersApiService = inject(UsersApiService);
+  private campaignsApiService = inject(CampaignsApiService);
   private membershipsApiService = inject(MembershipsApiService);
+  private charactersApiService = inject(CharactersApiService);
   private authService = inject(AuthService);
 
   constructor() {
@@ -81,7 +83,14 @@ export class MyCampaignsComponent {
             usersExt: this.usersApiService.get({ ids: userIds }),
             memberships: this.membershipsApiService.get({ ids: membershipIds }),
           }).pipe(
-            map(({ usersExt, memberships }) => {
+            switchMap(({ usersExt, memberships }) => {
+              return this.charactersApiService
+                .get({
+                  ids: memberships.flatMap((m) => (m.characterId ? [m.characterId] : [])),
+                })
+                .pipe(map((characters) => ({ usersExt, memberships, characters })));
+            }),
+            map(({ usersExt, memberships, characters }) => {
               const userId = this.authService.userId();
 
               const userMap = Object.fromEntries(

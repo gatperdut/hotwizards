@@ -1,18 +1,33 @@
-import { Klass, MembershipStatus } from '@hw/prismagen/client';
+import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { MembershipSelect } from './membership.select.js';
 
 @Injectable()
 export class MembershipsService {
   constructor(private prismaService: PrismaService) {}
 
-  public byIds(ids: number[]): Promise<HwMembership[]> {
-    return this.prismaService.membership.findMany({
+  public async byIds(ids: number[]): Promise<HwMembership[]> {
+    const memberships = await this.prismaService.membership.findMany({
       where: { id: { in: ids } },
-      select: MembershipSelect,
+      select: {
+        id: true,
+        userId: true,
+        campaignId: true,
+        status: true,
+        joinedAt: true,
+        character: {
+          select: {
+            id: true,
+          },
+        },
+      },
     });
+
+    return memberships.map(({ character, ...m }) => ({
+      ...m,
+      characterId: character?.id ?? undefined,
+    }));
   }
 
   public async invite(campaignId: number, masterId: number, userIds: number[]) {
@@ -47,10 +62,26 @@ export class MembershipsService {
     });
   }
 
-  public async accept(membershipId: number, klass: Klass, name: string) {
-    return this.prismaService.membership.update({
-      where: { id: membershipId },
-      data: { status: MembershipStatus.ACTIVE },
+  public async accept(membershipId: number, klass: Klass, gender: Gender, name: string) {
+    return await this.prismaService.$transaction(async (tx) => {
+      const membership = await tx.membership.update({
+        where: { id: membershipId },
+        data: { status: MembershipStatus.ACTIVE },
+      });
+
+      const character = await tx.character.create({
+        data: {
+          name: name,
+          klass: klass,
+          gender: gender,
+          membershipId: membership.id,
+        },
+      });
+
+      return {
+        membership: membership,
+        character: character,
+      };
     });
   }
 }

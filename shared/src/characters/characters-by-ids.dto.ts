@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { ArrayNotEmpty, IsArray, IsInt, IsPositive } from 'class-validator';
 import { ToArray } from '../decorators/to-array.decorator.js';
 
-export class HwMembershipsByIdsDto {
+export class HwCharactersByIdsDto {
   @ToArray()
   @IsArray()
   @ArrayNotEmpty()

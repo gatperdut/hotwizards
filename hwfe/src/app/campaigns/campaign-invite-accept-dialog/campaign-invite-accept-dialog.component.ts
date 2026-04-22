@@ -11,8 +11,8 @@ import { FormsModule } from '@angular/forms';
 import { form, maxLength, required } from '@angular/forms/signals';
 import { Gender, Klass } from '@hw/prismagen/browser';
 import { HwMembershipAcceptDto } from '@hw/shared';
-import { GenderService } from '../../characters/services/gender.service';
-import { KlassService } from '../../characters/services/klass.service';
+import { GendersService } from '../../characters/services/genders.service';
+import { KlassesService } from '../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -52,8 +52,8 @@ export class CampaignInviteAcceptDialogComponent {
   public data = inject<CampaignInviteAcceptDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CampaignInviteAcceptDialogResult>>(DialogRef);
   private membershipsApiService = inject(MembershipsApiService);
-  public klassService = inject(KlassService);
-  private genderService = inject(GenderService);
+  public klassesService = inject(KlassesService);
+  private gendersService = inject(GendersService);
 
   public model = signal<HwMembershipAcceptDto>({
     campaignId: this.data.campaign.id,
@@ -75,10 +75,10 @@ export class CampaignInviteAcceptDialogComponent {
     const gender = this.model().gender;
 
     return {
-      BARBARIAN: this.klassService.portrait('BARBARIAN', gender),
-      DWARF: this.klassService.portrait('DWARF', gender),
-      ELF: this.klassService.portrait('ELF', gender),
-      WIZARD: this.klassService.portrait('WIZARD', gender),
+      BARBARIAN: this.klassesService.portrait('BARBARIAN', gender),
+      DWARF: this.klassesService.portrait('DWARF', gender),
+      ELF: this.klassesService.portrait('ELF', gender),
+      WIZARD: this.klassesService.portrait('WIZARD', gender),
     };
   });
 
@@ -90,7 +90,7 @@ export class CampaignInviteAcceptDialogComponent {
     this.model.update((value) => ({ ...value, klass: klass }));
   }
 
-  public genderDisplayFn = (gender: Gender): string => this.genderService.name(gender);
+  public genderDisplayFn = (gender: Gender): string => this.gendersService.name(gender);
 
   public accept(): void {
     this.membershipsApiService.accept(this.model()).subscribe({

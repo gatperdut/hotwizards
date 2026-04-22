@@ -35,6 +35,6 @@ export class MembershipsController {
     @CurrentMembership() membership: Membership,
     @Body() params: HwMembershipAcceptDto,
   ) {
-    return this.membershipsService.accept(membership.id, params.klass, params.name);
+    return this.membershipsService.accept(membership.id, params.klass, params.gender, params.name);
   }
 }
