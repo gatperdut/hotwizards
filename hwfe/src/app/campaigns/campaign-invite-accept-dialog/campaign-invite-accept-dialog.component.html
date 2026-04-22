@@ -1,0 +1,58 @@
+<app-dialog sizeClass="max-w-md">
+  <form>
+    <ng-template appDialogTitle>
+      <div class="typ-h2">Join campaign</div>
+    </ng-template>
+
+    <ng-template appDialogContent>
+      <div class="flex flex-col gap-hw-average">
+        <div class="typ-body">
+          Select a class and a name for your character to join the campaign.
+        </div>
+
+        <app-input-text
+          [field]="form.name"
+          label="Character name"
+          type="text"
+          autocomplete="off"
+          placeholder="Maximum 12 characters"
+        ></app-input-text>
+      </div>
+
+      <div class="flex flex-row flex-wrap gap-hw-large">
+        @for (klass of klasses; track klass) {
+          <div
+            class="flex flex-row items-center gap-hw-small cursor-pointer"
+            (click)="select(klass)"
+          >
+            <div
+              class="size-10 rounded-full bg-cover bg-center"
+              [style.background-image]="'url(/characters/zargon.png)'"
+            ></div>
+
+            <div class="typ-body font-bold" [class]="{ 'text-primary!': selected(klass) }">
+              {{ klass }}
+            </div>
+          </div>
+        }
+      </div>
+
+      {{ model() | json }}
+    </ng-template>
+
+    <ng-template appDialogActions>
+      <app-button
+        label="Cancel"
+        type="button"
+        appearance="outlined"
+        (click)="dialogRef.close(false)"
+      ></app-button>
+      <app-button
+        label="Join"
+        type="submit"
+        (click)="accept()"
+        [disabled]="form().invalid()"
+      ></app-button>
+    </ng-template>
+  </form>
+</app-dialog>

@@ -7,7 +7,15 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { email, form, minLength, required, validate, validateAsync } from '@angular/forms/signals';
+import {
+  email,
+  form,
+  maxLength,
+  minLength,
+  required,
+  validate,
+  validateAsync,
+} from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { HwAuthRegisterDto } from '@hw/shared';
 import { debounceTime, from, of, switchMap } from 'rxjs';
@@ -68,6 +76,7 @@ export class RegisterComponent {
 
   public form = form(this.model, (schemaPath) => {
     required(schemaPath.handle, { message: 'Handle is required' });
+    maxLength(schemaPath.handle, 12);
     validateAsync(schemaPath.handle, {
       params: ({ value }) => value(),
       factory: (query) => this.availableHandleResource(query),

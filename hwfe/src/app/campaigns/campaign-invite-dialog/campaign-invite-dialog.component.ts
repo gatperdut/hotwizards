@@ -70,7 +70,6 @@ export class CampaignInviteDialogComponent {
   public invite(): void {
     this.membershipsApiService
       .invite({ campaignId: this.data.campaign.id, userIds: this.model().map((user) => user.id) })
-
       .subscribe({
         next: () => {
           this.dialogRef.close();

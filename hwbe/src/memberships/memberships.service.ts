@@ -1,4 +1,4 @@
-import { Klass } from '@hw/prismagen/client';
+import { Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -47,10 +47,10 @@ export class MembershipsService {
     });
   }
 
-  public async activate(membershipId: number, klass: Klass) {
-    // return this.prismaService.membership.update({
-    //   where: { id: membershipId },
-    //   data: { status: MembershipStatus.ACTIVE, klass: klass },
-    // });
+  public async accept(membershipId: number, klass: Klass, name: string) {
+    return this.prismaService.membership.update({
+      where: { id: membershipId },
+      data: { status: MembershipStatus.ACTIVE },
+    });
   }
 }
