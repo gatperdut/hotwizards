@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -23,10 +22,10 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { SelectComponent } from '../../ui/select/select.component';
-import { HwfeCampaign } from '../types/my-campaign.type';
+import { HwfeMembership } from '../types/my-campaign.type';
 
 export type CampaignInviteAcceptDialogData = {
-  campaign: HwfeCampaign;
+  membership: HwfeMembership;
 };
 
 export type CampaignInviteAcceptDialogResult = boolean;
@@ -42,7 +41,6 @@ export type CampaignInviteAcceptDialogResult = boolean;
     InputTextComponent,
     SelectComponent,
     FormsModule,
-    JsonPipe,
   ],
   templateUrl: './campaign-invite-accept-dialog.component.html',
   styleUrl: './campaign-invite-accept-dialog.component.css',
@@ -56,7 +54,7 @@ export class CampaignInviteAcceptDialogComponent {
   private gendersService = inject(GendersService);
 
   public model = signal<HwMembershipAcceptDto>({
-    campaignId: this.data.campaign.id,
+    membershipId: this.data.membership.id,
     klass: Klass.BARBARIAN,
     gender: Gender.MALE,
     name: '',

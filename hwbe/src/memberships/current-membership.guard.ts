@@ -9,10 +9,14 @@ export class CurrentMembershipGuard implements CanActivate {
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
-    const campaign = request.campaign;
+    const membershipId = parseInt(request.params.membershipId || request.body.membershipId);
+
+    if (!membershipId) {
+      return false;
+    }
 
     const membership = await this.prismaService.membership.findFirst({
-      where: { campaignId: campaign.id, userId: user.id },
+      where: { id: membershipId, userId: user.id },
     });
 
     if (!membership) {

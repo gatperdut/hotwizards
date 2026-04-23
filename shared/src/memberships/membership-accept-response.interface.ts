@@ -1,3 +1,7 @@
+import { HwCharacter } from '../characters/character.interface.js';
+import { HwMembership } from './membership.interface.js';
+
 export interface HwMembershipAcceptResponse {
-  // TODO
+  membership: HwMembership;
+  character: HwCharacter;
 }

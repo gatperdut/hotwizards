@@ -8,6 +8,7 @@ export class CurrentCampaignGuard implements CanActivate {
 
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
+    const user = request.user;
 
     const campaignId = parseInt(request.params.campaignId || request.body.campaignId);
 
@@ -15,8 +16,22 @@ export class CurrentCampaignGuard implements CanActivate {
       return false;
     }
 
-    const campaign = await this.prismaService.campaign.findUnique({
-      where: { id: campaignId },
+    const campaign = await this.prismaService.campaign.findFirst({
+      where: {
+        AND: [
+          { id: campaignId },
+          {
+            OR: [
+              { masterId: user.id },
+              {
+                memberships: {
+                  some: { userId: user.id },
+                },
+              },
+            ],
+          },
+        ],
+      },
     });
 
     if (!campaign) {

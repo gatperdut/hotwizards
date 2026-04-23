@@ -26,20 +26,19 @@ export class SelectComponent {
   public trackFn = input<(item: any) => string | number>((item) => item);
   public displayFn = input<(item: any) => string>((item) => item);
   public form = input.required<Field<any>>();
-  public searchField = model<string>();
+  public searchField = model<string>('');
   public multiple = input<boolean>(false);
   public loading = input<boolean>(false);
+  public searchable = input<boolean>(false);
 
   constructor(private eRef: ElementRef) {}
 
   public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   public isOpen = signal(false);
 
-  public searchForm = this.searchField()
-    ? form(this.searchField as ModelSignal<string>, (schemaPath) => {
-        debounce(schemaPath, 400);
-      })
-    : undefined;
+  public searchForm = form(this.searchField as ModelSignal<string>, (schemaPath) => {
+    debounce(schemaPath, 400);
+  });
 
   public open(): void {
     if (this.form()().disabled()) {
