@@ -29,7 +29,7 @@ model Campaign {
   masterId Int
   master   User @relation("CampaignMaster", fields: [masterId], references: [id], onDelete: Cascade)
 
-  members Membership[]
+  memberships Membership[]
 }
 
 enum MembershipStatus {

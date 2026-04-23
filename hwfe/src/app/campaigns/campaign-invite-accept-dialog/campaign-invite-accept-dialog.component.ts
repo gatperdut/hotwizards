@@ -23,10 +23,10 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { SelectComponent } from '../../ui/select/select.component';
-import { MyCampaign } from '../types/my-campaign.type';
+import { HwfeCampaign } from '../types/my-campaign.type';
 
 export type CampaignInviteAcceptDialogData = {
-  campaign: MyCampaign;
+  campaign: HwfeCampaign;
 };
 
 export type CampaignInviteAcceptDialogResult = boolean;

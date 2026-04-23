@@ -19,7 +19,7 @@ import { UsersApiService } from '../../users/users-api.service';
 import { CampaignComponent } from '../campaign/campaign.component';
 import { CampaignsFilterComponent } from '../campaigns-filter/campaigns-filter.component';
 import { CampaignsApiService } from '../services/campaigns-api.service';
-import { MyCampaign, MyMember } from '../types/my-campaign.type';
+import { HwfeCampaign, HwfeMembership } from '../types/my-campaign.type';
 
 @Component({
   selector: 'app-my-campaigns',
@@ -61,7 +61,7 @@ export class MyCampaignsComponent {
     total: 0,
   });
 
-  private resource = rxResource<MyCampaign[], HwCampaignSearchDto>({
+  private resource = rxResource<HwfeCampaign[], HwCampaignSearchDto>({
     params: () => ({ ...this.model(), page: this.page() }),
     stream: (request) =>
       this.campaignsApiService.mine(request.params).pipe(
@@ -102,7 +102,11 @@ export class MyCampaignsComponent {
               );
 
               const membershipMap = Object.fromEntries(
-                memberships.map((membership) => [membership.userId, membership]),
+                memberships.map((membership) => [membership.id, membership]),
+              );
+
+              const characterMap = Object.fromEntries(
+                characters.map((character) => [character.id, character]),
               );
 
               return campaigns.map((campaign) => ({
@@ -110,14 +114,21 @@ export class MyCampaignsComponent {
                 name: campaign.name,
                 createdAt: campaign.createdAt,
                 master: userMap[campaign.masterId] as HwUserAny,
-                members: campaign.memberIds.map(
-                  (memberId) =>
-                    ({
-                      ...userMap[memberId],
-                      status: membershipMap[memberId].status,
-                      joinedAt: membershipMap[memberId].joinedAt,
-                    }) as MyMember,
-                ),
+                memberships: campaign.membershipIds
+                  .filter((mid) => mid !== campaign.masterId)
+                  .map((membershipId): HwfeMembership => {
+                    const membership = membershipMap[membershipId];
+
+                    return {
+                      id: membership.id,
+                      status: membership.status,
+                      joinedAt: membership.joinedAt,
+                      character: membership.characterId
+                        ? characterMap[membership.characterId]
+                        : undefined,
+                      user: userMap[membership.userId] as HwUserAny,
+                    };
+                  }),
               }));
             }),
           );

@@ -1,12 +1,13 @@
-import { MembershipStatus } from '@hw/prismagen/browser';
-import { HwCampaign, HwUserAny } from '@hw/shared';
+import { HwCampaign, HwCharacter, HwMembership, HwUserAny } from '@hw/shared';
 
-export type MyMember = HwUserAny & {
-  status: MembershipStatus;
-  joinedAt: Date;
+export type HwfeCharacter = Omit<HwCharacter, 'membershipId'>;
+
+export type HwfeMembership = Omit<HwMembership, 'userId' | 'campaignId' | 'characterId'> & {
+  user: HwUserAny;
+  character?: HwfeCharacter;
 };
 
-export type MyCampaign = Omit<HwCampaign, 'masterId' | 'memberIds' | 'membershipIds'> & {
+export type HwfeCampaign = Omit<HwCampaign, 'masterId' | 'memberIds' | 'membershipIds'> & {
   master: HwUserAny;
-  members: MyMember[];
+  memberships: HwfeMembership[];
 };

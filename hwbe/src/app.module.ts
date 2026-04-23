@@ -6,6 +6,7 @@ import { AppService } from './app.service.js';
 import { AuthMiddleware } from './auth/auth.middleware.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CampaignsModule } from './campaigns/campaigns.module.js';
+import { CharactersModule } from './characters/characters.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MembershipsModule } from './memberships/memberships.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module.js';
     UsersModule,
     CampaignsModule,
     MembershipsModule,
+    CharactersModule,
   ],
   controllers: [],
   providers: [
