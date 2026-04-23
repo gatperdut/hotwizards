@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { HwMembership } from '@hw/shared';
 import { AuthService } from '../../auth/services/auth.service';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { AppCardAction, CardComponent } from '../../ui/card/card.component';
@@ -53,6 +54,10 @@ export class CampaignComponent {
       .map((m) => m.id)
       .includes(this.authService.user()!.id),
   );
+
+  public toggleMembership(membership: HwMembership): void {
+    console.log(membership);
+  }
 
   public actions = computed(() => {
     const result: AppCardAction[] = [];

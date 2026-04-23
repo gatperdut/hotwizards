@@ -5,7 +5,6 @@ import {
   HwUserAvailabilityEmailDto,
   HwUserAvailabilityHandleDto,
   HwUserAvailabilityResponse,
-  HwUserExt,
   HwUserSearchDto,
   Paginated,
   type HwUsersByIdsDto,
@@ -20,16 +19,16 @@ export class UsersApiService {
     return this.httpClient.get<HwUser>('/api/users/me');
   }
 
-  public get(params: HwUsersByIdsDto): Observable<HwUserExt[]> {
+  public get(params: HwUsersByIdsDto): Observable<HwUser[]> {
     if (!params.ids.length) {
       return of([]);
     }
 
-    return this.httpClient.get<HwUserExt[]>(`/api/users/by-ids`, { params: { ...params } });
+    return this.httpClient.get<HwUser[]>(`/api/users/by-ids`, { params: { ...params } });
   }
 
-  public search(params: HwUserSearchDto): Observable<Paginated<HwUserExt>> {
-    return this.httpClient.get<Paginated<HwUserExt>>(`/api/users`, { params: { ...params } });
+  public search(params: HwUserSearchDto): Observable<Paginated<HwUser>> {
+    return this.httpClient.get<Paginated<HwUser>>(`/api/users`, { params: { ...params } });
   }
 
   public availabilityEmail(params: HwUserAvailabilityEmailDto): Observable<boolean> {

@@ -1,18 +1,17 @@
 <app-card [title]="campaign().name" [actions]="actions()">
   <div appCardBody class="flex flex-col gap-hw-average">
-    <div class="flex flex-row items-center gap-hw-small">
-      <div
-        class="size-10 rounded-full bg-cover bg-center"
-        [style.background-image]="'url(/characters/zargon.png)'"
-      ></div>
-
-      <div class="grow">
-        <div class="typ-small truncate opacity-70">Master</div>
-        <div class="typ-body font-bold hw-truncate">
-          {{ master().handle }}
-        </div>
-      </div>
-    </div>
+    <ng-container
+      *ngTemplateOutlet="
+        userOutlet;
+        context: {
+          image: '/characters/zargon.png',
+          klass: 'Master',
+          handle: master().handle,
+          name: 'Zargon',
+          me: master().me,
+        }
+      "
+    ></ng-container>
 
     <div class="flex flex-col xl:flex-row gap-hw-average">
       @if (activeMemberships().length) {
@@ -45,28 +44,62 @@
 
       <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
         @for (membership of memberships; track membership.id) {
-          <div class="flex flex-row items-center gap-hw-small min-w-0">
-            <div
-              class="size-10 rounded-full bg-cover bg-center"
-              [style.background-image]="
-                membership.status === 'PENDING'
-                  ? 'url(/characters/pending.gif)'
-                  : `url(${klassesService.portrait(membership.character.klass, membership.character.gender)})`
-              "
-            ></div>
-
-            <div class="min-w-0 grow">
-              @if (membership.status === 'ACTIVE') {
-                <div class="typ-small truncate opacity-70">
-                  {{ klassesService.name(membership.character.klass) }}
-                </div>
+          <ng-container
+            *ngTemplateOutlet="
+              userOutlet;
+              context: {
+                image:
+                  membership.status === 'ACTIVE'
+                    ? klassesService.portrait(
+                        membership.character.klass,
+                        membership.character.gender
+                      )
+                    : '/characters/pending.gif',
+                klass:
+                  membership.status === 'ACTIVE'
+                    ? klassesService.name(membership.character.klass)
+                    : 'No class',
+                handle: membership.user.handle,
+                name: membership.status === 'ACTIVE' ? membership.character.name : 'No name',
+                me: membership.user.me,
+                click: () => toggleMembership(membership),
               }
-              <div class="typ-body font-bold truncate">
-                {{ membership.user.handle }}
-              </div>
-            </div>
-          </div>
+            "
+          ></ng-container>
         }
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template
+    #userOutlet
+    let-image="image"
+    let-klass="klass"
+    let-handle="handle"
+    let-name="name"
+    let-me="me"
+    let-click="click"
+  >
+    <div
+      class="flex flex-row items-center gap-hw-small min-w-0"
+      [class]="{ 'cursor-pointer': !!click && isMaster() }"
+      (click)="isMaster() && click?.()"
+    >
+      <div
+        class="size-10 rounded-full bg-cover bg-center"
+        [style.background-image]="`url(${image})`"
+      ></div>
+
+      <div class="flex flex-col justify-center min-w-0 grow">
+        <div class="typ-small truncate opacity-70">
+          {{ klass }}
+        </div>
+        <div class="typ-body font-bold truncate" [class]="{ 'text-primary!': me }">
+          {{ handle }}
+        </div>
+        <div class="typ-small truncate opacity-70">
+          {{ name }}
+        </div>
       </div>
     </div>
   </ng-template>

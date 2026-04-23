@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, minLength } from '@angular/forms/signals';
-import { HwUserExt } from '@hw/shared';
+import { HwUser } from '@hw/shared';
 import { map } from 'rxjs';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -41,18 +41,18 @@ export class CampaignInviteDialogComponent {
   private usersApiService = inject(UsersApiService);
   private membershipsApiService = inject(MembershipsApiService);
 
-  public model = signal<HwUserExt[]>([]);
+  public model = signal<HwUser[]>([]);
   public form = form(this.model, (schemaPath) => {
     minLength(schemaPath, 1);
   });
   public searchModel = signal<string>('');
-  public trackFn = (user: HwUserExt): number => {
+  public trackFn = (user: HwUser): number => {
     return user.id;
   };
-  public displayFn = (user: HwUserExt): string => {
+  public displayFn = (user: HwUser): string => {
     return user.handle;
   };
-  public resource = rxResource<HwUserExt[], string>({
+  public resource = rxResource<HwUser[], string>({
     params: () => this.searchModel(),
     stream: (request) => {
       const forbiddenIds = [

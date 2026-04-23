@@ -4,7 +4,6 @@ import {
   HwUserAvailabilityEmailDto,
   HwUserAvailabilityHandleDto,
   HwUserAvailabilityResponse,
-  HwUserExt,
   HwUsersByIdsDto,
   HwUserSearchDto,
   Paginated,
@@ -23,12 +22,12 @@ export class UsersController {
   }
 
   @Get()
-  public search(@Query() params: HwUserSearchDto): Promise<Paginated<HwUserExt>> {
+  public search(@Query() params: HwUserSearchDto): Promise<Paginated<HwUser>> {
     return this.usersService.search(params.term, params.page, params.pageSize);
   }
 
   @Get('by-ids')
-  public byIds(@Query() params: HwUsersByIdsDto): Promise<HwUserExt[]> {
+  public byIds(@Query() params: HwUsersByIdsDto): Promise<HwUser[]> {
     return this.usersService.byIds(params.ids);
   }
 

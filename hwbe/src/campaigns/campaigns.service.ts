@@ -66,6 +66,7 @@ export class CampaignsService {
       include: {
         memberships: {
           select: {
+            id: true,
             userId: true,
           },
         },
@@ -74,21 +75,6 @@ export class CampaignsService {
 
     const total: number = await this.prismaService.campaign.count({ where: where });
 
-    const memberships = await this.prismaService.membership.findMany({
-      where: {
-        campaignId: { in: campaigns.map((campaign) => campaign.id) },
-        userId: {
-          in: [
-            ...new Set(
-              campaigns.flatMap((campaign) =>
-                campaign.memberships.map((membership) => membership.userId),
-              ),
-            ),
-          ],
-        },
-      },
-    });
-
     return {
       items: campaigns.map(
         (campaign): HwCampaign => ({
@@ -96,7 +82,7 @@ export class CampaignsService {
           name: campaign.name,
           masterId: campaign.masterId,
           memberIds: campaign.memberships.map((membership) => membership.userId),
-          membershipIds: memberships.map((membership) => membership.id),
+          membershipIds: campaign.memberships.map((membership) => membership.id),
           createdAt: campaign.createdAt,
         }),
       ),

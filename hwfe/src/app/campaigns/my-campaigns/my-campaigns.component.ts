@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form } from '@angular/forms/signals';
-import { HwCampaignSearchDto, HwUserAny, PaginationMeta } from '@hw/shared';
+import { HwCampaignSearchDto, HwUser, PaginationMeta } from '@hw/shared';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { CharactersApiService } from '../../characters/services/characters-api.service';
@@ -109,15 +109,18 @@ export class MyCampaignsComponent {
                 characters.map((character) => [character.id, character]),
               );
 
-              return campaigns.map((campaign) => ({
-                id: campaign.id,
-                name: campaign.name,
-                createdAt: campaign.createdAt,
-                master: userMap[campaign.masterId] as HwUserAny,
-                memberships: campaign.membershipIds
-                  .filter((mid) => mid !== campaign.masterId)
-                  .map((membershipId): HwfeMembership => {
+              return campaigns.map((campaign) => {
+                const hwMaster = userMap[campaign.masterId] as HwUser;
+
+                return {
+                  id: campaign.id,
+                  name: campaign.name,
+                  createdAt: campaign.createdAt,
+                  master: { ...hwMaster, me: hwMaster.id === this.authService.userId() },
+                  memberships: campaign.membershipIds.map((membershipId): HwfeMembership => {
                     const membership = membershipMap[membershipId];
+
+                    const hwUser = userMap[membership.userId] as HwUser;
 
                     return {
                       id: membership.id,
@@ -126,10 +129,14 @@ export class MyCampaignsComponent {
                       character: membership.characterId
                         ? characterMap[membership.characterId]
                         : undefined,
-                      user: userMap[membership.userId] as HwUserAny,
+                      user: {
+                        ...hwUser,
+                        me: hwUser.id === this.authService.userId(),
+                      },
                     };
                   }),
-              }));
+                };
+              });
             }),
           );
         }),

@@ -1,5 +1,7 @@
-import { HwUserExt } from './user-ext.interface.js';
-
-export interface HwUser extends HwUserExt {
+export interface HwUser {
+  id: number;
+  handle: string;
   email: string;
+  admin: boolean;
+  createdAt: Date;
 }
