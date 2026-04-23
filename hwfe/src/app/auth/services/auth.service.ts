@@ -15,9 +15,9 @@ export class AuthService {
   private userApiService = inject(UsersApiService);
   private router = inject(Router);
 
-  public user = signal<HwUser | null>(null);
+  public user = signal<HwUser | undefined>(undefined);
 
-  public userId = computed(() => this.user()?.id as number);
+  public userId = computed(() => this.user()?.id);
 
   public register(userRegisterDto: HwAuthRegisterDto): Observable<HwAuthResponse> {
     return this.httpClient.post<HwAuthResponse>('/api/auth/register', userRegisterDto).pipe(
@@ -86,7 +86,7 @@ export class AuthService {
 
     this.authTokenService.clear();
 
-    this.user.set(null);
+    this.user.set(undefined);
 
     void this.router.navigate(['/auth/login']);
   }

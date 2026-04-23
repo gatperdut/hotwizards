@@ -1,25 +1,35 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwUser, HwUserExt, Paginated } from '@hw/shared';
+import { HwUser, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { UserExtSelect } from './user-ext.select.js';
-import { UserSelect } from './user.select.js';
 
 @Injectable()
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  public byHandle(handle: string): Promise<HwUserExt | null> {
+  public byHandle(handle: string): Promise<HwUser | null> {
     return this.prismaService.user.findUnique({
       where: { handle: handle },
-      select: UserExtSelect,
+      select: {
+        id: true,
+        handle: true,
+        email: true,
+        admin: true,
+        createdAt: true,
+      },
     });
   }
 
-  public byEmail(email: string): Promise<HwUserExt | null> {
+  public byEmail(email: string): Promise<HwUser | null> {
     return this.prismaService.user.findUnique({
       where: { email: email },
-      select: UserExtSelect,
+      select: {
+        id: true,
+        handle: true,
+        email: true,
+        admin: true,
+        createdAt: true,
+      },
     });
   }
 
@@ -27,7 +37,7 @@ export class UsersService {
     term: string = '',
     page: number = 0,
     pageSize: number = 10,
-  ): Promise<Paginated<HwUserExt>> {
+  ): Promise<Paginated<HwUser>> {
     const where: Prisma.UserWhereInput = {
       handle: {
         contains: term,
@@ -46,9 +56,10 @@ export class UsersService {
 
     return {
       items: users.map(
-        (user): HwUserExt => ({
+        (user): HwUser => ({
           id: user.id,
           handle: user.handle,
+          email: user.email,
           admin: user.admin,
           createdAt: user.createdAt,
         }),
@@ -67,21 +78,40 @@ export class UsersService {
       where: {
         OR: [{ email: identifier }, { handle: identifier }],
       },
-      select: { ...UserSelect, password: true },
+      select: {
+        id: true,
+        handle: true,
+        email: true,
+        admin: true,
+        createdAt: true,
+        password: true,
+      },
     });
   }
 
   public me(id: number): Promise<HwUser | null> {
     return this.prismaService.user.findUnique({
       where: { id: id },
-      select: UserSelect,
+      select: {
+        id: true,
+        handle: true,
+        email: true,
+        admin: true,
+        createdAt: true,
+      },
     });
   }
 
-  public byIds(ids: number[]): Promise<HwUserExt[]> {
+  public byIds(ids: number[]): Promise<HwUser[]> {
     return this.prismaService.user.findMany({
       where: { id: { in: ids } },
-      select: UserExtSelect,
+      select: {
+        id: true,
+        handle: true,
+        email: true,
+        admin: true,
+        createdAt: true,
+      },
     });
   }
 
@@ -93,7 +123,13 @@ export class UsersService {
   ): Promise<HwUser> {
     return this.prismaService.user.create({
       data: { handle: handle, email: email, password: hashedPassword, admin: admin },
-      select: UserSelect,
+      select: {
+        id: true,
+        handle: true,
+        email: true,
+        admin: true,
+        createdAt: true,
+      },
     });
   }
 }
