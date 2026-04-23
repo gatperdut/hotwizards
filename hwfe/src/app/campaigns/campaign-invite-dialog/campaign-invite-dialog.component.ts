@@ -57,7 +57,7 @@ export class CampaignInviteDialogComponent {
     stream: (request) => {
       const forbiddenIds = [
         this.data.campaign.master.id,
-        ...this.data.campaign.memberships.map((membership) => membership.id),
+        ...this.data.campaign.memberships.map((membership) => membership.user.id),
       ];
       return this.usersApiService
         .search({ term: request.params })

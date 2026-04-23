@@ -42,7 +42,7 @@
         [style.position-anchor]="`--${id}`"
         class="anchored fixed mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
       >
-        @if (searchForm) {
+        @if (searchable()) {
           <app-input-text
             [field]="searchForm"
             placeholder="Search by name"

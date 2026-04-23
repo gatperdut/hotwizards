@@ -1,8 +1,13 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { HwMembership } from '@hw/shared';
 import { AuthService } from '../../auth/services/auth.service';
 import { KlassesService } from '../../characters/services/klasses.service';
+import { MembershipsApiService } from '../../memberships/memberships-api.service';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogData,
+  ConfirmationDialogResult,
+} from '../../shared/confirmation-dialog/confirmation-dialog.component';
 import { AppCardAction, CardComponent } from '../../ui/card/card.component';
 import { DialogService } from '../../ui/dialog/services/dialog.service';
 import {
@@ -15,7 +20,7 @@ import {
   CampaignInviteDialogData,
   CampaignInviteDialogResult,
 } from '../campaign-invite-dialog/campaign-invite-dialog.component';
-import { HwfeCampaign } from '../types/my-campaign.type';
+import { HwfeCampaign, HwfeMembership } from '../types/my-campaign.type';
 
 @Component({
   selector: 'app-campaign',
@@ -28,6 +33,7 @@ export class CampaignComponent {
   private authService = inject(AuthService);
   private dialogService = inject(DialogService);
   public klassesService = inject(KlassesService);
+  private membershipsApiService = inject(MembershipsApiService);
 
   public campaign = input.required<HwfeCampaign>();
 
@@ -45,18 +51,32 @@ export class CampaignComponent {
 
   public isPending = computed(() =>
     this.pendingMemberships()
-      .map((m) => m.id)
+      .map((m) => m.user.id)
       .includes(this.authService.user()!.id),
   );
 
   public isActive = computed(() =>
     this.activeMemberships()
-      .map((m) => m.id)
+      .map((m) => m.user.id)
       .includes(this.authService.user()!.id),
   );
 
-  public toggleMembership(membership: HwMembership): void {
-    console.log(membership);
+  public toggleMembership(membership: HwfeMembership): void {
+    this.dialogService
+      .open<ConfirmationDialogComponent, ConfirmationDialogData, ConfirmationDialogResult>(
+        ConfirmationDialogComponent,
+        {
+          title: 'Kick out',
+          question: `Are you sure you want to kick ${membership.user.handle} out?`,
+          color: 'warning',
+        },
+      )
+      .afterClosed$.subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+        //TODO
+      });
   }
 
   public actions = computed(() => {
@@ -95,7 +115,9 @@ export class CampaignComponent {
           CampaignInviteAcceptDialogData,
           CampaignInviteAcceptDialogResult
         >(CampaignInviteAcceptDialogComponent, {
-          campaign: this.campaign(),
+          membership: this.campaign().memberships.find(
+            (m) => m.user.id === this.authService.userId(),
+          ) as HwfeMembership,
         });
       },
     };

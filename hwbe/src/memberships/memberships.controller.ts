@@ -30,7 +30,7 @@ export class MembershipsController {
   }
 
   @Post('accept')
-  @UseGuards(CurrentCampaignGuard, CurrentMembershipGuard, PendingMembershipGuard)
+  @UseGuards(CurrentMembershipGuard, PendingMembershipGuard)
   public accept(
     @CurrentMembership() membership: Membership,
     @Body() params: HwMembershipAcceptDto,

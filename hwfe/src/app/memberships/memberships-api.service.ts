@@ -34,7 +34,11 @@ export class MembershipsApiService {
       );
   }
 
-  public accept(params: HwMembershipAcceptDto) {
+  public accept(params: HwMembershipAcceptDto): Observable<HwMembershipAcceptResponse> {
     return this.httpClient.post<HwMembershipAcceptResponse>('/api/memberships/accept', params);
   }
+
+  // public delete(params: HwMembershipDeleteDto): Observable<HwMembershipDeleteResponse> {
+  //   this.httpClient.delete<
+  // }
 }
