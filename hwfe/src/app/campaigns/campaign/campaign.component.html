@@ -15,50 +15,54 @@
     </div>
 
     <div class="flex flex-col xl:flex-row gap-hw-average">
-      @if (activeMembers().length) {
+      @if (activeMemberships().length) {
         <ng-container
           *ngTemplateOutlet="
             listOutlet;
-            context: { members: activeMembers(), title: 'Active members' }
+            context: { memberships: activeMemberships(), title: 'Active members' }
           "
         ></ng-container>
       }
 
-      @if (pendingMembers().length) {
+      @if (pendingMemberships().length) {
         <ng-container
           *ngTemplateOutlet="
             listOutlet;
-            context: { members: pendingMembers(), title: 'Pending members' }
+            context: { memberships: pendingMemberships(), title: 'Pending members' }
           "
         ></ng-container>
       }
 
-      @if (!activeMembers().length && !pendingMembers().length) {
+      @if (!activeMemberships().length && !pendingMemberships().length) {
         <span class="typ-body">No members invited yet</span>
       }
     </div>
   </div>
 
-  <ng-template #listOutlet let-members="members" let-title="title">
+  <ng-template #listOutlet let-memberships="memberships" let-title="title">
     <div class="flex flex-col gap-hw-small grow">
       <span class="typ-body">{{ title }}</span>
 
       <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
-        @for (member of members; track member.id) {
+        @for (membership of memberships; track membership.id) {
           <div class="flex flex-row items-center gap-hw-small min-w-0">
             <div
               class="size-10 rounded-full bg-cover bg-center"
               [style.background-image]="
-                member.status === 'PENDING'
+                membership.status === 'PENDING'
                   ? 'url(/characters/pending.gif)'
-                  : 'url(/characters/zargon.png)'
+                  : `url(${klassesService.portrait(membership.character.klass, membership.character.gender)})`
               "
             ></div>
 
             <div class="min-w-0 grow">
-              <div class="typ-small truncate opacity-70">Barbarian</div>
+              @if (membership.status === 'ACTIVE') {
+                <div class="typ-small truncate opacity-70">
+                  {{ klassesService.name(membership.character.klass) }}
+                </div>
+              }
               <div class="typ-body font-bold truncate">
-                {{ member.handle }}
+                {{ membership.user.handle }}
               </div>
             </div>
           </div>

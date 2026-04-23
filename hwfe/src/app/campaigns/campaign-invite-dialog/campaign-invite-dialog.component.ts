@@ -13,10 +13,10 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { UsersApiService } from '../../users/users-api.service';
-import { MyCampaign } from '../types/my-campaign.type';
+import { HwfeCampaign } from '../types/my-campaign.type';
 
 export type CampaignInviteDialogData = {
-  campaign: MyCampaign;
+  campaign: HwfeCampaign;
 };
 
 export type CampaignInviteDialogResult = boolean;
@@ -57,7 +57,7 @@ export class CampaignInviteDialogComponent {
     stream: (request) => {
       const forbiddenIds = [
         this.data.campaign.master.id,
-        ...this.data.campaign.members.map((member) => member.id),
+        ...this.data.campaign.memberships.map((membership) => membership.id),
       ];
       return this.usersApiService
         .search({ term: request.params })

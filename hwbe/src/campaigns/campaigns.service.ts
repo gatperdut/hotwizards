@@ -19,7 +19,7 @@ export class CampaignsService {
           OR: [
             { masterId: userId },
             {
-              members: {
+              memberships: {
                 some: { userId: userId },
               },
             },
@@ -42,7 +42,7 @@ export class CampaignsService {
               },
             },
             {
-              members: {
+              memberships: {
                 some: {
                   user: {
                     handle: {
@@ -64,7 +64,7 @@ export class CampaignsService {
       take: pageSize,
       orderBy: { name: 'asc' },
       include: {
-        members: {
+        memberships: {
           select: {
             userId: true,
           },
@@ -80,7 +80,9 @@ export class CampaignsService {
         userId: {
           in: [
             ...new Set(
-              campaigns.flatMap((campaign) => campaign.members.map((member) => member.userId)),
+              campaigns.flatMap((campaign) =>
+                campaign.memberships.map((membership) => membership.userId),
+              ),
             ),
           ],
         },
@@ -93,7 +95,7 @@ export class CampaignsService {
           id: campaign.id,
           name: campaign.name,
           masterId: campaign.masterId,
-          memberIds: campaign.members.map((member) => member.userId),
+          memberIds: campaign.memberships.map((membership) => membership.userId),
           membershipIds: memberships.map((membership) => membership.id),
           createdAt: campaign.createdAt,
         }),

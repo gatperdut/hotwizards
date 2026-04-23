@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { AuthService } from '../../auth/services/auth.service';
+import { KlassesService } from '../../characters/services/klasses.service';
 import { AppCardAction, CardComponent } from '../../ui/card/card.component';
 import { DialogService } from '../../ui/dialog/services/dialog.service';
 import {
@@ -13,7 +14,7 @@ import {
   CampaignInviteDialogData,
   CampaignInviteDialogResult,
 } from '../campaign-invite-dialog/campaign-invite-dialog.component';
-import { MyCampaign } from '../types/my-campaign.type';
+import { HwfeCampaign } from '../types/my-campaign.type';
 
 @Component({
   selector: 'app-campaign',
@@ -25,29 +26,30 @@ import { MyCampaign } from '../types/my-campaign.type';
 export class CampaignComponent {
   private authService = inject(AuthService);
   private dialogService = inject(DialogService);
+  public klassesService = inject(KlassesService);
 
-  public campaign = input.required<MyCampaign>();
+  public campaign = input.required<HwfeCampaign>();
 
   public master = computed(() => this.campaign().master);
 
-  public activeMembers = computed(() =>
-    this.campaign().members.filter((member) => member.status === 'ACTIVE'),
+  public activeMemberships = computed(() =>
+    this.campaign().memberships.filter((membership) => membership.status === 'ACTIVE'),
   );
 
-  public pendingMembers = computed(() =>
-    this.campaign().members.filter((member) => member.status === 'PENDING'),
+  public pendingMemberships = computed(() =>
+    this.campaign().memberships.filter((membership) => membership.status === 'PENDING'),
   );
 
   public isMaster = computed(() => this.master().id === this.authService.user()!.id);
 
   public isPending = computed(() =>
-    this.pendingMembers()
+    this.pendingMemberships()
       .map((m) => m.id)
       .includes(this.authService.user()!.id),
   );
 
   public isActive = computed(() =>
-    this.activeMembers()
+    this.activeMemberships()
       .map((m) => m.id)
       .includes(this.authService.user()!.id),
   );

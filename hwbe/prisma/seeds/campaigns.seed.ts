@@ -14,11 +14,22 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
     data: {
       name: 'The Shadow over Valencia',
       masterId: carlos.id,
-      members: {
+      memberships: {
         create: [
-          { userId: josep.id, status: MembershipStatus.ACTIVE },
-          { userId: victor.id, status: MembershipStatus.ACTIVE },
-          { userId: vicent.id, status: MembershipStatus.ACTIVE },
+          {
+            userId: josep.id,
+            status: MembershipStatus.ACTIVE,
+            character: { create: { name: 'Zanza', gender: 'MALE', klass: 'DWARF' } },
+          },
+          {
+            userId: victor.id,
+            status: MembershipStatus.ACTIVE,
+            character: { create: { name: 'Arno', gender: 'MALE', klass: 'WIZARD' } },
+          },
+          {
+            userId: vicent.id,
+            status: MembershipStatus.PENDING,
+          },
         ],
       },
     },

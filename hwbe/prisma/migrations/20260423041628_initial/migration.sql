@@ -2,6 +2,9 @@
 CREATE TYPE "MembershipStatus" AS ENUM ('PENDING', 'ACTIVE');
 
 -- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE');
+
+-- CreateEnum
 CREATE TYPE "Klass" AS ENUM ('BARBARIAN', 'WIZARD', 'ELF', 'DWARF');
 
 -- CreateTable
@@ -37,6 +40,17 @@ CREATE TABLE "Membership" (
     CONSTRAINT "Membership_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Character" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "klass" "Klass" NOT NULL,
+    "gender" "Gender" NOT NULL,
+    "membershipId" INTEGER NOT NULL,
+
+    CONSTRAINT "Character_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_handle_key" ON "User"("handle");
 
@@ -46,6 +60,9 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 -- CreateIndex
 CREATE UNIQUE INDEX "Membership_userId_campaignId_key" ON "Membership"("userId", "campaignId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Character_membershipId_key" ON "Character"("membershipId");
+
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_masterId_fkey" FOREIGN KEY ("masterId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -54,3 +71,6 @@ ALTER TABLE "Membership" ADD CONSTRAINT "Membership_userId_fkey" FOREIGN KEY ("u
 
 -- AddForeignKey
 ALTER TABLE "Membership" ADD CONSTRAINT "Membership_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Character" ADD CONSTRAINT "Character_membershipId_fkey" FOREIGN KEY ("membershipId") REFERENCES "Membership"("id") ON DELETE CASCADE ON UPDATE CASCADE;
