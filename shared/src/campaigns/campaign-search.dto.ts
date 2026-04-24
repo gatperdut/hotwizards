@@ -6,5 +6,5 @@ export class HwCampaignSearchDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value?.trim())
-  term: string;
+  term?: string;
 }

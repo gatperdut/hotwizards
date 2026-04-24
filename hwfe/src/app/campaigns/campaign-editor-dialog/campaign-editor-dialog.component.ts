@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, minLength } from '@angular/forms/signals';
-import { HwUser } from '@hw/shared';
+import { HwCampaignEditDto } from '@hw/shared';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -9,9 +9,9 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 
-export type CampaignEditorDialogData = {};
+export type CampaignEditorDialogData = HwCampaignEditDto;
 
-export type CampaignInEditorDialogResult = boolean;
+export type CampaignEditorDialogResult = boolean;
 
 @Component({
   selector: 'app-campaign-editor-dialog',
@@ -28,14 +28,21 @@ export type CampaignInEditorDialogResult = boolean;
 })
 export class CampaignEditorDialogComponent {
   public data = inject<CampaignEditorDialogData>(APP_DIALOG_DATA);
-  public dialogRef = inject<DialogRef<CampaignInEditorDialogResult>>(DialogRef);
+  public dialogRef = inject<DialogRef<CampaignEditorDialogResult>>(DialogRef);
 
-  public model = signal<HwUser[]>([]);
+  public creating = !this.data.id;
+
+  public model = signal<HwCampaignEditDto>({
+    id: this.data.id,
+    name: this.data.name,
+    aoo: this.data.aoo,
+    movement: this.data.movement,
+  });
   public form = form(this.model, (schemaPath) => {
-    minLength(schemaPath, 1);
+    minLength(schemaPath.name, 1);
   });
 
-  public invite(): void {
+  public create(): void {
     // TODO
   }
 }

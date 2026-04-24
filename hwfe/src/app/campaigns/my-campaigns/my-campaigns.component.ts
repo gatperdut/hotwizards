@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { debounce, form } from '@angular/forms/signals';
+import { debounce, form, SchemaPath } from '@angular/forms/signals';
 import { HwCampaignSearchDto, HwUser, PaginationMeta } from '@hw/shared';
 import { forkJoin, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
@@ -22,7 +22,7 @@ import { UsersApiService } from '../../users/users-api.service';
 import {
   CampaignEditorDialogComponent,
   CampaignEditorDialogData,
-  CampaignInEditorDialogResult,
+  CampaignEditorDialogResult,
 } from '../campaign-editor-dialog/campaign-editor-dialog.component';
 import { CampaignComponent } from '../campaign/campaign.component';
 import { CampaignsFilterComponent } from '../campaigns-filter/campaigns-filter.component';
@@ -63,7 +63,7 @@ export class MyCampaignsComponent {
   });
 
   public form = form(this.model, (schemaPath) => {
-    debounce(schemaPath.term, 400);
+    debounce(schemaPath.term as SchemaPath<string>, 400);
   });
 
   public page = signal<number>(0);
@@ -175,7 +175,7 @@ export class MyCampaignsComponent {
     const dialog: LazyDialog<
       CampaignEditorDialogComponent,
       CampaignEditorDialogData,
-      CampaignInEditorDialogResult
+      CampaignEditorDialogResult
     > = {
       importFn: () =>
         import('../campaign-editor-dialog/campaign-editor-dialog.component').then(
@@ -183,6 +183,6 @@ export class MyCampaignsComponent {
         ),
     };
 
-    void this.dialogService.open(dialog, {});
+    void this.dialogService.open(dialog, { name: '', aoo: true, movement: 'BALANCED' });
   }
 }
