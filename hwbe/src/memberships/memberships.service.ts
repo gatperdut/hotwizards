@@ -50,7 +50,9 @@ export class MembershipsService {
     });
 
     if (currentMembers.length) {
-      throw new BadRequestException(`Users ${currentMembers.join(', ')} are already members`);
+      throw new BadRequestException(
+        `Users ${currentMembers.map((m) => m.id).join(', ')} are already members`,
+      );
     }
 
     return this.prismaService.membership.createMany({

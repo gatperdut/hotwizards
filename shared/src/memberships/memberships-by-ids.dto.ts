@@ -6,8 +6,8 @@ export class HwMembershipsByIdsDto {
   @ToArray()
   @IsArray()
   @ArrayNotEmpty()
+  @Type(() => Number)
   @IsInt({ each: true })
   @IsPositive({ each: true })
-  @Type(() => Number)
   ids: number[];
 }

@@ -6,8 +6,8 @@ export class HwMembershipCreateDto extends HwCampaignPartialDto {
   @ToArray()
   @IsArray()
   @ArrayNotEmpty()
+  @Type(() => Number)
   @IsInt({ each: true })
   @IsPositive({ each: true })
-  @Type(() => Number)
   userIds: number[];
 }

@@ -35,6 +35,7 @@ export class UsersService {
 
   public async search(
     term: string = '',
+    excludeIds: number[],
     page: number = 0,
     pageSize: number = 10,
   ): Promise<Paginated<HwUser>> {
@@ -43,6 +44,11 @@ export class UsersService {
         contains: term,
         mode: 'insensitive',
       },
+      ...(excludeIds?.length && {
+        id: {
+          notIn: excludeIds,
+        },
+      }),
     };
 
     const users = await this.prismaService.user.findMany({

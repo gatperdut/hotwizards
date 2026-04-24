@@ -23,7 +23,7 @@ export class UsersController {
 
   @Get()
   public search(@Query() params: HwUserSearchDto): Promise<Paginated<HwUser>> {
-    return this.usersService.search(params.term, params.page, params.pageSize);
+    return this.usersService.search(params.term, params.excludeIds, params.page, params.pageSize);
   }
 
   @Get('by-ids')

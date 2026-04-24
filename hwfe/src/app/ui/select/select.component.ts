@@ -26,10 +26,10 @@ export class SelectComponent {
   public trackFn = input<(item: any) => string | number>((item) => item);
   public displayFn = input<(item: any) => string>((item) => item);
   public form = input.required<Field<any>>();
-  public searchField = model<string>('');
+  public searchField = model('');
   public multiple = input<boolean>(false);
   public loading = input<boolean>(false);
-  public searchable = input<boolean>(false);
+  public searchable = input(false);
 
   constructor(private eRef: ElementRef) {}
 
