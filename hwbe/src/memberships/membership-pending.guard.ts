@@ -2,13 +2,13 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@
 import { HwRequest } from '../auth/types/hw-request.type.js';
 
 @Injectable()
-export class ActiveMembershipGuard implements CanActivate {
+export class MembershipPendingGuard implements CanActivate {
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const membership = request.membership;
 
-    if (membership.status !== 'ACTIVE') {
-      throw new ForbiddenException('Your membership is not active');
+    if (membership.status !== 'PENDING') {
+      throw new ForbiddenException('Your membership is not pending');
     }
 
     return true;

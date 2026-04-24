@@ -2,14 +2,13 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@
 import { HwRequest } from '../auth/types/hw-request.type.js';
 
 @Injectable()
-export class MasteredCampaignGuard implements CanActivate {
+export class MembershipActiveGuard implements CanActivate {
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
-    const user = request.user;
-    const campaign = request.campaign;
+    const membership = request.membership;
 
-    if (campaign.masterId !== user.id) {
-      throw new ForbiddenException('You are not the master of this campaign');
+    if (membership.status !== 'ACTIVE') {
+      throw new ForbiddenException('Your membership is not active');
     }
 
     return true;

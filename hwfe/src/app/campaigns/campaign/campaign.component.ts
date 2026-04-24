@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { filter, switchMap } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
@@ -37,6 +38,13 @@ export class CampaignComponent {
 
   public campaign = input.required<HwfeCampaign>();
 
+  public membership = computed(
+    () =>
+      this.campaign().memberships.find(
+        (m) => m.user.id === this.authService.userId(),
+      ) as HwfeMembership,
+  );
+
   public master = computed(() => this.campaign().master);
 
   public activeMemberships = computed(() =>
@@ -61,22 +69,23 @@ export class CampaignComponent {
       .includes(this.authService.user()!.id),
   );
 
-  public toggleMembership(membership: HwfeMembership): void {
+  public toggleMembership(membership: HwfeMembership, self: boolean): void {
     this.dialogService
       .open<ConfirmationDialogComponent, ConfirmationDialogData, ConfirmationDialogResult>(
         ConfirmationDialogComponent,
         {
-          title: 'Kick out',
-          question: `Are you sure you want to kick ${membership.user.handle} out?`,
+          title: self ? 'Abandon campaign' : 'Kick out',
+          question: self
+            ? 'Are you sure you want to abandon the campaign?'
+            : `Are you sure you want to kick ${membership.user.handle} out?`,
           color: 'warning',
         },
       )
-      .afterClosed$.subscribe((confirmed) => {
-        if (!confirmed) {
-          return;
-        }
-        //TODO
-      });
+      .afterClosed$.pipe(
+        filter((confirmed) => !!confirmed),
+        switchMap(() => this.membershipsApiService.delete({ membershipId: membership.id })),
+      )
+      .subscribe();
   }
 
   public actions = computed(() => {
@@ -84,7 +93,13 @@ export class CampaignComponent {
 
     if (this.isMaster()) {
       result.push(this.inviteAction());
-    } else if (this.isPending()) {
+    }
+
+    if (this.isPending() || this.isActive()) {
+      result.push(this.abandonAction());
+    }
+
+    if (this.isPending()) {
       result.push(this.joinAction());
     }
 
@@ -102,6 +117,16 @@ export class CampaignComponent {
         >(CampaignInviteDialogComponent, {
           campaign: this.campaign(),
         });
+      },
+    };
+  }
+
+  private abandonAction(): AppCardAction {
+    return {
+      label: 'Abandon',
+      color: 'warning',
+      action: (): void => {
+        this.toggleMembership(this.membership(), true);
       },
     };
   }
