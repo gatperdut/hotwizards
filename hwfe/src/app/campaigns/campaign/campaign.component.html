@@ -40,7 +40,7 @@
 
   <ng-template #listOutlet let-memberships="memberships" let-title="title">
     <div class="flex flex-col gap-hw-small grow">
-      <span class="typ-body">{{ title }}</span>
+      <span class="typ-body whitespace-nowrap">{{ title }}</span>
 
       <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
         @for (membership of memberships; track membership.id) {
@@ -62,7 +62,7 @@
                 handle: membership.user.handle,
                 name: membership.status === 'ACTIVE' ? membership.character.name : 'No name',
                 me: membership.user.me,
-                click: () => toggleMembership(membership),
+                click: () => toggleMembership(membership, false),
               }
             "
           ></ng-container>

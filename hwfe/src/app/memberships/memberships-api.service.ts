@@ -6,6 +6,8 @@ import {
   HwMembershipAcceptResponse,
   HwMembershipCreateDto,
   HwMembershipCreateResponse,
+  HwMembershipDeleteDto,
+  HwMembershipDeleteResponse,
   HwMembershipsByIdsDto,
 } from '@hw/shared';
 import { Observable, of } from 'rxjs';
@@ -38,7 +40,16 @@ export class MembershipsApiService {
     return this.httpClient.post<HwMembershipAcceptResponse>('/api/memberships/accept', params);
   }
 
-  // public delete(params: HwMembershipDeleteDto): Observable<HwMembershipDeleteResponse> {
-  //   this.httpClient.delete<
-  // }
+  public delete(params: HwMembershipDeleteDto): Observable<HwMembershipDeleteResponse> {
+    return this.httpClient
+      .delete<HwMembershipDeleteResponse>('/api/memberships', {
+        params: { ...params },
+      })
+      .pipe(
+        this.apiNotificationService.notify(
+          'Removed from campaign',
+          'Could not remove from campaign',
+        ),
+      );
+  }
 }

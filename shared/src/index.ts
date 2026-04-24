@@ -14,6 +14,8 @@ export { HwMembershipAcceptResponse } from './memberships/membership-accept-resp
 export { HwMembershipAcceptDto } from './memberships/membership-accept.dto.js';
 export { HwMembershipCreateResponse } from './memberships/membership-create-response.interface.js';
 export { HwMembershipCreateDto } from './memberships/membership-create.dto.js';
+export { HwMembershipDeleteResponse } from './memberships/membership-delete-response.interface.js';
+export { HwMembershipDeleteDto } from './memberships/membership-delete.dto.js';
 export { HwMembershipStatus } from './memberships/membership-status.enum.js';
 export { HwMembership } from './memberships/membership.interface.js';
 export { HwMembershipsByIdsDto } from './memberships/memberships-by-ids.dto.js';

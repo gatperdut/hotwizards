@@ -1,4 +1,4 @@
-import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
+import { Gender, Klass, Membership, MembershipStatus } from '@hw/prismagen/client';
 import { HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -85,5 +85,9 @@ export class MembershipsService {
         character: character,
       };
     });
+  }
+
+  public async delete(membershipId: number): Promise<Membership> {
+    return this.prismaService.membership.delete({ where: { id: membershipId } });
   }
 }

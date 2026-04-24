@@ -5,14 +5,15 @@ import {
   HwMembershipCreateDto,
   HwMembershipsByIdsDto,
 } from '@hw/shared';
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
-import { CurrentCampaignGuard } from '../campaigns/current-campaign.guard.js';
-import { MasteredCampaignGuard } from '../campaigns/mastered-campaign.guard.js';
+import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { CampaignMasterGuard } from '../campaigns/campaign-master.guard.js';
+import { CampaignUserGuard } from '../campaigns/campaign-user.guard.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CurrentMembership } from './current-membership.decorator.js';
-import { CurrentMembershipGuard } from './current-membership.guard.js';
+import { MembershipOwnerOrMasterGuard } from './membership-owner-or-master.guard.js';
+import { MembershipOwnerGuard } from './membership-owner.guard.js';
+import { MembershipPendingGuard } from './membership-pending.guard.js';
 import { MembershipsService } from './memberships.service.js';
-import { PendingMembershipGuard } from './pending-membership.guard.js';
 
 @Controller('memberships')
 export class MembershipsController {
@@ -24,17 +25,23 @@ export class MembershipsController {
   }
 
   @Post()
-  @UseGuards(CurrentCampaignGuard, MasteredCampaignGuard)
+  @UseGuards(CampaignUserGuard, CampaignMasterGuard)
   public invite(@CurrentUser() user: User, @Body() params: HwMembershipCreateDto) {
     return this.membershipsService.invite(params.campaignId, user.id, params.userIds);
   }
 
   @Post('accept')
-  @UseGuards(CurrentMembershipGuard, PendingMembershipGuard)
+  @UseGuards(MembershipOwnerGuard, MembershipPendingGuard)
   public accept(
     @CurrentMembership() membership: Membership,
     @Body() params: HwMembershipAcceptDto,
   ) {
     return this.membershipsService.accept(membership.id, params.klass, params.gender, params.name);
+  }
+
+  @Delete()
+  @UseGuards(MembershipOwnerOrMasterGuard)
+  public delete(@CurrentMembership() membership: Membership): Promise<Membership> {
+    return this.membershipsService.delete(membership.id);
   }
 }
