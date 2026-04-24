@@ -1,0 +1,24 @@
+<app-dialog sizeClass="max-w-md">
+  <form>
+    <ng-template appDialogTitle>
+      <div class="typ-h2">Invite</div>
+    </ng-template>
+
+    <ng-template appDialogContent> </ng-template>
+
+    <ng-template appDialogActions>
+      <app-button
+        label="Cancel"
+        type="button"
+        appearance="outlined"
+        (click)="dialogRef.close(false)"
+      ></app-button>
+      <app-button
+        label="Invite"
+        type="submit"
+        (click)="invite()"
+        [disabled]="form().invalid()"
+      ></app-button>
+    </ng-template>
+  </form>
+</app-dialog>

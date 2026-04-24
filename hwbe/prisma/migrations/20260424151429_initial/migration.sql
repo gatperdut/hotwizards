@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "Movement" AS ENUM ('REGULAR', 'BALANCED');
+
+-- CreateEnum
 CREATE TYPE "MembershipStatus" AS ENUM ('PENDING', 'ACTIVE');
 
 -- CreateEnum
@@ -30,6 +33,16 @@ CREATE TABLE "Campaign" (
 );
 
 -- CreateTable
+CREATE TABLE "Ruleset" (
+    "id" SERIAL NOT NULL,
+    "aoo" BOOLEAN NOT NULL DEFAULT true,
+    "movement" "Movement" NOT NULL DEFAULT 'REGULAR',
+    "campaignId" INTEGER NOT NULL,
+
+    CONSTRAINT "Ruleset_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Membership" (
     "id" SERIAL NOT NULL,
     "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -58,6 +71,9 @@ CREATE UNIQUE INDEX "User_handle_key" ON "User"("handle");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Ruleset_campaignId_key" ON "Ruleset"("campaignId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Membership_userId_campaignId_key" ON "Membership"("userId", "campaignId");
 
 -- CreateIndex
@@ -65,6 +81,9 @@ CREATE UNIQUE INDEX "Character_membershipId_key" ON "Character"("membershipId");
 
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_masterId_fkey" FOREIGN KEY ("masterId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Ruleset" ADD CONSTRAINT "Ruleset_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Membership" ADD CONSTRAINT "Membership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

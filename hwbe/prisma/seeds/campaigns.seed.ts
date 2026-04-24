@@ -32,6 +32,12 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
           },
         ],
       },
+      ruleset: {
+        create: {
+          aoo: true,
+          movement: 'BALANCED',
+        },
+      },
     },
   });
 
@@ -39,6 +45,12 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
     data: {
       name: "Josep's Solo Adventure",
       masterId: josep.id,
+      ruleset: {
+        create: {
+          aoo: false,
+          movement: 'REGULAR',
+        },
+      },
     },
   });
 }

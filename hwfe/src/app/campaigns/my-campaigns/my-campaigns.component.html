@@ -1,8 +1,14 @@
 <div class="flex flex-col gap-hw-large">
-  <div
-    class="typ-h1 text-center sticky top-0 py-hw-average bg-background z-1 w-full separator-b separator-secondary"
-  >
-    My Campaigns
+  <div class="sticky top-0 z-1 w-full bg-background separator-b separator-secondary py-hw-average">
+    <div class="grid grid-cols-3 items-center px-hw-average">
+      <div></div>
+
+      <div class="typ-h1 text-center">My Campaigns</div>
+
+      <div class="flex justify-end gap-hw-small">
+        <app-button icon="plus-circle" (click)="create()"></app-button>
+      </div>
+    </div>
   </div>
 
   <div class="flex flex-col gap-hw-average">

@@ -1,6 +1,6 @@
 import { User } from '@hw/prismagen/client';
-import { HwCampaign, HwCampaignSearchDto, Paginated } from '@hw/shared';
-import { Controller, Get, Query } from '@nestjs/common';
+import { HwCampaign, HwCampaignSearchDto, HwCampaignUpsertDto, Paginated } from '@hw/shared';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CampaignsService } from './campaigns.service.js';
 
@@ -14,5 +14,10 @@ export class CampaignsController {
     @Query() params: HwCampaignSearchDto,
   ): Promise<Paginated<HwCampaign>> {
     return this.campaignsService.search(user.id, params.term, params.page, params.pageSize);
+  }
+
+  @Post()
+  public create(@CurrentUser() user: User, @Body() params: HwCampaignUpsertDto) {
+    return this.campaignsService.create(user.id, params.name, params.aoo, params.movement);
   }
 }

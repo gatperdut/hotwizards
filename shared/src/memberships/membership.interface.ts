@@ -1,4 +1,4 @@
-import { MembershipStatus } from '@hw/prismagen/enums.js';
+import { MembershipStatus } from '@hw/prismagen/client';
 
 export interface HwMembership {
   id: number;

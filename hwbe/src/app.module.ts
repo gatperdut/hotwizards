@@ -10,6 +10,7 @@ import { CharactersModule } from './characters/characters.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MembershipsModule } from './memberships/memberships.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { RulesetsModule } from './rulesets/rulesets.module.js';
 import { UsersModule } from './users/users.module.js';
 
 @Module({
@@ -25,6 +26,7 @@ import { UsersModule } from './users/users.module.js';
     AuthModule,
     UsersModule,
     CampaignsModule,
+    RulesetsModule,
     MembershipsModule,
     CharactersModule,
   ],

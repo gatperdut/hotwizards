@@ -30,6 +30,13 @@ model Campaign {
   master   User @relation("CampaignMaster", fields: [masterId], references: [id], onDelete: Cascade)
 
   memberships Membership[]
+
+  ruleset Ruleset?
+}
+
+enum Movement {
+  REGULAR
+  BALANCED
 }
 
 enum MembershipStatus {
@@ -47,6 +54,15 @@ enum Klass {
   WIZARD
   ELF
   DWARF
+}
+
+model Ruleset {
+  id       Int      @id @default(autoincrement())
+  aoo      Boolean  @default(true)
+  movement Movement @default(REGULAR)
+
+  campaignId Int      @unique
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model Membership {
