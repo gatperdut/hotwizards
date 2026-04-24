@@ -7,7 +7,7 @@ export class HwUserSearchDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @Transform(({ value }) => value?.trim())
-  term: string;
+  term?: string;
 
   @IsOptional()
   @ToArray()
@@ -16,5 +16,5 @@ export class HwUserSearchDto extends PaginationDto {
   @Type(() => Number)
   @IsInt({ each: true })
   @IsPositive({ each: true })
-  excludeIds: number[];
+  excludeIds?: number[];
 }

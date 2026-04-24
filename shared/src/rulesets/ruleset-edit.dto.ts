@@ -2,7 +2,7 @@ import { Movement } from '@hw/prismagen/client';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsEnum } from 'class-validator';
 
-export class HwRulesetUpsertDto {
+export class HwRulesetEditDto {
   @IsBoolean()
   @Type(() => Boolean)
   aoo: boolean;

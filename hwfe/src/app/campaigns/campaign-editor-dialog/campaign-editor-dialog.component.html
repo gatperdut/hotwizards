@@ -1,7 +1,7 @@
 <app-dialog sizeClass="max-w-md">
   <form>
     <ng-template appDialogTitle>
-      <div class="typ-h2">Invite</div>
+      <div class="typ-h2">{{ creating ? 'Create campaign' : 'Edit campaign' }}</div>
     </ng-template>
 
     <ng-template appDialogContent> </ng-template>
@@ -14,9 +14,9 @@
         (click)="dialogRef.close(false)"
       ></app-button>
       <app-button
-        label="Invite"
+        label="Create"
         type="submit"
-        (click)="invite()"
+        (click)="create()"
         [disabled]="form().invalid()"
       ></app-button>
     </ng-template>
