@@ -26,7 +26,7 @@
     @apply bg-transparent text-primary;
 
     &:hover:not(:disabled) {
-      @apply bg-primary text-white; /* Fills on hover */
+      @apply bg-primary text-white;
     }
 
     &:disabled {

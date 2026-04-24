@@ -10,7 +10,7 @@ import {
   ConfirmationDialogResult,
 } from '../../shared/confirmation-dialog/confirmation-dialog.component';
 import { AppCardAction, CardComponent } from '../../ui/card/card.component';
-import { DialogService } from '../../ui/dialog/services/dialog.service';
+import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
   CampaignInviteAcceptDialogComponent,
   CampaignInviteAcceptDialogData,
@@ -70,22 +70,33 @@ export class CampaignComponent {
   );
 
   public toggleMembership(membership: HwfeMembership, self: boolean): void {
-    this.dialogService
-      .open<ConfirmationDialogComponent, ConfirmationDialogData, ConfirmationDialogResult>(
-        ConfirmationDialogComponent,
-        {
-          title: self ? 'Abandon campaign' : 'Kick out',
-          question: self
-            ? 'Are you sure you want to abandon the campaign?'
-            : `Are you sure you want to kick ${membership.user.handle} out?`,
-          color: 'warning',
-        },
-      )
-      .afterClosed$.pipe(
-        filter((confirmed) => !!confirmed),
-        switchMap(() => this.membershipsApiService.delete({ membershipId: membership.id })),
-      )
-      .subscribe();
+    const dialog: LazyDialog<
+      ConfirmationDialogComponent,
+      ConfirmationDialogData,
+      ConfirmationDialogResult
+    > = {
+      importFn: () =>
+        import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+          (m) => m.ConfirmationDialogComponent,
+        ),
+    };
+
+    void this.dialogService
+      .open(dialog, {
+        title: self ? 'Abandon' : 'Kick out',
+        question: self
+          ? 'Are you sure you want to abandon the campaign?'
+          : `Are you sure you want to kick ${membership.user.handle} out?`,
+        color: 'warning',
+      })
+      .then((dialogRef) => {
+        dialogRef.afterClosed$
+          .pipe(
+            filter((confirmed) => !!confirmed),
+            switchMap(() => this.membershipsApiService.delete({ membershipId: membership.id })),
+          )
+          .subscribe();
+      });
   }
 
   public actions = computed(() => {
@@ -110,11 +121,18 @@ export class CampaignComponent {
     return {
       label: 'Invite',
       action: (): void => {
-        this.dialogService.open<
+        const dialog: LazyDialog<
           CampaignInviteDialogComponent,
           CampaignInviteDialogData,
           CampaignInviteDialogResult
-        >(CampaignInviteDialogComponent, {
+        > = {
+          importFn: () =>
+            import('../campaign-invite-dialog/campaign-invite-dialog.component').then(
+              (m) => m.CampaignInviteDialogComponent,
+            ),
+        };
+
+        void this.dialogService.open(dialog, {
           campaign: this.campaign(),
         });
       },
@@ -126,7 +144,7 @@ export class CampaignComponent {
       label: 'Abandon',
       color: 'warning',
       action: (): void => {
-        this.toggleMembership(this.membership(), true);
+        void this.toggleMembership(this.membership(), true);
       },
     };
   }
@@ -135,11 +153,18 @@ export class CampaignComponent {
     return {
       label: 'Join',
       action: (): void => {
-        this.dialogService.open<
+        const dialog: LazyDialog<
           CampaignInviteAcceptDialogComponent,
           CampaignInviteAcceptDialogData,
           CampaignInviteAcceptDialogResult
-        >(CampaignInviteAcceptDialogComponent, {
+        > = {
+          importFn: () =>
+            import('../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component').then(
+              (m) => m.CampaignInviteAcceptDialogComponent,
+            ),
+        };
+
+        void this.dialogService.open(dialog, {
           membership: this.campaign().memberships.find(
             (m) => m.user.id === this.authService.userId(),
           ) as HwfeMembership,
