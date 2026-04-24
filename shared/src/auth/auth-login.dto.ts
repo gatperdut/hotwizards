@@ -9,7 +9,7 @@ export class HwAuthLoginDto {
   @IsString()
   password: string;
 
-  @IsBoolean()
   @Type(() => Boolean)
+  @IsBoolean()
   rememberMe: boolean;
 }

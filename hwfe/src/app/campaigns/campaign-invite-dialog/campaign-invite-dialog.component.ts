@@ -45,7 +45,7 @@ export class CampaignInviteDialogComponent {
   public form = form(this.model, (schemaPath) => {
     minLength(schemaPath, 1);
   });
-  public searchModel = signal<string>('');
+  public searchModel = signal('');
   public trackFn = (user: HwUser): number => {
     return user.id;
   };
@@ -55,13 +55,13 @@ export class CampaignInviteDialogComponent {
   public resource = rxResource<HwUser[], string>({
     params: () => this.searchModel(),
     stream: (request) => {
-      const forbiddenIds = [
+      const excludeIds = [
         this.data.campaign.master.id,
         ...this.data.campaign.memberships.map((membership) => membership.user.id),
       ];
       return this.usersApiService
-        .search({ term: request.params })
-        .pipe(map((response) => response.items.filter((user) => !forbiddenIds.includes(user.id))));
+        .search({ term: request.params, excludeIds: excludeIds })
+        .pipe(map((response) => response.items));
     },
   });
 
