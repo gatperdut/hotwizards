@@ -4,5 +4,6 @@ export interface HwCampaign {
   masterId: number;
   memberIds: number[];
   membershipIds: number[];
+  rulesetId: number;
   createdAt: Date;
 }

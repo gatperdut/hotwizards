@@ -1,4 +1,4 @@
-import { Prisma } from '@hw/prismagen/client';
+import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -70,6 +70,11 @@ export class CampaignsService {
             userId: true,
           },
         },
+        ruleset: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -83,6 +88,7 @@ export class CampaignsService {
           masterId: campaign.masterId,
           memberIds: campaign.memberships.map((membership) => membership.userId),
           membershipIds: campaign.memberships.map((membership) => membership.id),
+          rulesetId: campaign.ruleset?.id as number,
           createdAt: campaign.createdAt,
         }),
       ),
@@ -93,5 +99,20 @@ export class CampaignsService {
         pages: Math.ceil(total / (pageSize || 10)),
       },
     };
+  }
+
+  public create(masterId: number, name: string, aoo: boolean, movement: Movement) {
+    return this.prismaService.campaign.create({
+      data: {
+        name: name,
+        masterId: masterId,
+        ruleset: {
+          create: {
+            aoo: aoo,
+            movement: movement,
+          },
+        },
+      },
+    });
   }
 }

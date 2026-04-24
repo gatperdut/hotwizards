@@ -4,5 +4,13 @@
   [class]="classes()"
   [disabled]="disabled()"
 >
-  {{ label() }}
+  @let icn = icon();
+  @if (icn) {
+    <app-icon [name]="icn"></app-icon>
+  }
+
+  @let lbl = label();
+  @if (lbl) {
+    {{ lbl }}
+  }
 </button>

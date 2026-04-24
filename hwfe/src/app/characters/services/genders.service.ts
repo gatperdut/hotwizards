@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Gender } from '@hw/prismagen/enums';
+import { Gender } from '@hw/prismagen/client';
 
 @Injectable({ providedIn: 'root' })
 export class GendersService {
