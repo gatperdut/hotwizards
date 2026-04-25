@@ -1,4 +1,4 @@
-import { Prisma } from '@hw/prismagen/client';
+import { Prisma, User } from '@hw/prismagen/client';
 import { HwUser, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -7,33 +7,20 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  public byHandle(handle: string): Promise<HwUser | null> {
-    return this.prismaService.user.findUnique({
+  public async handleAvailable(handle: string): Promise<boolean> {
+    return !(await this.prismaService.user.findUnique({
       where: { handle: handle },
-      select: {
-        id: true,
-        handle: true,
-        email: true,
-        admin: true,
-        createdAt: true,
-      },
-    });
+    }));
   }
 
-  public byEmail(email: string): Promise<HwUser | null> {
-    return this.prismaService.user.findUnique({
+  public async emailAvailable(email: string): Promise<boolean> {
+    return !(await this.prismaService.user.findUnique({
       where: { email: email },
-      select: {
-        id: true,
-        handle: true,
-        email: true,
-        admin: true,
-        createdAt: true,
-      },
-    });
+    }));
   }
 
   public async search(
+    userId: number,
     term: string = '',
     excludeIds: number[],
     page: number = 0,
@@ -61,15 +48,10 @@ export class UsersService {
     const total: number = await this.prismaService.user.count({ where: where });
 
     return {
-      items: users.map(
-        (user): HwUser => ({
-          id: user.id,
-          handle: user.handle,
-          email: user.email,
-          admin: user.admin,
-          createdAt: user.createdAt,
-        }),
-      ),
+      items: users.map((user): HwUser => {
+        const { password, ...strippedUser } = user;
+        return { ...strippedUser, me: user.id === userId };
+      }),
       meta: {
         page: page || 0,
         pageSize: pageSize || 10,
@@ -79,63 +61,26 @@ export class UsersService {
     };
   }
 
-  public byIdentifier(identifier: string): Promise<(HwUser & { password: string }) | null> {
-    return this.prismaService.user.findFirst({
+  public async byIdentifier(identifier: string): Promise<User | null> {
+    return await this.prismaService.user.findFirst({
       where: {
         OR: [{ email: identifier }, { handle: identifier }],
       },
-      select: {
-        id: true,
-        handle: true,
-        email: true,
-        admin: true,
-        createdAt: true,
-        password: true,
-      },
     });
   }
 
-  public me(id: number): Promise<HwUser | null> {
-    return this.prismaService.user.findUnique({
-      where: { id: id },
-      select: {
-        id: true,
-        handle: true,
-        email: true,
-        admin: true,
-        createdAt: true,
-      },
-    });
-  }
-
-  public byIds(ids: number[]): Promise<HwUser[]> {
-    return this.prismaService.user.findMany({
-      where: { id: { in: ids } },
-      select: {
-        id: true,
-        handle: true,
-        email: true,
-        admin: true,
-        createdAt: true,
-      },
-    });
-  }
-
-  public create(
+  public async create(
     handle: string,
     email: string,
     hashedPassword: string,
     admin: boolean,
   ): Promise<HwUser> {
-    return this.prismaService.user.create({
+    const user = await this.prismaService.user.create({
       data: { handle: handle, email: email, password: hashedPassword, admin: admin },
-      select: {
-        id: true,
-        handle: true,
-        email: true,
-        admin: true,
-        createdAt: true,
-      },
     });
+
+    const { password, ...strippedUser } = user;
+
+    return { ...strippedUser, me: true };
   }
 }

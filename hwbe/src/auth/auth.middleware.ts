@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { UsersService } from '../users/users.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { AuthService } from './auth.service.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 
@@ -8,7 +8,7 @@ import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 export class AuthMiddleware implements NestMiddleware {
   constructor(
     private authService: AuthService,
-    private usersService: UsersService,
+    private prismaService: PrismaService,
   ) {}
 
   public async use(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -30,7 +30,17 @@ export class AuthMiddleware implements NestMiddleware {
 
     const authTokenPayload: AuthTokenPayload = await this.authService.verifyToken(token);
 
-    req.user = await this.usersService.me(authTokenPayload.sub);
+    const user = await this.prismaService.user.findUnique({ where: { id: authTokenPayload.sub } });
+
+    if (!user) {
+      next();
+
+      return;
+    }
+
+    const { password, ...strippedUser } = user;
+
+    req.user = { ...strippedUser, me: true };
 
     next();
   }

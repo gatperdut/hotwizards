@@ -1,10 +1,7 @@
-import { User } from '@hw/prismagen/client';
 import {
   HwUser,
   HwUserAvailabilityEmailDto,
   HwUserAvailabilityHandleDto,
-  HwUserAvailabilityResponse,
-  HwUsersByIdsDto,
   HwUserSearchDto,
   Paginated,
 } from '@hw/shared';
@@ -17,13 +14,17 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('me')
-  public me(@CurrentUser() user: User): HwUser {
-    return user;
+  public me(@CurrentUser() hwUser: HwUser): HwUser {
+    return hwUser;
   }
 
   @Get()
-  public search(@Query() params: HwUserSearchDto): Promise<Paginated<HwUser>> {
+  public search(
+    @CurrentUser() hwUser: HwUser,
+    @Query() params: HwUserSearchDto,
+  ): Promise<Paginated<HwUser>> {
     return this.usersService.search(
+      hwUser.id,
       params.term,
       params?.excludeIds || [],
       params.page,
@@ -31,22 +32,13 @@ export class UsersController {
     );
   }
 
-  @Get('by-ids')
-  public byIds(@Query() params: HwUsersByIdsDto): Promise<HwUser[]> {
-    return this.usersService.byIds(params.ids);
+  @Get('email-available')
+  public async emailAvailable(@Query() params: HwUserAvailabilityEmailDto): Promise<boolean> {
+    return await this.usersService.emailAvailable(params.email);
   }
 
-  @Get('availability-email')
-  public async availabilityEmail(
-    @Query() params: HwUserAvailabilityEmailDto,
-  ): Promise<HwUserAvailabilityResponse> {
-    return { available: !(await this.usersService.byEmail(params.email)) };
-  }
-
-  @Get('availability-handle')
-  public async availabilityHandle(
-    @Query() params: HwUserAvailabilityHandleDto,
-  ): Promise<HwUserAvailabilityResponse> {
-    return { available: !(await this.usersService.byHandle(params.handle)) };
+  @Get('handle-available')
+  public async handleAvailable(@Query() params: HwUserAvailabilityHandleDto): Promise<boolean> {
+    return await this.usersService.handleAvailable(params.handle);
   }
 }

@@ -35,11 +35,8 @@ export class AuthService {
 
     return {
       user: {
-        id: user.id,
-        handle: user.handle,
-        email: user.email,
-        admin: user.admin,
-        createdAt: user.createdAt,
+        ...user,
+        me: true,
       },
       token: token,
     };
@@ -47,24 +44,23 @@ export class AuthService {
 
   public async login(
     identifier: string,
-    password: string,
+    providedPassword: string,
     rememberMe: boolean,
   ): Promise<HwAuthResponse> {
     const user = await this.usersService.byIdentifier(identifier);
 
-    if (!user || !(await compare(password, user.password))) {
+    if (!user || !(await compare(providedPassword, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const token: string = this.generateToken(user.id, rememberMe);
 
+    const { password, ...strippedUser } = user;
+
     return {
       user: {
-        id: user.id,
-        handle: user.handle,
-        email: user.email,
-        admin: user.admin,
-        createdAt: user.createdAt,
+        ...strippedUser,
+        me: true,
       },
       token: token,
     };
