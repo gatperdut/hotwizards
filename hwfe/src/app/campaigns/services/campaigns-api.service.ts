@@ -34,7 +34,7 @@ export class CampaignsApiService {
       params.pageSize = dto.pageSize;
     }
 
-    return this.httpClient.get<Paginated<HwCampaign>>('/api/campaigns/mine', {
+    return this.httpClient.get<Paginated<HwCampaign>>('/api/campaigns', {
       params: { ...params },
     });
   }

@@ -20,7 +20,7 @@ import { CurrentCampaign } from './current-campaign.decorator.js';
 export class CampaignsController {
   constructor(private campaignsService: CampaignsService) {}
 
-  @Get('mine')
+  @Get()
   public mine(
     @CurrentUser() user: User,
     @Query() params: HwCampaignSearchDto,
