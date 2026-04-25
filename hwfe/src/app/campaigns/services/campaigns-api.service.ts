@@ -3,12 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import {
   HwCampaign,
   HwCampaignCreateDto,
-  HwCampaignCreateResponse,
   HwCampaignDeleteDto,
-  HwCampaignDeleteResponse,
   HwCampaignSearchDto,
   HwCampaignUpdateDto,
-  HwCampaignUpdateResponse,
   Paginated,
 } from '@hw/shared';
 import { Observable } from 'rxjs';
@@ -19,7 +16,7 @@ export class CampaignsApiService {
   private httpClient = inject(HttpClient);
   private apiNotificationService = inject(ApiNotificationService);
 
-  public mine(dto: HwCampaignSearchDto): Observable<Paginated<HwCampaign>> {
+  public search(dto: HwCampaignSearchDto): Observable<Paginated<HwCampaign>> {
     const params: Partial<HwCampaignSearchDto> = {};
 
     if (dto.term) {
@@ -39,25 +36,25 @@ export class CampaignsApiService {
     });
   }
 
-  public create(params: HwCampaignCreateDto): Observable<HwCampaignCreateResponse> {
+  public create(params: HwCampaignCreateDto): Observable<number> {
     return this.httpClient
-      .post<HwCampaignCreateResponse>('/api/campaigns', params)
+      .post<number>('/api/campaigns', params)
       .pipe(
         this.apiNotificationService.notify('Campaign created', 'Campaign could not be created'),
       );
   }
 
-  public update(params: HwCampaignUpdateDto): Observable<HwCampaignUpdateResponse> {
+  public update(params: HwCampaignUpdateDto): Observable<number> {
     return this.httpClient
-      .patch<HwCampaignUpdateResponse>('/api/campaigns', params)
+      .patch<number>('/api/campaigns', params)
       .pipe(
         this.apiNotificationService.notify('Campaign updated', 'Campaign could not be updated'),
       );
   }
 
-  public delete(params: HwCampaignDeleteDto): Observable<HwCampaignDeleteResponse> {
+  public delete(params: HwCampaignDeleteDto): Observable<number> {
     return this.httpClient
-      .delete<HwCampaignDeleteResponse>('/api/campaigns', {
+      .delete<number>('/api/campaigns', {
         params: { ...params },
       })
       .pipe(

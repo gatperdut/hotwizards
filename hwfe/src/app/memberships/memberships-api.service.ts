@@ -1,16 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {
-  HwMembership,
-  HwMembershipAcceptDto,
-  HwMembershipAcceptResponse,
-  HwMembershipCreateDto,
-  HwMembershipCreateResponse,
-  HwMembershipDeleteDto,
-  HwMembershipDeleteResponse,
-  HwMembershipsByIdsDto,
-} from '@hw/shared';
-import { Observable, of } from 'rxjs';
+import { HwMembershipAcceptDto, HwMembershipCreateDto, HwMembershipDeleteDto } from '@hw/shared';
+import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../services/api-notification.service';
 
 @Injectable({ providedIn: 'root' })
@@ -18,31 +9,21 @@ export class MembershipsApiService {
   private httpClient = inject(HttpClient);
   private apiNotificationService = inject(ApiNotificationService);
 
-  public get(params: HwMembershipsByIdsDto): Observable<HwMembership[]> {
-    if (!params.ids.length) {
-      return of([]);
-    }
-
-    return this.httpClient.get<HwMembership[]>('/api/memberships/by-ids', {
-      params: { ...params },
-    });
-  }
-
-  public invite(params: HwMembershipCreateDto): Observable<HwMembershipCreateResponse> {
+  public invite(params: HwMembershipCreateDto): Observable<number[]> {
     return this.httpClient
-      .post<HwMembershipCreateResponse>('/api/memberships', params)
+      .post<number[]>('/api/memberships', params)
       .pipe(
         this.apiNotificationService.notify('Invitations sent', 'Invitations could not be sent'),
       );
   }
 
-  public accept(params: HwMembershipAcceptDto): Observable<HwMembershipAcceptResponse> {
-    return this.httpClient.post<HwMembershipAcceptResponse>('/api/memberships/accept', params);
+  public accept(params: HwMembershipAcceptDto): Observable<number> {
+    return this.httpClient.post<number>('/api/memberships/accept', params);
   }
 
-  public delete(params: HwMembershipDeleteDto): Observable<HwMembershipDeleteResponse> {
+  public delete(params: HwMembershipDeleteDto): Observable<number> {
     return this.httpClient
-      .delete<HwMembershipDeleteResponse>('/api/memberships', {
+      .delete<number>('/api/memberships', {
         params: { ...params },
       })
       .pipe(

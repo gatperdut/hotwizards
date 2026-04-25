@@ -26,7 +26,7 @@ export class AuthService {
 
         return EMPTY;
       }),
-      tap((authResponse: HwAuthResponse): void => {
+      tap((authResponse): void => {
         this.user.set(authResponse.user);
         this.authTokenService.set(authResponse.token);
         this.toastService.show({ message: `Welcome, ${authResponse.user.handle}!` });

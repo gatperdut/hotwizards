@@ -1,14 +1,6 @@
 import { Membership, User } from '@hw/prismagen/client';
-import {
-  HwMembership,
-  HwMembershipAcceptDto,
-  HwMembershipAcceptResponse,
-  HwMembershipCreateDto,
-  HwMembershipCreateResponse,
-  HwMembershipDeleteResponse,
-  HwMembershipsByIdsDto,
-} from '@hw/shared';
-import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { HwMembershipAcceptDto, HwMembershipCreateDto } from '@hw/shared';
+import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
 import { CampaignMasterGuard } from '../campaigns/campaign-master.guard.js';
 import { CampaignUserGuard } from '../campaigns/campaign-user.guard.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
@@ -22,17 +14,12 @@ import { MembershipsService } from './memberships.service.js';
 export class MembershipsController {
   constructor(private membershipsService: MembershipsService) {}
 
-  @Get('by-ids')
-  public byIds(@Query() params: HwMembershipsByIdsDto): Promise<HwMembership[]> {
-    return this.membershipsService.byIds(params.ids);
-  }
-
   @Post()
   @UseGuards(CampaignUserGuard, CampaignMasterGuard)
   public create(
     @CurrentUser() user: User,
     @Body() params: HwMembershipCreateDto,
-  ): Promise<HwMembershipCreateResponse> {
+  ): Promise<number[]> {
     return this.membershipsService.create(params.campaignId, user.id, params.userIds);
   }
 
@@ -41,13 +28,13 @@ export class MembershipsController {
   public accept(
     @CurrentMembership() membership: Membership,
     @Body() params: HwMembershipAcceptDto,
-  ): Promise<HwMembershipAcceptResponse> {
+  ): Promise<number> {
     return this.membershipsService.accept(membership.id, params.klass, params.gender, params.name);
   }
 
   @Delete()
   @UseGuards(MembershipOwnerOrMasterGuard)
-  public delete(@CurrentMembership() membership: Membership): Promise<HwMembershipDeleteResponse> {
+  public delete(@CurrentMembership() membership: Membership): Promise<number> {
     return this.membershipsService.delete(membership.id);
   }
 }

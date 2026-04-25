@@ -1,11 +1,5 @@
-import { Movement, Prisma } from '@hw/prismagen/client';
-import {
-  HwCampaign,
-  HwCampaignCreateResponse,
-  HwCampaignDeleteResponse,
-  HwCampaignUpdateResponse,
-  Paginated,
-} from '@hw/shared';
+import { Movement, Prisma, Ruleset } from '@hw/prismagen/client';
+import { HwCampaign, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -70,34 +64,54 @@ export class CampaignsService {
       take: pageSize,
       orderBy: { name: 'asc' },
       include: {
+        master: true,
         memberships: {
-          select: {
-            id: true,
-            userId: true,
+          include: {
+            user: true,
+            character: true,
           },
         },
-        ruleset: {
-          select: {
-            id: true,
-          },
-        },
+        ruleset: true,
       },
     });
 
     const total: number = await this.prismaService.campaign.count({ where: where });
 
     return {
-      items: campaigns.map(
-        (campaign): HwCampaign => ({
+      items: campaigns.map((campaign): HwCampaign => {
+        const ruleset = campaign.ruleset as Ruleset;
+
+        const { password, ...strippedMaster } = campaign.master;
+
+        return {
           id: campaign.id,
           name: campaign.name,
-          masterId: campaign.masterId,
-          memberIds: campaign.memberships.map((membership) => membership.userId),
-          membershipIds: campaign.memberships.map((membership) => membership.id),
-          rulesetId: campaign.ruleset?.id as number,
           createdAt: campaign.createdAt,
-        }),
-      ),
+          master: {
+            ...strippedMaster,
+            me: campaign.master.id === userId,
+          },
+          memberships: campaign.memberships.map((membership) => {
+            const { password, ...strippedUser } = membership.user;
+
+            return {
+              id: membership.id,
+              status: membership.status,
+              joinedAt: membership.joinedAt,
+              me: membership.userId === userId,
+              user: { ...strippedUser, me: membership.user.id === userId },
+              character: membership.character
+                ? { ...membership.character, me: membership.user.id === userId }
+                : undefined,
+            };
+          }),
+          ruleset: {
+            id: ruleset.id,
+            aoo: ruleset.aoo,
+            movement: ruleset.movement,
+          },
+        };
+      }),
       meta: {
         page: page || 0,
         pageSize: pageSize || 10,
@@ -112,7 +126,7 @@ export class CampaignsService {
     name: string,
     aoo: boolean,
     movement: Movement,
-  ): Promise<HwCampaignCreateResponse> {
+  ): Promise<number> {
     const campaign = await this.prismaService.campaign.create({
       data: {
         name: name,
@@ -124,30 +138,9 @@ export class CampaignsService {
           },
         },
       },
-      include: {
-        memberships: {
-          select: {
-            id: true,
-            userId: true,
-          },
-        },
-        ruleset: {
-          select: {
-            id: true,
-          },
-        },
-      },
     });
 
-    return {
-      id: campaign.id,
-      name: campaign.name,
-      masterId: campaign.masterId,
-      memberIds: campaign.memberships.map((membership) => membership.userId),
-      membershipIds: campaign.memberships.map((membership) => membership.id),
-      rulesetId: campaign.ruleset?.id as number,
-      createdAt: campaign.createdAt,
-    };
+    return campaign.id;
   }
 
   public async update(
@@ -155,62 +148,20 @@ export class CampaignsService {
     name: string,
     aoo: boolean,
     movement: Movement,
-  ): Promise<HwCampaignUpdateResponse> {
+  ): Promise<number> {
     const campaign = await this.prismaService.campaign.update({
       where: { id: campaignId },
       data: { name: name, ruleset: { update: { aoo: aoo, movement: movement } } },
-      include: {
-        memberships: {
-          select: {
-            id: true,
-            userId: true,
-          },
-        },
-        ruleset: {
-          select: {
-            id: true,
-          },
-        },
-      },
     });
 
-    return {
-      id: campaign.id,
-      name: campaign.name,
-      masterId: campaign.masterId,
-      memberIds: campaign.memberships.map((membership) => membership.userId),
-      membershipIds: campaign.memberships.map((membership) => membership.id),
-      rulesetId: campaign.ruleset?.id as number,
-      createdAt: campaign.createdAt,
-    };
+    return campaign.id;
   }
 
-  public async delete(campaignId: number): Promise<HwCampaignDeleteResponse> {
+  public async delete(campaignId: number): Promise<number> {
     const campaign = await this.prismaService.campaign.delete({
       where: { id: campaignId },
-      include: {
-        memberships: {
-          select: {
-            id: true,
-            userId: true,
-          },
-        },
-        ruleset: {
-          select: {
-            id: true,
-          },
-        },
-      },
     });
 
-    return {
-      id: campaign.id,
-      name: campaign.name,
-      masterId: campaign.masterId,
-      memberIds: campaign.memberships.map((membership) => membership.userId),
-      membershipIds: campaign.memberships.map((membership) => membership.id),
-      rulesetId: campaign.ruleset?.id as number,
-      createdAt: campaign.createdAt,
-    };
+    return campaign.id;
   }
 }

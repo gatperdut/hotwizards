@@ -1,10 +1,4 @@
 import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
-import {
-  HwMembership,
-  HwMembershipAcceptResponse,
-  HwMembershipCreateResponse,
-  HwMembershipDeleteResponse,
-} from '@hw/shared';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -12,34 +6,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class MembershipsService {
   constructor(private prismaService: PrismaService) {}
 
-  public async byIds(ids: number[]): Promise<HwMembership[]> {
-    const memberships = await this.prismaService.membership.findMany({
-      where: { id: { in: ids } },
-      select: {
-        id: true,
-        userId: true,
-        campaignId: true,
-        status: true,
-        joinedAt: true,
-        character: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
-
-    return memberships.map(({ character, ...m }) => ({
-      ...m,
-      characterId: character?.id ?? undefined,
-    }));
-  }
-
-  public async create(
-    campaignId: number,
-    masterId: number,
-    userIds: number[],
-  ): Promise<HwMembershipCreateResponse> {
+  public async create(campaignId: number, masterId: number, userIds: number[]): Promise<number[]> {
     if (userIds.includes(masterId)) {
       throw new BadRequestException('You cannot invite yourself to your own campaign');
     }
@@ -64,22 +31,15 @@ export class MembershipsService {
       );
     }
 
-    return {
-      memberships: await this.prismaService.membership.createManyAndReturn({
-        data: userIds.map((userId) => ({
-          userId: userId,
-          campaignId: campaignId,
-          status: 'PENDING',
-        })),
-        select: {
-          id: true,
-          userId: true,
-          campaignId: true,
-          status: true,
-          joinedAt: true,
-        },
-      }),
-    };
+    const memberships = await this.prismaService.membership.createManyAndReturn({
+      data: userIds.map((userId) => ({
+        userId: userId,
+        campaignId: campaignId,
+        status: 'PENDING',
+      })),
+    });
+
+    return memberships.map((membership) => membership.id);
   }
 
   public async accept(
@@ -87,23 +47,11 @@ export class MembershipsService {
     klass: Klass,
     gender: Gender,
     name: string,
-  ): Promise<HwMembershipAcceptResponse> {
+  ): Promise<number> {
     return await this.prismaService.$transaction(async (tx) => {
       const membership = await tx.membership.update({
         where: { id: membershipId },
         data: { status: MembershipStatus.ACTIVE },
-        select: {
-          id: true,
-          userId: true,
-          campaignId: true,
-          status: true,
-          joinedAt: true,
-          character: {
-            select: {
-              id: true,
-            },
-          },
-        },
       });
 
       const character = await tx.character.create({
@@ -115,28 +63,15 @@ export class MembershipsService {
         },
       });
 
-      return {
-        membership: membership,
-        character: character,
-      };
+      return character.id;
     });
   }
 
-  public async delete(membershipId: number): Promise<HwMembershipDeleteResponse> {
-    return await this.prismaService.membership.delete({
+  public async delete(membershipId: number): Promise<number> {
+    const membership = await this.prismaService.membership.delete({
       where: { id: membershipId },
-      select: {
-        id: true,
-        userId: true,
-        campaignId: true,
-        status: true,
-        joinedAt: true,
-        character: {
-          select: {
-            id: true,
-          },
-        },
-      },
     });
+
+    return membership.id;
   }
 }
