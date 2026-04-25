@@ -44,8 +44,8 @@ jobs:
       - name: Install and build
         run: |
           npm install
-          npm run shared:build
           npm run hwbe:prisma:gen
+          npm run shared:build
           npm run hwbe:build
           npm run hwfe:build
 
