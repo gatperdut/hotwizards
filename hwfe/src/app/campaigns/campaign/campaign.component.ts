@@ -9,8 +9,13 @@ import {
   ConfirmationDialogData,
   ConfirmationDialogResult,
 } from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { AppCardAction, CardComponent } from '../../ui/card/card.component';
+import { AppCardAction, AppCardMiniAction, CardComponent } from '../../ui/card/card.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import {
+  CampaignEditorDialogComponent,
+  CampaignEditorDialogData,
+  CampaignEditorDialogResult,
+} from '../campaign-editor-dialog/campaign-editor-dialog.component';
 import {
   CampaignInviteAcceptDialogComponent,
   CampaignInviteAcceptDialogData,
@@ -21,6 +26,7 @@ import {
   CampaignInviteDialogData,
   CampaignInviteDialogResult,
 } from '../campaign-invite-dialog/campaign-invite-dialog.component';
+import { CampaignsApiService } from '../services/campaigns-api.service';
 import { HwfeCampaign, HwfeMembership } from '../types/my-campaign.type';
 
 @Component({
@@ -35,6 +41,7 @@ export class CampaignComponent {
   private dialogService = inject(DialogService);
   public klassesService = inject(KlassesService);
   private membershipsApiService = inject(MembershipsApiService);
+  private campaignsApiService = inject(CampaignsApiService);
 
   public campaign = input.required<HwfeCampaign>();
 
@@ -169,6 +176,78 @@ export class CampaignComponent {
             (m) => m.user.id === this.authService.userId(),
           ) as HwfeMembership,
         });
+      },
+    };
+  }
+
+  public miniactions = computed(() => {
+    const result: AppCardMiniAction[] = [];
+
+    if (this.isMaster()) {
+      result.push(this.deleteMiniAction());
+      result.push(this.editMiniAction());
+    }
+
+    return result;
+  });
+
+  private editMiniAction(): AppCardMiniAction {
+    return {
+      icon: 'pencil',
+      action: (): void => {
+        const dialog: LazyDialog<
+          CampaignEditorDialogComponent,
+          CampaignEditorDialogData,
+          CampaignEditorDialogResult
+        > = {
+          importFn: () =>
+            import('../campaign-editor-dialog/campaign-editor-dialog.component').then(
+              (m) => m.CampaignEditorDialogComponent,
+            ),
+        };
+
+        void this.dialogService.open(dialog, {
+          campaignId: this.campaign().id,
+          name: this.campaign().name,
+          aoo: this.campaign().ruleset.aoo,
+          movement: this.campaign().ruleset.movement,
+        });
+      },
+    };
+  }
+
+  private deleteMiniAction(): AppCardMiniAction {
+    return {
+      icon: 'trash',
+      color: 'warning',
+      action: (): void => {
+        const dialog: LazyDialog<
+          ConfirmationDialogComponent,
+          ConfirmationDialogData,
+          ConfirmationDialogResult
+        > = {
+          importFn: () =>
+            import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+              (m) => m.ConfirmationDialogComponent,
+            ),
+        };
+
+        void this.dialogService
+          .open(dialog, {
+            title: 'Delete campaign',
+            question: 'Are you sure you want to delete the campaign?',
+            color: 'warning',
+          })
+          .then((dialogRef) => {
+            dialogRef.afterClosed$
+              .pipe(
+                filter((confirmed) => !!confirmed),
+                switchMap(() =>
+                  this.campaignsApiService.delete({ campaignId: this.campaign().id }),
+                ),
+              )
+              .subscribe();
+          });
       },
     };
   }

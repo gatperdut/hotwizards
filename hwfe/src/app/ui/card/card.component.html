@@ -3,7 +3,20 @@
     class="pb-hw-average hw-truncate typ-h2 separator-b"
     [class]="`separator-${separatorColor()}`"
   >
-    {{ title() }}
+    <div class="flex flex-row justify-between items-center gap-hw-small">
+      <div class="truncate">{{ title() }}</div>
+      @if (miniactions().length) {
+        <div class="flex flex-row justify-end items-center gap-hw-small">
+          @for (miniaction of miniactions(); track $index) {
+            <app-button
+              [icon]="miniaction.icon"
+              (click)="miniaction.action()"
+              [color]="miniaction.color || 'primary'"
+            ></app-button>
+          }
+        </div>
+      }
+    </div>
   </div>
 
   <div class="grow">

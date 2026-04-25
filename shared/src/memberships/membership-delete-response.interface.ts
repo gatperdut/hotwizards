@@ -1,3 +1,3 @@
-import { Membership } from '@hw/prismagen/browser';
+import { HwMembership } from './membership.interface.js';
 
-export interface HwMembershipDeleteResponse extends Membership {}
+export interface HwMembershipDeleteResponse extends HwMembership {}

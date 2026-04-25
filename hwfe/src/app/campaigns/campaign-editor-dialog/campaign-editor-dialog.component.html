@@ -36,7 +36,7 @@
         (click)="dialogRef.close(false)"
       ></app-button>
       <app-button
-        label="Create"
+        [label]="creating ? 'Create' : 'Update'"
         type="submit"
         (click)="save()"
         [disabled]="form().invalid()"

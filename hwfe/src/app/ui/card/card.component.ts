@@ -7,6 +7,12 @@ export type AppCardAction = {
   color?: 'primary' | 'secondary' | 'warning';
 };
 
+export type AppCardMiniAction = {
+  icon: string;
+  action: () => void;
+  color?: 'primary' | 'secondary' | 'warning';
+};
+
 @Component({
   selector: 'app-card',
   imports: [ButtonComponent],
@@ -22,4 +28,6 @@ export class CardComponent {
   public separatorColor = input<'primary' | 'secondary' | 'warning'>('secondary');
 
   public actions = input<AppCardAction[]>([]);
+
+  public miniactions = input<AppCardMiniAction[]>([]);
 }

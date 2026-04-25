@@ -1,6 +1,7 @@
-import { Character, Membership } from '@hw/prismagen/browser';
+import { HwCharacter } from '@hw/shared';
+import { HwMembership } from './membership.interface.js';
 
 export interface HwMembershipAcceptResponse {
-  membership: Membership;
-  character: Character;
+  membership: HwMembership;
+  character: HwCharacter;
 }

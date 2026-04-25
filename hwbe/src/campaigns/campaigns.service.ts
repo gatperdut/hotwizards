@@ -2,6 +2,7 @@ import { Movement, Prisma } from '@hw/prismagen/client';
 import {
   HwCampaign,
   HwCampaignCreateResponse,
+  HwCampaignDeleteResponse,
   HwCampaignUpdateResponse,
   Paginated,
 } from '@hw/shared';
@@ -158,6 +159,35 @@ export class CampaignsService {
     const campaign = await this.prismaService.campaign.update({
       where: { id: campaignId },
       data: { name: name, ruleset: { update: { aoo: aoo, movement: movement } } },
+      include: {
+        memberships: {
+          select: {
+            id: true,
+            userId: true,
+          },
+        },
+        ruleset: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    return {
+      id: campaign.id,
+      name: campaign.name,
+      masterId: campaign.masterId,
+      memberIds: campaign.memberships.map((membership) => membership.userId),
+      membershipIds: campaign.memberships.map((membership) => membership.id),
+      rulesetId: campaign.ruleset?.id as number,
+      createdAt: campaign.createdAt,
+    };
+  }
+
+  public async delete(campaignId: number): Promise<HwCampaignDeleteResponse> {
+    const campaign = await this.prismaService.campaign.delete({
+      where: { id: campaignId },
       include: {
         memberships: {
           select: {
