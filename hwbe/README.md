@@ -19,15 +19,10 @@
 * `sudo -u postgres psql`
 * Run:
   ```
-  SELECT pg_terminate_backend(pid)
-  FROM pg_stat_activity
-  WHERE datname = 'hwbe' AND pid <> pg_backend_pid();
-  DROP DATABASE hwbe;
-  CREATE DATABASE hwbe;
-  ```
-* And then:
-  ```
+  SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'hwbe' AND pid <> pg_backend_pid();
+  DROP DATABASE IF EXISTS hwbe;
+  CREATE DATABASE hwbe OWNER hwbeuser;
+  \c hwbe;
   ALTER SCHEMA public OWNER TO hwbeuser;
   GRANT ALL ON SCHEMA public TO hwbeuser;
-  GRANT CREATE ON SCHEMA public TO hwbeuser;
   ```
