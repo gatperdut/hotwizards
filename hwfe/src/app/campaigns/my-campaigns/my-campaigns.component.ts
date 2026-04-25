@@ -183,6 +183,6 @@ export class MyCampaignsComponent {
         ),
     };
 
-    void this.dialogService.open(dialog, { name: '', aoo: true, movement: 'BALANCED' });
+    void this.dialogService.open(dialog, { name: '', aoo: false, movement: 'REGULAR' });
   }
 }

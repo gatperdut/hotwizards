@@ -4,7 +4,29 @@
       <div class="typ-h2">{{ creating ? 'Create campaign' : 'Edit campaign' }}</div>
     </ng-template>
 
-    <ng-template appDialogContent> </ng-template>
+    <ng-template appDialogContent>
+      <div class="flex flex-col gap-hw-average">
+        <app-input-text
+          [field]="form.name"
+          label="Campaign name"
+          type="text"
+          autocomplete="off"
+          placeholder="Maximum 40 characters"
+          [hasValidation]="true"
+        ></app-input-text>
+
+        <app-checkbox [field]="form.aoo" label="Attacks of opportunity"></app-checkbox>
+
+        <app-select
+          label="Movement type"
+          placeholder="Select items"
+          [form]="form.movement"
+          [displayFn]="movementDisplayFn"
+          [options]="movements"
+          class="w-[300px] max-w-[500px]"
+        />
+      </div>
+    </ng-template>
 
     <ng-template appDialogActions>
       <app-button
@@ -16,7 +38,7 @@
       <app-button
         label="Create"
         type="submit"
-        (click)="create()"
+        (click)="save()"
         [disabled]="form().invalid()"
       ></app-button>
     </ng-template>

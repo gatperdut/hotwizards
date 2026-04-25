@@ -1,7 +1,17 @@
 import { User } from '@hw/prismagen/client';
-import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto, Paginated } from '@hw/shared';
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  HwCampaign,
+  HwCampaignCreateDto,
+  HwCampaignCreateResponse,
+  HwCampaignSearchDto,
+  HwCampaignUpdateDto,
+  HwCampaignUpdateResponse,
+  Paginated,
+} from '@hw/shared';
+import { Body, Controller, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../users/current-user.decorator.js';
+import { CampaignMasterGuard } from './campaign-master.guard.js';
+import { CampaignUserGuard } from './campaign-user.guard.js';
 import { CampaignsService } from './campaigns.service.js';
 
 @Controller('campaigns')
@@ -17,7 +27,19 @@ export class CampaignsController {
   }
 
   @Post()
-  public create(@CurrentUser() user: User, @Body() params: HwCampaignEditDto) {
-    return this.campaignsService.create(user.id, params.name, params.aoo, params.movement);
+  public create(
+    @CurrentUser() user: User,
+    @Body() body: HwCampaignCreateDto,
+  ): Promise<HwCampaignCreateResponse> {
+    return this.campaignsService.create(user.id, body.name, body.aoo, body.movement);
+  }
+
+  @Patch()
+  @UseGuards(CampaignUserGuard, CampaignMasterGuard)
+  public update(
+    @CurrentUser() user: User,
+    @Body() body: HwCampaignUpdateDto,
+  ): Promise<HwCampaignUpdateResponse> {
+    return this.campaignsService.update(body.campaignId, body.name, body.aoo, body.movement);
   }
 }
