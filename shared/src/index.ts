@@ -4,6 +4,8 @@ export { HwAuthResponse } from './auth/auth-response.interface.js';
 export { HwAuthVerifyTokenDto } from './auth/auth-verify-token.dto.js';
 export { HwCampaignCreateResponse } from './campaigns/campaign-create-reponse.interface.js';
 export { HwCampaignCreateDto } from './campaigns/campaign-create.dto.js';
+export { HwCampaignDeleteResponse } from './campaigns/campaign-delete-response.interface.js';
+export { HwCampaignDeleteDto } from './campaigns/campaign-delete.dto.js';
 export { HwCampaignPartialDto } from './campaigns/campaign-partial.dto.js';
 export { HwCampaignSearchDto } from './campaigns/campaign-search.dto.js';
 export { HwCampaignUpdateResponse } from './campaigns/campaign-update-reponse.interface.js';

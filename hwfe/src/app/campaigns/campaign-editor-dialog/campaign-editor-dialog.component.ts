@@ -41,13 +41,13 @@ export class CampaignEditorDialogComponent {
   private movementsService = inject(MovementsService);
   private campaignsApiService = inject(CampaignsApiService);
 
-  public creating = !('id' in this.data);
+  public creating = !('campaignId' in this.data);
 
   public movements = Object.values(Movement);
   public movementDisplayFn = (movement: Movement): string => this.movementsService.name(movement);
 
   public model = signal({
-    campaignId: 'id' in this.data ? this.data.id : undefined,
+    campaignId: 'campaignId' in this.data ? this.data.campaignId : undefined,
     name: this.data.name,
     aoo: this.data.aoo,
     movement: this.data.movement,

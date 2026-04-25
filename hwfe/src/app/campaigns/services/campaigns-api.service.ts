@@ -4,6 +4,8 @@ import {
   HwCampaign,
   HwCampaignCreateDto,
   HwCampaignCreateResponse,
+  HwCampaignDeleteDto,
+  HwCampaignDeleteResponse,
   HwCampaignSearchDto,
   HwCampaignUpdateDto,
   HwCampaignUpdateResponse,
@@ -50,6 +52,16 @@ export class CampaignsApiService {
       .patch<HwCampaignUpdateResponse>('/api/campaigns', params)
       .pipe(
         this.apiNotificationService.notify('Campaign updated', 'Campaign could not be updated'),
+      );
+  }
+
+  public delete(params: HwCampaignDeleteDto): Observable<HwCampaignDeleteResponse> {
+    return this.httpClient
+      .delete<HwCampaignDeleteResponse>('/api/campaigns', {
+        params: { ...params },
+      })
+      .pipe(
+        this.apiNotificationService.notify('Campaign deleted', 'Could not delete the campaign'),
       );
   }
 }

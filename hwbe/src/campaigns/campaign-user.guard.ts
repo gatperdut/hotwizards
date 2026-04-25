@@ -11,7 +11,7 @@ export class CampaignUserGuard implements CanActivate {
     const user = request.user;
 
     const campaignId = parseInt(
-      request.body?.campaignId || request.params?.campaignId || request.body?.campaignId,
+      request.query?.campaignId || request.params?.campaignId || request.body?.campaignId,
     );
 
     if (!campaignId) {

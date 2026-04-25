@@ -1,18 +1,20 @@
-import { User } from '@hw/prismagen/client';
+import { Campaign, User } from '@hw/prismagen/client';
 import {
   HwCampaign,
   HwCampaignCreateDto,
   HwCampaignCreateResponse,
+  HwCampaignDeleteResponse,
   HwCampaignSearchDto,
   HwCampaignUpdateDto,
   HwCampaignUpdateResponse,
   Paginated,
 } from '@hw/shared';
-import { Body, Controller, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CampaignMasterGuard } from './campaign-master.guard.js';
 import { CampaignUserGuard } from './campaign-user.guard.js';
 import { CampaignsService } from './campaigns.service.js';
+import { CurrentCampaign } from './current-campaign.decorator.js';
 
 @Controller('campaigns')
 export class CampaignsController {
@@ -36,10 +38,13 @@ export class CampaignsController {
 
   @Patch()
   @UseGuards(CampaignUserGuard, CampaignMasterGuard)
-  public update(
-    @CurrentUser() user: User,
-    @Body() body: HwCampaignUpdateDto,
-  ): Promise<HwCampaignUpdateResponse> {
+  public update(@Body() body: HwCampaignUpdateDto): Promise<HwCampaignUpdateResponse> {
     return this.campaignsService.update(body.campaignId, body.name, body.aoo, body.movement);
+  }
+
+  @Delete()
+  @UseGuards(CampaignUserGuard, CampaignMasterGuard)
+  public delete(@CurrentCampaign() campaign: Campaign): Promise<HwCampaignDeleteResponse> {
+    return this.campaignsService.delete(campaign.id);
   }
 }
