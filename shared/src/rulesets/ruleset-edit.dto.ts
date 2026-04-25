@@ -1,4 +1,4 @@
-import { Movement } from '@hw/prismagen/client';
+import { Movement } from '@hw/prismagen/browser';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsEnum } from 'class-validator';
 
