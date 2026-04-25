@@ -1,11 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwCampaign, HwCampaignSearchDto, Paginated } from '@hw/shared';
+import {
+  HwCampaign,
+  HwCampaignCreateDto,
+  HwCampaignCreateResponse,
+  HwCampaignSearchDto,
+  HwCampaignUpdateDto,
+  HwCampaignUpdateResponse,
+  Paginated,
+} from '@hw/shared';
 import { Observable } from 'rxjs';
+import { ApiNotificationService } from '../../services/api-notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class CampaignsApiService {
   private httpClient = inject(HttpClient);
+  private apiNotificationService = inject(ApiNotificationService);
 
   public mine(dto: HwCampaignSearchDto): Observable<Paginated<HwCampaign>> {
     const params: Partial<HwCampaignSearchDto> = {};
@@ -25,5 +35,21 @@ export class CampaignsApiService {
     return this.httpClient.get<Paginated<HwCampaign>>('/api/campaigns/mine', {
       params: { ...params },
     });
+  }
+
+  public create(params: HwCampaignCreateDto): Observable<HwCampaignCreateResponse> {
+    return this.httpClient
+      .post<HwCampaignCreateResponse>('/api/campaigns', params)
+      .pipe(
+        this.apiNotificationService.notify('Campaign created', 'Campaign could not be created'),
+      );
+  }
+
+  public update(params: HwCampaignUpdateDto): Observable<HwCampaignUpdateResponse> {
+    return this.httpClient
+      .patch<HwCampaignUpdateResponse>('/api/campaigns', params)
+      .pipe(
+        this.apiNotificationService.notify('Campaign updated', 'Campaign could not be updated'),
+      );
   }
 }
