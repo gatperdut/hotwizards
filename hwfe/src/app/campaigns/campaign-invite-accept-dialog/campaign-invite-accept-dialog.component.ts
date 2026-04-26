@@ -59,8 +59,10 @@ export class CampaignInviteAcceptDialogComponent {
   });
 
   public form = form(this.model, (schemaPath) => {
-    required(schemaPath.name);
-    maxLength(schemaPath.name, 12);
+    required(schemaPath.name, { message: 'You must name your character' });
+    maxLength(schemaPath.name, 12, {
+      message: 'Your character name must be 12 characters or fewer',
+    });
   });
 
   public klasses = Object.values(Klass);
