@@ -1,6 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { filter, switchMap } from 'rxjs';
+import { HwMembership } from '../../../../../shared/dist/shared/src/memberships/membership.interface';
 import { AuthService } from '../../auth/services/auth.service';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
@@ -100,7 +101,7 @@ export class CampaignComponent {
         dialogRef.afterClosed$
           .pipe(
             filter((confirmed) => !!confirmed),
-            switchMap(() => this.membershipsApiService.delete({ membershipId: membership.id })),
+            switchMap(() => this.membershipsApiService.delete(membership.id)),
           )
           .subscribe();
       });
@@ -171,10 +172,12 @@ export class CampaignComponent {
             ),
         };
 
+        const membership = this.campaign().memberships.find(
+          (m) => m.user.id === this.authService.userId(),
+        ) as HwMembership;
+
         void this.dialogService.open(dialog, {
-          membership: this.campaign().memberships.find(
-            (m) => m.user.id === this.authService.userId(),
-          ) as HwfeMembership,
+          membershipId: membership.id,
         });
       },
     };

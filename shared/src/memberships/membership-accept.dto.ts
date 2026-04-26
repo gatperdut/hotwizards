@@ -1,8 +1,7 @@
 import { Gender, Klass } from '@hw/prismagen/client';
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { HwMembershipPartialDto } from './membership-partial.dto.js';
 
-export class HwMembershipAcceptDto extends HwMembershipPartialDto {
+export class HwMembershipAcceptDto {
   @IsEnum(Klass)
   klass: Klass;
 

@@ -1,6 +1,6 @@
 import { Membership, User } from '@hw/prismagen/client';
 import { HwMembershipAcceptDto, HwMembershipCreateDto } from '@hw/shared';
-import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Patch, Post, UseGuards } from '@nestjs/common';
 import { CampaignMasterGuard } from '../campaigns/campaign-master.guard.js';
 import { CampaignGuard } from '../campaigns/campaign.guard.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
@@ -8,12 +8,14 @@ import { CurrentMembership } from './current-membership.decorator.js';
 import { MembershipOwnerOrMasterGuard } from './membership-owner-or-master.guard.js';
 import { MembershipOwnerGuard } from './membership-owner.guard.js';
 import { MembershipPendingGuard } from './membership-pending.guard.js';
+import { MembershipGuard } from './membership.guard.js';
 import { MembershipsService } from './memberships.service.js';
 
 @Controller('memberships')
 export class MembershipsController {
   constructor(private membershipsService: MembershipsService) {}
 
+  // TODO move to campaigns
   @Post()
   @UseGuards(CampaignGuard, CampaignMasterGuard)
   public create(
@@ -23,8 +25,8 @@ export class MembershipsController {
     return this.membershipsService.create(params.campaignId, user.id, params.userIds);
   }
 
-  @Post('accept')
-  @UseGuards(MembershipOwnerGuard, MembershipPendingGuard)
+  @Patch(':membershipId')
+  @UseGuards(MembershipGuard, MembershipOwnerGuard, MembershipPendingGuard)
   public accept(
     @CurrentMembership() membership: Membership,
     @Body() params: HwMembershipAcceptDto,
@@ -32,8 +34,8 @@ export class MembershipsController {
     return this.membershipsService.accept(membership.id, params.klass, params.gender, params.name);
   }
 
-  @Delete()
-  @UseGuards(MembershipOwnerOrMasterGuard)
+  @Delete(':membershipId')
+  @UseGuards(MembershipGuard, MembershipOwnerOrMasterGuard)
   public delete(@CurrentMembership() membership: Membership): Promise<number> {
     return this.membershipsService.delete(membership.id);
   }
