@@ -94,6 +94,6 @@ export class MyCampaignsComponent {
         ),
     };
 
-    void this.dialogService.open(dialog, { name: '', aoo: false, movement: 'REGULAR' });
+    void this.dialogService.open(dialog, { dto: { name: '', aoo: false, movement: 'REGULAR' } });
   }
 }

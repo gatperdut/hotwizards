@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, maxLength, required } from '@angular/forms/signals';
 import { Movement } from '@hw/prismagen/enums';
-import { HwCampaignCreateDto, HwCampaignUpdateDto } from '@hw/shared';
+import { HwCampaignEditDto } from '@hw/shared';
 import { MovementsService } from '../../rulesets/services/movements.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
@@ -15,7 +15,10 @@ import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { SelectComponent } from '../../ui/select/select.component';
 import { CampaignsApiService } from '../services/campaigns-api.service';
 
-export type CampaignEditorDialogData = HwCampaignCreateDto | HwCampaignUpdateDto;
+export type CampaignEditorDialogData = {
+  campaignId?: number;
+  dto: HwCampaignEditDto;
+};
 
 export type CampaignEditorDialogResult = boolean;
 
@@ -41,16 +44,13 @@ export class CampaignEditorDialogComponent {
   private movementsService = inject(MovementsService);
   private campaignsApiService = inject(CampaignsApiService);
 
-  public creating = !('campaignId' in this.data);
-
   public movements = Object.values(Movement);
   public movementDisplayFn = (movement: Movement): string => this.movementsService.name(movement);
 
   public model = signal({
-    campaignId: 'campaignId' in this.data ? this.data.campaignId : undefined,
-    name: this.data.name,
-    aoo: this.data.aoo,
-    movement: this.data.movement,
+    name: this.data.dto.name,
+    aoo: this.data.dto.aoo,
+    movement: this.data.dto.movement,
   });
   public form = form(this.model, (schemaPath) => {
     required(schemaPath.name, { message: 'The name is required' });
@@ -58,9 +58,9 @@ export class CampaignEditorDialogComponent {
   });
 
   public save(): void {
-    (this.creating
-      ? this.campaignsApiService.create(this.model())
-      : this.campaignsApiService.update(this.model() as HwCampaignUpdateDto)
+    (this.data.campaignId
+      ? this.campaignsApiService.update(this.data.campaignId, this.model())
+      : this.campaignsApiService.create(this.model())
     ).subscribe(() => {
       this.dialogRef.close(true);
     });

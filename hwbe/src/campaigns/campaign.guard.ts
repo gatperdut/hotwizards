@@ -3,13 +3,12 @@ import { HwRequest } from '../auth/types/hw-request.type.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
-export class CampaignUserGuard implements CanActivate {
+export class CampaignGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {}
 
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
-
     const campaignId = parseInt(
       request.query?.campaignId || request.params?.campaignId || request.body?.campaignId,
     );

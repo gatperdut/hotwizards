@@ -2,7 +2,7 @@ import { Membership, User } from '@hw/prismagen/client';
 import { HwMembershipAcceptDto, HwMembershipCreateDto } from '@hw/shared';
 import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
 import { CampaignMasterGuard } from '../campaigns/campaign-master.guard.js';
-import { CampaignUserGuard } from '../campaigns/campaign-user.guard.js';
+import { CampaignGuard } from '../campaigns/campaign.guard.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CurrentMembership } from './current-membership.decorator.js';
 import { MembershipOwnerOrMasterGuard } from './membership-owner-or-master.guard.js';
@@ -15,7 +15,7 @@ export class MembershipsController {
   constructor(private membershipsService: MembershipsService) {}
 
   @Post()
-  @UseGuards(CampaignUserGuard, CampaignMasterGuard)
+  @UseGuards(CampaignGuard, CampaignMasterGuard)
   public create(
     @CurrentUser() user: User,
     @Body() params: HwMembershipCreateDto,

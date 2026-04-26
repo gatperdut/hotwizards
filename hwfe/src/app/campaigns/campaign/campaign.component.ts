@@ -208,9 +208,11 @@ export class CampaignComponent {
 
         void this.dialogService.open(dialog, {
           campaignId: this.campaign().id,
-          name: this.campaign().name,
-          aoo: this.campaign().ruleset.aoo,
-          movement: this.campaign().ruleset.movement,
+          dto: {
+            name: this.campaign().name,
+            aoo: this.campaign().ruleset.aoo,
+            movement: this.campaign().ruleset.movement,
+          },
         });
       },
     };
@@ -242,9 +244,7 @@ export class CampaignComponent {
             dialogRef.afterClosed$
               .pipe(
                 filter((confirmed) => !!confirmed),
-                switchMap(() =>
-                  this.campaignsApiService.delete({ campaignId: this.campaign().id }),
-                ),
+                switchMap(() => this.campaignsApiService.delete(this.campaign().id)),
               )
               .subscribe();
           });
