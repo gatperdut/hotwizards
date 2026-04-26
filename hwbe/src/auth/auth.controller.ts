@@ -1,7 +1,7 @@
 import { HwAuthLoginDto, HwAuthRegisterDto, HwAuthVerifyTokenDto } from '@hw/shared';
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
-import { AuthTokenPayload } from './types/auth-token-payload.type.js';
+import { HwTokenPayload } from './types/token-payload.type.js';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @Post('verify-token')
-  public async verifyToken(@Body() body: HwAuthVerifyTokenDto): Promise<AuthTokenPayload> {
+  public async verifyToken(@Body() body: HwAuthVerifyTokenDto): Promise<HwTokenPayload> {
     return await this.authService.verifyToken(body.token);
   }
 }

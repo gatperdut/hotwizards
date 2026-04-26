@@ -40,6 +40,7 @@ jobs:
         run: |
           sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
           sed -i "s|HWFE_SENTRY_RELEASE_PLACEHOLDER|${{ github.sha }}|" src/environments/environment.ts
+          sed -i "s|HWFE_HWBE_URL|${{ vars.HWFE_HWBE_URL }}|" src/environments/environment.ts
 
       - name: Install and build
         run: |

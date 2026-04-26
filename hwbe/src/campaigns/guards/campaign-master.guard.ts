@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
-import { HwRequest } from '../../auth/types/hw-request.type.js';
+import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
 export class CampaignMasterGuard implements CanActivate {

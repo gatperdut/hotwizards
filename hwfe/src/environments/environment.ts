@@ -4,4 +4,5 @@ export const environment: AppEnvironment = {
   production: true,
   sentryDsn: 'HWFE_SENTRY_DSN_PLACEHOLDER',
   hwfeSentryRelease: 'HWFE_SENTRY_RELEASE_PLACEHOLDER',
+  hwbeUrl: 'HWFE_HWBE_URL',
 };

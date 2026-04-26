@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { HwRequest } from '../../auth/types/hw-request.type.js';
+import { HwRequest } from '../../auth/types/request.type.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
