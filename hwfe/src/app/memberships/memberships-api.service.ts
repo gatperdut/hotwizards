@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwMembershipAcceptDto, HwMembershipCreateDto } from '@hw/shared';
+import { HwMembershipAcceptDto } from '@hw/shared';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../services/api-notification.service';
 
@@ -8,14 +8,6 @@ import { ApiNotificationService } from '../services/api-notification.service';
 export class MembershipsApiService {
   private httpClient = inject(HttpClient);
   private apiNotificationService = inject(ApiNotificationService);
-
-  public invite(params: HwMembershipCreateDto): Observable<number[]> {
-    return this.httpClient
-      .post<number[]>('/api/memberships', params)
-      .pipe(
-        this.apiNotificationService.notify('Invitations sent', 'Invitations could not be sent'),
-      );
-  }
 
   public accept(id: number, params: HwMembershipAcceptDto): Observable<number> {
     return this.httpClient

@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, minLength } from '@angular/forms/signals';
-import { HwUser } from '@hw/shared';
+import { HwCampaign, HwUser } from '@hw/shared';
 import { map } from 'rxjs';
-import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -13,10 +12,10 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { UsersApiService } from '../../users/users-api.service';
-import { HwfeCampaign } from '../types/my-campaign.type';
+import { CampaignsApiService } from '../services/campaigns-api.service';
 
 export type CampaignInviteDialogData = {
-  campaign: HwfeCampaign;
+  campaign: HwCampaign;
 };
 
 export type CampaignInviteDialogResult = boolean;
@@ -39,7 +38,7 @@ export class CampaignInviteDialogComponent {
   public data = inject<CampaignInviteDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CampaignInviteDialogResult>>(DialogRef);
   private usersApiService = inject(UsersApiService);
-  private membershipsApiService = inject(MembershipsApiService);
+  private campaignsApiService = inject(CampaignsApiService);
 
   public model = signal<HwUser[]>([]);
   public form = form(this.model, (schemaPath) => {
@@ -68,8 +67,8 @@ export class CampaignInviteDialogComponent {
   public options = computed(() => this.resource.value() || []);
 
   public invite(): void {
-    this.membershipsApiService
-      .invite({ campaignId: this.data.campaign.id, userIds: this.model().map((user) => user.id) })
+    this.campaignsApiService
+      .invite(this.data.campaign.id, { userIds: this.model().map((user) => user.id) })
       .subscribe({
         next: () => {
           this.dialogRef.close();

@@ -42,7 +42,7 @@ export const routes: Routes = [
         path: '',
         canActivate: [AuthenticatedGuard],
         children: [
-          { path: '', pathMatch: 'full', redirectTo: 'home/my-campaigns' },
+          { path: '', pathMatch: 'full', redirectTo: 'home/campaigns' },
           {
             path: 'board',
             loadComponent: () => import('./board/board.component.js').then((m) => m.BoardComponent),
@@ -51,12 +51,12 @@ export const routes: Routes = [
             path: 'home',
             loadComponent: () => import('./home/home.component.js').then((m) => m.HomeComponent),
             children: [
-              { path: '', pathMatch: 'full', redirectTo: 'my-campaigns' },
+              { path: '', pathMatch: 'full', redirectTo: 'campaigns' },
               {
-                path: 'my-campaigns',
+                path: 'campaigns',
                 loadComponent: () =>
-                  import('./campaigns/my-campaigns/my-campaigns.component.js').then(
-                    (m) => m.MyCampaignsComponent,
+                  import('./campaigns/campaigns/campaigns.component.js').then(
+                    (m) => m.CampaignsComponent,
                   ),
               },
             ],

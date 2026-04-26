@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
-import { HwRequest } from '../auth/types/hw-request.type.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { HwRequest } from '../../auth/types/hw-request.type.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
 export class CampaignGuard implements CanActivate {

@@ -1,6 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto, Paginated } from '@hw/shared';
+import {
+  HwCampaign,
+  HwCampaignEditDto,
+  HwCampaignSearchDto,
+  HwMembershipCreateDto,
+  Paginated,
+} from '@hw/shared';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../../services/api-notification.service';
 
@@ -34,6 +40,14 @@ export class CampaignsApiService {
       .post<number>('/api/campaigns', params)
       .pipe(
         this.apiNotificationService.notify('Campaign created', 'Campaign could not be created'),
+      );
+  }
+
+  public invite(id: number, params: HwMembershipCreateDto): Observable<number[]> {
+    return this.httpClient
+      .post<number[]>(`/api/campaigns/${id}/memberships`, params)
+      .pipe(
+        this.apiNotificationService.notify('Invitations sent', 'Invitations could not be sent'),
       );
   }
 

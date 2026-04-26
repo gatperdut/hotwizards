@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { HwCampaign } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
 import { HwMembership } from '../../../../../shared/dist/shared/src/memberships/membership.interface';
 import { AuthService } from '../../auth/services/auth.service';
@@ -28,7 +29,6 @@ import {
   CampaignInviteDialogResult,
 } from '../campaign-invite-dialog/campaign-invite-dialog.component';
 import { CampaignsApiService } from '../services/campaigns-api.service';
-import { HwfeCampaign, HwfeMembership } from '../types/my-campaign.type';
 
 @Component({
   selector: 'app-campaign',
@@ -44,13 +44,13 @@ export class CampaignComponent {
   private membershipsApiService = inject(MembershipsApiService);
   private campaignsApiService = inject(CampaignsApiService);
 
-  public campaign = input.required<HwfeCampaign>();
+  public campaign = input.required<HwCampaign>();
 
   public membership = computed(
     () =>
       this.campaign().memberships.find(
         (m) => m.user.id === this.authService.userId(),
-      ) as HwfeMembership,
+      ) as HwMembership,
   );
 
   public master = computed(() => this.campaign().master);
@@ -77,7 +77,7 @@ export class CampaignComponent {
       .includes(this.authService.user()!.id),
   );
 
-  public toggleMembership(membership: HwfeMembership, self: boolean): void {
+  public toggleMembership(membership: HwMembership, self: boolean): void {
     const dialog: LazyDialog<
       ConfirmationDialogComponent,
       ConfirmationDialogData,
