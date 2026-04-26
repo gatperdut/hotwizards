@@ -30,7 +30,7 @@ export abstract class SocketService<
     });
   }
 
-  protected fromEvent<K extends keyof Downstream & string>(
+  protected fromEvent<K extends keyof Downstream>(
     eventName: K,
   ): Observable<Parameters<Downstream[K]>[0]> {
     return new Observable((observer) => {
@@ -44,11 +44,8 @@ export abstract class SocketService<
     });
   }
 
-  protected emit<K extends keyof Upstream & string>(
-    eventName: K,
-    ...args: Parameters<Upstream[K]>
-  ): void {
-    this.socket.emit(eventName, ...args);
+  protected emit<K extends keyof Upstream>(eventName: K, ...args: Parameters<Upstream[K]>): void {
+    this.socket.emit(eventName as string, ...args);
   }
 
   protected disconnect(): void {
