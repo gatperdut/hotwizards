@@ -13,7 +13,6 @@ import { AuthGuard } from './guards/auth.guard.js';
 
 @WebSocketGateway({
   namespace: 'presence',
-  cors: { origin: 'http://localhost:4200' },
 })
 export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect {
   private online = new Map<number, HwUser>();

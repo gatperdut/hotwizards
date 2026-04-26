@@ -1,5 +1,5 @@
 export interface AppEnvironment {
-  readonly production: boolean;
-  readonly sentryDsn?: string;
-  readonly hwfeSentryRelease?: string;
+  production: boolean;
+  sentryDsn?: string;
+  hwfeSentryRelease?: string;
 }
