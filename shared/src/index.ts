@@ -12,7 +12,6 @@ export { HwHealthStatus } from './health/health-status.interface.js';
 export { Match } from './match.validator.js';
 export { HwMembershipAcceptDto } from './memberships/membership-accept.dto.js';
 export { HwMembershipCreateDto } from './memberships/membership-create.dto.js';
-export { HwMembershipDeleteDto } from './memberships/membership-delete.dto.js';
 export { HwMembership } from './memberships/membership.interface.js';
 export { Paginated } from './pagination/paginated.interface.js';
 export { PaginationMeta } from './pagination/pagination-meta.interface.js';

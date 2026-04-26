@@ -22,10 +22,9 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { SelectComponent } from '../../ui/select/select.component';
-import { HwfeMembership } from '../types/my-campaign.type';
 
 export type CampaignInviteAcceptDialogData = {
-  membership: HwfeMembership;
+  membershipId: number;
 };
 
 export type CampaignInviteAcceptDialogResult = boolean;
@@ -54,7 +53,6 @@ export class CampaignInviteAcceptDialogComponent {
   private gendersService = inject(GendersService);
 
   public model = signal<HwMembershipAcceptDto>({
-    membershipId: this.data.membership.id,
     klass: Klass.BARBARIAN,
     gender: Gender.MALE,
     name: '',
@@ -91,7 +89,7 @@ export class CampaignInviteAcceptDialogComponent {
   public genderDisplayFn = (gender: Gender): string => this.gendersService.name(gender);
 
   public accept(): void {
-    this.membershipsApiService.accept(this.model()).subscribe({
+    this.membershipsApiService.accept(this.data.membershipId, this.model()).subscribe({
       next: () => {
         this.dialogRef.close();
       },

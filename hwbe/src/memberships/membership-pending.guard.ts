@@ -8,7 +8,7 @@ export class MembershipPendingGuard implements CanActivate {
     const membership = request.membership;
 
     if (membership.status !== 'PENDING') {
-      throw new ForbiddenException('Your membership is not pending');
+      throw new ForbiddenException('The membership is not pending');
     }
 
     return true;

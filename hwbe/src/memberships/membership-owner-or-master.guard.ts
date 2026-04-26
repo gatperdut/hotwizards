@@ -17,6 +17,6 @@ export class MembershipOwnerOrMasterGuard implements CanActivate {
       return true;
     }
 
-    throw new ForbiddenException('You are neither the owner nor the master of this subscription');
+    throw new ForbiddenException('You are neither the owner nor the master of this membership');
   }
 }

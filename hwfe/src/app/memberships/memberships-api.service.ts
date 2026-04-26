@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwMembershipAcceptDto, HwMembershipCreateDto, HwMembershipDeleteDto } from '@hw/shared';
+import { HwMembershipAcceptDto, HwMembershipCreateDto } from '@hw/shared';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../services/api-notification.service';
 
@@ -17,15 +17,20 @@ export class MembershipsApiService {
       );
   }
 
-  public accept(params: HwMembershipAcceptDto): Observable<number> {
-    return this.httpClient.post<number>('/api/memberships/accept', params);
+  public accept(id: number, params: HwMembershipAcceptDto): Observable<number> {
+    return this.httpClient
+      .patch<number>(`/api/memberships/${id}`, params)
+      .pipe(
+        this.apiNotificationService.notify(
+          'Accepted invitation to join the campaign',
+          'Could not accept invitation to join the campaign',
+        ),
+      );
   }
 
-  public delete(params: HwMembershipDeleteDto): Observable<number> {
+  public delete(id: number): Observable<number> {
     return this.httpClient
-      .delete<number>('/api/memberships', {
-        params: { ...params },
-      })
+      .delete<number>(`/api/memberships/${id}`, {})
       .pipe(
         this.apiNotificationService.notify(
           'Removed from campaign',

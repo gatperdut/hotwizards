@@ -9,24 +9,16 @@ export class MembershipMasterGuard implements CanActivate {
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
-    const membershipId = parseInt(
-      request.query?.membershipId || request.params?.membershipId || request.body?.membershipId,
-    );
+    const membership = request.membership;
 
-    if (!membershipId) {
-      return false;
-    }
-
-    const membership = await this.prismaService.membership.findFirst({
-      where: { id: membershipId, campaign: { masterId: user.id } },
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: membership.campaignId },
     });
 
-    if (!membership) {
+    if (!campaign) {
       return false;
     }
 
-    request.membership = membership;
-
-    return true;
+    return campaign.masterId === user.id;
   }
 }
