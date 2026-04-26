@@ -5,7 +5,7 @@ import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UsersService } from '../users/users.service.js';
-import { AuthTokenPayload } from './types/auth-token-payload.type.js';
+import { HwTokenPayload } from './types/token-payload.type.js';
 
 @Injectable()
 export class AuthService {
@@ -68,7 +68,7 @@ export class AuthService {
     };
   }
 
-  public async verifyToken(token: string): Promise<AuthTokenPayload> {
+  public async verifyToken(token: string): Promise<HwTokenPayload> {
     try {
       return await this.jwtService.verifyAsync(token, {
         secret: this.configService.get('HWBE_JWT_KEY'),
