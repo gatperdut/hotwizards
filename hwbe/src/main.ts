@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import * as Sentry from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { AppModule } from './app.module.js';
+import { SocketIoAdapter } from './sockets/socket-io.adapter.js';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -30,12 +31,16 @@ async function bootstrap(): Promise<void> {
     });
   }
 
+  // Pipes
   app.useGlobalPipes(
     new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
   );
 
   // Global prefix
   app.setGlobalPrefix('api');
+
+  // Socket adapter
+  app.useWebSocketAdapter(new SocketIoAdapter(app));
 
   // Listen
   const port: number = configService.get<number>('HWBE_PORT') as number;
