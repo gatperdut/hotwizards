@@ -18,6 +18,8 @@ import { AuthGuard } from './guards/auth.guard.js';
 export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect {
   private online = new Map<number, HwUser>();
 
+  private sessions = new Map<number, Set<string>>();
+
   constructor(protected authService: AuthService) {
     super(authService);
   }
@@ -25,18 +27,37 @@ export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect 
   @UseGuards(AuthGuard)
   @SubscribeMessage('online')
   public handleOnline(@ConnectedSocket() socket: Socket): void {
-    console.log(`User ${socket.user.handle} is now online`);
+    const userId = socket.user.id;
 
-    this.online.set(socket.user.id, socket.user);
+    if (!this.sessions.has(userId)) {
+      this.sessions.set(userId, new Set());
+    }
 
-    const onlineList = [...this.online.values()];
-    socket.emit('online_list', onlineList);
+    this.sessions.get(userId)?.add(socket.id);
 
-    this.server.emit('online', socket.user);
+    if (!this.online.has(userId)) {
+      this.online.set(userId, socket.user);
+      this.server.emit('online', socket.user);
+    }
+
+    socket.emit('online_list', [...this.online.values()]);
   }
 
   public handleDisconnect(socket: Socket): void {
-    console.log(`User ${socket.user.handle} is now offline`);
-    this.server.emit('offline', socket.user);
+    const userId = socket.user.id;
+
+    const userSessions = this.sessions.get(userId) as Set<string>;
+
+    if (!userSessions) {
+      return;
+    }
+
+    userSessions.delete(socket.id);
+
+    if (!userSessions.size) {
+      this.sessions.delete(userId);
+      this.online.delete(userId);
+      this.server.emit('offline', socket.user);
+    }
   }
 }
