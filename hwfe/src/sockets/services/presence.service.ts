@@ -1,7 +1,7 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HwUser } from '@hw/shared';
 import { tap } from 'rxjs';
-import { HwUser } from '../../../../shared/dist/shared/src/users/user.interface';
 import { SocketService } from './socket.service';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class PresenceService extends SocketService {
   constructor() {
     super('presence');
 
-    this.fromEvent<HwUser>('online')
+    this.fromEvent<HwUser>('downOnline')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((user) => {
@@ -27,7 +27,7 @@ export class PresenceService extends SocketService {
       )
       .subscribe();
 
-    this.fromEvent<HwUser[]>('online_list')
+    this.fromEvent<HwUser[]>('downOnlineList')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((users) => {
@@ -36,7 +36,7 @@ export class PresenceService extends SocketService {
       )
       .subscribe();
 
-    this.fromEvent<HwUser>('offline')
+    this.fromEvent<HwUser>('downOffline')
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         tap((user) => {
@@ -49,6 +49,6 @@ export class PresenceService extends SocketService {
       )
       .subscribe();
 
-    this.socket.emit('online');
+    this.socket.emit('upOnline');
   }
 }

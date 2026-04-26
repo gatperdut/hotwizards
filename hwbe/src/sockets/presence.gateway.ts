@@ -1,3 +1,4 @@
+import { HwUser, PresenceDownstream, PresenceUpstream } from '@hw/shared';
 import { UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -6,7 +7,6 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { HwUser } from '../../../shared/dist/shared/src/users/user.interface.js';
 import { AuthService } from '../auth/auth.service.js';
 import { AuthGateway } from './auth.gateway.js';
 import { AuthGuard } from './guards/auth.guard.js';
@@ -14,7 +14,10 @@ import { AuthGuard } from './guards/auth.guard.js';
 @WebSocketGateway({
   namespace: 'presence',
 })
-export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect {
+export class PresenceGateway
+  extends AuthGateway<PresenceDownstream>
+  implements OnGatewayDisconnect
+{
   private online = new Map<number, HwUser>();
 
   private sessions = new Map<number, Set<string>>();
@@ -24,8 +27,10 @@ export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect 
   }
 
   @UseGuards(AuthGuard)
-  @SubscribeMessage('online')
-  public handleOnline(@ConnectedSocket() socket: Socket): void {
+  @SubscribeMessage<keyof PresenceUpstream>('upOnline')
+  public handleOnline(
+    @ConnectedSocket() socket: Socket<PresenceUpstream, PresenceDownstream>,
+  ): void {
     const userId = socket.user.id;
 
     if (!this.sessions.has(userId)) {
@@ -36,13 +41,13 @@ export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect 
 
     if (!this.online.has(userId)) {
       this.online.set(userId, socket.user);
-      this.server.emit('online', socket.user);
+      this.server.emit('downOnline', socket.user);
     }
 
-    socket.emit('online_list', [...this.online.values()]);
+    socket.emit('downOnlineList', [...this.online.values()]);
   }
 
-  public handleDisconnect(socket: Socket): void {
+  public handleDisconnect(socket: Socket<PresenceUpstream, PresenceDownstream>): void {
     const userId = socket.user.id;
 
     const userSessions = this.sessions.get(userId) as Set<string>;
@@ -56,7 +61,7 @@ export class PresenceGateway extends AuthGateway implements OnGatewayDisconnect 
     if (!userSessions.size) {
       this.sessions.delete(userId);
       this.online.delete(userId);
-      this.server.emit('offline', socket.user);
+      this.server.emit('downOffline', socket.user);
     }
   }
 }
