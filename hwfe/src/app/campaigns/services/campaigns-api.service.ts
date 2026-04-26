@@ -1,13 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {
-  HwCampaign,
-  HwCampaignCreateDto,
-  HwCampaignDeleteDto,
-  HwCampaignSearchDto,
-  HwCampaignUpdateDto,
-  Paginated,
-} from '@hw/shared';
+import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto, Paginated } from '@hw/shared';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../../services/api-notification.service';
 
@@ -36,7 +29,7 @@ export class CampaignsApiService {
     });
   }
 
-  public create(params: HwCampaignCreateDto): Observable<number> {
+  public create(params: HwCampaignEditDto): Observable<number> {
     return this.httpClient
       .post<number>('/api/campaigns', params)
       .pipe(
@@ -44,19 +37,17 @@ export class CampaignsApiService {
       );
   }
 
-  public update(params: HwCampaignUpdateDto): Observable<number> {
+  public update(id: number, params: HwCampaignEditDto): Observable<number> {
     return this.httpClient
-      .patch<number>('/api/campaigns', params)
+      .patch<number>(`/api/campaigns/${id}`, params)
       .pipe(
         this.apiNotificationService.notify('Campaign updated', 'Campaign could not be updated'),
       );
   }
 
-  public delete(params: HwCampaignDeleteDto): Observable<number> {
+  public delete(id: number): Observable<number> {
     return this.httpClient
-      .delete<number>('/api/campaigns', {
-        params: { ...params },
-      })
+      .delete<number>(`/api/campaigns/${id}`)
       .pipe(
         this.apiNotificationService.notify('Campaign deleted', 'Could not delete the campaign'),
       );

@@ -1,7 +1,7 @@
 <app-dialog sizeClass="max-w-md">
   <form>
     <ng-template appDialogTitle>
-      <div class="typ-h2">{{ creating ? 'Create campaign' : 'Edit campaign' }}</div>
+      <div class="typ-h2">{{ data.campaignId ? 'Edit campaign' : 'Create campaign' }}</div>
     </ng-template>
 
     <ng-template appDialogContent>
@@ -36,7 +36,7 @@
         (click)="dialogRef.close(false)"
       ></app-button>
       <app-button
-        [label]="creating ? 'Create' : 'Update'"
+        [label]="data.campaignId ? 'Update' : 'Create'"
         type="submit"
         (click)="save()"
         [disabled]="form().invalid()"
