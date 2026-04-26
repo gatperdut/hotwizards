@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form, SchemaPath } from '@angular/forms/signals';
+import { PresenceService } from '@hw/hwfe/sockets/services/presence.service';
 import { HwCampaign, HwCampaignSearchDto, PaginationMeta } from '@hw/shared';
 import { map, tap } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -35,10 +36,12 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
   templateUrl: './campaigns.component.html',
   styleUrl: './campaigns.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [PresenceService],
 })
 export class CampaignsComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
+  public presenceService = inject(PresenceService);
 
   constructor() {
     effect(() => {

@@ -13,7 +13,7 @@ import { IconService } from './services/icon.service';
 @Component({
   selector: 'app-icon',
   imports: [],
-  templateUrl: './icon.component.html',
+  template: '',
   styleUrl: './icon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
