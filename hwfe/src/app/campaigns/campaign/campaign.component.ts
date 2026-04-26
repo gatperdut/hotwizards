@@ -12,6 +12,7 @@ import {
 } from '../../shared/confirmation-dialog/confirmation-dialog.component';
 import { AppCardAction, AppCardMiniAction, CardComponent } from '../../ui/card/card.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import { OnlineMarkComponent } from '../../users/online-mark/online-mark.component';
 import {
   CampaignEditorDialogComponent,
   CampaignEditorDialogData,
@@ -31,7 +32,7 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
 
 @Component({
   selector: 'app-campaign',
-  imports: [CardComponent, NgTemplateOutlet],
+  imports: [CardComponent, NgTemplateOutlet, OnlineMarkComponent],
   templateUrl: './campaign.component.html',
   styleUrl: './campaign.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

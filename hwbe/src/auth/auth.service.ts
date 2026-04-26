@@ -3,6 +3,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { compare, genSalt, hash } from 'bcrypt';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { UsersService } from '../users/users.service.js';
 import { AuthTokenPayload } from './types/auth-token-payload.type.js';
 
@@ -12,6 +13,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private prismaService: PrismaService,
   ) {}
 
   public async hashPassword(password: string): Promise<string> {
@@ -74,5 +76,19 @@ export class AuthService {
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
     }
+  }
+
+  public async userFromToken(token: string): Promise<HwUser | null> {
+    const payload = await this.verifyToken(token);
+    const user = await this.prismaService.user.findUnique({
+      where: { id: payload.sub },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    const { password, ...strippedUser } = user;
+    return { ...strippedUser, me: true };
   }
 }

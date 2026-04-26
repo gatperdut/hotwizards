@@ -4,6 +4,7 @@
       *ngTemplateOutlet="
         userOutlet;
         context: {
+          userId: master().id,
           image: '/characters/zargon.png',
           klass: 'Master',
           handle: master().handle,
@@ -48,6 +49,7 @@
             *ngTemplateOutlet="
               userOutlet;
               context: {
+                userId: membership.user.id,
                 image:
                   membership.status === 'ACTIVE'
                     ? klassesService.portrait(
@@ -73,6 +75,7 @@
 
   <ng-template
     #userOutlet
+    let-userId="userId"
     let-image="image"
     let-klass="klass"
     let-handle="handle"
@@ -95,7 +98,10 @@
           {{ klass }}
         </div>
         <div class="typ-body font-bold truncate" [class]="{ 'text-primary!': me }">
-          {{ handle }}
+          <span>{{ handle }}</span>
+          @if (!me) {
+            <app-online-mark class="align-middle ml-hw-xsmall" [userId]="userId"></app-online-mark>
+          }
         </div>
         <div class="typ-small truncate opacity-70">
           {{ name }}
