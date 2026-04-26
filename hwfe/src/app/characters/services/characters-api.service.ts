@@ -1,7 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-export class CharactersApiService {
-  private httpClient = inject(HttpClient);
-}
+export class CharactersApiService {}

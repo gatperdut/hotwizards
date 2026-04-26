@@ -3,7 +3,6 @@ export { HwAuthRegisterDto } from './auth/auth-register.dto.js';
 export { HwAuthResponse } from './auth/auth-response.interface.js';
 export { HwAuthVerifyTokenDto } from './auth/auth-verify-token.dto.js';
 export { HwCampaignEditDto } from './campaigns/campaign-edit.dto.js';
-export { HwCampaignPartialDto } from './campaigns/campaign-partial.dto.js';
 export { HwCampaignSearchDto } from './campaigns/campaign-search.dto.js';
 export { HwCampaign } from './campaigns/campaign.interface.js';
 export { HwCharacter } from './characters/character.interface.js';

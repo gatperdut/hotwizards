@@ -24,7 +24,7 @@ import { CampaignsFilterComponent } from '../campaigns-filter/campaigns-filter.c
 import { CampaignsApiService } from '../services/campaigns-api.service';
 
 @Component({
-  selector: 'app-my-campaigns',
+  selector: 'app-campaigns',
   imports: [
     CampaignsFilterComponent,
     PaginatorComponent,
@@ -32,11 +32,11 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
     JsonPipe,
     ButtonComponent,
   ],
-  templateUrl: './my-campaigns.component.html',
-  styleUrl: './my-campaigns.component.css',
+  templateUrl: './campaigns.component.html',
+  styleUrl: './campaigns.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MyCampaignsComponent {
+export class CampaignsComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
 

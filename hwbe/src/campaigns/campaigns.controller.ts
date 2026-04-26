@@ -1,15 +1,25 @@
 import { Campaign, User } from '@hw/prismagen/client';
-import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto, Paginated } from '@hw/shared';
+import {
+  HwCampaign,
+  HwCampaignEditDto,
+  HwCampaignSearchDto,
+  HwMembershipCreateDto,
+  Paginated,
+} from '@hw/shared';
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { MembershipsService } from '../memberships/memberships.service.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
-import { CampaignMasterGuard } from './campaign-master.guard.js';
-import { CampaignGuard } from './campaign.guard.js';
 import { CampaignsService } from './campaigns.service.js';
 import { CurrentCampaign } from './current-campaign.decorator.js';
+import { CampaignMasterGuard } from './guards/campaign-master.guard.js';
+import { CampaignGuard } from './guards/campaign.guard.js';
 
 @Controller('campaigns')
 export class CampaignsController {
-  constructor(private campaignsService: CampaignsService) {}
+  constructor(
+    private campaignsService: CampaignsService,
+    private membershipsService: MembershipsService,
+  ) {}
 
   @Get()
   public search(
@@ -37,5 +47,15 @@ export class CampaignsController {
   @UseGuards(CampaignGuard, CampaignMasterGuard)
   public delete(@CurrentCampaign() campaign: Campaign): Promise<number> {
     return this.campaignsService.delete(campaign.id);
+  }
+
+  @Post(':campaignId/memberships')
+  @UseGuards(CampaignGuard, CampaignMasterGuard)
+  public invite(
+    @CurrentUser() user: User,
+    @CurrentCampaign() campaign: Campaign,
+    @Body() params: HwMembershipCreateDto,
+  ): Promise<number[]> {
+    return this.membershipsService.create(campaign.id, user.id, params.userIds);
   }
 }
