@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { DestroyRef, inject } from '@angular/core';
 import { AuthTokenService } from '@hw/hwfe/app/auth/services/auth-token.service';
 import { environment } from '@hw/hwfe/environments/environment';
 import { Observable } from 'rxjs';
@@ -8,20 +8,20 @@ export abstract class SocketService<
   Downstream extends Record<string, any>,
   Upstream extends Record<string, any>,
 > {
-  protected socket!: Socket;
-  private authTokenService = inject(AuthTokenService);
+  private readonly authTokenService = inject(AuthTokenService);
+  protected readonly destroyRef = inject(DestroyRef);
 
-  constructor(protected namespace: string) {
+  private socket!: Socket<Downstream, Upstream>;
+
+  constructor(private readonly namespace: string) {
     this.connect();
+
+    this.destroyRef.onDestroy(() => this.disconnect());
   }
 
   private connect(): void {
-    const token = this.authTokenService.get();
-
     this.socket = io(`${environment.hwbeUrl}/${this.namespace}`, {
-      auth: {
-        token: `Bearer ${token}`,
-      },
+      auth: (cb) => cb({ token: `Bearer ${this.authTokenService.get()}` }),
       autoConnect: true,
     });
 
@@ -36,19 +36,19 @@ export abstract class SocketService<
     return new Observable((observer) => {
       const listener = (data: any): void => observer.next(data);
 
-      this.socket.on(eventName as string, listener as (...args: any[]) => void);
+      (this.socket as Socket).on(eventName as string, listener as (...args: any[]) => void);
 
       return () => {
-        this.socket.off(eventName as string, listener as (...args: any[]) => void);
+        (this.socket as Socket).off(eventName as string, listener as (...args: any[]) => void);
       };
     });
   }
 
   protected emit<K extends keyof Upstream>(eventName: K, ...args: Parameters<Upstream[K]>): void {
-    this.socket.emit(eventName as string, ...args);
+    this.socket.emit(eventName as string, ...(args as Parameters<Upstream[string]>));
   }
 
-  protected disconnect(): void {
+  private disconnect(): void {
     this.socket.disconnect();
   }
 }
