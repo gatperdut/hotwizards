@@ -15,7 +15,7 @@ import { AuthGuard } from './guards/auth.guard.js';
   namespace: 'presence',
 })
 export class PresenceGateway
-  extends AuthGateway<PresenceDownstream>
+  extends AuthGateway<PresenceDownstream, PresenceUpstream>
   implements OnGatewayDisconnect
 {
   private online = new Map<number, HwUser>();

@@ -3,8 +3,8 @@ import { Server } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 
 export abstract class AuthGateway<
-  Downstream extends Record<string, any> = any,
-  Upstream extends Record<string, any> = any,
+  Downstream extends Record<string, any>,
+  Upstream extends Record<string, any>,
 > implements OnGatewayInit {
   @WebSocketServer() server: Server<Upstream, Downstream>;
 
