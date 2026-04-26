@@ -1,8 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { HwCampaign } from '@hw/shared';
+import { HwCampaign, HwMembership } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
-import { HwMembership } from '../../../../../shared/dist/shared/src/memberships/membership.interface';
 import { AuthService } from '../../auth/services/auth.service';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
