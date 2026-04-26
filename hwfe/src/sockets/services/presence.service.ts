@@ -1,13 +1,11 @@
 import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HwUser } from '@hw/shared';
-import { tap } from 'rxjs';
+import { HwUser, PresenceDownstream, PresenceUpstream } from '@hw/shared';
 import { SocketService } from './socket.service';
 
 @Injectable()
-export class PresenceService extends SocketService {
+export class PresenceService extends SocketService<PresenceDownstream, PresenceUpstream> {
   private destroyRef = inject(DestroyRef);
-
   public online = signal(new Map<number, HwUser>());
 
   // TODO needs to be dropped eventually, when we don't dump the debug list somewhere
@@ -16,39 +14,34 @@ export class PresenceService extends SocketService {
   constructor() {
     super('presence');
 
-    this.fromEvent<HwUser>('downOnline')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((user) => {
-          this.online.update((currentMap) => {
-            return new Map(currentMap).set(user.id, user);
-          });
-        }),
-      )
-      .subscribe();
+    this.fromEvent('downOnline')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        this.updateUser(user);
+      });
 
-    this.fromEvent<HwUser[]>('downOnlineList')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((users) => {
-          this.online.set(new Map(users.map((user) => [user.id, user])));
-        }),
-      )
-      .subscribe();
+    this.fromEvent('downOnlineList')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((users) => this.initList(users));
 
-    this.fromEvent<HwUser>('downOffline')
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        tap((user) => {
-          this.online.update((currentMap) => {
-            const newMap = new Map(currentMap);
-            newMap.delete(user.id);
-            return newMap;
-          });
-        }),
-      )
-      .subscribe();
+    this.fromEvent('downOffline')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => this.removeUser(user.id));
 
-    this.socket.emit('upOnline');
+    this.emit('upOnline');
+  }
+
+  private initList(users: HwUser[]): void {
+    this.online.set(new Map(users.map((u) => [u.id, u])));
+  }
+  private updateUser(user: HwUser): void {
+    this.online.update((map) => new Map(map).set(user.id, user));
+  }
+  private removeUser(id: number): void {
+    this.online.update((map) => {
+      const next = new Map(map);
+      next.delete(id);
+      return next;
+    });
   }
 }

@@ -3,7 +3,10 @@ import { AuthTokenService } from '@hw/hwfe/app/auth/services/auth-token.service'
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
-export abstract class SocketService {
+export abstract class SocketService<
+  Downstream extends Record<string, any>,
+  Upstream extends Record<string, any>,
+> {
   protected socket!: Socket;
   private authTokenService = inject(AuthTokenService);
 
@@ -14,6 +17,7 @@ export abstract class SocketService {
   private connect(): void {
     const token = this.authTokenService.get();
 
+    // TODO hardcoded!
     this.socket = io(`http://localhost:3000/${this.namespace}`, {
       auth: {
         token: `Bearer ${token}`,
@@ -26,11 +30,25 @@ export abstract class SocketService {
     });
   }
 
-  protected fromEvent<T>(eventName: string): Observable<T> {
-    return new Observable<T>((observer) => {
-      this.socket.on(eventName, (data: T) => observer.next(data));
-      return () => this.socket.off(eventName);
+  protected fromEvent<K extends keyof Downstream & string>(
+    eventName: K,
+  ): Observable<Parameters<Downstream[K]>[0]> {
+    return new Observable((observer) => {
+      const listener = (data: any): void => observer.next(data);
+
+      this.socket.on(eventName as string, listener as (...args: any[]) => void);
+
+      return () => {
+        this.socket.off(eventName as string, listener as (...args: any[]) => void);
+      };
     });
+  }
+
+  protected emit<K extends keyof Upstream & string>(
+    eventName: K,
+    ...args: Parameters<Upstream[K]>
+  ): void {
+    this.socket.emit(eventName, ...args);
   }
 
   protected disconnect(): void {
