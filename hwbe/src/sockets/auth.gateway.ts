@@ -2,8 +2,11 @@ import { OnGatewayInit, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 
-export abstract class AuthGateway implements OnGatewayInit {
-  @WebSocketServer() server: Server;
+export abstract class AuthGateway<
+  Downstream extends Record<string, any> = any,
+  Upstream extends Record<string, any> = any,
+> implements OnGatewayInit {
+  @WebSocketServer() server: Server<Upstream, Downstream>;
 
   constructor(protected authService: AuthService) {}
 
