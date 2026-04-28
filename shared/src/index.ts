@@ -17,6 +17,8 @@ export { PaginationMeta } from './pagination/pagination-meta.interface.js';
 export { PaginationDto } from './pagination/pagination.dto.js';
 export { HwRulesetEditDto } from './rulesets/ruleset-edit.dto.js';
 export { HwRuleset } from './rulesets/ruleset.interface.js';
+export { CampaignsDownstream } from './sockets/campaigns-downstream.interface.js';
+export { CampaignsUpstream } from './sockets/campaigns-upstream.interface.js';
 export { PresenceDownstream } from './sockets/presence-downstream.interface.js';
 export { PresenceUpstream } from './sockets/presence-upstream.interface.js';
 export { HwUserAvailabilityEmailDto } from './users/user-availability-email.dto.js';

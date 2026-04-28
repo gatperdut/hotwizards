@@ -23,9 +23,10 @@ export class AuthService {
   }
 
   private generateToken(userId: number, rememberMe: boolean): string {
-    const options: JwtSignOptions | undefined = rememberMe ? { expiresIn: '7d' } : undefined;
-
-    return this.jwtService.sign({ sub: userId }, options);
+    return this.jwtService.sign(
+      { sub: userId },
+      ...(rememberMe ? [{ expiresIn: '7d' } as JwtSignOptions] : []),
+    );
   }
 
   public async register(handle: string, email: string, password: string): Promise<HwAuthResponse> {
