@@ -1,37 +1,34 @@
 // presence/presence.gateway.ts
 import { CampaignsDownstream, CampaignsUpstream } from '@hw/shared';
-import { OnGatewayInit, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  OnGatewayInit,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
-import { PresenceService } from '../presence/presence.service.js';
 import { applySocketAuthMiddleware } from '../sockets/socket-auth.middleware.js';
 
 type CampaignsSocket = Socket<CampaignsUpstream, CampaignsDownstream>;
 
 @WebSocketGateway({ namespace: 'campaigns' })
-export class CampaignsGateway implements OnGatewayInit {
+export class CampaignsGateway implements OnGatewayInit, OnGatewayConnection {
   @WebSocketServer() private readonly server: Server<CampaignsUpstream, CampaignsDownstream>;
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly presenceService: PresenceService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   public afterInit(server: Server): void {
     applySocketAuthMiddleware(server, this.authService);
   }
 
-  public handleDownCreateCampaign(campaignId: number, masterId: number): void {
-    console.log('HEYA');
-    const sessions = this.presenceService.sessions.get(masterId);
-    console.log(sessions);
-    sessions?.forEach((session: CampaignsSocket) => session.emit('downCreateCampaign', campaignId));
+  public async handleConnection(socket: CampaignsSocket): Promise<void> {
+    await socket.join(`user:${socket.user.id}`);
   }
 
-  public handleDownDeleteCampaign(campaignId: number, playerIds: number[]): void {
-    // const sessions = this.presenceService.sessions.get(campaign.masterId);
-    // sessions?.forEach((session: CampaignsSocket) =>
-    //   session.emit('downDeleteCampaign', campaign.id),
-    // );
+  public handleDownCreateCampaign(campaignId: number, masterId: number): void {
+    this.server.to(`user:${masterId}`).emit('downCreateCampaign', campaignId);
   }
+
+  public handleDownDeleteCampaign(campaignId: number, playerIds: number[]): void {}
 }
