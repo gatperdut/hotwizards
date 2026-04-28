@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { PresenceService } from '@hw/hwfe/sockets/services/presence.service';
+import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
 
 @Component({
   selector: 'app-online-mark',

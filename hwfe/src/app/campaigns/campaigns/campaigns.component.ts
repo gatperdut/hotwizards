@@ -3,15 +3,24 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   effect,
   inject,
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form, SchemaPath } from '@angular/forms/signals';
-import { PresenceService } from '@hw/hwfe/sockets/services/presence.service';
-import { HwCampaign, HwCampaignSearchDto, PaginationMeta } from '@hw/shared';
+import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
+import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import {
+  CampaignsDownstream,
+  CampaignsUpstream,
+  HwCampaign,
+  HwCampaignSearchDto,
+  PaginationMeta,
+} from '@hw/shared';
 import { map, tap } from 'rxjs';
+import { Socket } from 'socket.io-client';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
@@ -36,14 +45,21 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
   templateUrl: './campaigns.component.html',
   styleUrl: './campaigns.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [PresenceService],
 })
 export class CampaignsComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
   public presenceService = inject(PresenceService);
+  private socketService = inject(SocketService);
+  private destroyRef = inject(DestroyRef);
+
+  private socket!: Socket<CampaignsDownstream, CampaignsUpstream>;
 
   constructor() {
+    this.socket = this.socketService.socket('campaigns', this.destroyRef);
+
+    this.listen();
+
     effect(() => {
       this.model();
       this.page.set(0);
@@ -98,5 +114,13 @@ export class CampaignsComponent {
     };
 
     void this.dialogService.open(dialog, { dto: { name: '', aoo: false, movement: 'REGULAR' } });
+  }
+
+  private listen(): void {
+    this.socket.on('downCreateCampaign', (campaignId) => {
+      console.log('campaign created', campaignId);
+    });
+
+    this.socket.on('downDeleteCampaign', (campaignId) => {});
   }
 }

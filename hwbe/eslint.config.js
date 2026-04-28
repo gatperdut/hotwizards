@@ -16,7 +16,6 @@ export default [
           accessibility: 'explicit',
           overrides: {
             constructors: 'no-public',
-            properties: 'no-public',
           },
         },
       ],
