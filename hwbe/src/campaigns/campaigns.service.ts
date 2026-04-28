@@ -2,10 +2,14 @@ import { Movement, Prisma, Ruleset } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { CampaignsGateway } from './campaigns.gateway.js';
 
 @Injectable()
 export class CampaignsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private campaignsGateway: CampaignsGateway,
+  ) {}
 
   public async search(
     userId: number,
@@ -139,6 +143,8 @@ export class CampaignsService {
         },
       },
     });
+
+    this.campaignsGateway.handleDownCreateCampaign(campaign.id, masterId);
 
     return campaign.id;
   }

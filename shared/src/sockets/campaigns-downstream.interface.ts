@@ -1,6 +1,4 @@
-import { HwCampaign } from '../campaigns/campaign.interface.js';
-
 export interface CampaignsDownstream {
-  downCampaignCreate: (campaign: HwCampaign) => void;
-  downCampaignDelete: (id: number) => void;
+  downCreateCampaign: (id: number) => void;
+  downDeleteCampaign: (id: number) => void;
 }

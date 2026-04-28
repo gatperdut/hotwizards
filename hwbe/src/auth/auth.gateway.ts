@@ -13,6 +13,8 @@ import { AuthService } from '../auth/auth.service.js';
 import { PresenceService } from '../presence/presence.service.js';
 import { applySocketAuthMiddleware } from '../sockets/socket-auth.middleware.js';
 
+type PresenceSocket = Socket<PresenceUpstream, PresenceDownstream>;
+
 @WebSocketGateway({ namespace: 'presence' })
 export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
   @WebSocketServer() private readonly server: Server<PresenceUpstream, PresenceDownstream>;
@@ -27,7 +29,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
   }
 
   @SubscribeMessage<keyof PresenceUpstream>('upOnline')
-  public handleOnline(
+  public handleUpOnline(
     @ConnectedSocket() socket: Socket<PresenceUpstream, PresenceDownstream>,
   ): void {
     const userId = socket.user.id;
@@ -36,7 +38,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
       this.presenceService.sessions.set(userId, new Set());
     }
 
-    this.presenceService.sessions.get(userId)?.add(socket.id);
+    this.presenceService.sessions.get(userId)?.add(socket);
 
     if (!this.presenceService.online.has(userId)) {
       this.presenceService.online.set(userId, socket.user);
@@ -54,7 +56,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
       return;
     }
 
-    userSessions.delete(socket.id);
+    userSessions.delete(socket);
 
     if (!userSessions.size) {
       this.presenceService.sessions.delete(userId);
