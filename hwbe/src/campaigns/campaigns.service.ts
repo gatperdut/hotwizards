@@ -1,9 +1,23 @@
 import { Movement, Prisma, Ruleset } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CampaignsGateway } from './campaigns.gateway.js';
 
+const CampaignHwRelations = {
+  include: {
+    master: true,
+    memberships: {
+      include: {
+        user: true,
+        character: true,
+      },
+    },
+    ruleset: true,
+  },
+} satisfies Prisma.CampaignDefaultArgs;
+
+type CampaignWithHwRelations = Prisma.CampaignGetPayload<typeof CampaignHwRelations>;
 @Injectable()
 export class CampaignsService {
   constructor(
@@ -67,55 +81,13 @@ export class CampaignsService {
       skip: page * pageSize,
       take: pageSize,
       orderBy: { name: 'asc' },
-      include: {
-        master: true,
-        memberships: {
-          include: {
-            user: true,
-            character: true,
-          },
-        },
-        ruleset: true,
-      },
+      ...CampaignHwRelations,
     });
 
     const total: number = await this.prismaService.campaign.count({ where: where });
 
     return {
-      items: campaigns.map((campaign): HwCampaign => {
-        const ruleset = campaign.ruleset as Ruleset;
-
-        const { password, ...strippedMaster } = campaign.master;
-
-        return {
-          id: campaign.id,
-          name: campaign.name,
-          createdAt: campaign.createdAt,
-          master: {
-            ...strippedMaster,
-            me: campaign.master.id === userId,
-          },
-          memberships: campaign.memberships.map((membership) => {
-            const { password, ...strippedUser } = membership.user;
-
-            return {
-              id: membership.id,
-              status: membership.status,
-              joinedAt: membership.joinedAt,
-              me: membership.userId === userId,
-              user: { ...strippedUser, me: membership.user.id === userId },
-              character: membership.character
-                ? { ...membership.character, me: membership.user.id === userId }
-                : undefined,
-            };
-          }),
-          ruleset: {
-            id: ruleset.id,
-            aoo: ruleset.aoo,
-            movement: ruleset.movement,
-          },
-        };
-      }),
+      items: campaigns.map((campaign): HwCampaign => this.campaignToHwCampaign(campaign, userId)),
       meta: {
         page: page || 0,
         pageSize: pageSize || 10,
@@ -123,6 +95,19 @@ export class CampaignsService {
         pages: Math.ceil(total / (pageSize || 10)),
       },
     };
+  }
+
+  public async get(campaignId: number, userId: number): Promise<HwCampaign> {
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: campaignId },
+      ...CampaignHwRelations,
+    });
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign not found');
+    }
+
+    return this.campaignToHwCampaign(campaign, userId);
   }
 
   public async create(
@@ -169,5 +154,40 @@ export class CampaignsService {
     });
 
     return campaign.id;
+  }
+
+  private campaignToHwCampaign(campaign: CampaignWithHwRelations, userId: number): HwCampaign {
+    const ruleset = campaign.ruleset as Ruleset;
+
+    const { password, ...strippedMaster } = campaign.master;
+
+    return {
+      id: campaign.id,
+      name: campaign.name,
+      createdAt: campaign.createdAt,
+      master: {
+        ...strippedMaster,
+        me: campaign.master.id === userId,
+      },
+      memberships: campaign.memberships.map((membership) => {
+        const { password, ...strippedUser } = membership.user;
+
+        return {
+          id: membership.id,
+          status: membership.status,
+          joinedAt: membership.joinedAt,
+          me: membership.userId === userId,
+          user: { ...strippedUser, me: membership.user.id === userId },
+          character: membership.character
+            ? { ...membership.character, me: membership.user.id === userId }
+            : undefined,
+        };
+      }),
+      ruleset: {
+        id: ruleset.id,
+        aoo: ruleset.aoo,
+        movement: ruleset.movement,
+      },
+    };
   }
 }

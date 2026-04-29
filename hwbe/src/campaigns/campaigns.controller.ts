@@ -29,6 +29,15 @@ export class CampaignsController {
     return this.campaignsService.search(user.id, params.term, params.page, params.pageSize);
   }
 
+  @Get(':campaignId')
+  @UseGuards(CampaignGuard)
+  public get(
+    @CurrentUser() user: User,
+    @CurrentCampaign() campaign: Campaign,
+  ): Promise<HwCampaign> {
+    return this.campaignsService.get(campaign.id, user.id);
+  }
+
   @Post()
   public create(@CurrentUser() user: User, @Body() body: HwCampaignEditDto): Promise<number> {
     return this.campaignsService.create(user.id, body.name, body.aoo, body.movement);
