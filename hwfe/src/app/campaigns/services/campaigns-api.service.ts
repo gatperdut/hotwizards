@@ -35,6 +35,10 @@ export class CampaignsApiService {
     });
   }
 
+  public get(id: number): Observable<HwCampaign> {
+    return this.httpClient.get<HwCampaign>(`/api/campaigns/${id}`);
+  }
+
   public create(params: HwCampaignEditDto): Observable<number> {
     return this.httpClient
       .post<number>('/api/campaigns', params)

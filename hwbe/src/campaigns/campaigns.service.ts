@@ -151,7 +151,15 @@ export class CampaignsService {
   public async delete(campaignId: number): Promise<number> {
     const campaign = await this.prismaService.campaign.delete({
       where: { id: campaignId },
+      include: {
+        memberships: true,
+      },
     });
+
+    this.campaignsGateway.handleDownDeleteCampaign(campaign.id, [
+      campaign.masterId,
+      ...campaign.memberships.map((m) => m.userId),
+    ]);
 
     return campaign.id;
   }
