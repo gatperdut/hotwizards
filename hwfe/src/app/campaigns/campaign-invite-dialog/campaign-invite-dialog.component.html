@@ -1,5 +1,5 @@
-<app-dialog sizeClass="max-w-md">
-  <form>
+<form [formRoot]="form">
+  <app-dialog sizeClass="max-w-md">
     <ng-template appDialogTitle>
       <div class="typ-h2">Invite</div>
     </ng-template>
@@ -28,12 +28,7 @@
         appearance="outlined"
         (click)="dialogRef.close(false)"
       ></app-button>
-      <app-button
-        label="Invite"
-        type="submit"
-        (click)="invite()"
-        [disabled]="form().invalid()"
-      ></app-button>
+      <app-button label="Invite" type="submit" [disabled]="form().invalid()"></app-button>
     </ng-template>
-  </form>
-</app-dialog>
+  </app-dialog>
+</form>

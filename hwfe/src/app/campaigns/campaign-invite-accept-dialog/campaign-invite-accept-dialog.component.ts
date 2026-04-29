@@ -6,10 +6,10 @@ import {
   Signal,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { form, maxLength, required } from '@angular/forms/signals';
+import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
 import { Gender, Klass } from '@hw/prismagen/browser';
 import { HwMembershipAcceptDto } from '@hw/shared';
+import { firstValueFrom } from 'rxjs';
 import { GendersService } from '../../characters/services/genders.service';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
@@ -39,7 +39,7 @@ export type CampaignInviteAcceptDialogResult = boolean;
     ButtonComponent,
     InputTextComponent,
     SelectComponent,
-    FormsModule,
+    FormRoot,
   ],
   templateUrl: './campaign-invite-accept-dialog.component.html',
   styleUrl: './campaign-invite-accept-dialog.component.css',
@@ -58,12 +58,33 @@ export class CampaignInviteAcceptDialogComponent {
     name: '',
   });
 
-  public form = form(this.model, (schemaPath) => {
-    required(schemaPath.name, { message: 'You must name your character' });
-    maxLength(schemaPath.name, 12, {
-      message: 'Your character name must be 12 characters or fewer',
-    });
-  });
+  public form = form(
+    this.model,
+    (schemaPath) => {
+      required(schemaPath.name, { message: 'You must name your character' });
+      maxLength(schemaPath.name, 12, {
+        message: 'Your character name must be 12 characters or fewer',
+      });
+    },
+    {
+      submission: {
+        action: async () => {
+          const result = await firstValueFrom(
+            this.membershipsApiService.accept(this.data.membershipId, this.model()),
+          );
+
+          if (typeof result === 'number' && result > 0) {
+            this.dialogRef.close();
+          }
+
+          return {
+            kind: 'serverError',
+            message: 'Could not accept invitation to join the campaign',
+          };
+        },
+      },
+    },
+  );
 
   public klasses = Object.values(Klass);
 
@@ -89,12 +110,4 @@ export class CampaignInviteAcceptDialogComponent {
   }
 
   public genderDisplayFn = (gender: Gender): string => this.gendersService.name(gender);
-
-  public accept(): void {
-    this.membershipsApiService.accept(this.data.membershipId, this.model()).subscribe({
-      next: () => {
-        this.dialogRef.close();
-      },
-    });
-  }
 }

@@ -122,12 +122,12 @@ export class RegisterComponent {
         action: async () => {
           const result = await firstValueFrom(this.authService.register(this.model()));
 
-          if (result.user) {
+          if (result.user && result.token) {
             void this.router.navigate(['/home']);
             return;
           }
 
-          return { kind: 'authError', message: 'Invalid registration' };
+          return { kind: 'serverError', message: 'Something went wrong during registration' };
         },
       },
     },

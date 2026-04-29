@@ -38,12 +38,12 @@ export class LoginComponent {
         action: async () => {
           const result = await firstValueFrom(this.authService.login(this.model()));
 
-          if (result.user) {
+          if (result.user && result.token) {
             void this.router.navigate(['/home']);
             return;
           }
 
-          return { kind: 'authError', message: 'Invalid login' };
+          return { kind: 'serverError', message: 'Incorrect credentials' };
         },
       },
     },
