@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { form, required } from '@angular/forms/signals';
+import { form, FormRoot, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { HwAuthLoginDto } from '@hw/shared';
-import { from, switchMap } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
@@ -12,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [ButtonComponent, LinkComponent, InputTextComponent, FormsModule, CheckboxComponent],
+  imports: [ButtonComponent, LinkComponent, InputTextComponent, CheckboxComponent, FormRoot],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,16 +26,26 @@ export class LoginComponent {
     rememberMe: false,
   });
 
-  public form = form(this.model, (schemaPath) => {
-    required(schemaPath.identifier, { message: 'An identifier is required' });
+  public form = form(
+    this.model,
+    (schemaPath) => {
+      required(schemaPath.identifier, { message: 'An identifier is required' });
 
-    required(schemaPath.password, { message: 'Password is required' });
-  });
+      required(schemaPath.password, { message: 'Password is required' });
+    },
+    {
+      submission: {
+        action: async () => {
+          const result = await firstValueFrom(this.authService.login(this.model()));
 
-  public login(): void {
-    this.authService
-      .login(this.model())
-      .pipe(switchMap(() => from(this.router.navigate(['/home']))))
-      .subscribe();
-  }
+          if (result.user) {
+            void this.router.navigate(['/home']);
+            return;
+          }
+
+          return { kind: 'authError', message: 'Invalid login' };
+        },
+      },
+    },
+  );
 }

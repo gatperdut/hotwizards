@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -24,7 +23,6 @@ export type ConfirmationDialogResult = boolean;
     DialogContentDirective,
     DialogActionsDirective,
     ButtonComponent,
-    FormsModule,
   ],
   templateUrl: './confirmation-dialog.component.html',
   styleUrl: './confirmation-dialog.component.css',
