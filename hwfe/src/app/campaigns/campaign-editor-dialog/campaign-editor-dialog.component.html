@@ -1,5 +1,5 @@
-<app-dialog sizeClass="max-w-md">
-  <form>
+<form [formRoot]="form">
+  <app-dialog sizeClass="max-w-md">
     <ng-template appDialogTitle>
       <div class="typ-h2">{{ data.campaignId ? 'Edit campaign' : 'Create campaign' }}</div>
     </ng-template>
@@ -37,9 +37,8 @@
       <app-button
         [label]="data.campaignId ? 'Update' : 'Create'"
         type="submit"
-        (click)="save()"
         [disabled]="form().invalid()"
       ></app-button>
     </ng-template>
-  </form>
-</app-dialog>
+  </app-dialog>
+</form>

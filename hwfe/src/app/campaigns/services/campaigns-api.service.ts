@@ -63,7 +63,7 @@ export class CampaignsApiService {
     return this.httpClient
       .delete<number>(`/api/campaigns/${id}`)
       .pipe(
-        this.apiNotificationService.notify('Campaign deleted', 'Could not delete the campaign'),
+        this.apiNotificationService.notify('Campaign deleted', 'Campaign could not be deleted'),
       );
   }
 }

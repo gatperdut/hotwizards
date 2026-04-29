@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { form, minLength } from '@angular/forms/signals';
+import { form, FormRoot, minLength } from '@angular/forms/signals';
 import { HwCampaign, HwUser } from '@hw/shared';
-import { map } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -29,6 +29,7 @@ export type CampaignInviteDialogResult = boolean;
     DialogActionsDirective,
     ButtonComponent,
     SelectComponent,
+    FormRoot,
   ],
   templateUrl: './campaign-invite-dialog.component.html',
   styleUrl: './campaign-invite-dialog.component.css',
@@ -41,9 +42,29 @@ export class CampaignInviteDialogComponent {
   private campaignsApiService = inject(CampaignsApiService);
 
   public model = signal<HwUser[]>([]);
-  public form = form(this.model, (schemaPath) => {
-    minLength(schemaPath, 1);
-  });
+  public form = form(
+    this.model,
+    (schemaPath) => {
+      minLength(schemaPath, 1);
+    },
+    {
+      submission: {
+        action: async () => {
+          const result = await firstValueFrom(
+            this.campaignsApiService.invite(this.data.campaign.id, {
+              userIds: this.model().map((user) => user.id),
+            }),
+          );
+
+          if (Array.isArray(result) && result.every((n) => typeof n === 'number')) {
+            this.dialogRef.close();
+          }
+
+          return { kind: 'serverError', message: 'Invitations could not be sent' };
+        },
+      },
+    },
+  );
   public searchModel = signal('');
   public trackFn = (user: HwUser): number => {
     return user.id;
@@ -65,14 +86,4 @@ export class CampaignInviteDialogComponent {
   });
 
   public options = computed(() => this.resource.value() || []);
-
-  public invite(): void {
-    this.campaignsApiService
-      .invite(this.data.campaign.id, { userIds: this.model().map((user) => user.id) })
-      .subscribe({
-        next: () => {
-          this.dialogRef.close();
-        },
-      });
-  }
 }

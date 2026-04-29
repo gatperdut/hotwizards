@@ -1,5 +1,5 @@
-<app-dialog sizeClass="max-w-md">
-  <form>
+<form [formRoot]="form">
+  <app-dialog sizeClass="max-w-md">
     <ng-template appDialogTitle>
       <div class="typ-h2">Join campaign</div>
     </ng-template>
@@ -57,9 +57,8 @@
       <app-button
         label="Join"
         type="submit"
-        (click)="accept()"
-        [disabled]="form().invalid()"
+        [disabled]="form().invalid() || form().pending() || form().submitting()"
       ></app-button>
     </ng-template>
-  </form>
-</app-dialog>
+  </app-dialog>
+</form>
