@@ -92,12 +92,22 @@ export class CampaignsComponent {
         tap((response) => {
           this.meta.set(response.meta);
           this.pages.set(response.meta.pages);
+          this.campaignsToAdd.set([]);
+          this.campaignsToRemove.set([]);
         }),
         map((response) => response.items),
       ),
   });
 
-  public campaigns = computed(() => this.resource.value() ?? []);
+  public campaigns = computed(() =>
+    [...this.campaignsToAdd(), ...(this.resource.value() ?? [])].filter(
+      (campaign) => !this.campaignsToRemove().includes(campaign.id),
+    ),
+  );
+
+  public campaignsToAdd = signal<HwCampaign[]>([]);
+
+  public campaignsToRemove = signal<number[]>([]);
 
   public loading = computed(() => this.resource.isLoading());
 
@@ -118,9 +128,13 @@ export class CampaignsComponent {
 
   private listen(): void {
     this.socket.on('downCreateCampaign', (campaignId) => {
-      console.log('campaign created', campaignId);
+      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+        this.campaignsToAdd.update((prev) => [campaign, ...prev]);
+      });
     });
 
-    this.socket.on('downDeleteCampaign', (campaignId) => {});
+    this.socket.on('downDeleteCampaign', (campaignId) => {
+      this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
+    });
   }
 }
