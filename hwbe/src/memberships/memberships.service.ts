@@ -1,10 +1,14 @@
 import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { MembershipsGateway } from './memberships.gateway.js';
 
 @Injectable()
 export class MembershipsService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private membershipsGateway: MembershipsGateway,
+  ) {}
 
   public async create(campaignId: number, masterId: number, userIds: number[]): Promise<number[]> {
     if (userIds.includes(masterId)) {
@@ -38,6 +42,11 @@ export class MembershipsService {
         status: 'PENDING',
       })),
     });
+
+    this.membershipsGateway.handleDownCreateMembership(campaignId, [
+      masterId,
+      ...memberships.map((m) => m.userId),
+    ]);
 
     return memberships.map((membership) => membership.id);
   }

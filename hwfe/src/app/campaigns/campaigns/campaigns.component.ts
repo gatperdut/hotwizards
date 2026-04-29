@@ -7,6 +7,7 @@ import {
   effect,
   inject,
   signal,
+  untracked,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form, SchemaPath } from '@angular/forms/signals';
@@ -17,6 +18,8 @@ import {
   CampaignsUpstream,
   HwCampaign,
   HwCampaignSearchDto,
+  MembershipsDownstream,
+  MembershipsUpstream,
   PaginationMeta,
 } from '@hw/shared';
 import { map, tap } from 'rxjs';
@@ -53,12 +56,15 @@ export class CampaignsComponent {
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
 
-  private socket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
 
   constructor() {
-    this.socket = this.socketService.socket('campaigns', this.destroyRef);
+    this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
+    this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
 
-    this.listen();
+    this.campaignsListen();
+    this.membershipsListen();
 
     effect(() => {
       this.model();
@@ -92,22 +98,32 @@ export class CampaignsComponent {
         tap((response) => {
           this.meta.set(response.meta);
           this.pages.set(response.meta.pages);
-          this.campaignsToAdd.set([]);
-          this.campaignsToRemove.set([]);
         }),
         map((response) => response.items),
       ),
   });
 
-  public campaigns = computed(() =>
-    [...this.campaignsToAdd(), ...(this.resource.value() ?? [])].filter(
-      (campaign) => !this.campaignsToRemove().includes(campaign.id),
-    ),
-  );
+  public campaigns = computed(() => {
+    const updateMap = new Map(this.campaignsToUpdate().map((c) => [c.id, c]));
 
-  public campaignsToAdd = signal<HwCampaign[]>([]);
+    const result = [...this.campaignsToAdd(), ...(this.resource.value() ?? [])]
+      .filter((campaign) => !this.campaignsToRemove().includes(campaign.id))
+      .map((campaign) => updateMap.get(campaign.id) ?? campaign);
 
-  public campaignsToRemove = signal<number[]>([]);
+    untracked(() => {
+      this.campaignsToAdd.set([]);
+      this.campaignsToRemove.set([]);
+      this.campaignsToUpdate.set([]);
+    });
+
+    return result;
+  });
+
+  public campaignIds = computed(() => this.campaigns().map((c) => c.id));
+
+  private campaignsToAdd = signal<HwCampaign[]>([]);
+  private campaignsToRemove = signal<number[]>([]);
+  private campaignsToUpdate = signal<HwCampaign[]>([]);
 
   public loading = computed(() => this.resource.isLoading());
 
@@ -126,15 +142,49 @@ export class CampaignsComponent {
     void this.dialogService.open(dialog, { dto: { name: '', aoo: false, movement: 'REGULAR' } });
   }
 
-  private listen(): void {
-    this.socket.on('downCreateCampaign', (campaignId) => {
+  private campaignsListen(): void {
+    this.campaignsSocket.on('downCreateCampaign', (campaignId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        this.campaignsToAdd.update((prev) => [campaign, ...prev]);
+        this.campaignsToAdd.update((prev) => [
+          campaign,
+          ...prev.filter((c) => c.id !== campaignId),
+        ]);
       });
     });
 
-    this.socket.on('downDeleteCampaign', (campaignId) => {
-      this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
+    this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
+      this.campaignsToRemove.update((prev) => [
+        campaignId,
+        ...prev.filter((id) => id !== campaignId),
+      ]);
     });
+  }
+
+  private membershipsListen(): void {
+    this.membershipsSocket.on('downCreateMembership', (campaignId) => {
+      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+        if (this.campaignIds().includes(campaignId)) {
+          this.campaignsToUpdate.update((prev) => [
+            campaign,
+            ...prev.filter((c) => c.id !== campaignId),
+          ]);
+        } else {
+          this.campaignsToAdd.update((prev) => [
+            campaign,
+            ...prev.filter((c) => c.id !== campaignId),
+          ]);
+        }
+      });
+    });
+
+    // this.membershipsSocket.on('downDeleteMembership', (campaignId) => {
+    //   if (!this.campaignIds().includes(campaignId)) {
+    //     return;
+    //   }
+
+    //   this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+    //     this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+    //   });
+    // });
   }
 }

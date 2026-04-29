@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { MembershipActiveGuard } from './guards/membership-active.guard.js';
 import { MembershipMasterGuard } from './guards/membership-master.guard.js';
@@ -6,6 +7,7 @@ import { MembershipOwnerOrMasterGuard } from './guards/membership-owner-or-maste
 import { MembershipOwnerGuard } from './guards/membership-owner.guard.js';
 import { MembershipPendingGuard } from './guards/membership-pending.guard.js';
 import { MembershipsController } from './memberships.controller.js';
+import { MembershipsGateway } from './memberships.gateway.js';
 import { MembershipsService } from './memberships.service.js';
 
 @Module({
@@ -17,8 +19,9 @@ import { MembershipsService } from './memberships.service.js';
     MembershipOwnerOrMasterGuard,
     MembershipActiveGuard,
     MembershipPendingGuard,
+    MembershipsGateway,
   ],
-  imports: [PrismaModule],
+  imports: [PrismaModule, AuthModule],
   exports: [MembershipsService],
 })
 export class MembershipsModule {}
