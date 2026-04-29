@@ -19,7 +19,6 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
   @WebSocketServer() private readonly server: Server<PresenceUpstream, PresenceDownstream>;
 
   public readonly online = new Map<number, HwUser>();
-  public readonly sessions = new Map<number, Set<Socket>>();
 
   constructor(private readonly authService: AuthService) {}
 
@@ -28,14 +27,10 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
   }
 
   @SubscribeMessage<keyof PresenceUpstream>('upOnline')
-  public handleUpOnline(@ConnectedSocket() socket: PresenceSocket): void {
+  public async handleUpOnline(@ConnectedSocket() socket: PresenceSocket): Promise<void> {
     const userId = socket.user.id;
 
-    if (!this.sessions.has(userId)) {
-      this.sessions.set(userId, new Set());
-    }
-
-    this.sessions.get(userId)?.add(socket);
+    await socket.join(`user:${userId}`);
 
     if (!this.online.has(userId)) {
       this.online.set(userId, socket.user);
@@ -45,18 +40,14 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
     socket.emit('downOnlineList', [...this.online.values()]);
   }
 
-  public handleDisconnect(socket: PresenceSocket): void {
+  public async handleDisconnect(socket: PresenceSocket): Promise<void> {
     const userId = socket.user.id;
-    const userSessions = this.sessions.get(userId);
 
-    if (!userSessions) {
-      return;
-    }
+    const room = this.server.in(`user:${userId}`);
 
-    userSessions.delete(socket);
+    const sockets = await room.fetchSockets();
 
-    if (!userSessions.size) {
-      this.sessions.delete(userId);
+    if (!sockets.length) {
       this.online.delete(userId);
       this.server.emit('downOffline', socket.user);
     }
