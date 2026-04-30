@@ -31,4 +31,14 @@ export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
 
     this.server.to(rooms).emit('downCreateMembership', campaignId);
   }
+
+  public handleDownDeleteMembership(
+    campaignId: number,
+    membershipId: number,
+    playerIds: number[],
+  ): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downDeleteMembership', campaignId, membershipId);
+  }
 }

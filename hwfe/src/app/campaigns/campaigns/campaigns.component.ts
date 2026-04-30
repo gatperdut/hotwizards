@@ -177,14 +177,23 @@ export class CampaignsComponent {
       });
     });
 
-    // this.membershipsSocket.on('downDeleteMembership', (campaignId) => {
-    //   if (!this.campaignIds().includes(campaignId)) {
-    //     return;
-    //   }
+    this.membershipsSocket.on('downDeleteMembership', (campaignId, membershipId) => {
+      const campaign = this.campaigns().find((c) => c.id === campaignId);
 
-    //   this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-    //     this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
-    //   });
-    // });
+      if (!campaign) {
+        return;
+      }
+
+      const mine = !!campaign.memberships.find((m) => m.id === membershipId)?.me;
+
+      if (mine) {
+        this.campaignsToRemove.update((prev) => [campaign.id, ...prev]);
+        return;
+      }
+
+      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+        this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+      });
+    });
   }
 }

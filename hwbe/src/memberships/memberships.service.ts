@@ -1,5 +1,5 @@
 import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { MembershipsGateway } from './memberships.gateway.js';
 
@@ -35,7 +35,7 @@ export class MembershipsService {
       );
     }
 
-    const memberships = await this.prismaService.membership.createManyAndReturn({
+    await this.prismaService.membership.createManyAndReturn({
       data: userIds.map((userId) => ({
         userId: userId,
         campaignId: campaignId,
@@ -43,12 +43,21 @@ export class MembershipsService {
       })),
     });
 
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: campaignId },
+      include: { memberships: true },
+    });
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign not found');
+    }
+
     this.membershipsGateway.handleDownCreateMembership(campaignId, [
       masterId,
-      ...memberships.map((m) => m.userId),
+      ...campaign.memberships.map((m) => m.userId),
     ]);
 
-    return memberships.map((membership) => membership.id);
+    return campaign.memberships.map((membership) => membership.id);
   }
 
   public async accept(
@@ -76,10 +85,24 @@ export class MembershipsService {
     });
   }
 
-  public async delete(membershipId: number): Promise<number> {
+  public async delete(campaignId: number, membershipId: number): Promise<number> {
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: campaignId },
+      include: { memberships: true },
+    });
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign not found');
+    }
+
     const membership = await this.prismaService.membership.delete({
       where: { id: membershipId },
     });
+
+    this.membershipsGateway.handleDownDeleteMembership(campaign.id, membershipId, [
+      campaign.masterId,
+      ...campaign!.memberships.map((m) => m.userId),
+    ]);
 
     return membership.id;
   }

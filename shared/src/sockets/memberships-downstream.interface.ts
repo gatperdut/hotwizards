@@ -1,4 +1,4 @@
 export interface MembershipsDownstream {
-  downCreateMembership: (id: number) => void;
-  downDeleteMembership: (id: number) => void;
+  downCreateMembership: (campaignId: number) => void;
+  downDeleteMembership: (campaignId: number, membershipId: number) => void;
 }

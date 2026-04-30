@@ -1,4 +1,4 @@
 export interface CampaignsDownstream {
-  downCreateCampaign: (id: number) => void;
-  downDeleteCampaign: (id: number) => void;
+  downCreateCampaign: (campaignId: number) => void;
+  downDeleteCampaign: (campaignId: number) => void;
 }
