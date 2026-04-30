@@ -86,7 +86,11 @@ export class CampaignComponent {
         dialogRef.afterClosed$
           .pipe(
             filter((confirmed) => !!confirmed),
-            switchMap(() => this.membershipsApiService.delete(membership.id)),
+            switchMap(() =>
+              self
+                ? this.membershipsApiService.abandon(membership.id)
+                : this.membershipsApiService.kickout(membership.id),
+            ),
           )
           .subscribe();
       });

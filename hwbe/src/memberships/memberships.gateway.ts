@@ -28,22 +28,33 @@ export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
 
   public handleDownCreateMembership(
     campaignId: number,
-    userIds: number[],
+    membershipIds: number[],
     playerIds: number[],
   ): void {
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downCreateMembership', campaignId, userIds);
+    this.server.to(rooms).emit('downCreateMembership', campaignId, membershipIds);
   }
 
-  public handleDownDeleteMembership(
+  public handleDownAbandonMembership(
     campaignId: number,
-    membershipId: number,
+    memberName: string,
     playerIds: number[],
   ): void {
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downDeleteMembership', campaignId, membershipId);
+    this.server.to(rooms).emit('downAbandonMembership', campaignId, memberName);
+  }
+
+  public handleDownKickoutMembership(
+    campaignId: number,
+    campaignName: string,
+    masterHandle: string,
+    playerIds: number[],
+  ): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downKickoutMembership', campaignId, campaignName, masterHandle);
   }
 
   public handleDownUpdateMembership(

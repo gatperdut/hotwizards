@@ -35,7 +35,7 @@ export class MembershipsService {
       );
     }
 
-    await this.prismaService.membership.createManyAndReturn({
+    const memberships = await this.prismaService.membership.createManyAndReturn({
       data: userIds.map((userId) => ({
         userId: userId,
         campaignId: campaignId,
@@ -52,12 +52,14 @@ export class MembershipsService {
       throw new NotFoundException('Campaign not found');
     }
 
-    this.membershipsGateway.handleDownCreateMembership(campaignId, userIds, [
+    const membershipIds = memberships.map((membership) => membership.id);
+
+    this.membershipsGateway.handleDownCreateMembership(campaignId, membershipIds, [
       masterId,
       ...campaign.memberships.map((m) => m.userId),
     ]);
 
-    return campaign.memberships.map((membership) => membership.id);
+    return membershipIds;
   }
 
   public async accept(
@@ -106,10 +108,10 @@ export class MembershipsService {
     return character.id;
   }
 
-  public async delete(campaignId: number, membershipId: number): Promise<number> {
+  public async delete(campaignId: number, membershipId: number, self: boolean): Promise<number> {
     const campaign = await this.prismaService.campaign.findUnique({
       where: { id: campaignId },
-      include: { memberships: true },
+      include: { master: true, memberships: true },
     });
 
     if (!campaign) {
@@ -118,12 +120,27 @@ export class MembershipsService {
 
     const membership = await this.prismaService.membership.delete({
       where: { id: membershipId },
+      include: {
+        user: true,
+      },
     });
 
-    this.membershipsGateway.handleDownDeleteMembership(campaign.id, membershipId, [
-      campaign.masterId,
-      ...campaign!.memberships.map((m) => m.userId),
-    ]);
+    const playerIds = [campaign.masterId, ...campaign!.memberships.map((m) => m.userId)];
+
+    if (self) {
+      this.membershipsGateway.handleDownAbandonMembership(
+        campaign.id,
+        membership.user.handle,
+        playerIds,
+      );
+    } else {
+      this.membershipsGateway.handleDownKickoutMembership(
+        campaign.id,
+        campaign.name,
+        campaign.master.handle,
+        playerIds,
+      );
+    }
 
     return membership.id;
   }
