@@ -32,6 +32,8 @@ model Campaign {
   memberships Membership[]
 
   ruleset Ruleset?
+
+  adventure Adventure?
 }
 
 enum Movement {
@@ -75,8 +77,9 @@ model Membership {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   campaignId Int
-  campaign   Campaign   @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  character  Character?
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  character Character?
 
   @@unique([userId, campaignId])
 }
@@ -89,4 +92,24 @@ model Character {
 
   membershipId Int        @unique
   membership   Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+}
+
+model AdventureTemplate {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  adventures Adventure[]
+}
+
+model Adventure {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  templateId Int
+  template   AdventureTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  campaignId Int?      @unique
+  campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  turn Int @default(0)
 }
