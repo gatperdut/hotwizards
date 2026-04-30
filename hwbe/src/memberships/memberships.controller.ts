@@ -24,6 +24,6 @@ export class MembershipsController {
   @Delete(':membershipId')
   @UseGuards(MembershipGuard, MembershipOwnerOrMasterGuard)
   public delete(@CurrentMembership() membership: Membership): Promise<number> {
-    return this.membershipsService.delete(membership.id);
+    return this.membershipsService.delete(membership.campaignId, membership.id);
   }
 }
