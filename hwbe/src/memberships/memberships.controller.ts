@@ -2,7 +2,7 @@ import { Membership } from '@hw/prismagen/client';
 import { HwMembershipAcceptDto } from '@hw/shared';
 import { Body, Controller, Delete, Patch, UseGuards } from '@nestjs/common';
 import { CurrentMembership } from './current-membership.decorator.js';
-import { MembershipOwnerOrMasterGuard } from './guards/membership-owner-or-master.guard.js';
+import { MembershipMasterGuard } from './guards/membership-master.guard.js';
 import { MembershipOwnerGuard } from './guards/membership-owner.guard.js';
 import { MembershipPendingGuard } from './guards/membership-pending.guard.js';
 import { MembershipGuard } from './guards/membership.guard.js';
@@ -22,8 +22,14 @@ export class MembershipsController {
   }
 
   @Delete(':membershipId')
-  @UseGuards(MembershipGuard, MembershipOwnerOrMasterGuard)
-  public delete(@CurrentMembership() membership: Membership): Promise<number> {
-    return this.membershipsService.delete(membership.campaignId, membership.id);
+  @UseGuards(MembershipGuard, MembershipMasterGuard)
+  public kickout(@CurrentMembership() membership: Membership): Promise<number> {
+    return this.membershipsService.delete(membership.campaignId, membership.id, false);
+  }
+
+  @Delete(':membershipId/self')
+  @UseGuards(MembershipGuard, MembershipOwnerGuard)
+  public abandon(@CurrentMembership() membership: Membership): Promise<number> {
+    return this.membershipsService.delete(membership.campaignId, membership.id, true);
   }
 }

@@ -20,7 +20,7 @@ export class MembershipsApiService {
       );
   }
 
-  public delete(id: number): Observable<number> {
+  public kickout(id: number): Observable<number> {
     return this.httpClient
       .delete<number>(`/api/memberships/${id}`, {})
       .pipe(
@@ -29,5 +29,11 @@ export class MembershipsApiService {
           'Could not remove from campaign',
         ),
       );
+  }
+
+  public abandon(id: number): Observable<number> {
+    return this.httpClient
+      .delete<number>(`/api/memberships/${id}/self`, {})
+      .pipe(this.apiNotificationService.notify('Campaign abandoned', 'Could not abandon campaign'));
   }
 }

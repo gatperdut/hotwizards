@@ -22,7 +22,7 @@ import {
   MembershipsUpstream,
   PaginationMeta,
 } from '@hw/shared';
-import { map, tap } from 'rxjs';
+import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { AuthService } from '../../auth/services/auth.service';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -161,61 +161,84 @@ export class CampaignsComponent {
     });
 
     this.campaignsSocket.on('downUpdateCampaign', (campaignId) => {
-      if (!this.campaignIds().includes(campaignId)) {
-        return;
-      }
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+        if (!this.campaignIds().includes(campaignId)) {
+          return;
+        }
         this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
       });
     });
   }
 
   private membershipsListen(): void {
-    this.membershipsSocket.on('downCreateMembership', (campaignId, userIds) => {
-      if (userIds.includes(this.authService.userId() as number)) {
-        this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-          this.campaignsToAdd.update((prev) => [campaign, ...prev]);
-        });
-
-        return;
-      }
-
-      if (this.campaignIds().includes(campaignId)) {
-        this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-          this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
-        });
-      }
-    });
-
-    this.membershipsSocket.on('downDeleteMembership', (campaignId, membershipId) => {
-      const campaign = this.campaigns().find((c) => c.id === campaignId);
-
-      if (!campaign) {
-        return;
-      }
-
-      const membership = campaign.memberships.find((m) => m.id === membershipId);
-
-      const isMyMembership = !!membership?.me;
-
-      if (isMyMembership) {
-        this.campaignsToRemove.update((prev) => [campaign.id, ...prev]);
-        return;
-      }
-
+    this.membershipsSocket.on('downCreateMembership', (campaignId, membershipIds) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+        const memberships = campaign.memberships.filter((m) => membershipIds.includes(m.id));
 
-        if (campaign.master.me) {
-          if (!membership) {
+        const oneIsMine = !!memberships.filter((m) => m.me).length;
+
+        if (oneIsMine) {
+          this.campaignsToAdd.update((prev) => [campaign, ...prev]);
+          this.toastService.show({
+            message: `${campaign.master.handle} has invited you to ${campaign.name}`,
+          });
+        } else {
+          if (!this.campaignIds().includes(campaignId)) {
             return;
           }
-
-          this.toastService.show({
-            message: `${membership.user.handle} has abandoned your campaign ${campaign.name}`,
-          });
+          this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
         }
       });
+    });
+
+    this.membershipsSocket.on('downKickoutMembership', (campaignId, campaignName, masterHandle) => {
+      this.campaignsApiService
+        .get(campaignId)
+        .pipe(
+          catchError(() => {
+            this.toastService.show({
+              message: `${masterHandle} has kicked you out of ${campaignName}`,
+            });
+
+            if (this.campaignIds().includes(campaignId)) {
+              this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
+            }
+
+            return EMPTY;
+          }),
+        )
+        .subscribe((campaign) => {
+          if (this.campaignIds().includes(campaignId)) {
+            this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+          }
+        });
+    });
+
+    this.membershipsSocket.on('downAbandonMembership', (campaignId, memberHandle) => {
+      this.campaignsApiService
+        .get(campaignId)
+        .pipe(
+          catchError(() => {
+            if (this.campaignIds().includes(campaignId)) {
+              if (this.campaignIds().includes(campaignId)) {
+                this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
+              }
+            }
+
+            return EMPTY;
+          }),
+        )
+        .subscribe((campaign) => {
+          if (this.campaignIds().includes(campaignId)) {
+            this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+          }
+
+          if (campaign.master.me) {
+            this.toastService.show({
+              message: `${memberHandle} has abandoned ${campaign.name}`,
+            });
+          }
+        });
     });
 
     this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
