@@ -24,6 +24,7 @@ import {
 } from '@hw/shared';
 import { map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
+import { AuthService } from '../../auth/services/auth.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
@@ -52,6 +53,7 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
 export class CampaignsComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
+  private authService = inject(AuthService);
   public presenceService = inject(PresenceService);
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
@@ -161,20 +163,26 @@ export class CampaignsComponent {
   }
 
   private membershipsListen(): void {
-    this.membershipsSocket.on('downCreateMembership', (campaignId) => {
-      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        if (this.campaignIds().includes(campaignId)) {
-          this.campaignsToUpdate.update((prev) => [
-            campaign,
-            ...prev.filter((c) => c.id !== campaignId),
-          ]);
-        } else {
+    this.membershipsSocket.on('downCreateMembership', (campaignId, userIds) => {
+      if (userIds.includes(this.authService.userId() as number)) {
+        this.campaignsApiService.get(campaignId).subscribe((campaign) => {
           this.campaignsToAdd.update((prev) => [
             campaign,
             ...prev.filter((c) => c.id !== campaignId),
           ]);
-        }
-      });
+        });
+
+        return;
+      }
+
+      if (this.campaignIds().includes(campaignId)) {
+        this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+          this.campaignsToUpdate.update((prev) => [
+            campaign,
+            ...prev.filter((c) => c.id !== campaignId),
+          ]);
+        });
+      }
     });
 
     this.membershipsSocket.on('downDeleteMembership', (campaignId, membershipId) => {
@@ -195,5 +203,7 @@ export class CampaignsComponent {
         this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
       });
     });
+
+    this.membershipsSocket.on('downUpdateMembership', (campaignId) => {});
   }
 }
