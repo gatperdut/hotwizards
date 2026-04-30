@@ -2,7 +2,6 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { HwCampaign, HwMembership } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
-import { AuthService } from '../../auth/services/auth.service';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import {
@@ -38,7 +37,6 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CampaignComponent {
-  private authService = inject(AuthService);
   private dialogService = inject(DialogService);
   public klassesService = inject(KlassesService);
   private membershipsApiService = inject(MembershipsApiService);
@@ -46,12 +44,7 @@ export class CampaignComponent {
 
   public campaign = input.required<HwCampaign>();
 
-  public membership = computed(
-    () =>
-      this.campaign().memberships.find(
-        (m) => m.user.id === this.authService.userId(),
-      ) as HwMembership,
-  );
+  public membership = computed(() => this.campaign().memberships.find((m) => m.me) as HwMembership);
 
   public master = computed(() => this.campaign().master);
 
@@ -63,19 +56,11 @@ export class CampaignComponent {
     this.campaign().memberships.filter((membership) => membership.status === 'PENDING'),
   );
 
-  public isMaster = computed(() => this.master().id === this.authService.user()!.id);
+  public isMaster = computed(() => this.master().me);
 
-  public isPending = computed(() =>
-    this.pendingMemberships()
-      .map((m) => m.user.id)
-      .includes(this.authService.user()!.id),
-  );
+  public isPending = computed(() => !!this.pendingMemberships().find((m) => m.me));
 
-  public isActive = computed(() =>
-    this.activeMemberships()
-      .map((m) => m.user.id)
-      .includes(this.authService.user()!.id),
-  );
+  public isActive = computed(() => !!this.activeMemberships().find((m) => m.me));
 
   public toggleMembership(membership: HwMembership, self: boolean): void {
     const dialog: LazyDialog<
@@ -172,9 +157,7 @@ export class CampaignComponent {
             ),
         };
 
-        const membership = this.campaign().memberships.find(
-          (m) => m.user.id === this.authService.userId(),
-        ) as HwMembership;
+        const membership = this.campaign().memberships.find((m) => m.me) as HwMembership;
 
         void this.dialogService.open(dialog, {
           membershipId: membership.id,
