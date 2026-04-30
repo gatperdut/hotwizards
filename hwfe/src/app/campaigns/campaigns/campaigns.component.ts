@@ -28,6 +28,7 @@ import { AuthService } from '../../auth/services/auth.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
+import { ToastService } from '../../ui/toast/services/toast.service';
 import {
   CampaignEditorDialogComponent,
   CampaignEditorDialogData,
@@ -57,6 +58,7 @@ export class CampaignsComponent {
   public presenceService = inject(PresenceService);
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
@@ -147,18 +149,24 @@ export class CampaignsComponent {
   private campaignsListen(): void {
     this.campaignsSocket.on('downCreateCampaign', (campaignId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        this.campaignsToAdd.update((prev) => [
-          campaign,
-          ...prev.filter((c) => c.id !== campaignId),
-        ]);
+        this.campaignsToAdd.update((prev) => [campaign, ...prev]);
       });
     });
 
     this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
-      this.campaignsToRemove.update((prev) => [
-        campaignId,
-        ...prev.filter((id) => id !== campaignId),
-      ]);
+      if (!this.campaignIds().includes(campaignId)) {
+        return;
+      }
+      this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
+    });
+
+    this.campaignsSocket.on('downUpdateCampaign', (campaignId) => {
+      if (!this.campaignIds().includes(campaignId)) {
+        return;
+      }
+      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+        this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+      });
     });
   }
 
@@ -166,10 +174,7 @@ export class CampaignsComponent {
     this.membershipsSocket.on('downCreateMembership', (campaignId, userIds) => {
       if (userIds.includes(this.authService.userId() as number)) {
         this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-          this.campaignsToAdd.update((prev) => [
-            campaign,
-            ...prev.filter((c) => c.id !== campaignId),
-          ]);
+          this.campaignsToAdd.update((prev) => [campaign, ...prev]);
         });
 
         return;
@@ -177,10 +182,7 @@ export class CampaignsComponent {
 
       if (this.campaignIds().includes(campaignId)) {
         this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-          this.campaignsToUpdate.update((prev) => [
-            campaign,
-            ...prev.filter((c) => c.id !== campaignId),
-          ]);
+          this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
         });
       }
     });
@@ -192,18 +194,50 @@ export class CampaignsComponent {
         return;
       }
 
-      const mine = !!campaign.memberships.find((m) => m.id === membershipId)?.me;
+      const membership = campaign.memberships.find((m) => m.id === membershipId);
 
-      if (mine) {
+      const isMyMembership = !!membership?.me;
+
+      if (isMyMembership) {
         this.campaignsToRemove.update((prev) => [campaign.id, ...prev]);
         return;
       }
 
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
         this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+
+        if (campaign.master.me) {
+          if (!membership) {
+            return;
+          }
+
+          this.toastService.show({
+            message: `${membership.user.handle} has abandoned your campaign ${campaign.name}`,
+          });
+        }
       });
     });
 
-    this.membershipsSocket.on('downUpdateMembership', (campaignId) => {});
+    this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
+      if (!this.campaignIds().includes(campaignId)) {
+        return;
+      }
+
+      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+        this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+
+        if (campaign.master.me) {
+          const membership = campaign.memberships.find((m) => m.id === membershipId);
+
+          if (!membership) {
+            return;
+          }
+
+          this.toastService.show({
+            message: `${membership.user.handle} has joined your campaign ${campaign.name}`,
+          });
+        }
+      });
+    });
   }
 }

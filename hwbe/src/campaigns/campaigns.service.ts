@@ -143,7 +143,15 @@ export class CampaignsService {
     const campaign = await this.prismaService.campaign.update({
       where: { id: campaignId },
       data: { name: name, ruleset: { update: { aoo: aoo, movement: movement } } },
+      include: {
+        memberships: true,
+      },
     });
+
+    this.campaignsGateway.handleDownUpdateCampaign(campaign.id, [
+      campaign.masterId,
+      ...campaign.memberships.map((m) => m.userId),
+    ]);
 
     return campaign.id;
   }
