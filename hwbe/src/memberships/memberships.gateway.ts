@@ -26,10 +26,14 @@ export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
     await socket.join(`user:${socket.user.id}`);
   }
 
-  public handleDownCreateMembership(campaignId: number, playerIds: number[]): void {
+  public handleDownCreateMembership(
+    campaignId: number,
+    userIds: number[],
+    playerIds: number[],
+  ): void {
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downCreateMembership', campaignId);
+    this.server.to(rooms).emit('downCreateMembership', campaignId, userIds);
   }
 
   public handleDownDeleteMembership(
@@ -40,5 +44,11 @@ export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
     const rooms = playerIds.map((id) => `user:${id}`);
 
     this.server.to(rooms).emit('downDeleteMembership', campaignId, membershipId);
+  }
+
+  public handleDownUpdateMembership(campaignId: number, playerIds: number[]): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downUpdateMembership', campaignId);
   }
 }

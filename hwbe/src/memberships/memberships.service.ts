@@ -1,4 +1,4 @@
-import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
+import { Character, Gender, Klass, Membership, MembershipStatus } from '@hw/prismagen/client';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { MembershipsGateway } from './memberships.gateway.js';
@@ -52,7 +52,7 @@ export class MembershipsService {
       throw new NotFoundException('Campaign not found');
     }
 
-    this.membershipsGateway.handleDownCreateMembership(campaignId, [
+    this.membershipsGateway.handleDownCreateMembership(campaignId, userIds, [
       masterId,
       ...campaign.memberships.map((m) => m.userId),
     ]);
@@ -66,13 +66,16 @@ export class MembershipsService {
     gender: Gender,
     name: string,
   ): Promise<number> {
-    return await this.prismaService.$transaction(async (tx) => {
-      const membership = await tx.membership.update({
+    let membership: Membership | undefined;
+    let character: Character | undefined;
+
+    await this.prismaService.$transaction(async (tx) => {
+      membership = await tx.membership.update({
         where: { id: membershipId },
         data: { status: MembershipStatus.ACTIVE },
       });
 
-      const character = await tx.character.create({
+      character = await tx.character.create({
         data: {
           name: name,
           klass: klass,
@@ -80,9 +83,27 @@ export class MembershipsService {
           membershipId: membership.id,
         },
       });
-
-      return character.id;
     });
+
+    if (!membership || !character) {
+      throw new NotFoundException('Character could not be created');
+    }
+
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: membership.campaignId },
+      include: { memberships: true },
+    });
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign could not be found');
+    }
+
+    this.membershipsGateway.handleDownUpdateMembership(campaign.id, [
+      campaign.masterId,
+      ...campaign!.memberships.map((m) => m.userId),
+    ]);
+
+    return character.id;
   }
 
   public async delete(campaignId: number, membershipId: number): Promise<number> {
