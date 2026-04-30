@@ -35,4 +35,10 @@ export class CampaignsGateway implements OnGatewayInit, OnGatewayConnection {
 
     this.server.to(rooms).emit('downDeleteCampaign', campaignId);
   }
+
+  public handleDownUpdateCampaign(campaignId: number, playerIds: number[]): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downUpdateCampaign', campaignId);
+  }
 }

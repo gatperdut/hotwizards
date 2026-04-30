@@ -98,7 +98,7 @@ export class MembershipsService {
       throw new NotFoundException('Campaign could not be found');
     }
 
-    this.membershipsGateway.handleDownUpdateMembership(campaign.id, [
+    this.membershipsGateway.handleDownUpdateMembership(campaign.id, membershipId, [
       campaign.masterId,
       ...campaign!.memberships.map((m) => m.userId),
     ]);
