@@ -1,6 +1,8 @@
 import { PrismaClient } from '@hw/prismagen/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
+import { seedAdventureTemplates } from './seeds/adventure-templates.seed.js';
+import { seedAdventures } from './seeds/adventures.seed.js';
 import { seedCampaigns } from './seeds/campaigns.seed.js';
 import { seedUsers } from './seeds/users.seed.js';
 
@@ -8,22 +10,26 @@ const connectionString: string = process.env['HWBE_DB_URL'] as string;
 
 const adapter: PrismaPg = new PrismaPg({ connectionString: connectionString });
 
-const prisma = new PrismaClient({ adapter: adapter });
+const prismaClient = new PrismaClient({ adapter: adapter });
 
 async function main(): Promise<void> {
-  await seedUsers(prisma);
+  await seedUsers(prismaClient);
 
-  await seedCampaigns(prisma);
+  await seedAdventureTemplates(prismaClient);
+
+  await seedCampaigns(prismaClient);
+
+  await seedAdventures(prismaClient);
 }
 
 main()
   .then(async (): Promise<void> => {
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
   })
   .catch(async (e) => {
     console.error(e);
 
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
 
     process.exit(1);
   });
