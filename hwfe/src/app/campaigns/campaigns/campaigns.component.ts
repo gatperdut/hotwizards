@@ -7,7 +7,6 @@ import {
   effect,
   inject,
   signal,
-  untracked,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form, SchemaPath } from '@angular/forms/signals';
@@ -24,7 +23,6 @@ import {
 } from '@hw/shared';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { AuthService } from '../../auth/services/auth.service';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
@@ -54,7 +52,6 @@ import { CampaignsApiService } from '../services/campaigns-api.service';
 export class CampaignsComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
-  private authService = inject(AuthService);
   public presenceService = inject(PresenceService);
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
@@ -107,27 +104,7 @@ export class CampaignsComponent {
       ),
   });
 
-  public campaigns = computed(() => {
-    const updateMap = new Map(this.campaignsToUpdate().map((c) => [c.id, c]));
-
-    const result = [...this.campaignsToAdd(), ...(this.resource.value() ?? [])]
-      .filter((campaign) => !this.campaignsToRemove().includes(campaign.id))
-      .map((campaign) => updateMap.get(campaign.id) ?? campaign);
-
-    untracked(() => {
-      this.campaignsToAdd.set([]);
-      this.campaignsToRemove.set([]);
-      this.campaignsToUpdate.set([]);
-    });
-
-    return result;
-  });
-
-  public campaignIds = computed(() => this.campaigns().map((c) => c.id));
-
-  private campaignsToAdd = signal<HwCampaign[]>([]);
-  private campaignsToRemove = signal<number[]>([]);
-  private campaignsToUpdate = signal<HwCampaign[]>([]);
+  public campaigns = computed(() => this.resource.value() as HwCampaign[]);
 
   public loading = computed(() => this.resource.isLoading());
 
@@ -146,26 +123,35 @@ export class CampaignsComponent {
     void this.dialogService.open(dialog, { dto: { name: '', aoo: false, movement: 'REGULAR' } });
   }
 
+  private addToResource(campaign: HwCampaign): void {
+    this.resource.value.update((prev) => [campaign, ...(prev ?? [])]);
+  }
+
+  private updateResource(campaign: HwCampaign): void {
+    this.resource.value.update(
+      (prev) => prev?.map((c) => (c.id === campaign.id ? campaign : c)) ?? [],
+    );
+  }
+
+  private removeFromResource(campaignId: number): void {
+    this.resource.value.set(this.resource.value()?.filter((c) => c.id !== campaignId) ?? []);
+  }
+
   private campaignsListen(): void {
     this.campaignsSocket.on('downCreateCampaign', (campaignId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        this.campaignsToAdd.update((prev) => [campaign, ...prev]);
+        this.addToResource(campaign);
       });
     });
 
     this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
-      if (!this.campaignIds().includes(campaignId)) {
-        return;
-      }
-      this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
+      this.removeFromResource(campaignId);
+      this.resource.value.set(this.resource.value()?.filter((c) => c.id !== campaignId) ?? []);
     });
 
     this.campaignsSocket.on('downUpdateCampaign', (campaignId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        if (!this.campaignIds().includes(campaignId)) {
-          return;
-        }
-        this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+        this.updateResource(campaign);
       });
     });
   }
@@ -173,20 +159,17 @@ export class CampaignsComponent {
   private membershipsListen(): void {
     this.membershipsSocket.on('downCreateMembership', (campaignId, membershipIds) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        const memberships = campaign.memberships.filter((m) => membershipIds.includes(m.id));
+        const memberships = campaign.memberships.filter(
+          (m) => m.me && membershipIds.includes(m.id),
+        );
 
-        const oneIsMine = !!memberships.filter((m) => m.me).length;
-
-        if (oneIsMine) {
-          this.campaignsToAdd.update((prev) => [campaign, ...prev]);
+        if (memberships.length) {
+          this.addToResource(campaign);
           this.toastService.show({
             message: `${campaign.master.handle} has invited you to ${campaign.name}`,
           });
         } else {
-          if (!this.campaignIds().includes(campaignId)) {
-            return;
-          }
-          this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+          this.updateResource(campaign);
         }
       });
     });
@@ -200,17 +183,13 @@ export class CampaignsComponent {
               message: `${masterHandle} has kicked you out of ${campaignName}`,
             });
 
-            if (this.campaignIds().includes(campaignId)) {
-              this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
-            }
+            this.removeFromResource(campaignId);
 
             return EMPTY;
           }),
         )
         .subscribe((campaign) => {
-          if (this.campaignIds().includes(campaignId)) {
-            this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
-          }
+          this.updateResource(campaign);
         });
     });
 
@@ -219,19 +198,13 @@ export class CampaignsComponent {
         .get(campaignId)
         .pipe(
           catchError(() => {
-            if (this.campaignIds().includes(campaignId)) {
-              if (this.campaignIds().includes(campaignId)) {
-                this.campaignsToRemove.update((prev) => [campaignId, ...prev]);
-              }
-            }
+            this.removeFromResource(campaignId);
 
             return EMPTY;
           }),
         )
         .subscribe((campaign) => {
-          if (this.campaignIds().includes(campaignId)) {
-            this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
-          }
+          this.updateResource(campaign);
 
           if (campaign.master.me) {
             this.toastService.show({
@@ -242,12 +215,8 @@ export class CampaignsComponent {
     });
 
     this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
-      if (!this.campaignIds().includes(campaignId)) {
-        return;
-      }
-
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
-        this.campaignsToUpdate.update((prev) => [campaign, ...prev]);
+        this.updateResource(campaign);
 
         if (campaign.master.me) {
           const membership = campaign.memberships.find((m) => m.id === membershipId);
