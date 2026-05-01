@@ -1,7 +1,7 @@
 import { Membership } from '@hw/prismagen/client';
 import { HwMembershipAcceptDto } from '@hw/shared';
 import { Body, Controller, Delete, Patch, UseGuards } from '@nestjs/common';
-import { AdventureNotPresent } from '../adventures/adventure-not-present.guard.js';
+import { AdventureNotPresent } from '../adventures/guards/adventure-not-present.guard.js';
 import { CurrentMembership } from './current-membership.decorator.js';
 import { MembershipMasterGuard } from './guards/membership-master.guard.js';
 import { MembershipOwnerGuard } from './guards/membership-owner.guard.js';

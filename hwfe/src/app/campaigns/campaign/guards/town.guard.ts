@@ -1,13 +1,12 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { CanActivateFn, MaybeAsync, Router, UrlTree } from '@angular/router';
 import { CampaignService } from '../campaign.service.js';
 
-export const townGuard: CanActivateFn = (activatedRouteSnapshot): boolean | UrlTree => {
+export const townGuard: CanActivateFn = (): MaybeAsync<boolean | UrlTree> => {
   const campaignService = inject(CampaignService);
   const router = inject(Router);
-  const campaignId = activatedRouteSnapshot.paramMap.get('campaignId');
 
   return campaignService.campaign().adventure
-    ? router.createUrlTree(['home', 'campaigns', campaignId, 'board'])
+    ? router.createUrlTree(['home', 'campaigns', campaignService.campaign().id, 'board'])
     : true;
 };

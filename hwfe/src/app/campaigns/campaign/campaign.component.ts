@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { CampaignService } from './campaign.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-campaign',
@@ -9,11 +8,4 @@ import { CampaignService } from './campaign.service';
   styleUrl: './campaign.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CampaignComponent {
-  private activatedRoute = inject(ActivatedRoute);
-  private campaignService = inject(CampaignService);
-
-  constructor() {
-    this.campaignService.campaign.set(this.activatedRoute.snapshot.data['campaign']);
-  }
-}
+export class CampaignComponent {}

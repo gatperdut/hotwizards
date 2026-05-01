@@ -63,6 +63,10 @@ export const routes: Routes = [
               },
               {
                 path: 'campaigns/:campaignId',
+                loadComponent: () =>
+                  import('./campaigns/campaign/campaign.component').then(
+                    (m) => m.CampaignComponent,
+                  ),
                 providers: [CampaignService],
                 canActivate: [campaignGuard],
                 children: [
