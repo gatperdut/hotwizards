@@ -102,8 +102,7 @@ model AdventureTemplate {
 }
 
 model Adventure {
-  id   Int    @id @default(autoincrement())
-  name String
+  id Int @id @default(autoincrement())
 
   templateId Int
   template   AdventureTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)

@@ -1,46 +1,48 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Router } from '@angular/router';
 import { HwCampaign, HwMembership } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
-import { KlassesService } from '../../characters/services/klasses.service';
-import { MembershipsApiService } from '../../memberships/memberships-api.service';
+import { KlassesService } from '../../../characters/services/klasses.service';
+import { MembershipsApiService } from '../../../memberships/memberships-api.service';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
   ConfirmationDialogResult,
-} from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { AppCardAction, AppCardMiniAction, CardComponent } from '../../ui/card/card.component';
-import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
-import { OnlineMarkComponent } from '../../users/online-mark/online-mark.component';
+} from '../../../shared/confirmation-dialog/confirmation-dialog.component';
+import { AppCardAction, AppCardMiniAction, CardComponent } from '../../../ui/card/card.component';
+import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
+import { OnlineMarkComponent } from '../../../users/online-mark/online-mark.component';
 import {
   CampaignEditorDialogComponent,
   CampaignEditorDialogData,
   CampaignEditorDialogResult,
-} from '../campaign-editor-dialog/campaign-editor-dialog.component';
+} from '../../campaign-editor-dialog/campaign-editor-dialog.component';
 import {
   CampaignInviteAcceptDialogComponent,
   CampaignInviteAcceptDialogData,
   CampaignInviteAcceptDialogResult,
-} from '../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component';
+} from '../../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component';
 import {
   CampaignInviteDialogComponent,
   CampaignInviteDialogData,
   CampaignInviteDialogResult,
-} from '../campaign-invite-dialog/campaign-invite-dialog.component';
-import { CampaignsApiService } from '../services/campaigns-api.service';
+} from '../../campaign-invite-dialog/campaign-invite-dialog.component';
+import { CampaignsApiService } from '../../services/campaigns-api.service';
 
 @Component({
-  selector: 'app-campaign',
+  selector: 'app-campaigns-list-entry',
   imports: [CardComponent, NgTemplateOutlet, OnlineMarkComponent],
-  templateUrl: './campaign.component.html',
-  styleUrl: './campaign.component.css',
+  templateUrl: './campaigns-list-entry.component.html',
+  styleUrl: './campaigns-list-entry.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CampaignComponent {
+export class CampaignsListEntryComponent {
   private dialogService = inject(DialogService);
   public klassesService = inject(KlassesService);
   private membershipsApiService = inject(MembershipsApiService);
   private campaignsApiService = inject(CampaignsApiService);
+  private router = inject(Router);
 
   public campaign = input.required<HwCampaign>();
 
@@ -69,7 +71,7 @@ export class CampaignComponent {
       ConfirmationDialogResult
     > = {
       importFn: () =>
-        import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+        import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
           (m) => m.ConfirmationDialogComponent,
         ),
     };
@@ -111,6 +113,10 @@ export class CampaignComponent {
       result.push(this.joinAction());
     }
 
+    if (this.isMaster() || !this.isPending()) {
+      result.push(this.playAction());
+    }
+
     return result;
   });
 
@@ -124,7 +130,7 @@ export class CampaignComponent {
           CampaignInviteDialogResult
         > = {
           importFn: () =>
-            import('../campaign-invite-dialog/campaign-invite-dialog.component').then(
+            import('../../campaign-invite-dialog/campaign-invite-dialog.component').then(
               (m) => m.CampaignInviteDialogComponent,
             ),
         };
@@ -156,7 +162,7 @@ export class CampaignComponent {
           CampaignInviteAcceptDialogResult
         > = {
           importFn: () =>
-            import('../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component').then(
+            import('../../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component').then(
               (m) => m.CampaignInviteAcceptDialogComponent,
             ),
         };
@@ -166,6 +172,15 @@ export class CampaignComponent {
         void this.dialogService.open(dialog, {
           membershipId: membership.id,
         });
+      },
+    };
+  }
+
+  private playAction(): AppCardAction {
+    return {
+      label: 'Play',
+      action: (): void => {
+        void this.router.navigate(['home', 'campaigns', this.campaign().id, 'town']);
       },
     };
   }
@@ -191,7 +206,7 @@ export class CampaignComponent {
           CampaignEditorDialogResult
         > = {
           importFn: () =>
-            import('../campaign-editor-dialog/campaign-editor-dialog.component').then(
+            import('../../campaign-editor-dialog/campaign-editor-dialog.component').then(
               (m) => m.CampaignEditorDialogComponent,
             ),
         };
@@ -219,7 +234,7 @@ export class CampaignComponent {
           ConfirmationDialogResult
         > = {
           importFn: () =>
-            import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+            import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
               (m) => m.ConfirmationDialogComponent,
             ),
         };
