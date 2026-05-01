@@ -21,10 +21,6 @@ export type AppCardMiniAction = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
-  public title = input.required<string>();
-
-  public subtitle = input<string | undefined>(undefined);
-
   public color = input<'primary' | 'secondary' | 'warning'>('primary');
 
   public separatorColor = input<'primary' | 'secondary' | 'warning'>('secondary');

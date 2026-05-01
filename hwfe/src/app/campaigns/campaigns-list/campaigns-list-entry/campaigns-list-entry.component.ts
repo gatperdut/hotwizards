@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -6,6 +5,7 @@ import {
   InfoDialogData,
   InfoDialogResult,
 } from '@hw/hwfe/app/shared/info-dialog/info-dialog.component';
+import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
 import { HwAdventure, HwCampaign, HwMembership } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
 import { KlassesService } from '../../../characters/services/klasses.service';
@@ -17,27 +17,12 @@ import {
 } from '../../../shared/confirmation-dialog/confirmation-dialog.component';
 import { AppCardAction, AppCardMiniAction, CardComponent } from '../../../ui/card/card.component';
 import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
-import { OnlineMarkComponent } from '../../../users/online-mark/online-mark.component';
-import {
-  CampaignEditorDialogComponent,
-  CampaignEditorDialogData,
-  CampaignEditorDialogResult,
-} from '../../campaign-editor-dialog/campaign-editor-dialog.component';
-import {
-  CampaignInviteAcceptDialogComponent,
-  CampaignInviteAcceptDialogData,
-  CampaignInviteAcceptDialogResult,
-} from '../../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component';
-import {
-  CampaignInviteDialogComponent,
-  CampaignInviteDialogData,
-  CampaignInviteDialogResult,
-} from '../../campaign-invite-dialog/campaign-invite-dialog.component';
+import { CampaignActionsService } from '../../services/campaign-actions.service';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 
 @Component({
   selector: 'app-campaigns-list-entry',
-  imports: [CardComponent, NgTemplateOutlet, OnlineMarkComponent],
+  imports: [CardComponent, WhoComponent],
   templateUrl: './campaigns-list-entry.component.html',
   styleUrl: './campaigns-list-entry.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,6 +32,7 @@ export class CampaignsListEntryComponent {
   public klassesService = inject(KlassesService);
   private membershipsApiService = inject(MembershipsApiService);
   private campaignsApiService = inject(CampaignsApiService);
+  private campaignActionsService = inject(CampaignActionsService);
   private router = inject(Router);
 
   public campaign = input.required<HwCampaign>();
@@ -77,7 +63,17 @@ export class CampaignsListEntryComponent {
 
   public hasAdventure = computed(() => !!this.adventure());
 
-  public informNoKickout(): void {
+  public clickMembership(membership: HwMembership): void {
+    if (this.meMaster()) {
+      if (this.hasAdventure()) {
+        this.cannotToggleMembership();
+      } else {
+        this.toggleMembership(membership, false);
+      }
+    }
+  }
+
+  private cannotToggleMembership(): void {
     const dialog: LazyDialog<InfoDialogComponent, InfoDialogData, InfoDialogResult> = {
       importFn: () =>
         import('../../../shared/info-dialog/info-dialog.component').then(
@@ -86,12 +82,12 @@ export class CampaignsListEntryComponent {
     };
 
     void this.dialogService.open(dialog, {
-      title: 'Kick out',
-      info: 'You cannot kick members out of the campaign while an adventure is running.',
+      title: 'Kick out of campaign',
+      info: 'You cannot kick members out of a campaign while an adventure is running.',
     });
   }
 
-  public toggleMembership(membership: HwMembership, self: boolean): void {
+  private toggleMembership(membership: HwMembership, self: boolean): void {
     const dialog: LazyDialog<
       ConfirmationDialogComponent,
       ConfirmationDialogData,
@@ -129,7 +125,7 @@ export class CampaignsListEntryComponent {
     const result: AppCardAction[] = [];
 
     if (this.meMaster() && !this.hasAdventure()) {
-      result.push(this.inviteAction());
+      result.push(this.campaignActionsService.inviteAction(this.campaign()));
     }
 
     if (this.mePending() || (this.meActive() && !this.hasAdventure())) {
@@ -137,35 +133,13 @@ export class CampaignsListEntryComponent {
     }
 
     if (this.mePending() && !this.hasAdventure()) {
-      result.push(this.joinAction());
+      result.push(this.campaignActionsService.joinAction(this.campaign()));
     }
 
-    result.push(this.playAction());
+    result.push(this.campaignActionsService.playAction(this.campaign()));
 
     return result;
   });
-
-  private inviteAction(): AppCardAction {
-    return {
-      label: 'Invite',
-      action: (): void => {
-        const dialog: LazyDialog<
-          CampaignInviteDialogComponent,
-          CampaignInviteDialogData,
-          CampaignInviteDialogResult
-        > = {
-          importFn: () =>
-            import('../../campaign-invite-dialog/campaign-invite-dialog.component').then(
-              (m) => m.CampaignInviteDialogComponent,
-            ),
-        };
-
-        void this.dialogService.open(dialog, {
-          campaign: this.campaign(),
-        });
-      },
-    };
-  }
 
   private abandonAction(): AppCardAction {
     return {
@@ -177,108 +151,14 @@ export class CampaignsListEntryComponent {
     };
   }
 
-  private joinAction(): AppCardAction {
-    return {
-      label: 'Join',
-      action: (): void => {
-        const dialog: LazyDialog<
-          CampaignInviteAcceptDialogComponent,
-          CampaignInviteAcceptDialogData,
-          CampaignInviteAcceptDialogResult
-        > = {
-          importFn: () =>
-            import('../../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component').then(
-              (m) => m.CampaignInviteAcceptDialogComponent,
-            ),
-        };
-
-        const membership = this.campaign().memberships.find((m) => m.me) as HwMembership;
-
-        void this.dialogService.open(dialog, {
-          membershipId: membership.id,
-        });
-      },
-    };
-  }
-
-  private playAction(): AppCardAction {
-    return {
-      label: 'Play',
-      action: (): void => {
-        void this.router.navigate(['home', 'campaigns', this.campaign().id]);
-      },
-    };
-  }
-
   public miniactions = computed(() => {
     const result: AppCardMiniAction[] = [];
 
     if (this.meMaster()) {
-      result.push(this.deleteMiniAction());
-      result.push(this.editMiniAction());
+      result.push(this.campaignActionsService.deleteMiniAction(this.campaign()));
+      result.push(this.campaignActionsService.editMiniAction(this.campaign()));
     }
 
     return result;
   });
-
-  private editMiniAction(): AppCardMiniAction {
-    return {
-      icon: 'pencil',
-      action: (): void => {
-        const dialog: LazyDialog<
-          CampaignEditorDialogComponent,
-          CampaignEditorDialogData,
-          CampaignEditorDialogResult
-        > = {
-          importFn: () =>
-            import('../../campaign-editor-dialog/campaign-editor-dialog.component').then(
-              (m) => m.CampaignEditorDialogComponent,
-            ),
-        };
-
-        void this.dialogService.open(dialog, {
-          campaignId: this.campaign().id,
-          dto: {
-            name: this.campaign().name,
-            aoo: this.campaign().ruleset.aoo,
-            movement: this.campaign().ruleset.movement,
-          },
-        });
-      },
-    };
-  }
-
-  private deleteMiniAction(): AppCardMiniAction {
-    return {
-      icon: 'trash',
-      color: 'warning',
-      action: (): void => {
-        const dialog: LazyDialog<
-          ConfirmationDialogComponent,
-          ConfirmationDialogData,
-          ConfirmationDialogResult
-        > = {
-          importFn: () =>
-            import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
-              (m) => m.ConfirmationDialogComponent,
-            ),
-        };
-
-        void this.dialogService
-          .open(dialog, {
-            title: 'Delete campaign',
-            question: 'Are you sure you want to delete the campaign?',
-            color: 'warning',
-          })
-          .then((dialogRef) => {
-            dialogRef.afterClosed$
-              .pipe(
-                filter((confirmed) => !!confirmed),
-                switchMap(() => this.campaignsApiService.delete(this.campaign().id)),
-              )
-              .subscribe();
-          });
-      },
-    };
-  }
 }

@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { CampaignService } from '../campaign.service';
 import { TownMembershipComponent } from './town-membership/town-membership.component';
 
 @Component({
   selector: 'app-town',
-  imports: [ButtonComponent, TownMembershipComponent],
+  imports: [ButtonComponent, TownMembershipComponent, WhoComponent],
   templateUrl: './town.component.html',
   styleUrl: './town.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

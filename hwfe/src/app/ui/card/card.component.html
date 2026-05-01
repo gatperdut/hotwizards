@@ -1,16 +1,14 @@
 <div class="hw-border h-full flex flex-col p-hw-average gap-hw-average" [class]="color()">
-  <div
-    class="pb-hw-average hw-truncate typ-h2 separator-b"
-    [class]="`separator-${separatorColor()}`"
-  >
+  <div class="pb-hw-average separator-b" [class]="`separator-${separatorColor()}`">
     <div class="flex flex-row justify-between items-center gap-hw-small">
-      <div class="flex flex-col">
+      <ng-content select="[appCardTitle]"></ng-content>
+      <!-- <div class="flex flex-col">
         <div class="truncate">{{ title() }}</div>
         @let sub = subtitle();
         @if (sub) {
           <div class="truncate typ-body">{{ sub }}</div>
         }
-      </div>
+      </div> -->
       @if (miniactions().length) {
         <div class="flex flex-row justify-end items-center gap-hw-small">
           @for (miniaction of miniactions(); track $index) {

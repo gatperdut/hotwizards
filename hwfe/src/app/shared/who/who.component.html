@@ -1,0 +1,21 @@
+<div class="flex flex-row gap-hw-small items-center">
+  <div
+    class="size-10 rounded-full bg-cover bg-center"
+    [style.background-image]="`url(${image()})`"
+  ></div>
+
+  <div class="flex flex-col justify-center min-w-0 grow">
+    <div class="typ-small truncate opacity-70">
+      {{ klass() }}
+    </div>
+    <div class="typ-body font-bold truncate" [class]="{ 'text-primary!': user().me }">
+      <span>{{ user().handle }}</span>
+      @if (!user().me) {
+        <app-online-mark class="align-middle ml-hw-xsmall" [userId]="user().id"></app-online-mark>
+      }
+    </div>
+    <div class="typ-small truncate opacity-70">
+      {{ name() }}
+    </div>
+  </div>
+</div>

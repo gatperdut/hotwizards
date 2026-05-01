@@ -1,41 +1,37 @@
-<div class="max-w-6xl mx-auto p-hw-average pt-0">
-  <div class="flex flex-col gap-hw-large">
-    <div
-      class="sticky top-0 z-1 w-full bg-background separator-b separator-secondary py-hw-average"
-    >
-      <div class="flex flex-row justify-between items-center gap-hw-average">
-        <div class="typ-h1 truncate">Campaigns</div>
+<div class="max-w-6xl mx-auto p-hw-average pt-0 flex flex-col gap-hw-large">
+  <div class="sticky top-0 z-1 w-full bg-background separator-b separator-secondary py-hw-average">
+    <div class="flex flex-row justify-between items-center gap-hw-average">
+      <div class="typ-h1 truncate">Campaigns</div>
 
-        <div class="flex justify-end gap-hw-small">
-          <app-button icon="plus-circle" (click)="create()"></app-button>
-        </div>
+      <div class="flex justify-end gap-hw-small">
+        <app-button icon="plus-circle" (click)="create()"></app-button>
       </div>
     </div>
+  </div>
 
-    <div class="flex flex-col gap-hw-average">
-      <div class="flex flex-col items-start sm:flex-row sm:items-end gap-hw-average">
-        <app-campaigns-list-filter
-          [form]="form"
-          [loading]="loading()"
-          class="w-full sm:grow"
-        ></app-campaigns-list-filter>
+  <div class="flex flex-col gap-hw-average">
+    <div class="flex flex-col items-start sm:flex-row sm:items-end gap-hw-average">
+      <app-campaigns-list-filter
+        [form]="form"
+        [loading]="loading()"
+        class="w-full sm:grow"
+      ></app-campaigns-list-filter>
 
-        <app-paginator [(page)]="page" [pages]="pages()"></app-paginator>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
-        @for (campaign of campaigns(); track campaign.id) {
-          <app-campaigns-list-entry [campaign]="campaign"> </app-campaigns-list-entry>
-        }
-      </div>
-
-      <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{
-        presenceService.list() | json
-      }}</pre>
-
-      <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ meta() | json }}</pre>
-
-      <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ campaigns() | json }}</pre>
+      <app-paginator [(page)]="page" [pages]="pages()"></app-paginator>
     </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
+      @for (campaign of campaigns(); track campaign.id) {
+        <app-campaigns-list-entry [campaign]="campaign"> </app-campaigns-list-entry>
+      }
+    </div>
+
+    <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{
+      presenceService.list() | json
+    }}</pre>
+
+    <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ meta() | json }}</pre>
+
+    <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ campaigns() | json }}</pre>
   </div>
 </div>
