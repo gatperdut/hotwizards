@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { filter, switchMap } from 'rxjs';
 import { HwCampaign } from '../../../../../shared/dist/shared/src/campaigns/campaign.interface';
 import { HwMembership } from '../../../../../shared/dist/shared/src/memberships/membership.interface';
+import { MembershipsApiService } from '../../memberships/memberships-api.service';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
@@ -32,6 +33,7 @@ export class CampaignActionsService {
   private dialogService = inject(DialogService);
   private router = inject(Router);
   private campaignsApiService = inject(CampaignsApiService);
+  private membershipsApiService = inject(MembershipsApiService);
 
   public inviteAction(campaign: HwCampaign): AppCardAction {
     return {
@@ -77,6 +79,50 @@ export class CampaignActionsService {
         });
       },
     };
+  }
+
+  public abandonAction(membership: HwMembership): AppCardAction {
+    return {
+      label: 'Abandon',
+      color: 'warning',
+      action: (): void => {
+        void this.toggleMembership(membership, true);
+      },
+    };
+  }
+
+  public toggleMembership(membership: HwMembership, self: boolean): void {
+    const dialog: LazyDialog<
+      ConfirmationDialogComponent,
+      ConfirmationDialogData,
+      ConfirmationDialogResult
+    > = {
+      importFn: () =>
+        import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+          (m) => m.ConfirmationDialogComponent,
+        ),
+    };
+
+    void this.dialogService
+      .open(dialog, {
+        title: self ? 'Abandon' : 'Kick out',
+        question: self
+          ? 'Are you sure you want to abandon the campaign?'
+          : `Are you sure you want to kick ${membership.user.handle} out?`,
+        color: 'warning',
+      })
+      .then((dialogRef) => {
+        dialogRef.afterClosed$
+          .pipe(
+            filter((confirmed) => !!confirmed),
+            switchMap(() =>
+              self
+                ? this.membershipsApiService.abandon(membership.id)
+                : this.membershipsApiService.kickout(membership.id),
+            ),
+          )
+          .subscribe();
+      });
   }
 
   public playAction(campaign: HwCampaign): AppCardAction {

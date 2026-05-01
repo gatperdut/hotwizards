@@ -16,7 +16,13 @@ export class TownComponent {
   public campaignService = inject(CampaignService);
   private router = inject(Router);
 
-  public memberships = computed(() => this.campaignService.campaign().memberships);
+  public pendingMemberships = computed(() =>
+    this.campaignService.campaign().memberships.filter((m) => m.status === 'PENDING'),
+  );
+
+  public activeMemberships = computed(() =>
+    this.campaignService.campaign().memberships.filter((m) => m.status === 'ACTIVE'),
+  );
 
   public back(): void {
     void this.router.navigate(['home', 'campaigns']);
