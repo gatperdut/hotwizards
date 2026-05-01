@@ -64,6 +64,24 @@ CREATE TABLE "Character" (
     CONSTRAINT "Character_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "AdventureTemplate" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "AdventureTemplate_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Adventure" (
+    "id" SERIAL NOT NULL,
+    "templateId" INTEGER NOT NULL,
+    "campaignId" INTEGER,
+    "turn" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Adventure_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_handle_key" ON "User"("handle");
 
@@ -79,6 +97,9 @@ CREATE UNIQUE INDEX "Membership_userId_campaignId_key" ON "Membership"("userId",
 -- CreateIndex
 CREATE UNIQUE INDEX "Character_membershipId_key" ON "Character"("membershipId");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Adventure_campaignId_key" ON "Adventure"("campaignId");
+
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_masterId_fkey" FOREIGN KEY ("masterId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -93,3 +114,9 @@ ALTER TABLE "Membership" ADD CONSTRAINT "Membership_campaignId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "Character" ADD CONSTRAINT "Character_membershipId_fkey" FOREIGN KEY ("membershipId") REFERENCES "Membership"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Adventure" ADD CONSTRAINT "Adventure_templateId_fkey" FOREIGN KEY ("templateId") REFERENCES "AdventureTemplate"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Adventure" ADD CONSTRAINT "Adventure_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "Campaign"("id") ON DELETE CASCADE ON UPDATE CASCADE;

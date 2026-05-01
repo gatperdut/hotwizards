@@ -32,24 +32,24 @@ import {
   CampaignEditorDialogData,
   CampaignEditorDialogResult,
 } from '../campaign-editor-dialog/campaign-editor-dialog.component';
-import { CampaignComponent } from '../campaign/campaign.component';
-import { CampaignsFilterComponent } from '../campaigns-filter/campaigns-filter.component';
 import { CampaignsApiService } from '../services/campaigns-api.service';
+import { CampaignsListEntryComponent } from './campaigns-list-entry/campaigns-list-entry.component';
+import { CampaignsListFilterComponent } from './campaigns-list-filter/campaigns-list-filter.component';
 
 @Component({
   selector: 'app-campaigns',
   imports: [
-    CampaignsFilterComponent,
+    CampaignsListFilterComponent,
     PaginatorComponent,
-    CampaignComponent,
+    CampaignsListEntryComponent,
     JsonPipe,
     ButtonComponent,
   ],
-  templateUrl: './campaigns.component.html',
-  styleUrl: './campaigns.component.css',
+  templateUrl: './campaigns-list.component.html',
+  styleUrl: './campaigns-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CampaignsComponent {
+export class CampaignsListComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
   public presenceService = inject(PresenceService);

@@ -14,6 +14,11 @@ const CampaignHwRelations = {
       },
     },
     ruleset: true,
+    adventure: {
+      include: {
+        template: true,
+      },
+    },
   },
 } satisfies Prisma.CampaignDefaultArgs;
 
@@ -204,6 +209,16 @@ export class CampaignsService {
         aoo: ruleset.aoo,
         movement: ruleset.movement,
       },
+      adventure: campaign.adventure
+        ? {
+            id: campaign.adventure.id,
+            template: {
+              id: campaign.adventure.template.id,
+              name: campaign.adventure.template.name,
+            },
+            turn: campaign.adventure.turn,
+          }
+        : undefined,
     };
   }
 }
