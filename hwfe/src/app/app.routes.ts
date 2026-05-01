@@ -1,12 +1,11 @@
-import { inject } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, Routes } from '@angular/router';
-import { Observable, tap } from 'rxjs';
-import { HwCampaign } from '../../../shared/dist/shared/src/campaigns/campaign.interface.js';
+import { Routes } from '@angular/router';
 import { AuthenticatedGuard } from './auth/guards/authenticated.guard.js';
 import { UnuthenticatedGuard } from './auth/guards/unauthenticated.guard.js';
 import { AuthenticatedComponent } from './authenticated/authenticated.component.js';
-import { PlayService } from './campaigns/play/play.service.js';
-import { CampaignsApiService } from './campaigns/services/campaigns-api.service.js';
+import { CampaignService } from './campaigns/campaign/campaign.service.js';
+import { boardGuard } from './campaigns/campaign/guards/board.guard.js';
+import { campaignGuard } from './campaigns/campaign/guards/campaign.guard.js';
+import { townGuard } from './campaigns/campaign/guards/town.guard.js';
 import { OfflineGuard } from './health/offline.guard.js';
 import { OnlineGuard } from './health/online.guard.js';
 
@@ -64,51 +63,24 @@ export const routes: Routes = [
               },
               {
                 path: 'campaigns/:campaignId',
-                providers: [PlayService],
-                resolve: {
-                  campaign: (
-                    activatedRouteSnapshot: ActivatedRouteSnapshot,
-                  ): Observable<HwCampaign> => {
-                    const playService = inject(PlayService);
-                    const campaignsApiService = inject(CampaignsApiService);
-
-                    const id = Number(activatedRouteSnapshot.paramMap.get('campaignId'));
-
-                    return campaignsApiService.get(id).pipe(
-                      tap((campaign) => {
-                        playService.campaign.set(campaign);
-                      }),
-                    );
-                  },
-                },
+                providers: [CampaignService],
+                canActivate: [campaignGuard],
                 children: [
-                  {
-                    path: '',
-                    pathMatch: 'full',
-                    loadComponent: () =>
-                      import('./campaigns/play/play.component').then((m) => m.PlayComponent),
-                    canActivate: [
-                      (activatedRouteSnapshot: ActivatedRouteSnapshot) => {
-                        const playService = inject(PlayService);
-                        const router = inject(Router);
-                        const id = activatedRouteSnapshot.parent!.paramMap.get('id');
-                        return playService.campaign().adventure
-                          ? router.createUrlTree(['campaigns', id, 'board'])
-                          : router.createUrlTree(['campaigns', id, 'town']);
-                      },
-                    ],
-                  },
                   {
                     path: 'town',
                     loadComponent: () =>
-                      import('./campaigns/play/town/town.component').then((m) => m.TownComponent),
+                      import('./campaigns/campaign/town/town.component').then(
+                        (m) => m.TownComponent,
+                      ),
+                    canActivate: [townGuard],
                   },
                   {
                     path: 'board',
                     loadComponent: () =>
-                      import('./campaigns/play/board/board.component').then(
+                      import('./campaigns/campaign/board/board.component').then(
                         (m) => m.BoardComponent,
                       ),
+                    canActivate: [boardGuard],
                   },
                 ],
               },
