@@ -1,4 +1,9 @@
-<app-card [title]="campaign().name" [actions]="actions()" [miniactions]="miniactions()">
+<app-card
+  [title]="campaign().name"
+  [subtitle]="adventure()?.template?.name"
+  [actions]="actions()"
+  [miniactions]="miniactions()"
+>
   <div appCardBody class="flex flex-col gap-hw-average">
     <ng-container
       *ngTemplateOutlet="
@@ -64,7 +69,8 @@
                 handle: membership.user.handle,
                 name: membership.status === 'ACTIVE' ? membership.character.name : 'No name',
                 me: membership.user.me,
-                click: () => toggleMembership(membership, false),
+                click: () =>
+                  hasAdventure() ? informNoKickout() : toggleMembership(membership, false),
               }
             "
           ></ng-container>
@@ -85,8 +91,8 @@
   >
     <div
       class="flex flex-row items-center gap-hw-small min-w-0"
-      [class]="{ 'cursor-pointer': !!click && isMaster() }"
-      (click)="isMaster() && click?.()"
+      [class]="{ 'cursor-pointer': !!click && meMaster() }"
+      (click)="meMaster() && click?.()"
     >
       <div
         class="size-10 rounded-full bg-cover bg-center"

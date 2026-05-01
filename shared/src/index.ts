@@ -1,3 +1,4 @@
+export { HwAdventure } from './adventures/adventure.interface.js';
 export { HwAuthLoginDto } from './auth/auth-login.dto.js';
 export { HwAuthRegisterDto } from './auth/auth-register.dto.js';
 export { HwAuthResponse } from './auth/auth-response.interface.js';

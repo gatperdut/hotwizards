@@ -1,0 +1,15 @@
+<app-dialog sizeClass="max-w-md">
+  <ng-template appDialogTitle>
+    <div class="typ-h2">{{ data.title }}</div>
+  </ng-template>
+
+  <ng-template appDialogContent>
+    <div class="flex flex-col gap-hw-average">
+      <div class="typ-body">{{ data.info }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template appDialogActions>
+    <app-button label="OK" type="submit" (click)="dialogRef.close()"></app-button>
+  </ng-template>
+</app-dialog>

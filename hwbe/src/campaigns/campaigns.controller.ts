@@ -7,6 +7,7 @@ import {
   Paginated,
 } from '@hw/shared';
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { AdventureNotPresent } from '../adventures/adventure-not-present.guard.js';
 import { MembershipsService } from '../memberships/memberships.service.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CampaignsService } from './campaigns.service.js';
@@ -59,7 +60,7 @@ export class CampaignsController {
   }
 
   @Post(':campaignId/memberships')
-  @UseGuards(CampaignGuard, CampaignMasterGuard)
+  @UseGuards(CampaignGuard, CampaignMasterGuard, AdventureNotPresent)
   public invite(
     @CurrentUser() user: User,
     @CurrentCampaign() campaign: Campaign,
