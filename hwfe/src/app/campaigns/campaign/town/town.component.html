@@ -4,7 +4,10 @@
       class="sticky top-0 z-1 w-full bg-background separator-b separator-secondary py-hw-average"
     >
       <div class="flex flex-row justify-between items-center gap-hw-average">
-        <div class="typ-h1 text-center truncate">The town</div>
+        <div class="flex flex-col">
+          <div class="typ-h1 truncate">{{ campaignService.campaign().name }}</div>
+          <div class="typ-body truncate">In town</div>
+        </div>
 
         <div class="flex justify-end gap-hw-small">
           <app-button icon="arrow-uturn-left" (click)="back()"></app-button>

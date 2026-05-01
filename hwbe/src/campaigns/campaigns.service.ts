@@ -188,7 +188,7 @@ export class CampaignsService {
       createdAt: campaign.createdAt,
       master: {
         ...strippedMaster,
-        me: campaign.master.id === userId,
+        me: campaign.masterId === userId,
       },
       memberships: campaign.memberships.map((membership) => {
         const { password, ...strippedUser } = membership.user;
@@ -198,9 +198,17 @@ export class CampaignsService {
           status: membership.status,
           joinedAt: membership.joinedAt,
           me: membership.userId === userId,
-          user: { ...strippedUser, me: membership.user.id === userId },
+          master: campaign.masterId === userId,
+          user: {
+            ...strippedUser,
+            me: membership.user.id === userId,
+          },
           character: membership.character
-            ? { ...membership.character, me: membership.user.id === userId }
+            ? {
+                ...membership.character,
+                me: membership.user.id === userId,
+                master: campaign.masterId === userId,
+              }
             : undefined,
         };
       }),

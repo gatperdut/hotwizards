@@ -18,6 +18,8 @@ export { PaginationMeta } from './pagination/pagination-meta.interface.js';
 export { PaginationDto } from './pagination/pagination.dto.js';
 export { HwRulesetEditDto } from './rulesets/ruleset-edit.dto.js';
 export { HwRuleset } from './rulesets/ruleset.interface.js';
+export { HwMaster } from './shared/master.interface.js';
+export { HwMe } from './shared/me.interface.js';
 export { CampaignsListDownstream } from './sockets/campaigns-list-downstream.interface.js';
 export { CampaignsListUpstream } from './sockets/campaigns-list-upstream.interface.js';
 export { MembershipsDownstream } from './sockets/memberships-downstream.interface.js';
