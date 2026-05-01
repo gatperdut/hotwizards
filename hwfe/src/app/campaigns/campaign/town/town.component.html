@@ -1,1 +1,25 @@
-TOWN
+<div class="max-w-6xl mx-auto p-hw-average pt-0">
+  <div class="flex flex-col gap-hw-large">
+    <div
+      class="sticky top-0 z-1 w-full bg-background separator-b separator-secondary py-hw-average"
+    >
+      <div class="flex flex-row justify-between items-center gap-hw-average">
+        <div class="typ-h1 text-center truncate">The town</div>
+
+        <div class="flex justify-end gap-hw-small">
+          <app-button icon="arrow-uturn-left" (click)="back()"></app-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="typ-body">Here you can rest and prepare for your next adventure.</div>
+
+    <div class="flex flex-col gap-hw-average">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
+        @for (membership of memberships(); track membership.id) {
+          <app-town-membership [membership]="membership"> </app-town-membership>
+        }
+      </div>
+    </div>
+  </div>
+</div>

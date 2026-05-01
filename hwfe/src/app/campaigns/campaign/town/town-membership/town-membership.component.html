@@ -1,0 +1,9 @@
+<app-card
+  [title]="pending() ? 'No name' : character().name"
+  [subtitle]="pending() ? 'No class' : klassesService.name(character().klass)"
+  [actions]="actions()"
+  [color]="membership().me ? 'primary' : 'secondary'"
+  [miniactions]="miniactions()"
+>
+  <div appCardBody class="flex flex-col gap-hw-average"></div>
+</app-card>

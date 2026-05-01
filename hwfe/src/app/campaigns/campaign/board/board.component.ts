@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CampaignService } from '../campaign.service';
 import { PanzoomDirective } from './directives/panzoom.directive';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
@@ -10,5 +11,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoardComponent {
+  public campaignService = inject(CampaignService);
+
   public tiles: number[] = Array.from({ length: 375 }, (_, i) => i);
 }

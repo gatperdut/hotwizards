@@ -56,16 +56,16 @@ export class CampaignsListEntryComponent {
   public master = computed(() => this.campaign().master);
 
   public activeMemberships = computed(() =>
-    this.campaign().memberships.filter((membership) => membership.status === 'ACTIVE'),
+    this.campaign().memberships.filter((m) => m.status === 'ACTIVE'),
   );
 
-  public hasActiveMemberships = computed(() => !!this.activeMemberships.length);
+  public hasActiveMemberships = computed(() => !!this.activeMemberships().length);
 
   public pendingMemberships = computed(() =>
-    this.campaign().memberships.filter((membership) => membership.status === 'PENDING'),
+    this.campaign().memberships.filter((m) => m.status === 'PENDING'),
   );
 
-  public hasPendingMemberships = computed(() => !!this.pendingMemberships.length);
+  public hasPendingMemberships = computed(() => !!this.pendingMemberships().length);
 
   public meMaster = computed(() => this.master().me);
 
@@ -140,9 +140,7 @@ export class CampaignsListEntryComponent {
       result.push(this.joinAction());
     }
 
-    if (!this.hasPendingMemberships()) {
-      result.push(this.playAction());
-    }
+    result.push(this.playAction());
 
     return result;
   });

@@ -1,20 +1,26 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, MaybeAsync, Router, UrlTree } from '@angular/router';
+import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { catchError, map, of, tap } from 'rxjs';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
 
-export const campaignGuard: CanActivateFn = (activatedRouteSnapshot) => {
+export const campaignGuard: CanActivateFn = (
+  activatedRouteSnapshot,
+): MaybeAsync<boolean | UrlTree> => {
   const campaignService = inject(CampaignService);
   const campaignsApiService = inject(CampaignsApiService);
   const router = inject(Router);
+  const toastService = inject(ToastService);
+
   const campaignId = Number(activatedRouteSnapshot.paramMap.get('campaignId'));
 
-  const campaign$ = campaignService.campaign()
-    ? of(campaignService.campaign())
-    : campaignsApiService.get(campaignId);
+  if (Number.isNaN(campaignId)) {
+    errorToast(toastService);
+    return router.createUrlTree(['home', 'campaigns']);
+  }
 
-  return campaign$.pipe(
+  return campaignsApiService.get(campaignId).pipe(
     tap((campaign) => {
       campaignService.campaign.set(campaign);
     }),
@@ -31,7 +37,12 @@ export const campaignGuard: CanActivateFn = (activatedRouteSnapshot) => {
       ]);
     }),
     catchError(() => {
-      return of(router.createUrlTree(['home']));
+      errorToast(toastService);
+      return of(router.createUrlTree(['home', 'campaigns']));
     }),
   );
+};
+
+const errorToast = (toastService: ToastService): void => {
+  toastService.show({ message: 'Campaign not found', color: 'warning' });
 };

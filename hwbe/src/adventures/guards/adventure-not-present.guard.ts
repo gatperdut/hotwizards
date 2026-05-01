@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
-import { HwRequest } from '../auth/types/request.type.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { HwRequest } from '../../auth/types/request.type.js';
+import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
 export class AdventureNotPresent implements CanActivate {
