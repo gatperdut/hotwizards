@@ -28,7 +28,8 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
           },
           {
             userId: vicent.id,
-            status: MembershipStatus.PENDING,
+            status: MembershipStatus.ACTIVE,
+            character: { create: { name: 'Lefa', gender: 'FEMALE', klass: 'ELF' } },
           },
         ],
       },

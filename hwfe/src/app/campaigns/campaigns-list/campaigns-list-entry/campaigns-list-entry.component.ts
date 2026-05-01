@@ -1,7 +1,12 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { HwCampaign, HwMembership } from '@hw/shared';
+import {
+  InfoDialogComponent,
+  InfoDialogData,
+  InfoDialogResult,
+} from '@hw/hwfe/app/shared/info-dialog/info-dialog.component';
+import { HwAdventure, HwCampaign, HwMembership } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
 import { KlassesService } from '../../../characters/services/klasses.service';
 import { MembershipsApiService } from '../../../memberships/memberships-api.service';
@@ -54,15 +59,37 @@ export class CampaignsListEntryComponent {
     this.campaign().memberships.filter((membership) => membership.status === 'ACTIVE'),
   );
 
+  public hasActiveMemberships = computed(() => !!this.activeMemberships.length);
+
   public pendingMemberships = computed(() =>
     this.campaign().memberships.filter((membership) => membership.status === 'PENDING'),
   );
 
-  public isMaster = computed(() => this.master().me);
+  public hasPendingMemberships = computed(() => !!this.pendingMemberships.length);
 
-  public isPending = computed(() => !!this.pendingMemberships().find((m) => m.me));
+  public meMaster = computed(() => this.master().me);
 
-  public isActive = computed(() => !!this.activeMemberships().find((m) => m.me));
+  public mePending = computed(() => !!this.pendingMemberships().find((m) => m.me));
+
+  public meActive = computed(() => !!this.activeMemberships().find((m) => m.me));
+
+  public adventure: Signal<HwAdventure | undefined> = computed(() => this.campaign().adventure);
+
+  public hasAdventure = computed(() => !!this.adventure());
+
+  public informNoKickout(): void {
+    const dialog: LazyDialog<InfoDialogComponent, InfoDialogData, InfoDialogResult> = {
+      importFn: () =>
+        import('../../../shared/info-dialog/info-dialog.component').then(
+          (m) => m.InfoDialogComponent,
+        ),
+    };
+
+    void this.dialogService.open(dialog, {
+      title: 'Kick out',
+      info: 'You cannot kick members out of the campaign while an adventure is running.',
+    });
+  }
 
   public toggleMembership(membership: HwMembership, self: boolean): void {
     const dialog: LazyDialog<
@@ -101,19 +128,19 @@ export class CampaignsListEntryComponent {
   public actions = computed(() => {
     const result: AppCardAction[] = [];
 
-    if (this.isMaster()) {
+    if (this.meMaster() && !this.hasAdventure()) {
       result.push(this.inviteAction());
     }
 
-    if (this.isPending() || this.isActive()) {
+    if (this.mePending() || (this.meActive() && !this.hasAdventure())) {
       result.push(this.abandonAction());
     }
 
-    if (this.isPending()) {
+    if (this.mePending() && !this.hasAdventure()) {
       result.push(this.joinAction());
     }
 
-    if (this.isMaster() || !this.isPending()) {
+    if (!this.hasPendingMemberships()) {
       result.push(this.playAction());
     }
 
@@ -188,7 +215,7 @@ export class CampaignsListEntryComponent {
   public miniactions = computed(() => {
     const result: AppCardMiniAction[] = [];
 
-    if (this.isMaster()) {
+    if (this.meMaster()) {
       result.push(this.deleteMiniAction());
       result.push(this.editMiniAction());
     }

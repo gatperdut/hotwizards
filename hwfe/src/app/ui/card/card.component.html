@@ -4,7 +4,13 @@
     [class]="`separator-${separatorColor()}`"
   >
     <div class="flex flex-row justify-between items-center gap-hw-small">
-      <div class="truncate">{{ title() }}</div>
+      <div class="flex flex-col">
+        <div class="truncate">{{ title() }}</div>
+        @let sub = subtitle();
+        @if (sub) {
+          <div class="truncate typ-body">{{ sub }}</div>
+        }
+      </div>
       @if (miniactions().length) {
         <div class="flex flex-row justify-end items-center gap-hw-small">
           @for (miniaction of miniactions(); track $index) {
