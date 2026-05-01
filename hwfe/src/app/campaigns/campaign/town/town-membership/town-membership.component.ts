@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { KlassesService } from '@hw/hwfe/app/characters/services/klasses.service';
+import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
 import {
   AppCardAction,
   AppCardMiniAction,
@@ -9,7 +10,7 @@ import { HwCharacter, HwMembership, HwUser } from '@hw/shared';
 
 @Component({
   selector: 'app-town-membership',
-  imports: [CardComponent],
+  imports: [CardComponent, WhoComponent],
   templateUrl: './town-membership.component.html',
   styleUrl: './town-membership.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,41 +1,41 @@
-<app-card
-  [title]="campaign().name"
-  [subtitle]="adventure()?.template?.name"
-  [actions]="actions()"
-  [miniactions]="miniactions()"
->
+<app-card [actions]="actions()" [miniactions]="miniactions()">
+  <div appCardTitle>
+    <div class="typ-h2 truncate">{{ campaign().name }}</div>
+    <div class="typ-body truncate">{{ adventure()?.template?.name }}</div>
+  </div>
   <div appCardBody class="flex flex-col gap-hw-average">
-    <ng-container
-      *ngTemplateOutlet="
-        userOutlet;
-        context: {
-          userId: master().id,
-          image: '/characters/zargon.png',
-          klass: 'Master',
-          handle: master().handle,
-          name: 'Zargon',
-          me: master().me,
-        }
-      "
-    ></ng-container>
-
+    <app-who [master]="true" [user]="campaign().master"></app-who>
     <div class="flex flex-col xl:flex-row gap-hw-average">
       @if (activeMemberships().length) {
-        <ng-container
-          *ngTemplateOutlet="
-            listOutlet;
-            context: { memberships: activeMemberships(), title: 'Active members' }
-          "
-        ></ng-container>
+        <div class="flex flex-col gap-hw-small grow">
+          <span class="typ-body whitespace-nowrap">Active members</span>
+          <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
+            @for (membership of activeMemberships(); track membership.id) {
+              <app-who
+                [user]="membership.user"
+                [character]="membership.character"
+                (click)="clickMembership(membership)"
+                [class]="{ 'cursor-pointer': meMaster() }"
+              ></app-who>
+            }
+          </div>
+        </div>
       }
 
       @if (pendingMemberships().length) {
-        <ng-container
-          *ngTemplateOutlet="
-            listOutlet;
-            context: { memberships: pendingMemberships(), title: 'Pending members' }
-          "
-        ></ng-container>
+        <div class="flex flex-col gap-hw-small grow">
+          <span class="typ-body whitespace-nowrap">Active members</span>
+
+          <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
+            @for (membership of pendingMemberships(); track membership.id) {
+              <app-who
+                [user]="membership.user"
+                (click)="clickMembership(membership)"
+                [class]="{ 'cursor-pointer': meMaster() }"
+              ></app-who>
+            }
+          </div>
+        </div>
       }
 
       @if (!activeMemberships().length && !pendingMemberships().length) {
@@ -43,76 +43,4 @@
       }
     </div>
   </div>
-
-  <ng-template #listOutlet let-memberships="memberships" let-title="title">
-    <div class="flex flex-col gap-hw-small grow">
-      <span class="typ-body whitespace-nowrap">{{ title }}</span>
-
-      <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
-        @for (membership of memberships; track membership.id) {
-          <ng-container
-            *ngTemplateOutlet="
-              userOutlet;
-              context: {
-                userId: membership.user.id,
-                image:
-                  membership.status === 'ACTIVE'
-                    ? klassesService.portrait(
-                        membership.character.klass,
-                        membership.character.gender
-                      )
-                    : '/characters/pending.gif',
-                klass:
-                  membership.status === 'ACTIVE'
-                    ? klassesService.name(membership.character.klass)
-                    : 'No class',
-                handle: membership.user.handle,
-                name: membership.status === 'ACTIVE' ? membership.character.name : 'No name',
-                me: membership.user.me,
-                click: () =>
-                  hasAdventure() ? informNoKickout() : toggleMembership(membership, false),
-              }
-            "
-          ></ng-container>
-        }
-      </div>
-    </div>
-  </ng-template>
-
-  <ng-template
-    #userOutlet
-    let-userId="userId"
-    let-image="image"
-    let-klass="klass"
-    let-handle="handle"
-    let-name="name"
-    let-me="me"
-    let-click="click"
-  >
-    <div
-      class="flex flex-row items-center gap-hw-small min-w-0"
-      [class]="{ 'cursor-pointer': !!click && meMaster() }"
-      (click)="meMaster() && click?.()"
-    >
-      <div
-        class="size-10 rounded-full bg-cover bg-center"
-        [style.background-image]="`url(${image})`"
-      ></div>
-
-      <div class="flex flex-col justify-center min-w-0 grow">
-        <div class="typ-small truncate opacity-70">
-          {{ klass }}
-        </div>
-        <div class="typ-body font-bold truncate" [class]="{ 'text-primary!': me }">
-          <span>{{ handle }}</span>
-          @if (!me) {
-            <app-online-mark class="align-middle ml-hw-xsmall" [userId]="userId"></app-online-mark>
-          }
-        </div>
-        <div class="typ-small truncate opacity-70">
-          {{ name }}
-        </div>
-      </div>
-    </div>
-  </ng-template>
 </app-card>
