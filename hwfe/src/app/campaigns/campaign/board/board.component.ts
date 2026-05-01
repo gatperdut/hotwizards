@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SidebarComponent } from '@hw/hwfe/app/campaigns/play/board/sidebar/sidebar.component';
 import { PanzoomDirective } from './directives/panzoom.directive';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-board',

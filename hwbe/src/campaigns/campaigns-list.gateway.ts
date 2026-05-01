@@ -1,5 +1,5 @@
 // presence/presence.gateway.ts
-import { CampaignsDownstream, CampaignsUpstream } from '@hw/shared';
+import { CampaignsListDownstream, CampaignsListUpstream } from '@hw/shared';
 import {
   OnGatewayConnection,
   OnGatewayInit,
@@ -10,11 +10,14 @@ import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applySocketAuthMiddleware } from '../sockets/socket-auth.middleware.js';
 
-type CampaignsSocket = Socket<CampaignsUpstream, CampaignsDownstream>;
+type CampaignsSocket = Socket<CampaignsListUpstream, CampaignsListDownstream>;
 
 @WebSocketGateway({ namespace: 'campaigns' })
 export class CampaignsGateway implements OnGatewayInit, OnGatewayConnection {
-  @WebSocketServer() private readonly server: Server<CampaignsUpstream, CampaignsDownstream>;
+  @WebSocketServer() private readonly server: Server<
+    CampaignsListUpstream,
+    CampaignsListDownstream
+  >;
 
   constructor(private readonly authService: AuthService) {}
 

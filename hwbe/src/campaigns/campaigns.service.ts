@@ -2,7 +2,7 @@ import { Movement, Prisma, Ruleset } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { CampaignsGateway } from './campaigns.gateway.js';
+import { CampaignsGateway } from './campaigns-list.gateway.js';
 
 const CampaignHwRelations = {
   include: {

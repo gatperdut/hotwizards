@@ -180,7 +180,7 @@ export class CampaignsListEntryComponent {
     return {
       label: 'Play',
       action: (): void => {
-        void this.router.navigate(['home', 'campaigns', this.campaign().id, 'town']);
+        void this.router.navigate(['home', 'campaigns', this.campaign().id]);
       },
     };
   }
