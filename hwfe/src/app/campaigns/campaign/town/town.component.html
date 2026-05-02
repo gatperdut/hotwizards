@@ -19,15 +19,20 @@
 
   <div class="typ-h2 text-primary!">The adventurers</div>
 
+  @let activeMemberships = campaignService.activeMemberships();
+  @if (!activeMemberships.length) {
+    <div class="typ-body italic">No adventurers have come yet</div>
+  }
+
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
-    @for (membership of campaignService.activeMemberships(); track membership.id) {
+    @for (membership of activeMemberships; track membership.id) {
       <app-town-membership [membership]="membership"> </app-town-membership>
     }
   </div>
 
   @let pendingMemberships = campaignService.pendingMemberships();
   @if (pendingMemberships.length) {
-    <div class="typ-h2 text-primary!">Waiting for more adventurers:</div>
+    <div class="typ-h2 text-primary!">Adventurers who may yet come</div>
 
     <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
       @for (membership of pendingMemberships; track membership.id) {

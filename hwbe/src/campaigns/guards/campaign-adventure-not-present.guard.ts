@@ -1,15 +1,14 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
 import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
-export class CampaignMasterGuard implements CanActivate {
+export class CampaignAdventureNotPresentGuard implements CanActivate {
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
-    const user = request.user;
     const campaign = request.campaign;
 
-    if (campaign.master.id !== user.id) {
-      throw new ForbiddenException('You are not the master of this campaign');
+    if (campaign.adventure) {
+      throw new NotFoundException('The campaign is running an adventure');
     }
 
     return true;

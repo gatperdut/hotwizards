@@ -1,28 +1,9 @@
-import { Movement, Prisma, Ruleset } from '@hw/prismagen/client';
+import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
 import { CampaignsGateway } from './campaigns.gateway.js';
-
-const CampaignHwRelations = {
-  include: {
-    master: true,
-    memberships: {
-      include: {
-        user: true,
-        character: true,
-      },
-    },
-    ruleset: true,
-    adventure: {
-      include: {
-        template: true,
-      },
-    },
-  },
-} satisfies Prisma.CampaignDefaultArgs;
-
-type CampaignWithHwRelations = Prisma.CampaignGetPayload<typeof CampaignHwRelations>;
 
 @Injectable()
 export class CampaignsService {
@@ -93,7 +74,7 @@ export class CampaignsService {
     const total: number = await this.prismaService.campaign.count({ where: where });
 
     return {
-      items: campaigns.map((campaign): HwCampaign => this.campaignToHwCampaign(campaign, userId)),
+      items: campaigns.map((campaign): HwCampaign => campaignToHwCampaign(campaign, userId)),
       meta: {
         page: page || 0,
         pageSize: pageSize || 10,
@@ -101,19 +82,6 @@ export class CampaignsService {
         pages: Math.ceil(total / (pageSize || 10)),
       },
     };
-  }
-
-  public async get(campaignId: number, userId: number): Promise<HwCampaign> {
-    const campaign = await this.prismaService.campaign.findUnique({
-      where: { id: campaignId },
-      ...CampaignHwRelations,
-    });
-
-    if (!campaign) {
-      throw new NotFoundException('Campaign not found');
-    }
-
-    return this.campaignToHwCampaign(campaign, userId);
   }
 
   public async create(
@@ -141,13 +109,13 @@ export class CampaignsService {
   }
 
   public async update(
-    campaignId: number,
+    campaign: HwCampaign,
     name: string,
     aoo: boolean,
     movement: Movement,
   ): Promise<number> {
-    const campaign = await this.prismaService.campaign.update({
-      where: { id: campaignId },
+    await this.prismaService.campaign.update({
+      where: { id: campaign.id },
       data: { name: name, ruleset: { update: { aoo: aoo, movement: movement } } },
       include: {
         memberships: true,
@@ -155,39 +123,30 @@ export class CampaignsService {
     });
 
     this.campaignsGateway.handleDownUpdateCampaign(campaign.id, [
-      campaign.masterId,
-      ...campaign.memberships.map((m) => m.userId),
+      campaign.master.id,
+      ...campaign.memberships.map((m) => m.user.id),
     ]);
 
     return campaign.id;
   }
 
-  public async delete(campaignId: number): Promise<number> {
-    const campaign = await this.prismaService.campaign.delete({
-      where: { id: campaignId },
+  public async delete(campaign: HwCampaign): Promise<number> {
+    await this.prismaService.campaign.delete({
+      where: { id: campaign.id },
       include: {
         memberships: true,
       },
     });
 
     this.campaignsGateway.handleDownDeleteCampaign(campaign.id, [
-      campaign.masterId,
-      ...campaign.memberships.map((m) => m.userId),
+      campaign.master.id,
+      ...campaign.memberships.map((m) => m.user.id),
     ]);
 
     return campaign.id;
   }
 
-  public async startAdventure(campaignId: number, adventureTemplateId: number): Promise<number> {
-    const campaign = await this.prismaService.campaign.findUnique({
-      where: { id: campaignId },
-      include: { memberships: true },
-    });
-
-    if (!campaign) {
-      throw new NotFoundException('Campaign not found');
-    }
-
+  public async startAdventure(campaign: HwCampaign, adventureTemplateId: number): Promise<number> {
     const pendingMemberships = campaign.memberships.filter((m) => m.status === 'PENDING');
 
     if (pendingMemberships.length) {
@@ -196,7 +155,7 @@ export class CampaignsService {
 
     const adventure = await this.prismaService.adventure.create({
       data: {
-        campaignId: campaignId,
+        campaignId: campaign.id,
         templateId: adventureTemplateId,
       },
       include: {
@@ -205,88 +164,26 @@ export class CampaignsService {
     });
 
     this.campaignsGateway.handleDownStartAdventure(
-      campaignId,
-      [campaign.masterId, ...campaign.memberships.map((m) => m.userId)],
+      campaign.id,
+      [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)],
       adventure.template.name,
     );
 
     return adventure.id;
   }
 
-  public async finishAdventure(campaignId: number): Promise<number> {
-    const campaign = await this.prismaService.campaign.findUnique({
-      where: { id: campaignId },
-      include: { memberships: true },
-    });
-
-    if (!campaign) {
-      throw new NotFoundException('Campaign not found');
-    }
-
+  public async finishAdventure(campaign: HwCampaign): Promise<number> {
     const adventure = await this.prismaService.adventure.delete({
-      where: { campaignId: campaignId },
+      where: { campaignId: campaign.id },
       include: { template: true },
     });
 
     this.campaignsGateway.handleDownFinishAdventure(
-      campaignId,
-      [campaign.masterId, ...campaign.memberships.map((m) => m.userId)],
+      campaign.id,
+      [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)],
       adventure.template.name,
     );
 
     return adventure.id;
-  }
-
-  private campaignToHwCampaign(campaign: CampaignWithHwRelations, userId: number): HwCampaign {
-    const ruleset = campaign.ruleset as Ruleset;
-
-    const { password, ...strippedMaster } = campaign.master;
-
-    return {
-      id: campaign.id,
-      name: campaign.name,
-      createdAt: campaign.createdAt,
-      master: {
-        ...strippedMaster,
-        me: campaign.masterId === userId,
-      },
-      memberships: campaign.memberships.map((membership) => {
-        const { password, ...strippedUser } = membership.user;
-
-        return {
-          id: membership.id,
-          status: membership.status,
-          joinedAt: membership.joinedAt,
-          me: membership.userId === userId,
-          master: campaign.masterId === userId,
-          user: {
-            ...strippedUser,
-            me: membership.user.id === userId,
-          },
-          character: membership.character
-            ? {
-                ...membership.character,
-                me: membership.user.id === userId,
-                master: campaign.masterId === userId,
-              }
-            : undefined,
-        };
-      }),
-      ruleset: {
-        id: ruleset.id,
-        aoo: ruleset.aoo,
-        movement: ruleset.movement,
-      },
-      adventure: campaign.adventure
-        ? {
-            id: campaign.adventure.id,
-            template: {
-              id: campaign.adventure.template.id,
-              name: campaign.adventure.template.name,
-            },
-            turn: campaign.adventure.turn,
-          }
-        : undefined,
-    };
   }
 }

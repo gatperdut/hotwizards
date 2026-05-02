@@ -1,4 +1,5 @@
-import { Character, Gender, Klass, Membership, MembershipStatus } from '@hw/prismagen/client';
+import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
+import { HwCampaign, HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { MembershipsGateway } from './memberships.gateway.js';
@@ -10,7 +11,11 @@ export class MembershipsService {
     private membershipsGateway: MembershipsGateway,
   ) {}
 
-  public async create(campaignId: number, masterId: number, userIds: number[]): Promise<number[]> {
+  public async create(
+    campaign: HwCampaign,
+    masterId: number,
+    userIds: number[],
+  ): Promise<number[]> {
     if (userIds.includes(masterId)) {
       throw new BadRequestException('You cannot invite yourself to your own campaign');
     }
@@ -25,7 +30,7 @@ export class MembershipsService {
     }
 
     const currentMembers = await this.prismaService.membership.findMany({
-      where: { campaignId: campaignId, userId: { in: userIds } },
+      where: { campaignId: campaign.id, userId: { in: userIds } },
       select: { id: true },
     });
 
@@ -38,42 +43,33 @@ export class MembershipsService {
     const memberships = await this.prismaService.membership.createManyAndReturn({
       data: userIds.map((userId) => ({
         userId: userId,
-        campaignId: campaignId,
+        campaignId: campaign.id,
         status: 'PENDING',
       })),
     });
 
-    const campaign = await this.prismaService.campaign.findUnique({
-      where: { id: campaignId },
-      include: { memberships: true },
-    });
-
-    if (!campaign) {
-      throw new NotFoundException('Campaign not found');
-    }
-
     const membershipIds = memberships.map((membership) => membership.id);
 
-    this.membershipsGateway.handleDownCreateMembership(campaignId, membershipIds, [
+    this.membershipsGateway.handleDownCreateMembership(campaign.id, membershipIds, [
       masterId,
-      ...campaign.memberships.map((m) => m.userId),
+      ...campaign.memberships.map((m) => m.user.id),
+      ...memberships.map((m) => m.userId),
     ]);
 
     return membershipIds;
   }
 
   public async accept(
-    membershipId: number,
+    membership: HwMembership,
     klass: Klass,
     gender: Gender,
     name: string,
   ): Promise<number> {
-    let membership: Membership | undefined;
     let character: Character | undefined;
 
     await this.prismaService.$transaction(async (tx) => {
-      membership = await tx.membership.update({
-        where: { id: membershipId },
+      await tx.membership.update({
+        where: { id: membership.id },
         data: { status: MembershipStatus.ACTIVE },
       });
 
@@ -87,7 +83,7 @@ export class MembershipsService {
       });
     });
 
-    if (!membership || !character) {
+    if (!character) {
       throw new NotFoundException('Character could not be created');
     }
 
@@ -100,7 +96,7 @@ export class MembershipsService {
       throw new NotFoundException('Campaign could not be found');
     }
 
-    this.membershipsGateway.handleDownUpdateMembership(campaign.id, membershipId, [
+    this.membershipsGateway.handleDownUpdateMembership(campaign.id, membership.id, [
       campaign.masterId,
       ...campaign!.memberships.map((m) => m.userId),
     ]);
@@ -108,24 +104,19 @@ export class MembershipsService {
     return character.id;
   }
 
-  public async delete(campaignId: number, membershipId: number, self: boolean): Promise<number> {
-    const campaign = await this.prismaService.campaign.findUnique({
-      where: { id: campaignId },
-      include: { master: true, memberships: true },
-    });
+  public async delete(
+    membership: HwMembership,
+    campaign: HwCampaign,
+    self: boolean,
+  ): Promise<number> {
+    const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)];
 
-    if (!campaign) {
-      throw new NotFoundException('Campaign not found');
-    }
-
-    const membership = await this.prismaService.membership.delete({
-      where: { id: membershipId },
+    await this.prismaService.membership.delete({
+      where: { id: membership.id },
       include: {
         user: true,
       },
     });
-
-    const playerIds = [campaign.masterId, ...campaign!.memberships.map((m) => m.userId)];
 
     if (self) {
       this.membershipsGateway.handleDownAbandonMembership(

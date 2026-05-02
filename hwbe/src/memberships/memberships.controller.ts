@@ -1,12 +1,13 @@
-import { Membership } from '@hw/prismagen/client';
-import { HwMembershipAcceptDto } from '@hw/shared';
+import { HwCampaign, HwMembership, HwMembershipAcceptDto } from '@hw/shared';
 import { Body, Controller, Delete, Patch, UseGuards } from '@nestjs/common';
-import { AdventureNotPresent } from '../adventures/guards/adventure-not-present.guard.js';
-import { CurrentMembership } from './current-membership.decorator.js';
+import { CurrentMembershipCampaign } from './decorators/current-membership-campaign.decorator.js';
+import { CurrentMembership } from './decorators/current-membership.decorator.js';
+import { MembershipAdventureNotPresentGuard } from './guards/membership-adventure-not-present.guard.js';
 import { MembershipMasterGuard } from './guards/membership-master.guard.js';
 import { MembershipOwnerGuard } from './guards/membership-owner.guard.js';
 import { MembershipPendingGuard } from './guards/membership-pending.guard.js';
-import { MembershipGuard } from './guards/membership.guard.js';
+import { SetMembershipCampaignGuard } from './guards/set-membership-campaign.guard.js';
+import { SetMembershipGuard } from './guards/set-membership.guard.js';
 import { MembershipsService } from './memberships.service.js';
 
 @Controller('memberships')
@@ -14,23 +15,45 @@ export class MembershipsController {
   constructor(private membershipsService: MembershipsService) {}
 
   @Patch(':membershipId')
-  @UseGuards(MembershipGuard, MembershipOwnerGuard, MembershipPendingGuard, AdventureNotPresent)
+  @UseGuards(
+    SetMembershipGuard,
+    SetMembershipCampaignGuard,
+    MembershipOwnerGuard,
+    MembershipPendingGuard,
+    MembershipAdventureNotPresentGuard,
+  )
   public accept(
-    @CurrentMembership() membership: Membership,
+    @CurrentMembership() membership: HwMembership,
     @Body() params: HwMembershipAcceptDto,
   ): Promise<number> {
-    return this.membershipsService.accept(membership.id, params.klass, params.gender, params.name);
+    return this.membershipsService.accept(membership, params.klass, params.gender, params.name);
   }
 
   @Delete(':membershipId')
-  @UseGuards(MembershipGuard, MembershipMasterGuard, AdventureNotPresent)
-  public kickout(@CurrentMembership() membership: Membership): Promise<number> {
-    return this.membershipsService.delete(membership.campaignId, membership.id, false);
+  @UseGuards(
+    SetMembershipGuard,
+    SetMembershipCampaignGuard,
+    MembershipMasterGuard,
+    MembershipAdventureNotPresentGuard,
+  )
+  public kickout(
+    @CurrentMembership() membership: HwMembership,
+    @CurrentMembershipCampaign() campaign: HwCampaign,
+  ): Promise<number> {
+    return this.membershipsService.delete(membership, campaign, false);
   }
 
   @Delete(':membershipId/self')
-  @UseGuards(MembershipGuard, MembershipOwnerGuard, AdventureNotPresent)
-  public abandon(@CurrentMembership() membership: Membership): Promise<number> {
-    return this.membershipsService.delete(membership.campaignId, membership.id, true);
+  @UseGuards(
+    SetMembershipGuard,
+    SetMembershipCampaignGuard,
+    MembershipOwnerGuard,
+    MembershipAdventureNotPresentGuard,
+  )
+  public abandon(
+    @CurrentMembership() membership: HwMembership,
+    @CurrentMembershipCampaign() campaign: HwCampaign,
+  ): Promise<number> {
+    return this.membershipsService.delete(membership, campaign, true);
   }
 }

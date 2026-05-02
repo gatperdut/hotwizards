@@ -21,7 +21,6 @@ export { PaginationMeta } from './pagination/pagination-meta.interface.js';
 export { PaginationDto } from './pagination/pagination.dto.js';
 export { HwRulesetEditDto } from './rulesets/ruleset-edit.dto.js';
 export { HwRuleset } from './rulesets/ruleset.interface.js';
-export { HwMaster } from './shared/master.interface.js';
 export { HwMe } from './shared/me.interface.js';
 export { AdventuresDownstream } from './sockets/adventures-downstream.interface.js';
 export { AdventuresUpstream } from './sockets/adventures-upstream.interface.js';
