@@ -2,7 +2,12 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { CampaignsDownstream, CampaignsUpstream } from '@hw/shared';
+import {
+  AdventuresDownstream,
+  AdventuresUpstream,
+  CampaignsDownstream,
+  CampaignsUpstream,
+} from '@hw/shared';
 import { tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
@@ -28,11 +33,14 @@ export class BoardComponent {
   public tiles: number[] = Array.from({ length: 375 }, (_, i) => i);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  private adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
 
   constructor() {
     this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
+    this.adventuresSocket = this.socketService.socket('adventures', this.destroyRef);
 
     this.campaignsListen();
+    this.adventuresListen();
   }
 
   private campaignsListen(): void {
@@ -47,8 +55,10 @@ export class BoardComponent {
 
       void this.router.navigate(['home', 'campaigns']);
     });
+  }
 
-    this.campaignsSocket.on('downFinishAdventure', (campaignId, adventureTemplateName) => {
+  private adventuresListen(): void {
+    this.adventuresSocket.on('downFinishAdventure', (campaignId, adventureTemplateName) => {
       if (campaignId !== this.campaignService.campaign().id) {
         return;
       }

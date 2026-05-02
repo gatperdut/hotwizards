@@ -1,9 +1,9 @@
 import { HwCampaign, HwMembership, HwMembershipAcceptDto } from '@hw/shared';
 import { Body, Controller, Delete, Patch, UseGuards } from '@nestjs/common';
-import { CurrentMembershipCampaign } from './decorators/current-membership-campaign.decorator.js';
+import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
+import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';
 import { CurrentMembership } from './decorators/current-membership.decorator.js';
 import { MembershipAdventureNotPresentGuard } from './guards/membership-adventure-not-present.guard.js';
-import { MembershipMasterGuard } from './guards/membership-master.guard.js';
 import { MembershipOwnerGuard } from './guards/membership-owner.guard.js';
 import { MembershipPendingGuard } from './guards/membership-pending.guard.js';
 import { SetMembershipCampaignGuard } from './guards/set-membership-campaign.guard.js';
@@ -33,12 +33,12 @@ export class MembershipsController {
   @UseGuards(
     SetMembershipGuard,
     SetMembershipCampaignGuard,
-    MembershipMasterGuard,
+    CampaignMasterGuard,
     MembershipAdventureNotPresentGuard,
   )
   public kickout(
     @CurrentMembership() membership: HwMembership,
-    @CurrentMembershipCampaign() campaign: HwCampaign,
+    @CurrentCampaign() campaign: HwCampaign,
   ): Promise<number> {
     return this.membershipsService.delete(membership, campaign, false);
   }
@@ -52,7 +52,7 @@ export class MembershipsController {
   )
   public abandon(
     @CurrentMembership() membership: HwMembership,
-    @CurrentMembershipCampaign() campaign: HwCampaign,
+    @CurrentCampaign() campaign: HwCampaign,
   ): Promise<number> {
     return this.membershipsService.delete(membership, campaign, true);
   }

@@ -7,6 +7,6 @@ import { AdventureTemplatesService } from './adventure-templates.service.js';
   controllers: [AdventureTemplatesController],
   providers: [AdventureTemplatesService],
   imports: [PrismaModule],
-  exports: [AdventureTemplatesService],
+  exports: [],
 })
 export class AdventureTemplatesModule {}

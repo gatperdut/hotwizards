@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
@@ -8,10 +8,6 @@ export class CampaignMasterGuard implements CanActivate {
     const user = request.user;
     const campaign = request.campaign;
 
-    if (campaign.master.id !== user.id) {
-      throw new ForbiddenException('You are not the master of this campaign');
-    }
-
-    return true;
+    return campaign.master.id === user.id;
   }
 }

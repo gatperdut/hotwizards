@@ -113,9 +113,6 @@ export class MembershipsService {
 
     await this.prismaService.membership.delete({
       where: { id: membership.id },
-      include: {
-        user: true,
-      },
     });
 
     if (self) {

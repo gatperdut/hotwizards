@@ -7,6 +7,6 @@ import { RulesetsService } from './rulesets.service.js';
   controllers: [RulesetsController],
   providers: [RulesetsService],
   imports: [PrismaModule],
-  exports: [RulesetsService],
+  exports: [],
 })
 export class RulesetsModule {}

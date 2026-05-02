@@ -78,10 +78,4 @@ export class CampaignsApiService {
       })
       .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be started'));
   }
-
-  public finishAdventure(campaignId: number): Observable<number> {
-    return this.httpClient
-      .delete<number>(`/api/campaigns/${campaignId}/adventure`)
-      .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be finished'));
-  }
 }

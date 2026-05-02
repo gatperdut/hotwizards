@@ -7,17 +7,17 @@ import {
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
-export class SetMembershipCampaignGuard implements CanActivate {
+export class SetAdventureCampaignGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {}
 
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
-    const membership = request.membership;
+    const adventure = request.adventure;
 
     const campaign = await this.prismaService.campaign.findFirst({
       where: {
-        id: membership.campaignId,
+        id: adventure.campaignId,
         OR: [{ masterId: user.id }, { memberships: { some: { userId: user.id } } }],
       },
       ...CampaignHwRelations,

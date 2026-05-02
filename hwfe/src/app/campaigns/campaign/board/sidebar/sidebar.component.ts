@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AdventuresApiService } from '@hw/hwfe/app/adventures/services/adventures-api.service';
 import { AuthService } from '../../../../auth/services/auth.service';
-import { CampaignsApiService } from '../../../services/campaigns-api.service';
 import { CampaignService } from '../../campaign.service';
 
 @Component({
@@ -15,7 +15,7 @@ export class SidebarComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   public campaignService = inject(CampaignService);
-  private campaignsApiService = inject(CampaignsApiService);
+  private adventuresApiService = inject(AdventuresApiService);
 
   public logout(): void {
     this.authService.logout();
@@ -32,6 +32,8 @@ export class SidebarComponent {
   public pass(): void {}
 
   public finish(): void {
-    this.campaignsApiService.finishAdventure(this.campaignService.campaign().id).subscribe();
+    this.adventuresApiService
+      .finishAdventure(this.campaignService.campaign().adventure!.id)
+      .subscribe();
   }
 }

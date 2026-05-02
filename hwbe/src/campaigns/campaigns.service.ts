@@ -133,9 +133,6 @@ export class CampaignsService {
   public async delete(campaign: HwCampaign): Promise<number> {
     await this.prismaService.campaign.delete({
       where: { id: campaign.id },
-      include: {
-        memberships: true,
-      },
     });
 
     this.campaignsGateway.handleDownDeleteCampaign(campaign.id, [
@@ -164,21 +161,6 @@ export class CampaignsService {
     });
 
     this.campaignsGateway.handleDownStartAdventure(
-      campaign.id,
-      [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)],
-      adventure.template.name,
-    );
-
-    return adventure.id;
-  }
-
-  public async finishAdventure(campaign: HwCampaign): Promise<number> {
-    const adventure = await this.prismaService.adventure.delete({
-      where: { campaignId: campaign.id },
-      include: { template: true },
-    });
-
-    this.campaignsGateway.handleDownFinishAdventure(
       campaign.id,
       [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)],
       adventure.template.name,

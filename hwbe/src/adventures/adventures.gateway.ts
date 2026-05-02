@@ -24,4 +24,14 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
   public async handleConnection(socket: AdventuresSocket): Promise<void> {
     await socket.join(`user:${socket.user.id}`);
   }
+
+  public handleDownFinishAdventure(
+    campaignId: number,
+    playerIds: number[],
+    adventureTemplateName: string,
+  ): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downFinishAdventure', campaignId, adventureTemplateName);
+  }
 }

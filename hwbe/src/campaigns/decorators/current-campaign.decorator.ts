@@ -1,6 +1,6 @@
+import { HwRequest } from '@hw/hwbe/auth/types/request.type.js';
 import { HwCampaign } from '@hw/shared';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { HwRequest } from '../auth/types/request.type.js';
 
 export const CurrentCampaign = createParamDecorator(
   (_: unknown, executionContext: ExecutionContext): HwCampaign => {
