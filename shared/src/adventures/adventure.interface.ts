@@ -2,6 +2,8 @@ import { HwAdventureTemplate } from '../adventure-templates/adventure-template.i
 
 export interface HwAdventure {
   id: number;
+  campaignId: number;
+  templateId: number;
   template: HwAdventureTemplate;
   turn: number;
 }

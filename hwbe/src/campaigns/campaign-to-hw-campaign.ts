@@ -1,21 +1,25 @@
 import { Prisma, Ruleset } from '@hw/prismagen/client';
 import { HwCampaign } from '@hw/shared';
 import {
+  AdventureHwRelations,
+  adventureToHwAdventure,
+} from '../adventures/adventure-to-hw-adventure.js';
+import {
   MembershipHwRelations,
   membershipToHwMembership,
 } from '../memberships/membership-to-hw-membership.js';
+import { RulesetHwRelations, rulesetToHwRuleset } from '../rulesets/ruleset-to-hw-ruleset.js';
+import { UserHwRelations, userToHwUser } from '../users/user-to-hw-user.js';
 
 export const CampaignHwRelations = {
   include: {
-    master: true,
+    master: { ...UserHwRelations },
     memberships: {
       ...MembershipHwRelations,
     },
-    ruleset: true,
+    ruleset: { ...RulesetHwRelations },
     adventure: {
-      include: {
-        template: true,
-      },
+      ...AdventureHwRelations,
     },
   },
 } satisfies Prisma.CampaignDefaultArgs;
@@ -28,33 +32,15 @@ export const campaignToHwCampaign = (
 ): HwCampaign => {
   const ruleset = campaign.ruleset as Ruleset;
 
-  const { password, ...strippedMaster } = campaign.master;
-
   return {
     id: campaign.id,
     name: campaign.name,
     createdAt: campaign.createdAt,
-    master: {
-      ...strippedMaster,
-      me: campaign.masterId === userId,
-    },
+    master: userToHwUser(campaign.master, userId),
     memberships: campaign.memberships.map((membership) =>
       membershipToHwMembership(membership, userId),
     ),
-    ruleset: {
-      id: ruleset.id,
-      aoo: ruleset.aoo,
-      movement: ruleset.movement,
-    },
-    adventure: campaign.adventure
-      ? {
-          id: campaign.adventure.id,
-          template: {
-            id: campaign.adventure.template.id,
-            name: campaign.adventure.template.name,
-          },
-          turn: campaign.adventure.turn,
-        }
-      : undefined,
+    ruleset: rulesetToHwRuleset(ruleset),
+    adventure: campaign.adventure ? adventureToHwAdventure(campaign.adventure) : undefined,
   };
 };

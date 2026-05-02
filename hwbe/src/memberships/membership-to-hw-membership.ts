@@ -1,5 +1,6 @@
 import { Prisma } from '@hw/prismagen/client';
 import { HwMembership } from '@hw/shared';
+import { userToHwUser } from '../users/user-to-hw-user.js';
 
 export const MembershipHwRelations = {
   include: {
@@ -14,18 +15,13 @@ export const membershipToHwMembership = (
   membership: MembershipWithHwRelations,
   userId: number,
 ): HwMembership => {
-  const { password, ...strippedUser } = membership.user;
-
   return {
     id: membership.id,
     campaignId: membership.campaignId,
     status: membership.status,
     joinedAt: membership.joinedAt,
     me: membership.userId === userId,
-    user: {
-      ...strippedUser,
-      me: membership.user.id === userId,
-    },
+    user: userToHwUser(membership.user, userId),
     character: membership.character
       ? {
           ...membership.character,
