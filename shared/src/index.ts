@@ -1,3 +1,5 @@
+export { HwAdventureTemplateSearchDto } from './adventure-templates/adventure-template-search.dto.js';
+export { HwAdventureTemplate } from './adventure-templates/adventure-template.interface.js';
 export { HwAdventure } from './adventures/adventure.interface.js';
 export { HwAuthLoginDto } from './auth/auth-login.dto.js';
 export { HwAuthRegisterDto } from './auth/auth-register.dto.js';

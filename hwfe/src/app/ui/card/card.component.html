@@ -23,7 +23,8 @@
   </div>
 
   <div
-    class="pt-hw-average border-t border-off-medium flex flex-row items-center justify-end gap-hw-small"
+    class="pt-hw-average flex flex-row items-center justify-end gap-hw-small"
+    [class]="actions().length ? 'border-t border-off-medium' : ''"
   >
     @for (action of actions(); track $index) {
       <app-button

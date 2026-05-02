@@ -17,6 +17,8 @@
     <div class="typ-body">Here you can rest and prepare for your next adventure.</div>
   </div>
 
+  <div class="typ-h2 text-primary!">The adventurers</div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
     @for (membership of activeMemberships(); track membership.id) {
       <app-town-membership [membership]="membership"> </app-town-membership>
@@ -24,8 +26,8 @@
   </div>
 
   @let pendingMemberships = this.pendingMemberships();
-  @if (pendingMemberships) {
-    <div class="typ-body">Waiting for more heroes:</div>
+  @if (pendingMemberships.length) {
+    <div class="typ-h2 text-primary!">Waiting for more adventurers:</div>
 
     <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
       @for (membership of pendingMemberships; track membership.id) {
@@ -33,4 +35,6 @@
       }
     </div>
   }
+
+  <app-adventure-picker [master]="campaignService.campaign().master.me"></app-adventure-picker>
 </div>

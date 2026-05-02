@@ -15,11 +15,12 @@ import { catchError, EMPTY, of } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
+import { AdventurePickerComponent } from './adventure-picker/adventure-picker.component';
 import { TownMembershipComponent } from './town-membership/town-membership.component';
 
 @Component({
   selector: 'app-town',
-  imports: [ButtonComponent, TownMembershipComponent, WhoComponent],
+  imports: [ButtonComponent, TownMembershipComponent, WhoComponent, AdventurePickerComponent],
   templateUrl: './town.component.html',
   styleUrl: './town.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
