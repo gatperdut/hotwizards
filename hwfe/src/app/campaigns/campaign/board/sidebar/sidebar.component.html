@@ -1,3 +1,11 @@
 <button (click)="toHome()">TO HOME</button>
 
 <button (click)="logout()">LOGOUT</button>
+
+<button (click)="back()">BACK</button>
+
+<div class="typ-body">{{ campaignService.activePlayer()?.handle || 'UNKNOWN' }}</div>
+
+<button (click)="pass()">END TURN</button>
+
+<button (click)="finish()">FINISH</button>

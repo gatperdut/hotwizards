@@ -1,7 +1,7 @@
 <div class="max-w-6xl mx-auto p-hw-average pt-0 flex flex-col gap-hw-large">
   <div class="sticky top-0 z-1 w-full bg-background separator-b separator-secondary py-hw-average">
     <div class="flex flex-row justify-between items-center gap-hw-average">
-      <div class="flex flex-col">
+      <div class="flex flex-col truncate">
         <div class="typ-h1 truncate">{{ campaignService.campaign().name }}</div>
         <div class="typ-body truncate">In town</div>
       </div>
@@ -20,12 +20,12 @@
   <div class="typ-h2 text-primary!">The adventurers</div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
-    @for (membership of activeMemberships(); track membership.id) {
+    @for (membership of campaignService.activeMemberships(); track membership.id) {
       <app-town-membership [membership]="membership"> </app-town-membership>
     }
   </div>
 
-  @let pendingMemberships = this.pendingMemberships();
+  @let pendingMemberships = campaignService.pendingMemberships();
   @if (pendingMemberships.length) {
     <div class="typ-h2 text-primary!">Waiting for more adventurers:</div>
 

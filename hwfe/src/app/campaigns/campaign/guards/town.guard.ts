@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, MaybeAsync, Router, UrlTree } from '@angular/router';
-import { HwMembership } from '../../../../../../shared/dist/shared/src/memberships/membership.interface.js';
+import { HwMembership } from '@hw/shared';
 import { CampaignService } from '../campaign.service.js';
 
 export const townGuard: CanActivateFn = (): MaybeAsync<boolean | UrlTree> => {

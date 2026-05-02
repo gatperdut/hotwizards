@@ -6,19 +6,23 @@ import { ToastService } from '../ui/toast/services/toast.service';
 export class ApiNotificationService {
   private toastService = inject(ToastService);
 
-  public notify<T>(messageOk: string, messageBad: string): MonoTypeOperatorFunction<T> {
+  public notify<T>(messageOk?: string, messageBad?: string): MonoTypeOperatorFunction<T> {
     return tap({
       next: () => {
-        this.toastService.show({
-          message: messageOk,
-          color: 'primary',
-        });
+        if (messageOk) {
+          this.toastService.show({
+            message: messageOk,
+            color: 'primary',
+          });
+        }
       },
       error: () => {
-        this.toastService.show({
-          message: messageBad,
-          color: 'warning',
-        });
+        if (messageBad) {
+          this.toastService.show({
+            message: messageBad,
+            color: 'warning',
+          });
+        }
       },
     });
   }

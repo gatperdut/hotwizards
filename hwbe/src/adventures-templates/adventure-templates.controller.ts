@@ -1,6 +1,5 @@
-import { HwAdventureTemplateSearchDto, Paginated } from '@hw/shared';
+import { HwAdventureTemplate, HwAdventureTemplateSearchDto, Paginated } from '@hw/shared';
 import { Controller, Get, Query } from '@nestjs/common';
-import { HwAdventureTemplate } from '../../../shared/dist/shared/src/adventure-templates/adventure-template.interface.js';
 import { AdventureTemplatesService } from './adventure-templates.service.js';
 
 @Controller('adventure-templates')

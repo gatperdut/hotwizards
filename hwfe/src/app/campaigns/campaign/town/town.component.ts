@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import {
-  CampaignsListDownstream,
-  CampaignsListUpstream,
+  CampaignsDownstream,
+  CampaignsUpstream,
   HwCampaign,
   MembershipsDownstream,
   MembershipsUpstream,
 } from '@hw/shared';
-import { catchError, EMPTY, of } from 'rxjs';
+import { catchError, EMPTY, of, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
@@ -33,10 +33,8 @@ export class TownComponent {
   private toastService = inject(ToastService);
   private campaignsApiService = inject(CampaignsApiService);
 
-  private campaignsSocket!: Socket<CampaignsListDownstream, CampaignsListUpstream>;
+  private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
-
-  private campaign = computed(() => this.campaignService.campaign());
 
   constructor() {
     this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
@@ -46,36 +44,55 @@ export class TownComponent {
     this.membershipsListen();
   }
 
-  public pendingMemberships = computed(() =>
-    this.campaignService.campaign().memberships.filter((m) => m.status === 'PENDING'),
-  );
-
-  public activeMemberships = computed(() =>
-    this.campaignService.campaign().memberships.filter((m) => m.status === 'ACTIVE'),
-  );
-
   private campaignsListen(): void {
     this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
-      if (campaignId !== this.campaign().id) {
+      if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
 
-      this.toastService.show({ message: `Campaign ${this.campaign().name} has been deleted` });
+      this.toastService.show({
+        message: `Campaign ${this.campaignService.campaign().name} has been deleted`,
+      });
       this.back();
     });
 
     this.campaignsSocket.on('downUpdateCampaign', (campaignId) => {
-      if (campaignId !== this.campaign().id) {
+      if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
 
       this.refresh();
     });
+
+    this.campaignsSocket.on('downStartAdventure', (campaignId, adventureTemplateName) => {
+      if (campaignId !== this.campaignService.campaign().id) {
+        return;
+      }
+
+      this.campaignsApiService
+        .get(campaignId)
+        .pipe(
+          tap((campaign) => {
+            this.campaignService.campaign.set(campaign);
+
+            this.toastService.show({
+              message: `The adventure has started: ${adventureTemplateName}`,
+            });
+            void this.router.navigate([
+              'home',
+              'campaigns',
+              this.campaignService.campaign().id,
+              'board',
+            ]);
+          }),
+        )
+        .subscribe();
+    });
   }
 
   private membershipsListen(): void {
     this.membershipsSocket.on('downCreateMembership', (campaignId, _membershipIds) => {
-      if (campaignId !== this.campaign().id) {
+      if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
 
@@ -83,7 +100,7 @@ export class TownComponent {
     });
 
     this.membershipsSocket.on('downKickoutMembership', (campaignId, campaignName, masterHandle) => {
-      if (campaignId !== this.campaign().id) {
+      if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
 
@@ -106,7 +123,7 @@ export class TownComponent {
     });
 
     this.membershipsSocket.on('downAbandonMembership', (campaignId, memberHandle) => {
-      if (campaignId !== this.campaign().id) {
+      if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
 
@@ -131,7 +148,7 @@ export class TownComponent {
     });
 
     this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
-      if (campaignId !== this.campaign().id) {
+      if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
 
@@ -154,11 +171,12 @@ export class TownComponent {
   }
 
   private refresh(campaign?: HwCampaign): void {
-    (campaign ? of(campaign) : this.campaignsApiService.get(this.campaign().id)).subscribe(
-      (campaign) => {
-        this.campaignService.campaign.set(campaign);
-      },
-    );
+    (campaign
+      ? of(campaign)
+      : this.campaignsApiService.get(this.campaignService.campaign().id)
+    ).subscribe((campaign) => {
+      this.campaignService.campaign.set(campaign);
+    });
   }
 
   public back(): void {

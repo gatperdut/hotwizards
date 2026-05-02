@@ -1,8 +1,8 @@
 import { Movement, Prisma, Ruleset } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { CampaignsGateway } from './campaigns-list.gateway.js';
+import { CampaignsGateway } from './campaigns.gateway.js';
 
 const CampaignHwRelations = {
   include: {
@@ -179,12 +179,60 @@ export class CampaignsService {
   }
 
   public async startAdventure(campaignId: number, adventureTemplateId: number): Promise<number> {
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: campaignId },
+      include: { memberships: true },
+    });
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign not found');
+    }
+
+    const pendingMemberships = campaign.memberships.filter((m) => m.status === 'PENDING');
+
+    if (pendingMemberships.length) {
+      throw new ConflictException('There are pending memberships');
+    }
+
     const adventure = await this.prismaService.adventure.create({
       data: {
         campaignId: campaignId,
         templateId: adventureTemplateId,
       },
+      include: {
+        template: true,
+      },
     });
+
+    this.campaignsGateway.handleDownStartAdventure(
+      campaignId,
+      [campaign.masterId, ...campaign.memberships.map((m) => m.userId)],
+      adventure.template.name,
+    );
+
+    return adventure.id;
+  }
+
+  public async finishAdventure(campaignId: number): Promise<number> {
+    const campaign = await this.prismaService.campaign.findUnique({
+      where: { id: campaignId },
+      include: { memberships: true },
+    });
+
+    if (!campaign) {
+      throw new NotFoundException('Campaign not found');
+    }
+
+    const adventure = await this.prismaService.adventure.delete({
+      where: { campaignId: campaignId },
+      include: { template: true },
+    });
+
+    this.campaignsGateway.handleDownFinishAdventure(
+      campaignId,
+      [campaign.masterId, ...campaign.memberships.map((m) => m.userId)],
+      adventure.template.name,
+    );
 
     return adventure.id;
   }

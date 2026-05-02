@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-hw-average">
-  <div class="typ-h2 text-primary!">List of adventures</div>
+  <div class="typ-h2 text-primary!">Available adventures</div>
 
   <div class="flex flex-col items-start sm:flex-row sm:items-end gap-hw-average">
     <app-adventure-picker-filter
@@ -20,14 +20,21 @@
         >
           <div class="typ-body">{{ adventureTemplate.name }}</div>
 
-          <div class="flex flex-row justify-end gap-hw-average">
+          <div class="flex flex-row justify-end gap-hw-small">
             <app-button
               label="Info"
               color="secondary"
               (click)="info(adventureTemplate)"
             ></app-button>
             @if (master()) {
-              <app-button label="Start" (click)="start(adventureTemplate)"></app-button>
+              <app-button
+                label="Start"
+                (click)="start(adventureTemplate)"
+                [disabled]="
+                  !campaignService.activeMemberships().length ||
+                  !!campaignService.pendingMemberships().length
+                "
+              ></app-button>
             }
           </div>
         </div>

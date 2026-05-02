@@ -19,7 +19,8 @@ import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { DialogService, LazyDialog } from '@hw/hwfe/app/ui/dialog/services/dialog.service';
 import { PaginatorComponent } from '@hw/hwfe/app/ui/paginator/paginator.component';
 import { HwAdventureTemplate, HwAdventureTemplateSearchDto } from '@hw/shared';
-import { filter, map, tap } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs';
+import { CampaignsApiService } from '../../../services/campaigns-api.service';
 import { CampaignService } from '../../campaign.service';
 import { AdventurePickerFilterComponent } from './adventure-picker-filter/adventure-picker-filter.component';
 
@@ -33,6 +34,7 @@ import { AdventurePickerFilterComponent } from './adventure-picker-filter/advent
 export class AdventurePickerComponent {
   public campaignService = inject(CampaignService);
   private adventureTemplatesApiService = inject(AdventureTemplatesApiService);
+  private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
 
   public master = input.required<boolean>();
@@ -67,7 +69,7 @@ export class AdventurePickerComponent {
       ),
   });
 
-  public adventureTemplates = computed(() => this.resource.value() as HwAdventureTemplate[]);
+  public adventureTemplates = computed(() => this.resource.value() || []);
 
   public loading = computed(() => this.resource.isLoading());
 
@@ -96,9 +98,12 @@ export class AdventurePickerComponent {
         dialogRef.afterClosed$
           .pipe(
             filter((confirmed) => !!confirmed),
-            tap(() => {
-              this.campaignService.start(adventureTemplate.id);
-            }),
+            switchMap(() =>
+              this.campaignsApiService.startAdventure(
+                this.campaignService.campaign().id,
+                adventureTemplate.id,
+              ),
+            ),
           )
           .subscribe();
       });

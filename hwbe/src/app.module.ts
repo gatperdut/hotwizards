@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
 import { AdventureTemplatesModule } from './adventures-templates/adventure-templates.module.js';
+import { AdventuresModule } from './adventures/adventures.module.js';
 import { AppService } from './app.service.js';
 import { AuthMiddleware } from './auth/auth.middleware.js';
 import { AuthModule } from './auth/auth.module.js';
@@ -31,6 +32,7 @@ import { UsersModule } from './users/users.module.js';
     MembershipsModule,
     CharactersModule,
     AdventureTemplatesModule,
+    AdventuresModule,
   ],
   controllers: [],
   providers: [

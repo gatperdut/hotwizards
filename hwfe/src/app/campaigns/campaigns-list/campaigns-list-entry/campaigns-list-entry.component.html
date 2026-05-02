@@ -1,7 +1,9 @@
 <app-card [actions]="actions()" [miniactions]="miniactions()">
-  <div appCardTitle>
+  <div appCardTitle class="truncate">
     <div class="typ-h2 truncate">{{ campaign().name }}</div>
-    <div class="typ-body truncate">{{ adventure()?.template?.name }}</div>
+    <div class="typ-body truncate">
+      {{ adventure()?.template?.name }}
+    </div>
   </div>
   <div appCardBody class="flex flex-col gap-hw-average">
     <app-who [master]="true" [user]="campaign().master"></app-who>
