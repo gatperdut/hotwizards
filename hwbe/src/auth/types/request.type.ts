@@ -1,8 +1,9 @@
-import { Campaign, Membership, User } from '@hw/prismagen/client';
+import { User } from '@hw/prismagen/client';
+import { HwCampaign, HwMembership } from '@hw/shared';
 import { Request } from 'express';
 
 export type HwRequest = Request & {
   user: User;
-  campaign: Campaign;
-  membership: Membership;
+  campaign: HwCampaign;
+  membership: HwMembership;
 };

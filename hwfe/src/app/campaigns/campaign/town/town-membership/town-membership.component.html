@@ -1,6 +1,6 @@
 <app-card
   [actions]="actions()"
-  [color]="membership().master || membership().me ? 'primary' : 'secondary'"
+  [color]="membership().me ? 'primary' : 'secondary'"
   [miniactions]="miniactions()"
 >
   <div appCardTitle>

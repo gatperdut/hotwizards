@@ -6,12 +6,12 @@ import { CampaignsController } from './campaigns.controller.js';
 import { CampaignsGateway } from './campaigns.gateway.js';
 import { CampaignsService } from './campaigns.service.js';
 import { CampaignMasterGuard } from './guards/campaign-master.guard.js';
-import { CampaignGuard } from './guards/campaign.guard.js';
+import { SetCampaignGuard } from './guards/set-campaign.guard.js';
 
 @Module({
   controllers: [CampaignsController],
-  providers: [CampaignsService, CampaignGuard, CampaignMasterGuard, CampaignsGateway],
+  providers: [CampaignsService, SetCampaignGuard, CampaignMasterGuard, CampaignsGateway],
   imports: [PrismaModule, AuthModule, MembershipsModule],
-  exports: [CampaignsService, CampaignGuard, CampaignMasterGuard],
+  exports: [CampaignsService, SetCampaignGuard, CampaignMasterGuard],
 })
 export class CampaignsModule {}

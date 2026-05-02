@@ -1,29 +1,32 @@
+import { HwRequest } from '@hw/hwbe/auth/types/request.type.js';
 import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
-import { HwRequest } from '../../auth/types/request.type.js';
+import {
+  CampaignHwRelations,
+  campaignToHwCampaign,
+} from '../../campaigns/campaign-to-hw-campaign.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
-export class AdventurePresent implements CanActivate {
+export class SetMembershipCampaignGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {}
 
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
-    const campaign = request.campaign;
+    const user = request.user;
     const membership = request.membership;
 
-    const campaignId = campaign?.id || membership?.campaignId;
+    const campaign = await this.prismaService.campaign.findFirst({
+      where: {
+        id: membership.campaignId,
+      },
+      ...CampaignHwRelations,
+    });
 
-    if (!campaignId) {
+    if (!campaign) {
       throw new NotFoundException('Campaign not found');
     }
 
-    const adventure = await this.prismaService.adventure.findUnique({
-      where: { campaignId: campaignId },
-    });
-
-    if (!adventure) {
-      throw new NotFoundException('The campaign is not running an adventure');
-    }
+    request.campaign = campaignToHwCampaign(campaign, user.id);
 
     return true;
   }
