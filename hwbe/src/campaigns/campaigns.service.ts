@@ -178,6 +178,17 @@ export class CampaignsService {
     return campaign.id;
   }
 
+  public async startAdventure(campaignId: number, adventureTemplateId: number): Promise<number> {
+    const adventure = await this.prismaService.adventure.create({
+      data: {
+        campaignId: campaignId,
+        templateId: adventureTemplateId,
+      },
+    });
+
+    return adventure.id;
+  }
+
   private campaignToHwCampaign(campaign: CampaignWithHwRelations, userId: number): HwCampaign {
     const ruleset = campaign.ruleset as Ruleset;
 

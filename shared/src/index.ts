@@ -1,6 +1,7 @@
 export { HwAdventureTemplateSearchDto } from './adventure-templates/adventure-template-search.dto.js';
 export { HwAdventureTemplate } from './adventure-templates/adventure-template.interface.js';
 export { HwAdventure } from './adventures/adventure.interface.js';
+export { HwStartAdventureDto } from './adventures/start-adventure.dto.js';
 export { HwAuthLoginDto } from './auth/auth-login.dto.js';
 export { HwAuthRegisterDto } from './auth/auth-register.dto.js';
 export { HwAuthResponse } from './auth/auth-response.interface.js';
@@ -22,6 +23,8 @@ export { HwRulesetEditDto } from './rulesets/ruleset-edit.dto.js';
 export { HwRuleset } from './rulesets/ruleset.interface.js';
 export { HwMaster } from './shared/master.interface.js';
 export { HwMe } from './shared/me.interface.js';
+export { AdventureDownstream } from './sockets/adventure-downstream.interface.js';
+export { AdventureUpstream } from './sockets/adventure-upstream.interface.js';
 export { CampaignsListDownstream } from './sockets/campaigns-list-downstream.interface.js';
 export { CampaignsListUpstream } from './sockets/campaigns-list-upstream.interface.js';
 export { MembershipsDownstream } from './sockets/memberships-downstream.interface.js';
