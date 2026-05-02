@@ -51,14 +51,4 @@ export class CampaignsGateway implements OnGatewayInit, OnGatewayConnection {
 
     this.server.to(rooms).emit('downStartAdventure', campaignId, adventureTemplateName);
   }
-
-  public handleDownFinishAdventure(
-    campaignId: number,
-    playerIds: number[],
-    adventureTemplateName: string,
-  ): void {
-    const rooms = playerIds.map((id) => `user:${id}`);
-
-    this.server.to(rooms).emit('downFinishAdventure', campaignId, adventureTemplateName);
-  }
 }

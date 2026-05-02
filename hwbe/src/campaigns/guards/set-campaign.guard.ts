@@ -22,19 +22,8 @@ export class SetCampaignGuard implements CanActivate {
 
     const campaign = await this.prismaService.campaign.findFirst({
       where: {
-        AND: [
-          { id: campaignId },
-          {
-            OR: [
-              { masterId: user.id },
-              {
-                memberships: {
-                  some: { userId: user.id },
-                },
-              },
-            ],
-          },
-        ],
+        id: campaignId,
+        OR: [{ masterId: user.id }, { memberships: { some: { userId: user.id } } }],
       },
       ...CampaignHwRelations,
     });

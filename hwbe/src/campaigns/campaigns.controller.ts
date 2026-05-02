@@ -12,9 +12,8 @@ import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@n
 import { MembershipsService } from '../memberships/memberships.service.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CampaignsService } from './campaigns.service.js';
-import { CurrentCampaign } from './current-campaign.decorator.js';
+import { CurrentCampaign } from './decorators/current-campaign.decorator.js';
 import { CampaignAdventureNotPresentGuard } from './guards/campaign-adventure-not-present.guard.js';
-import { CampaignAdventurePresentGuard } from './guards/campaign-adventure-present.guard.js';
 import { CampaignMasterGuard } from './guards/campaign-master.guard.js';
 import { SetCampaignGuard } from './guards/set-campaign.guard.js';
 
@@ -76,11 +75,5 @@ export class CampaignsController {
     @Body() params: HwStartAdventureDto,
   ): Promise<number> {
     return this.campaignsService.startAdventure(campaign, params.adventureTemplateId);
-  }
-
-  @Delete(':campaignId/adventure')
-  @UseGuards(SetCampaignGuard, CampaignMasterGuard, CampaignAdventurePresentGuard)
-  public finishAdventure(@CurrentCampaign() campaign: HwCampaign): Promise<number> {
-    return this.campaignsService.finishAdventure(campaign);
   }
 }

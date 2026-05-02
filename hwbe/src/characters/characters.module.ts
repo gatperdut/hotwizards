@@ -7,6 +7,6 @@ import { CharactersService } from './characters.service.js';
   controllers: [CharactersController],
   providers: [CharactersService],
   imports: [PrismaModule],
-  exports: [CharactersService],
+  exports: [],
 })
 export class CharactersModule {}
