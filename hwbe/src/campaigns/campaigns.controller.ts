@@ -4,6 +4,8 @@ import {
   HwCampaignEditDto,
   HwCampaignSearchDto,
   HwMembershipCreateDto,
+  HwStartAdventureDto,
+  HwUser,
   Paginated,
 } from '@hw/shared';
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
@@ -24,7 +26,7 @@ export class CampaignsController {
 
   @Get()
   public search(
-    @CurrentUser() user: User,
+    @CurrentUser() user: HwUser,
     @Query() params: HwCampaignSearchDto,
   ): Promise<Paginated<HwCampaign>> {
     return this.campaignsService.search(user.id, params.term, params.page, params.pageSize);
@@ -33,7 +35,7 @@ export class CampaignsController {
   @Get(':campaignId')
   @UseGuards(CampaignGuard)
   public get(
-    @CurrentUser() user: User,
+    @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: Campaign,
   ): Promise<HwCampaign> {
     return this.campaignsService.get(campaign.id, user.id);
@@ -62,10 +64,19 @@ export class CampaignsController {
   @Post(':campaignId/memberships')
   @UseGuards(CampaignGuard, CampaignMasterGuard, AdventureNotPresent)
   public invite(
-    @CurrentUser() user: User,
+    @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: Campaign,
     @Body() params: HwMembershipCreateDto,
   ): Promise<number[]> {
     return this.membershipsService.create(campaign.id, user.id, params.userIds);
+  }
+
+  @Post(':campaignId/start-adventure')
+  @UseGuards(CampaignGuard, CampaignMasterGuard, AdventureNotPresent)
+  public startAdventure(
+    @CurrentCampaign() campaign: Campaign,
+    @Body() params: HwStartAdventureDto,
+  ) {
+    this.campaignsService.startAdventure(campaign.id, params.adventureTemplateId);
   }
 }
