@@ -10,6 +10,7 @@ import {
 } from '@hw/shared';
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AdventureNotPresent } from '../adventures/guards/adventure-not-present.guard.js';
+import { AdventurePresent } from '../adventures/guards/adventure-present.guard.js';
 import { MembershipsService } from '../memberships/memberships.service.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CampaignsService } from './campaigns.service.js';
@@ -71,12 +72,18 @@ export class CampaignsController {
     return this.membershipsService.create(campaign.id, user.id, params.userIds);
   }
 
-  @Post(':campaignId/start-adventure')
+  @Post(':campaignId/adventure')
   @UseGuards(CampaignGuard, CampaignMasterGuard, AdventureNotPresent)
   public startAdventure(
     @CurrentCampaign() campaign: Campaign,
     @Body() params: HwStartAdventureDto,
-  ) {
-    this.campaignsService.startAdventure(campaign.id, params.adventureTemplateId);
+  ): Promise<number> {
+    return this.campaignsService.startAdventure(campaign.id, params.adventureTemplateId);
+  }
+
+  @Delete(':campaignId/adventure')
+  @UseGuards(CampaignGuard, CampaignMasterGuard, AdventurePresent)
+  public finishAdventure(@CurrentCampaign() campaign: Campaign): Promise<number> {
+    return this.campaignsService.finishAdventure(campaign.id);
   }
 }

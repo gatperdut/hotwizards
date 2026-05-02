@@ -1,8 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { HwCampaign, HwMembership } from '@hw/shared';
 import { filter, switchMap } from 'rxjs';
-import { HwCampaign } from '../../../../../../shared/dist/shared/src/campaigns/campaign.interface';
-import { HwMembership } from '../../../../../../shared/dist/shared/src/memberships/membership.interface';
 import { MembershipsApiService } from '../../../memberships/memberships-api.service';
 import {
   ConfirmationDialogComponent,

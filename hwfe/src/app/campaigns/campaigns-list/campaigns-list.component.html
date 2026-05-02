@@ -22,7 +22,7 @@
 
     @let campaigns = this.campaigns();
     @if (campaigns.length) {
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-hw-average">
         @for (campaign of campaigns; track campaign.id) {
           <app-campaigns-list-entry [campaign]="campaign"> </app-campaigns-list-entry>
         }

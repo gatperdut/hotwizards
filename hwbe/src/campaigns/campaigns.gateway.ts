@@ -1,5 +1,5 @@
 // presence/presence.gateway.ts
-import { CampaignsListDownstream, CampaignsListUpstream } from '@hw/shared';
+import { CampaignsDownstream, CampaignsUpstream } from '@hw/shared';
 import {
   OnGatewayConnection,
   OnGatewayInit,
@@ -10,14 +10,11 @@ import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applySocketAuthMiddleware } from '../sockets/socket-auth.middleware.js';
 
-type CampaignsSocket = Socket<CampaignsListUpstream, CampaignsListDownstream>;
+type CampaignsSocket = Socket<CampaignsUpstream, CampaignsDownstream>;
 
 @WebSocketGateway({ namespace: 'campaigns' })
 export class CampaignsGateway implements OnGatewayInit, OnGatewayConnection {
-  @WebSocketServer() private readonly server: Server<
-    CampaignsListUpstream,
-    CampaignsListDownstream
-  >;
+  @WebSocketServer() private readonly server: Server<CampaignsUpstream, CampaignsDownstream>;
 
   constructor(private readonly authService: AuthService) {}
 
@@ -43,5 +40,25 @@ export class CampaignsGateway implements OnGatewayInit, OnGatewayConnection {
     const rooms = playerIds.map((id) => `user:${id}`);
 
     this.server.to(rooms).emit('downUpdateCampaign', campaignId);
+  }
+
+  public handleDownStartAdventure(
+    campaignId: number,
+    playerIds: number[],
+    adventureTemplateName: string,
+  ): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downStartAdventure', campaignId, adventureTemplateName);
+  }
+
+  public handleDownFinishAdventure(
+    campaignId: number,
+    playerIds: number[],
+    adventureTemplateName: string,
+  ): void {
+    const rooms = playerIds.map((id) => `user:${id}`);
+
+    this.server.to(rooms).emit('downFinishAdventure', campaignId, adventureTemplateName);
   }
 }

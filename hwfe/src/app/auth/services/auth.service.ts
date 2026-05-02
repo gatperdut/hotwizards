@@ -88,6 +88,6 @@ export class AuthService {
 
     this.user.set(undefined);
 
-    void this.router.navigate(['/auth/login']);
+    void this.router.navigate(['auth', 'login']);
   }
 }

@@ -70,4 +70,18 @@ export class CampaignsApiService {
         this.apiNotificationService.notify('Campaign deleted', 'Campaign could not be deleted'),
       );
   }
+
+  public startAdventure(campaignId: number, adventureTemplateId: number): Observable<number> {
+    return this.httpClient
+      .post<number>(`/api/campaigns/${campaignId}/adventure`, {
+        adventureTemplateId: adventureTemplateId,
+      })
+      .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be started'));
+  }
+
+  public finishAdventure(campaignId: number): Observable<number> {
+    return this.httpClient
+      .delete<number>(`/api/campaigns/${campaignId}/adventure`)
+      .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be finished'));
+  }
 }

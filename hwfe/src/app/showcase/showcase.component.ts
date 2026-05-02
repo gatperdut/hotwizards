@@ -95,7 +95,7 @@ export class ShowcaseComponent {
     },
   });
 
-  public options1 = computed(() => this.resource.value());
+  public options1 = computed(() => this.resource.value() || []);
 
   public itemsModel2 = signal<SelectItem[]>([]);
   public itemsForm2 = form(this.itemsModel2);

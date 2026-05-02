@@ -39,7 +39,7 @@ export class LoginComponent {
           const result = await firstValueFrom(this.authService.login(this.model()));
 
           if (result.user && result.token) {
-            void this.router.navigate(['/home']);
+            void this.router.navigate(['home']);
             return;
           }
 

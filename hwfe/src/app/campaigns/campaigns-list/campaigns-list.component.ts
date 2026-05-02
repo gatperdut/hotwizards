@@ -12,8 +12,8 @@ import { debounce, form, SchemaPath } from '@angular/forms/signals';
 import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import {
-  CampaignsListDownstream,
-  CampaignsListUpstream,
+  CampaignsDownstream,
+  CampaignsUpstream,
   HwCampaign,
   HwCampaignSearchDto,
   MembershipsDownstream,
@@ -56,7 +56,7 @@ export class CampaignsListComponent {
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
 
-  private campaignsSocket!: Socket<CampaignsListDownstream, CampaignsListUpstream>;
+  private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
 
   constructor() {
@@ -95,7 +95,7 @@ export class CampaignsListComponent {
       ),
   });
 
-  public campaigns = computed(() => this.resource.value() as HwCampaign[]);
+  public campaigns = computed(() => this.resource.value() || []);
 
   public loading = computed(() => this.resource.isLoading());
 

@@ -123,7 +123,7 @@ export class RegisterComponent {
           const result = await firstValueFrom(this.authService.register(this.model()));
 
           if (result.user && result.token) {
-            void this.router.navigate(['/home']);
+            void this.router.navigate(['home']);
             return;
           }
 
