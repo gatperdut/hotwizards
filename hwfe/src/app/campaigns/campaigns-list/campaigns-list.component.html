@@ -20,18 +20,15 @@
       <app-paginator [(page)]="page" [pages]="pages()"></app-paginator>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
-      @for (campaign of campaigns(); track campaign.id) {
-        <app-campaigns-list-entry [campaign]="campaign"> </app-campaigns-list-entry>
-      }
-    </div>
-
-    <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{
-      presenceService.list() | json
-    }}</pre>
-
-    <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ meta() | json }}</pre>
-
-    <pre class="whitespace-pre-wrap wrap-break-word typ-code">{{ campaigns() | json }}</pre>
+    @let campaigns = this.campaigns();
+    @if (campaigns.length) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-hw-average">
+        @for (campaign of campaigns; track campaign.id) {
+          <app-campaigns-list-entry [campaign]="campaign"> </app-campaigns-list-entry>
+        }
+      </div>
+    } @else {
+      <div class="typ-body italic">No results</div>
+    }
   </div>
 </div>

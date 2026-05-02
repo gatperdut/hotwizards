@@ -23,6 +23,7 @@ const CampaignHwRelations = {
 } satisfies Prisma.CampaignDefaultArgs;
 
 type CampaignWithHwRelations = Prisma.CampaignGetPayload<typeof CampaignHwRelations>;
+
 @Injectable()
 export class CampaignsService {
   constructor(

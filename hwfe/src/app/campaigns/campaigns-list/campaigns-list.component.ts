@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,7 +18,6 @@ import {
   HwCampaignSearchDto,
   MembershipsDownstream,
   MembershipsUpstream,
-  PaginationMeta,
 } from '@hw/shared';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
@@ -43,7 +41,6 @@ import { CampaignsListActionsService } from './services/campaigns-list-actions.s
     CampaignsListFilterComponent,
     PaginatorComponent,
     CampaignsListEntryComponent,
-    JsonPipe,
     ButtonComponent,
   ],
   templateUrl: './campaigns-list.component.html',
@@ -87,19 +84,11 @@ export class CampaignsListComponent {
 
   public pages = signal<number>(0);
 
-  public meta = signal<PaginationMeta>({
-    page: 0,
-    pageSize: 10,
-    pages: 0,
-    total: 0,
-  });
-
   private resource = rxResource<HwCampaign[], HwCampaignSearchDto>({
     params: () => ({ ...this.model(), page: this.page() }),
     stream: (request) =>
       this.campaignsApiService.search(request.params).pipe(
         tap((response) => {
-          this.meta.set(response.meta);
           this.pages.set(response.meta.pages);
         }),
         map((response) => response.items),

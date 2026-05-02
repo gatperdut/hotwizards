@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-hw-average">
+  <div class="typ-h2 text-primary!">List of adventures</div>
+
+  <div class="flex flex-col items-start sm:flex-row sm:items-end gap-hw-average">
+    <app-adventure-picker-filter
+      [form]="form"
+      [loading]="loading()"
+      class="w-full sm:grow"
+    ></app-adventure-picker-filter>
+
+    <app-paginator [(page)]="page" [pages]="pages()"></app-paginator>
+  </div>
+
+  @let adventureTemplates = this.adventureTemplates();
+  @if (adventureTemplates.length) {
+    <div class="flex flex-col gap-hw-xlarge">
+      @for (adventureTemplate of adventureTemplates; track adventureTemplate.id) {
+        <div
+          class="flex flex-row justify-between items-center gap-hw-average hover:bg-secondary/10 p-2"
+        >
+          <div class="typ-body">{{ adventureTemplate.name }}</div>
+
+          <div class="flex flex-row justify-end gap-hw-average">
+            <app-button
+              label="Info"
+              color="secondary"
+              (click)="info(adventureTemplate)"
+            ></app-button>
+            @if (master()) {
+              <app-button label="Start" (click)="start(adventureTemplate)"></app-button>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="typ-body italic">No results</div>
+  }
+</div>
