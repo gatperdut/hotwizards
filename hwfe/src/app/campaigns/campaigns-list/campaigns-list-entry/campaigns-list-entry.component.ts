@@ -9,7 +9,7 @@ import { HwAdventure, HwCampaign, HwMembership } from '@hw/shared';
 import { KlassesService } from '../../../characters/services/klasses.service';
 import { AppCardAction, AppCardMiniAction, CardComponent } from '../../../ui/card/card.component';
 import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
-import { CampaignActionsService } from '../../services/campaign-actions.service';
+import { CampaignsListActionsService } from '../services/campaigns-list-actions.service';
 
 @Component({
   selector: 'app-campaigns-list-entry',
@@ -21,7 +21,7 @@ import { CampaignActionsService } from '../../services/campaign-actions.service'
 export class CampaignsListEntryComponent {
   private dialogService = inject(DialogService);
   public klassesService = inject(KlassesService);
-  private campaignActionsService = inject(CampaignActionsService);
+  private campaignsListActionsService = inject(CampaignsListActionsService);
 
   public campaign = input.required<HwCampaign>();
 
@@ -56,7 +56,7 @@ export class CampaignsListEntryComponent {
       if (this.hasAdventure()) {
         this.cannotToggleMembership();
       } else {
-        this.campaignActionsService.toggleMembership(membership, false);
+        this.campaignsListActionsService.toggleMembership(membership, false);
       }
     }
   }
@@ -79,19 +79,19 @@ export class CampaignsListEntryComponent {
     const result: AppCardAction[] = [];
 
     if (this.meMaster() && !this.hasAdventure()) {
-      result.push(this.campaignActionsService.inviteAction(this.campaign()));
+      result.push(this.campaignsListActionsService.inviteAction(this.campaign()));
     }
 
     if (this.mePending() || (this.meActive() && !this.hasAdventure())) {
-      result.push(this.campaignActionsService.abandonAction(this.membership()));
+      result.push(this.campaignsListActionsService.abandonAction(this.membership()));
     }
 
     if (this.mePending() && !this.hasAdventure()) {
-      result.push(this.campaignActionsService.joinAction(this.campaign()));
+      result.push(this.campaignsListActionsService.joinAction(this.campaign()));
     }
 
     if (!this.mePending()) {
-      result.push(this.campaignActionsService.playAction(this.campaign()));
+      result.push(this.campaignsListActionsService.playAction(this.campaign()));
     }
 
     return result;
@@ -101,8 +101,8 @@ export class CampaignsListEntryComponent {
     const result: AppCardMiniAction[] = [];
 
     if (this.meMaster()) {
-      result.push(this.campaignActionsService.deleteMiniAction(this.campaign()));
-      result.push(this.campaignActionsService.editMiniAction(this.campaign()));
+      result.push(this.campaignsListActionsService.deleteMiniAction(this.campaign()));
+      result.push(this.campaignsListActionsService.editMiniAction(this.campaign()));
     }
 
     return result;

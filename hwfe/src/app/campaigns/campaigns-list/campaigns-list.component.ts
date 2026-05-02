@@ -35,6 +35,7 @@ import {
 import { CampaignsApiService } from '../services/campaigns-api.service';
 import { CampaignsListEntryComponent } from './campaigns-list-entry/campaigns-list-entry.component';
 import { CampaignsListFilterComponent } from './campaigns-list-filter/campaigns-list-filter.component';
+import { CampaignsListActionsService } from './services/campaigns-list-actions.service';
 
 @Component({
   selector: 'app-campaigns',
@@ -48,6 +49,7 @@ import { CampaignsListFilterComponent } from './campaigns-list-filter/campaigns-
   templateUrl: './campaigns-list.component.html',
   styleUrl: './campaigns-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [CampaignsListActionsService],
 })
 export class CampaignsListComponent {
   private campaignsApiService = inject(CampaignsApiService);

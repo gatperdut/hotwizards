@@ -1,35 +1,35 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter, switchMap } from 'rxjs';
-import { HwCampaign } from '../../../../../shared/dist/shared/src/campaigns/campaign.interface';
-import { HwMembership } from '../../../../../shared/dist/shared/src/memberships/membership.interface';
-import { MembershipsApiService } from '../../memberships/memberships-api.service';
+import { HwCampaign } from '../../../../../../shared/dist/shared/src/campaigns/campaign.interface';
+import { HwMembership } from '../../../../../../shared/dist/shared/src/memberships/membership.interface';
+import { MembershipsApiService } from '../../../memberships/memberships-api.service';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
   ConfirmationDialogResult,
-} from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { AppCardAction, AppCardMiniAction } from '../../ui/card/card.component';
-import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+} from '../../../shared/confirmation-dialog/confirmation-dialog.component';
+import { AppCardAction, AppCardMiniAction } from '../../../ui/card/card.component';
+import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
 import {
   CampaignEditorDialogComponent,
   CampaignEditorDialogData,
   CampaignEditorDialogResult,
-} from '../campaign-editor-dialog/campaign-editor-dialog.component';
+} from '../../campaign-editor-dialog/campaign-editor-dialog.component';
 import {
   CampaignInviteAcceptDialogComponent,
   CampaignInviteAcceptDialogData,
   CampaignInviteAcceptDialogResult,
-} from '../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component';
+} from '../../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component';
 import {
   CampaignInviteDialogComponent,
   CampaignInviteDialogData,
   CampaignInviteDialogResult,
-} from '../campaign-invite-dialog/campaign-invite-dialog.component';
-import { CampaignsApiService } from './campaigns-api.service';
+} from '../../campaign-invite-dialog/campaign-invite-dialog.component';
+import { CampaignsApiService } from '../../services/campaigns-api.service';
 
-@Injectable({ providedIn: 'root' })
-export class CampaignActionsService {
+@Injectable()
+export class CampaignsListActionsService {
   private dialogService = inject(DialogService);
   private router = inject(Router);
   private campaignsApiService = inject(CampaignsApiService);
@@ -45,7 +45,7 @@ export class CampaignActionsService {
           CampaignInviteDialogResult
         > = {
           importFn: () =>
-            import('../campaign-invite-dialog/campaign-invite-dialog.component').then(
+            import('../../campaign-invite-dialog/campaign-invite-dialog.component').then(
               (m) => m.CampaignInviteDialogComponent,
             ),
         };
@@ -67,7 +67,7 @@ export class CampaignActionsService {
           CampaignInviteAcceptDialogResult
         > = {
           importFn: () =>
-            import('../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component').then(
+            import('../../campaign-invite-accept-dialog/campaign-invite-accept-dialog.component').then(
               (m) => m.CampaignInviteAcceptDialogComponent,
             ),
         };
@@ -98,7 +98,7 @@ export class CampaignActionsService {
       ConfirmationDialogResult
     > = {
       importFn: () =>
-        import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+        import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
           (m) => m.ConfirmationDialogComponent,
         ),
     };
@@ -145,7 +145,7 @@ export class CampaignActionsService {
           ConfirmationDialogResult
         > = {
           importFn: () =>
-            import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+            import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
               (m) => m.ConfirmationDialogComponent,
             ),
         };
@@ -178,7 +178,7 @@ export class CampaignActionsService {
           CampaignEditorDialogResult
         > = {
           importFn: () =>
-            import('../campaign-editor-dialog/campaign-editor-dialog.component').then(
+            import('../../campaign-editor-dialog/campaign-editor-dialog.component').then(
               (m) => m.CampaignEditorDialogComponent,
             ),
         };
