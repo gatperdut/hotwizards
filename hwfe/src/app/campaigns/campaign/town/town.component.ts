@@ -105,6 +105,10 @@ export class TownComponent {
     });
 
     this.membershipsSocket.on('downAbandonMembership', (campaignId, memberHandle) => {
+      if (campaignId !== this.campaign().id) {
+        return;
+      }
+
       this.campaignsApiService
         .get(campaignId)
         .pipe(
@@ -126,6 +130,10 @@ export class TownComponent {
     });
 
     this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
+      if (campaignId !== this.campaign().id) {
+        return;
+      }
+
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
         this.refresh(campaign);
 
