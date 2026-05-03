@@ -1,6 +1,7 @@
 import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwCampaign, HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { KlassesService } from '../characters/klasses.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
@@ -13,6 +14,7 @@ export class MembershipsService {
     private membershipsGateway: MembershipsGateway,
     private pushService: PushService,
     private klassesService: KlassesService,
+    private configService: ConfigService,
   ) {}
 
   public async create(campaign: HwCampaign, userIds: number[]): Promise<number[]> {
@@ -60,8 +62,8 @@ export class MembershipsService {
       void this.pushService.notifyUser(m.userId, {
         title: 'Invitation to campaign',
         body: `${campaign.master.handle} has invited you to the campaign ${campaign.name}`,
-        // TODO use term param when the frontend supports it
-        data: { url: `/home/campaigns` },
+        // TODO redirect to town when PENDINGs are allowed
+        data: { url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns` },
       });
     });
 
@@ -114,8 +116,7 @@ export class MembershipsService {
       title: 'Invitation accepted',
       body: `${membership.user.handle} has accepted the invitation to ${campaign.name}`,
       icon: this.klassesService.portrait(character.klass, character.gender),
-      // TODO use term param when the frontend supports it
-      data: { url: `/home/campaigns` },
+      data: { url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}` },
     });
 
     return character.id;
@@ -157,8 +158,11 @@ export class MembershipsService {
           ? `${this.klassesService.portrait(membership.character.klass, membership.character.gender)}`
           : '/characters/pending.gif'
         : '/characters/zargon.png',
-      // TODO use term param when the frontend supports it
-      data: { url: `https://hotwizards.net/home/campaigns` },
+      data: {
+        url: self
+          ? `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}`
+          : `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns`,
+      },
     });
 
     return membership.id;

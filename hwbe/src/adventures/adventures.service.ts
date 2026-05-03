@@ -1,5 +1,6 @@
 import { HwAdventure, HwCampaign, HwUser } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { AdventuresGateway } from './adventures.gateway.js';
@@ -10,6 +11,7 @@ export class AdventuresService {
     private prismaService: PrismaService,
     private adventuresGateway: AdventuresGateway,
     private pushService: PushService,
+    private configService: ConfigService,
   ) {}
 
   public async finishAdventure(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
@@ -47,7 +49,7 @@ export class AdventuresService {
     void this.pushService.notifyUser(user.id, {
       title: campaign.name,
       body: `${name}, it's your turn`,
-      data: { url: `/home/campaigns/${campaign.id}/board` },
+      data: { url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}` },
     });
 
     return turn;
