@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
-import { applySocketAuthMiddleware } from '../sockets/socket-auth.middleware.js';
+import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
 
 type MembershipsSocket = Socket<MembershipsUpstream, MembershipsDownstream>;
 

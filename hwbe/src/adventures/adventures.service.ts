@@ -17,7 +17,7 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownFinishAdventure(
       campaign.id,
-      [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)],
+      adventure.id,
       adventure.template.name,
     );
 
@@ -34,7 +34,7 @@ export class AdventuresService {
       },
     });
 
-    this.adventuresGateway.handleDownNextTurn(campaign.id, turn);
+    this.adventuresGateway.handleDownNextTurn(campaign.id, adventure.id, turn);
 
     return turn;
   }

@@ -5,12 +5,16 @@ import { HwCampaign } from '@hw/shared';
 export class CampaignService {
   public campaign = signal<HwCampaign>(null!);
 
+  public master = computed(() => this.campaign().master);
+
+  public memberships = computed(() => this.campaign().memberships);
+
   public pendingMemberships = computed(() =>
-    this.campaign().memberships.filter((m) => m.status === 'PENDING'),
+    this.memberships().filter((m) => m.status === 'PENDING'),
   );
 
   public activeMemberships = computed(() =>
-    this.campaign().memberships.filter((m) => m.status === 'ACTIVE'),
+    this.memberships().filter((m) => m.status === 'ACTIVE'),
   );
 
   public adventure = computed(() => this.campaign().adventure);
@@ -18,7 +22,7 @@ export class CampaignService {
   public activePlayer = computed(() => {
     const adventure = this.adventure();
     return adventure
-      ? [this.campaign().master, ...this.campaign().memberships.map((m) => m.user)][adventure.turn]
+      ? [this.campaign().master, ...this.memberships().map((m) => m.user)][adventure.turn]
       : undefined;
   });
 }

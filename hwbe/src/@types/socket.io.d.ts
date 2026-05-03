@@ -1,7 +1,8 @@
-import { HwUser } from '@hw/shared';
+import { HwAdventure, HwUser } from '@hw/shared';
 
 declare module 'socket.io' {
   interface Socket {
     user: HwUser;
+    adventure: HwAdventure;
   }
 }
