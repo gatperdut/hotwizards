@@ -45,7 +45,7 @@ CREATE TABLE "Ruleset" (
 -- CreateTable
 CREATE TABLE "Membership" (
     "id" SERIAL NOT NULL,
-    "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "status" "MembershipStatus" NOT NULL DEFAULT 'PENDING',
     "userId" INTEGER NOT NULL,
     "campaignId" INTEGER NOT NULL,

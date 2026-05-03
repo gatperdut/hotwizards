@@ -5,9 +5,11 @@ import { HwUser } from '../users/user.interface.js';
 
 export interface HwMembership extends HwMe {
   id: number;
+  createdAt: Date;
   campaignId: number;
   status: MembershipStatus;
-  joinedAt: Date;
   user: HwUser;
+  userId: number;
   character?: HwCharacter;
+  characterId?: number;
 }
