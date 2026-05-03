@@ -43,7 +43,7 @@ export class PushService {
             JSON.stringify({
               notification: {
                 ...payload,
-                icon: '/pwa/icon-192x192.png',
+                icon: payload.icon || '/pwa/icon-192x192.png',
               },
             }),
           )

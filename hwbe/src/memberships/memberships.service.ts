@@ -1,6 +1,7 @@
 import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwCampaign, HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { KlassesService } from '../characters/klasses.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { MembershipsGateway } from './memberships.gateway.js';
@@ -11,6 +12,7 @@ export class MembershipsService {
     private prismaService: PrismaService,
     private membershipsGateway: MembershipsGateway,
     private pushService: PushService,
+    private klassesService: KlassesService,
   ) {}
 
   public async create(campaign: HwCampaign, userIds: number[]): Promise<number[]> {
@@ -111,6 +113,7 @@ export class MembershipsService {
     void this.pushService.notifyUser(campaign.masterId, {
       title: 'Invitation accepted',
       body: `${membership.user.handle} has accepted the invitation to ${campaign.name}`,
+      icon: this.klassesService.portrait(character.klass, character.gender),
       // TODO use term param when the frontend supports it
       data: { url: `/home/campaigns` },
     });
@@ -149,6 +152,9 @@ export class MembershipsService {
       body: self
         ? `${membership.user.handle} has left your campaign ${campaign.name}`
         : `${campaign.master.handle} has kicked you out of the campaign ${campaign.name}`,
+      icon: self
+        ? `${this.klassesService.portrait(membership.character!.klass, membership.character!.gender)}`
+        : '/characters/zargon.png',
       // TODO use term param when the frontend supports it
       data: { url: `/home/campaigns` },
     });
