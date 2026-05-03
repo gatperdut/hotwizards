@@ -37,7 +37,9 @@ export class BoardComponent {
 
   constructor() {
     this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
-    this.adventuresSocket = this.socketService.socket('adventures', this.destroyRef);
+    this.adventuresSocket = this.socketService.socket('adventures', this.destroyRef, {
+      adventureId: this.campaignService.adventure()!.id,
+    });
 
     this.campaignsListen();
     this.adventuresListen();
@@ -59,10 +61,6 @@ export class BoardComponent {
 
   private adventuresListen(): void {
     this.adventuresSocket.on('downFinishAdventure', (campaignId, adventureTemplateName) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
       this.campaignsApiService
         .get(campaignId)
         .pipe(
@@ -74,6 +72,36 @@ export class BoardComponent {
             });
 
             void this.router.navigate(['home', 'campaigns', campaignId, 'town']);
+          }),
+        )
+        .subscribe();
+    });
+
+    this.adventuresSocket.on('downNextTurn', (campaignId, turn) => {
+      this.campaignsApiService
+        .get(campaignId)
+        .pipe(
+          tap((campaign) => {
+            this.campaignService.campaign.set(campaign);
+
+            let message: string;
+
+            if (turn === 0) {
+              const master = this.campaignService.master();
+
+              message = master.me
+                ? 'Your turn, Zargon'
+                : `Turn for Zargon (${this.campaignService.master().handle})`;
+            } else {
+              const membership = this.campaignService.memberships()[turn - 1];
+
+              message = membership.me
+                ? `Your turn, ${membership.character!.name}`
+                : `Turn for ${membership.character!.name} (${membership.user.handle})`;
+            }
+            this.toastService.show({
+              message: message,
+            });
           }),
         )
         .subscribe();
