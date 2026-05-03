@@ -153,7 +153,9 @@ export class MembershipsService {
         ? `${membership.user.handle} has left your campaign ${campaign.name}`
         : `${campaign.master.handle} has kicked you out of the campaign ${campaign.name}`,
       icon: self
-        ? `${this.klassesService.portrait(membership.character!.klass, membership.character!.gender)}`
+        ? membership.character
+          ? `${this.klassesService.portrait(membership.character.klass, membership.character.gender)}`
+          : '/characters/pending.gif'
         : '/characters/zargon.png',
       // TODO use term param when the frontend supports it
       data: { url: `/home/campaigns` },
