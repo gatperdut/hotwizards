@@ -33,6 +33,7 @@ jobs:
           echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
           echo "HWBE_JWT_KEY=${{ secrets.HWBE_JWT_KEY }}" >> .env
           echo "HWBE_JWT_EXPIRES_IN=${{ vars.HWBE_JWT_EXPIRES_IN }}" >> .env
+          echo "HWBE_VAPID_KEY=${{ secrets.HWBE_VAPID_KEY }}" >> .env
           echo "SENTRY_RELEASE=${{ github.sha }}" >> .env
 
       - name: HWFE - Inject Sentry DSN
@@ -41,6 +42,7 @@ jobs:
           sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
           sed -i "s|HWFE_SENTRY_RELEASE_PLACEHOLDER|${{ github.sha }}|" src/environments/environment.ts
           sed -i "s|HWFE_HWBE_URL|${{ vars.HWFE_HWBE_URL }}|" src/environments/environment.ts
+          sed -i "s|HWFE_VAPID_KEY|${{ vars.HWFE_VAPID_KEY }}|" src/environments/environment.ts
 
       - name: Install and build
         run: |
