@@ -1,10 +1,7 @@
 export interface PushPayload {
-  notification: {
-    title: string;
-    body: string;
-    icon?: string;
-    data: {
-      url: string;
-    };
+  title: string;
+  body: string;
+  data: {
+    url: string;
   };
 }
