@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { SwUpdate, VersionEvent, VersionReadyEvent } from '@angular/service-worker';
+import { SwPush, SwUpdate, VersionEvent, VersionReadyEvent } from '@angular/service-worker';
 import { filter, tap } from 'rxjs';
 import { ToastService } from '../ui/toast/services/toast.service.js';
 
 @Injectable({ providedIn: 'root' })
 export class PwaService {
   private swUpdate = inject(SwUpdate);
+  private swPush = inject(SwPush);
   private toastService = inject(ToastService);
 
   constructor() {
@@ -13,6 +14,12 @@ export class PwaService {
       return;
     }
 
+    this.listenForUpdates();
+
+    this.listenForClicks();
+  }
+
+  private listenForUpdates(): void {
     setInterval((): void => {
       void this.swUpdate.checkForUpdate();
     }, 60 * 1000);
@@ -36,5 +43,11 @@ export class PwaService {
         }),
       )
       .subscribe();
+  }
+
+  private listenForClicks(): void {
+    this.swPush.notificationClicks.subscribe(({ notification }) => {
+      window.open(notification.data.url, '_blank');
+    });
   }
 }

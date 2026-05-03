@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { PushModule } from '../push/push.module.js';
@@ -9,7 +10,7 @@ import { AdventuresService } from './adventures.service.js';
 @Module({
   controllers: [AdventuresController],
   providers: [AdventuresGateway, AdventuresService],
-  imports: [PrismaModule, AuthModule, PushModule],
+  imports: [PrismaModule, AuthModule, PushModule, ConfigModule],
   exports: [],
 })
 export class AdventuresModule {}

@@ -1,6 +1,7 @@
 import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
 import { ConflictException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
@@ -12,6 +13,7 @@ export class CampaignsService {
     private prismaService: PrismaService,
     private campaignsGateway: CampaignsGateway,
     private pushService: PushService,
+    private configService: ConfigService,
   ) {}
 
   public async search(
@@ -133,8 +135,7 @@ export class CampaignsService {
       void this.pushService.notifyUser(m.userId, {
         title: 'Campaign renamed',
         body: `Campaign ${campaign.name} has been renamed to ${name}`,
-        // TODO hardcoded to town, but it could be board, too.
-        data: { url: `/home/campaigns/${campaign.id}/town` },
+        data: { url: `/home/campaigns/${campaign.id}` },
       });
     });
 
@@ -155,8 +156,7 @@ export class CampaignsService {
       void this.pushService.notifyUser(m.userId, {
         title: campaign.name,
         body: 'The campaign has been deleted',
-        // TODO use term param when the frontend supports it
-        data: { url: `/home/campaigns` },
+        data: { url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns` },
       });
     });
 

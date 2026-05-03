@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from '../auth/auth.module.js';
 import { CharactersModule } from '../characters/characters.module.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
@@ -10,7 +11,7 @@ import { MembershipsService } from './memberships.service.js';
 @Module({
   controllers: [MembershipsController],
   providers: [MembershipsService, MembershipsGateway],
-  imports: [PrismaModule, AuthModule, PushModule, CharactersModule],
+  imports: [PrismaModule, AuthModule, PushModule, CharactersModule, ConfigModule],
   exports: [MembershipsService],
 })
 export class MembershipsModule {}
