@@ -40,7 +40,7 @@ export class MembershipsController {
     @CurrentMembership() membership: HwMembership,
     @CurrentCampaign() campaign: HwCampaign,
   ): Promise<number> {
-    return this.membershipsService.delete(membership, campaign, false);
+    return this.membershipsService.delete(campaign, membership, false);
   }
 
   @Delete(':membershipId/self')
@@ -54,6 +54,6 @@ export class MembershipsController {
     @CurrentMembership() membership: HwMembership,
     @CurrentCampaign() campaign: HwCampaign,
   ): Promise<number> {
-    return this.membershipsService.delete(membership, campaign, true);
+    return this.membershipsService.delete(campaign, membership, true);
   }
 }

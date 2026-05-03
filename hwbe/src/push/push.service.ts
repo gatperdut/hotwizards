@@ -30,9 +30,9 @@ export class PushService {
     return subscription.id;
   }
 
-  public async notifyUser(user: HwUser, payload: PushPayload): Promise<void> {
+  public async notifyUser(userId: number, payload: PushPayload): Promise<void> {
     const subscriptions = await this.prismaService.pushSubscription.findMany({
-      where: { userId: user.id },
+      where: { userId: userId },
     });
 
     await Promise.allSettled(

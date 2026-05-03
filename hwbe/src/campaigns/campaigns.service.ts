@@ -2,6 +2,7 @@ import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwCampaign, Paginated } from '@hw/shared';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
 import { CampaignsGateway } from './campaigns.gateway.js';
 
@@ -10,6 +11,7 @@ export class CampaignsService {
   constructor(
     private prismaService: PrismaService,
     private campaignsGateway: CampaignsGateway,
+    private pushService: PushService,
   ) {}
 
   public async search(
@@ -127,6 +129,17 @@ export class CampaignsService {
       ...campaign.memberships.map((m) => m.user.id),
     ]);
 
+    campaign.memberships.forEach((m) => {
+      void this.pushService.notifyUser(m.userId, {
+        notification: {
+          title: 'Hot Wizards',
+          body: `${campaign.master.handle} has rename the campaign ${campaign.name} to ${name}`,
+          // TODO hardcoded to town, but it could be board, too.
+          data: { url: `/home/campaigns/${campaign.id}/town` },
+        },
+      });
+    });
+
     return campaign.id;
   }
 
@@ -139,6 +152,17 @@ export class CampaignsService {
       campaign.master.id,
       ...campaign.memberships.map((m) => m.user.id),
     ]);
+
+    campaign.memberships.forEach((m) => {
+      void this.pushService.notifyUser(m.userId, {
+        notification: {
+          title: 'Hot Wizards',
+          body: `${campaign.master.handle} has deleted the campaign ${campaign.name}`,
+          // TODO use term param when the frontend supports it
+          data: { url: `/home/campaigns` },
+        },
+      });
+    });
 
     return campaign.id;
   }

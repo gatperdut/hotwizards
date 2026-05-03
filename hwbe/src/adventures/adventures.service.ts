@@ -44,9 +44,9 @@ export class AdventuresService {
 
     const name = turn === 0 ? 'Zargon' : campaign.memberships[turn - 1].character!.name;
 
-    void this.pushService.notifyUser(user, {
+    void this.pushService.notifyUser(user.id, {
       notification: {
-        title: 'How Wizards',
+        title: 'Hot Wizards',
         body: `${name}, it's your turn in ${campaign.name}`,
         data: { url: `/home/campaigns/${campaign.id}/board` },
       },
