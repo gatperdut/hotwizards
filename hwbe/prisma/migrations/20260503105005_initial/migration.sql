@@ -23,6 +23,18 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "PushSubscription" (
+    "id" SERIAL NOT NULL,
+    "endpoint" TEXT NOT NULL,
+    "p256dh" TEXT NOT NULL,
+    "auth" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" INTEGER NOT NULL,
+
+    CONSTRAINT "PushSubscription_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Campaign" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
@@ -89,6 +101,9 @@ CREATE UNIQUE INDEX "User_handle_key" ON "User"("handle");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "PushSubscription_endpoint_key" ON "PushSubscription"("endpoint");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Ruleset_campaignId_key" ON "Ruleset"("campaignId");
 
 -- CreateIndex
@@ -99,6 +114,9 @@ CREATE UNIQUE INDEX "Character_membershipId_key" ON "Character"("membershipId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Adventure_campaignId_key" ON "Adventure"("campaignId");
+
+-- AddForeignKey
+ALTER TABLE "PushSubscription" ADD CONSTRAINT "PushSubscription_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Campaign" ADD CONSTRAINT "Campaign_masterId_fkey" FOREIGN KEY ("masterId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
