@@ -158,7 +158,7 @@ export class MembershipsService {
           : '/characters/pending.gif'
         : '/characters/zargon.png',
       // TODO use term param when the frontend supports it
-      data: { url: `/home/campaigns` },
+      data: { url: `https://hotwizards.net/home/campaigns` },
     });
 
     return membership.id;
