@@ -131,12 +131,10 @@ export class CampaignsService {
 
     campaign.memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
-        notification: {
-          title: 'Hot Wizards',
-          body: `${campaign.master.handle} has rename the campaign ${campaign.name} to ${name}`,
-          // TODO hardcoded to town, but it could be board, too.
-          data: { url: `/home/campaigns/${campaign.id}/town` },
-        },
+        title: 'Campaign renamed',
+        body: `Campaign ${campaign.name} has been renamed to ${name}`,
+        // TODO hardcoded to town, but it could be board, too.
+        data: { url: `/home/campaigns/${campaign.id}/town` },
       });
     });
 
@@ -155,12 +153,10 @@ export class CampaignsService {
 
     campaign.memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
-        notification: {
-          title: 'Hot Wizards',
-          body: `${campaign.master.handle} has deleted the campaign ${campaign.name}`,
-          // TODO use term param when the frontend supports it
-          data: { url: `/home/campaigns` },
-        },
+        title: campaign.name,
+        body: 'The campaign has been deleted',
+        // TODO use term param when the frontend supports it
+        data: { url: `/home/campaigns` },
       });
     });
 

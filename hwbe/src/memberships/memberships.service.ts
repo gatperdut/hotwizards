@@ -56,12 +56,10 @@ export class MembershipsService {
 
     memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
-        notification: {
-          title: 'Hot Wizards',
-          body: `${campaign.master.handle} has invited you to the campaign ${campaign.name}`,
-          // TODO use term param when the frontend supports it
-          data: { url: `/home/campaigns` },
-        },
+        title: 'Invitation to campaign',
+        body: `${campaign.master.handle} has invited you to the campaign ${campaign.name}`,
+        // TODO use term param when the frontend supports it
+        data: { url: `/home/campaigns` },
       });
     });
 
@@ -111,12 +109,10 @@ export class MembershipsService {
     ]);
 
     void this.pushService.notifyUser(campaign.masterId, {
-      notification: {
-        title: 'Hot Wizards',
-        body: `${membership.user.handle} has accepted the invitation to your campaign ${campaign.name}`,
-        // TODO use term param when the frontend supports it
-        data: { url: `/home/campaigns` },
-      },
+      title: 'Invitation accepted',
+      body: `${membership.user.handle} has accepted the invitation to ${campaign.name}`,
+      // TODO use term param when the frontend supports it
+      data: { url: `/home/campaigns` },
     });
 
     return character.id;
@@ -149,14 +145,12 @@ export class MembershipsService {
     }
 
     void this.pushService.notifyUser(self ? campaign.master.id : membership.userId, {
-      notification: {
-        title: 'Hot Wizards',
-        body: self
-          ? `${membership.user.handle} has left your campaign ${campaign.name}`
-          : `${campaign.master.handle} has kicked you out of the campaign ${campaign.name}`,
-        // TODO use term param when the frontend supports it
-        data: { url: `/home/campaigns` },
-      },
+      title: 'Campaign abandoned',
+      body: self
+        ? `${membership.user.handle} has left your campaign ${campaign.name}`
+        : `${campaign.master.handle} has kicked you out of the campaign ${campaign.name}`,
+      // TODO use term param when the frontend supports it
+      data: { url: `/home/campaigns` },
     });
 
     return membership.id;

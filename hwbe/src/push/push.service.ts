@@ -40,7 +40,12 @@ export class PushService {
         webpush
           .sendNotification(
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-            JSON.stringify(payload),
+            JSON.stringify({
+              notification: {
+                ...payload,
+                icon: 'https://hotwizards.net/pwa/icon-192x192.png',
+              },
+            }),
           )
           .catch(async (err) => {
             if (err.statusCode === 410) {
