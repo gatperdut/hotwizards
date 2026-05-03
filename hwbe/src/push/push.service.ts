@@ -1,6 +1,6 @@
-import { HwUser } from '@hw/shared';
+import { HwUser, PushPayload } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
-import { PushSubscription } from 'web-push';
+import webpush, { PushSubscription } from 'web-push';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
@@ -28,5 +28,28 @@ export class PushService {
     });
 
     return subscription.id;
+  }
+
+  public async notifyUser(user: HwUser, payload: PushPayload): Promise<void> {
+    const subscriptions = await this.prismaService.pushSubscription.findMany({
+      where: { userId: user.id },
+    });
+
+    await Promise.allSettled(
+      subscriptions.map((sub) =>
+        webpush
+          .sendNotification(
+            { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+            JSON.stringify(payload),
+          )
+          .catch(async (err) => {
+            if (err.statusCode === 410) {
+              await this.prismaService.pushSubscription.delete({
+                where: { endpoint: sub.endpoint },
+              });
+            }
+          }),
+      ),
+    );
   }
 }

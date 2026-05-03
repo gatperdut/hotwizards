@@ -1,6 +1,7 @@
-import { HwAdventure, HwCampaign } from '@hw/shared';
+import { HwAdventure, HwCampaign, HwUser } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { PushService } from '../push/push.service.js';
 import { AdventuresGateway } from './adventures.gateway.js';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class AdventuresService {
   constructor(
     private prismaService: PrismaService,
     private adventuresGateway: AdventuresGateway,
+    private pushService: PushService,
   ) {}
 
   public async finishAdventure(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
@@ -24,7 +26,11 @@ export class AdventuresService {
     return adventure.id;
   }
 
-  public async nextTurn(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
+  public async nextTurn(
+    user: HwUser,
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+  ): Promise<number> {
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
 
     await this.prismaService.adventure.update({
@@ -35,6 +41,16 @@ export class AdventuresService {
     });
 
     this.adventuresGateway.handleDownNextTurn(campaign.id, adventure.id, turn);
+
+    const name = turn === 0 ? 'Zargon' : campaign.memberships[turn - 1].character!.name;
+
+    void this.pushService.notifyUser(user, {
+      notification: {
+        title: 'How Wizards',
+        body: `${name}, it's your turn in ${campaign.name}`,
+        data: { url: `/home/campaigns/${campaign.id}/board` },
+      },
+    });
 
     return turn;
   }
