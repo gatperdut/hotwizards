@@ -5,5 +5,5 @@ export const environment: AppEnvironment = {
   sentryDsn: 'HWFE_SENTRY_DSN_PLACEHOLDER',
   hwfeSentryRelease: 'HWFE_SENTRY_RELEASE_PLACEHOLDER',
   hwbeUrl: 'HWFE_HWBE_URL',
-  vapidKey: 'HWFE_VAPID_KEY',
+  vapidKey: 'HWFE_PUBLIC_VAPID_KEY',
 };

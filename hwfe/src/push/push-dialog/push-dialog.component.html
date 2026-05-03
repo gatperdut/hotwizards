@@ -1,0 +1,42 @@
+<app-dialog sizeClass="max-w-md">
+  <ng-template appDialogTitle>
+    <div class="typ-h2">Push notifications</div>
+  </ng-template>
+
+  <ng-template appDialogContent>
+    <div class="flex flex-col gap-hw-xxlarge">
+      <div class="flex flex-col gap-hw-average">
+        <div class="typ-body">You can decide whether you want to receive push notifications.</div>
+        <div class="typ-body">
+          These will let you know when someone invites you to their campaign, or joins yours, or
+          when it's your turn to play.
+        </div>
+      </div>
+
+      @if (subscription$ | async) {
+        <div class="typ-body text-primary text-center">Push notifications are enabled</div>
+      } @else {
+        <div class="typ-body text-warning! text-center">Push notifications are disabled</div>
+      }
+
+      @if (subscription$ | async) {
+        <app-button
+          class="self-center"
+          color="warning"
+          (click)="unsubscribe()"
+          label="Disable notifications"
+        ></app-button>
+      } @else {
+        <app-button
+          class="self-center"
+          (click)="subscribe()"
+          label="Enable notifications"
+        ></app-button>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template appDialogActions>
+    <app-button label="OK" type="submit" (click)="dialogRef.close()"></app-button>
+  </ng-template>
+</app-dialog>
