@@ -7,6 +7,6 @@ import { PushService } from './push.service.js';
   controllers: [PushController],
   providers: [PushService],
   imports: [PrismaModule],
-  exports: [],
+  exports: [PushService],
 })
 export class PushModule {}
