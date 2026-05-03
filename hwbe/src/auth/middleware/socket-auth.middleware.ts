@@ -7,19 +7,19 @@ export function applySocketAuthMiddleware(server: Server, authService: AuthServi
     const token = socket.handshake.auth?.token?.split(' ')[1];
 
     if (!token) {
-      return next(new Error('Unauthorized'));
+      return next(new Error('Authorization token is missing'));
     }
 
     authService
       .userFromToken(token)
       .then((user) => {
         if (!user) {
-          return next(new Error('Unauthorized'));
+          return next(new Error('Authorization token is invalid'));
         }
 
         socket.user = user;
         next();
       })
-      .catch(() => next(new Error('Unauthorized')));
+      .catch(() => next(new Error('Authorization token error')));
   });
 }
