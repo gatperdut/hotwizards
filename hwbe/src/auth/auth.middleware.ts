@@ -23,6 +23,12 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedException('Authorization token is missing');
     }
 
+    const user = await this.authService.userFromToken(token);
+
+    if (!user) {
+      throw new UnauthorizedException('Authorization token is invalid');
+    }
+
     req.user = await this.authService.userFromToken(token);
 
     next();
