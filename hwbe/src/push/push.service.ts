@@ -42,8 +42,17 @@ export class PushService {
             { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
             JSON.stringify({
               notification: {
-                ...payload,
+                title: payload.title,
+                body: payload.body,
                 icon: payload.icon || '/pwa/icon-192x192.png',
+                data: {
+                  onActionClick: {
+                    default: {
+                      operation: 'focusLastFocusedOrOpen',
+                      url: payload.url,
+                    },
+                  },
+                },
               },
             }),
           )
