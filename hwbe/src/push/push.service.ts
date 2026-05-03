@@ -7,18 +7,26 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class PushService {
   constructor(private prismaService: PrismaService) {}
 
-  public async create(user: HwUser, dto: PushSubscription): Promise<number> {
-    const pushSubscription = await this.prismaService.pushSubscription.upsert({
-      where: { endpoint: dto.endpoint },
-      update: { p256dh: dto.keys.p256dh, auth: dto.keys.auth },
+  public async upsert(user: HwUser, subscriptionDto: PushSubscription): Promise<number> {
+    const subscription = await this.prismaService.pushSubscription.upsert({
+      where: { endpoint: subscriptionDto.endpoint },
+      update: { p256dh: subscriptionDto.keys.p256dh, auth: subscriptionDto.keys.auth },
       create: {
         userId: user.id,
-        endpoint: dto.endpoint,
-        p256dh: dto.keys.p256dh,
-        auth: dto.keys.auth,
+        endpoint: subscriptionDto.endpoint,
+        p256dh: subscriptionDto.keys.p256dh,
+        auth: subscriptionDto.keys.auth,
       },
     });
 
-    return pushSubscription.id;
+    return subscription.id;
+  }
+
+  public async delete(user: HwUser, endpoint: string): Promise<number> {
+    const subscription = await this.prismaService.pushSubscription.delete({
+      where: { userId: user.id, endpoint: endpoint },
+    });
+
+    return subscription.id;
   }
 }

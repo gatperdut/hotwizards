@@ -21,6 +21,7 @@ import {
 } from '@hw/shared';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
+import { UserMenuComponent } from '../../shared/user-menu/user-menu.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import { PaginatorComponent } from '../../ui/paginator/paginator.component';
@@ -42,6 +43,7 @@ import { CampaignsListActionsService } from './services/campaigns-list-actions.s
     PaginatorComponent,
     CampaignsListEntryComponent,
     ButtonComponent,
+    UserMenuComponent,
   ],
   templateUrl: './campaigns-list.component.html',
   styleUrl: './campaigns-list.component.css',

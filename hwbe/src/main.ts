@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import * as Sentry from '@sentry/nestjs';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import webpush from 'web-push';
 import { AppModule } from './app.module.js';
 import { SocketIoAdapter } from './sockets/socket-io.adapter.js';
 
@@ -41,6 +42,13 @@ async function bootstrap(): Promise<void> {
 
   // Socket adapter
   app.useWebSocketAdapter(new SocketIoAdapter(app));
+
+  // VAPID
+  webpush.setVapidDetails(
+    `mailto:${configService.get<string>('HWBE_VAPID_EMAIL')}`,
+    configService.get<string>('HWBE_PUBLIC_VAPID_KEY') as string,
+    configService.get<string>('HWBE_PRIVATE_VAPID_KEY') as string,
+  );
 
   // Listen
   const port: number = configService.get<number>('HWBE_PORT') as number;
