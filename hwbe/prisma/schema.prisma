@@ -68,8 +68,8 @@ model Ruleset {
 }
 
 model Membership {
-  id       Int      @id @default(autoincrement())
-  joinedAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
 
   status MembershipStatus @default(PENDING)
 

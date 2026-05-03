@@ -13,4 +13,8 @@ export class AdventuresApiService {
       .delete<number>(`/api/adventures/${adventureId}`)
       .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be finished'));
   }
+
+  public endTurn(adventureId: number) {
+    return this.httpClient.post(`/api/adventures/${adventureId}/end-turn`, null);
+  }
 }

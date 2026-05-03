@@ -1,9 +1,10 @@
 import { HwAdventure, HwCampaign } from '@hw/shared';
-import { Controller, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Post, UseGuards } from '@nestjs/common';
 import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
 import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';
 import { AdventuresService } from './adventures.service.js';
 import { CurrentAdventure } from './decorators/current-adventure.decorator.js';
+import { AdventureProperTurnGuard } from './guards/adventure-proper-turn.guard.js';
 import { SetAdventureCampaignGuard } from './guards/set-adventure-campaign.guard.js';
 import { SetAdventureGuard } from './guards/set-adventure.guard.js';
 
@@ -18,5 +19,14 @@ export class AdventuresController {
     @CurrentAdventure() adventure: HwAdventure,
   ): Promise<number> {
     return this.adventuresService.finishAdventure(campaign, adventure);
+  }
+
+  @Post(':adventureId/end-turn')
+  @UseGuards(SetAdventureGuard, SetAdventureCampaignGuard, AdventureProperTurnGuard)
+  public endTurn(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentAdventure() adventure: HwAdventure,
+  ): Promise<number> {
+    return this.adventuresService.nextTurn(campaign, adventure);
   }
 }

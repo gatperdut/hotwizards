@@ -7,7 +7,8 @@ export const MembershipHwRelations = {
     user: true,
     character: true,
   },
-} satisfies Prisma.MembershipDefaultArgs;
+  orderBy: { createdAt: 'asc' },
+} satisfies Prisma.MembershipFindManyArgs;
 
 type MembershipWithHwRelations = Prisma.MembershipGetPayload<typeof MembershipHwRelations>;
 
@@ -19,14 +20,16 @@ export const membershipToHwMembership = (
     id: membership.id,
     campaignId: membership.campaignId,
     status: membership.status,
-    joinedAt: membership.joinedAt,
+    createdAt: membership.createdAt,
     me: membership.userId === userId,
     user: userToHwUser(membership.user, userId),
+    userId: membership.user.id,
     character: membership.character
       ? {
           ...membership.character,
           me: membership.user.id === userId,
         }
       : undefined,
+    characterId: membership.character?.id,
   };
 };

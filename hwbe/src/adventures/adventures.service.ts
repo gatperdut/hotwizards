@@ -23,4 +23,19 @@ export class AdventuresService {
 
     return adventure.id;
   }
+
+  public async nextTurn(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
+    const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
+
+    await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        turn: turn,
+      },
+    });
+
+    this.adventuresGateway.handleDownNextTurn(campaign.id, turn);
+
+    return turn;
+  }
 }
