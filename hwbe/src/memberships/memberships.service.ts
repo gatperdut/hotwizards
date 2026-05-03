@@ -2,6 +2,7 @@ import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client
 import { HwCampaign, HwMembership } from '@hw/shared';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { PushService } from '../push/push.service.js';
 import { MembershipsGateway } from './memberships.gateway.js';
 
 @Injectable()
@@ -9,14 +10,11 @@ export class MembershipsService {
   constructor(
     private prismaService: PrismaService,
     private membershipsGateway: MembershipsGateway,
+    private pushService: PushService,
   ) {}
 
-  public async create(
-    campaign: HwCampaign,
-    masterId: number,
-    userIds: number[],
-  ): Promise<number[]> {
-    if (userIds.includes(masterId)) {
+  public async create(campaign: HwCampaign, userIds: number[]): Promise<number[]> {
+    if (userIds.includes(campaign.master.id)) {
       throw new BadRequestException('You cannot invite yourself to your own campaign');
     }
 
@@ -51,10 +49,21 @@ export class MembershipsService {
     const membershipIds = memberships.map((membership) => membership.id);
 
     this.membershipsGateway.handleDownCreateMembership(campaign.id, membershipIds, [
-      masterId,
+      campaign.master.id,
       ...campaign.memberships.map((m) => m.user.id),
       ...memberships.map((m) => m.userId),
     ]);
+
+    memberships.forEach((m) => {
+      void this.pushService.notifyUser(m.userId, {
+        notification: {
+          title: 'Hot Wizards',
+          body: `${campaign.master.handle} has invited you to the campaign ${campaign.name}`,
+          // TODO use term param when the frontend supports it
+          data: { url: `/home/campaigns` },
+        },
+      });
+    });
 
     return membershipIds;
   }
@@ -101,12 +110,21 @@ export class MembershipsService {
       ...campaign!.memberships.map((m) => m.userId),
     ]);
 
+    void this.pushService.notifyUser(campaign.masterId, {
+      notification: {
+        title: 'Hot Wizards',
+        body: `${membership.user.handle} has accepted the invitation to your campaign ${campaign.name}`,
+        // TODO use term param when the frontend supports it
+        data: { url: `/home/campaigns` },
+      },
+    });
+
     return character.id;
   }
 
   public async delete(
-    membership: HwMembership,
     campaign: HwCampaign,
+    membership: HwMembership,
     self: boolean,
   ): Promise<number> {
     const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)];
@@ -129,6 +147,17 @@ export class MembershipsService {
         playerIds,
       );
     }
+
+    void this.pushService.notifyUser(self ? campaign.master.id : membership.userId, {
+      notification: {
+        title: 'Hot Wizards',
+        body: self
+          ? `${membership.user.handle} has left your campaign ${campaign.name}`
+          : `${campaign.master.handle} has kicked you out of the campaign ${campaign.name}`,
+        // TODO use term param when the frontend supports it
+        data: { url: `/home/campaigns` },
+      },
+    });
 
     return membership.id;
   }

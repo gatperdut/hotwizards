@@ -61,11 +61,10 @@ export class CampaignsController {
   @Post(':campaignId/memberships')
   @UseGuards(SetCampaignGuard, CampaignMasterGuard, CampaignAdventureNotPresentGuard)
   public invite(
-    @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: HwCampaign,
     @Body() params: HwMembershipCreateDto,
   ): Promise<number[]> {
-    return this.membershipsService.create(campaign, user.id, params.userIds);
+    return this.membershipsService.create(campaign, params.userIds);
   }
 
   @Post(':campaignId/adventure')
