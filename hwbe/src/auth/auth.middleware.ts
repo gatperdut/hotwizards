@@ -29,7 +29,7 @@ export class AuthMiddleware implements NestMiddleware {
       throw new UnauthorizedException('Authorization token is invalid');
     }
 
-    req.user = await this.authService.userFromToken(token);
+    req.user = user;
 
     next();
   }
