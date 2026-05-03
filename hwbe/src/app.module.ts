@@ -12,6 +12,7 @@ import { CharactersModule } from './characters/characters.module.js';
 import { HealthModule } from './health/health.module.js';
 import { MembershipsModule } from './memberships/memberships.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { PushModule } from './push/push.module.js';
 import { RulesetsModule } from './rulesets/rulesets.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -33,6 +34,7 @@ import { UsersModule } from './users/users.module.js';
     CharactersModule,
     AdventureTemplatesModule,
     AdventuresModule,
+    PushModule,
   ],
   controllers: [],
   providers: [
