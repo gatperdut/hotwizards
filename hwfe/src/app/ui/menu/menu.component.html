@@ -1,0 +1,24 @@
+<app-button
+  [style.anchor-name]="`--${id}`"
+  (click)="toggle()"
+  [disabled]="disabled()"
+  [icon]="icon()"
+>
+</app-button>
+
+@if (open()) {
+  <div
+    [style.position-anchor]="`--${id}`"
+    class="flex flex-col justify-start items-stretch gap-hw-small anchored fixed mt-hw-average bg-background hw-border border-primary p-hw-xsmall"
+  >
+    @for (item of items(); track item.label) {
+      <app-button
+        [icon]="item.icon"
+        [disabled]="!!item.disabled"
+        [label]="item.label"
+        [color]="item.color || 'primary'"
+        buttonClasses="w-full"
+      ></app-button>
+    }
+  </div>
+}

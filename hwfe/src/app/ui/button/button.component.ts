@@ -15,5 +15,7 @@ export class ButtonComponent {
   public icon = input<string | undefined>(undefined);
   public color = input<'primary' | 'secondary' | 'warning'>('primary');
   public disabled = input<boolean>(false);
-  public classes = computed(() => `${this.color()} ${this.appearance()}`);
+  public buttonClasses = input<string>('');
+
+  public classes = computed(() => `${this.color()} ${this.appearance()} ${this.buttonClasses()}`);
 }

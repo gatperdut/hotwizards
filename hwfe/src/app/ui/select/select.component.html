@@ -6,6 +6,7 @@
   <div class="relative flex group">
     <button
       type="button"
+      data-trigger
       [style.anchor-name]="`--${id}`"
       (click)="open()"
       [disabled]="form()().disabled()"
@@ -40,7 +41,8 @@
     @if (isOpen()) {
       <div
         [style.position-anchor]="`--${id}`"
-        class="anchored fixed mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
+        [style]="dropdownStyles()"
+        class="anchored mt-hw-xsmall flex flex-col gap-hw-small z-1 w-full bg-background hw-border border-primary p-hw-small"
       >
         @if (searchable()) {
           <app-input-text

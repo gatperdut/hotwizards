@@ -6,11 +6,11 @@
 >
   @let icn = icon();
   @if (icn) {
-    <app-icon [name]="icn"></app-icon>
+    <app-icon [name]="icn" [class.icon-with-label]="label()"></app-icon>
   }
 
   @let lbl = label();
   @if (lbl) {
-    {{ lbl }}
+    <span>{{ lbl }}</span>
   }
 </button>
