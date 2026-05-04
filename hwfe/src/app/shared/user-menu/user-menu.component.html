@@ -1,1 +1,12 @@
-<app-button icon="user" (click)="open()"></app-button>
+<app-menu
+  id="actions-menu"
+  label="Actions"
+  icon="user"
+  [items]="[
+    { label: 'Edit', icon: 'user', callback: open },
+    { label: 'Export', icon: 'plus-circle', color: 'secondary', callback: open },
+    { label: 'Delete', icon: 'trash', callback: open, color: 'warning' },
+  ]"
+/>
+
+<!-- <app-button icon="user" (click)="open()"></app-button> -->

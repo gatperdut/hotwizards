@@ -4,12 +4,12 @@ import {
   PushDialogData,
   PushDialogResult,
 } from '@hw/hwfe/push/push-dialog/push-dialog.component';
-import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import { MenuComponent } from '../../ui/menu/menu.component';
 
 @Component({
   selector: 'app-user-menu',
-  imports: [ButtonComponent],
+  imports: [MenuComponent],
   templateUrl: './user-menu.component.html',
   styleUrl: './user-menu.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

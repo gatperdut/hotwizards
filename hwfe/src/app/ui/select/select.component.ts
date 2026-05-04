@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -18,6 +19,7 @@ import { TagComponent } from '../tag/tag.component';
   imports: [InputTextComponent, TagComponent, IconComponent, IconComponent],
   templateUrl: './select.component.html',
   styleUrl: './select.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponent {
   public label = input<string>();
@@ -36,6 +38,8 @@ export class SelectComponent {
   public id = `app-select-${Math.random().toString(36).substring(2, 9)}`;
   public isOpen = signal(false);
 
+  public dropdownStyles = signal<Partial<CSSStyleDeclaration>>({});
+
   public searchForm = form(this.searchField as ModelSignal<string>, (schemaPath) => {
     debounce(schemaPath, 400);
   });
@@ -46,6 +50,16 @@ export class SelectComponent {
     }
 
     this.searchField.set('');
+
+    if (!this.isOpen()) {
+      const rect = this.eRef.nativeElement.querySelector('[data-trigger]').getBoundingClientRect();
+      this.dropdownStyles.set({
+        top: `${rect.bottom}px`,
+        left: `${rect.left}px`,
+        width: `${rect.width}px`,
+      });
+    }
+
     this.isOpen.update((open) => !open);
     this.form()().markAsTouched();
   }
