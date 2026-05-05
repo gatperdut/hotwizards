@@ -14,7 +14,6 @@ export interface AppMenuItem {
   callback?: () => void;
   icon?: string;
   disabled?: boolean;
-  separator?: boolean; // TODO
   color?: 'primary' | 'secondary' | 'warning';
 }
 
@@ -43,7 +42,7 @@ export class MenuComponent {
   }
 
   public handleClick(item: AppMenuItem): void {
-    if (item.disabled || item.separator) {
+    if (item.disabled) {
       return;
     }
 
