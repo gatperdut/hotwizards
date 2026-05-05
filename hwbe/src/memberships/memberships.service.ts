@@ -63,7 +63,6 @@ export class MembershipsService {
         title: 'Invitation to campaign',
         body: `${campaign.master.handle} has invited you to the campaign ${campaign.name}`,
         icon: '/characters/zargon.png',
-        // TODO redirect to town when PENDINGs are allowed
         url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns`,
       });
     });

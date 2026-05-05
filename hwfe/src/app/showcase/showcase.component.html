@@ -157,10 +157,11 @@
     <app-menu
       id="actions-menu"
       label="Actions"
-      icon="user"
+      icon="cog-6-tooth"
       [items]="[
-        { label: 'Edit', icon: 'user' },
+        { label: 'Edit', icon: 'cog-6-tooth' },
         { label: 'Export', icon: 'plus-circle', color: 'secondary' },
+        { label: 'Export', icon: 'plus-circle', disabled: true, color: 'secondary' },
         { label: 'Delete', icon: 'trash', color: 'warning' },
       ]"
     />
@@ -168,10 +169,10 @@
     <app-menu
       id="actions-menu"
       label="Actions"
-      icon="user"
+      icon="cog-6-tooth"
       [disabled]="true"
       [items]="[
-        { label: 'Edit', icon: 'user' },
+        { label: 'Edit', icon: 'cog-6-tooth' },
         { label: 'Export', icon: 'plus-circle', color: 'secondary' },
         { label: 'Delete', icon: 'trash', color: 'warning' },
       ]"
