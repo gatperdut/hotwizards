@@ -8,9 +8,12 @@
   src: url('/fonts/asimovian-v2-latin-ext-regular.woff2') format('woff2');
 }
 
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable both-edges;
+}
+
 html {
   font-family: 'Asimovian', sans-serif;
-  scrollbar-gutter: stable both-edges;
 }
 
 body {

@@ -6,7 +6,7 @@ import { Socket } from 'socket.io-client';
 import { PresenceService } from '../presence/presence.service';
 
 @Component({
-  selector: 'app-campaign',
+  selector: 'app-authenticated',
   imports: [RouterOutlet],
   templateUrl: './authenticated.component.html',
   styleUrl: './authenticated.component.css',

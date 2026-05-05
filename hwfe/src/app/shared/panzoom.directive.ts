@@ -11,20 +11,20 @@ export class PanzoomDirective implements OnInit, OnDestroy {
 
   private panzoom!: PanzoomObject;
 
-  ngOnInit() {
+  public ngOnInit(): void {
     const hostElement: HTMLElement = this.elementRef.nativeElement;
 
     this.panzoom = Panzoom(hostElement, {
       canvas: true,
       contain: 'outside',
-      maxScale: 2,
+      maxScale: 4,
       minScale: 0.5,
     });
 
     this.parentElement?.addEventListener('wheel', this.onWheel);
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.parentElement) {
       this.parentElement.removeEventListener('wheel', this.onWheel);
     }
