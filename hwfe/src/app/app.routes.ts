@@ -92,6 +92,7 @@ export const routes: Routes = [
                 path: 'editor',
                 loadComponent: () =>
                   import('./editor/editor.component').then((m) => m.EditorComponent),
+                // TODO
                 // canActivate: [AdminGuard],
               },
             ],
