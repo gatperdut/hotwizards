@@ -10,14 +10,13 @@ import {
 } from '@hw/shared';
 import { tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { PanzoomDirective } from '../../../shared/panzoom.directive';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-board',
-  imports: [PanzoomDirective, SidebarComponent],
+  imports: [SidebarComponent],
   templateUrl: './board.component.html',
   styleUrl: './board.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
