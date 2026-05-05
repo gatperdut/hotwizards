@@ -3,5 +3,5 @@ export interface AppEnvironment {
   sentryDsn?: string;
   hwfeSentryRelease?: string;
   hwbeUrl: string;
-  vapidKey: string;
+  vapidKey?: string;
 }

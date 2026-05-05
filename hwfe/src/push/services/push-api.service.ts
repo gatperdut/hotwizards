@@ -13,7 +13,7 @@ export class PushApiService {
   ) {}
 
   public upsert(): Observable<number> {
-    return from(this.swPush.requestSubscription({ serverPublicKey: environment.vapidKey })).pipe(
+    return from(this.swPush.requestSubscription({ serverPublicKey: environment.vapidKey! })).pipe(
       switchMap((subscription) => this.httpClient.post<number>('/api/push', subscription)),
     );
   }

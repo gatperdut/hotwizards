@@ -6,5 +6,5 @@ export const environment: AppEnvironment = {
   sentryDsn: undefined,
   hwfeSentryRelease: undefined,
   hwbeUrl: 'http://localhost:3000',
-  vapidKey: '<VAPID_PUBLIC_KEY>',
+  vapidKey: undefined,
 };
