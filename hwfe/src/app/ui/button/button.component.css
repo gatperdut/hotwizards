@@ -9,11 +9,12 @@
              bottom-0.5;
     }
   }
-  @apply px-4
+  @apply px-2
          h-10
          cursor-pointer
          active:scale-95
          transition-all
+         text-left
          truncate;
 
   @apply border-primary
