@@ -34,8 +34,6 @@ export class MenuComponent {
   public items = input.required<MenuItem[]>();
   public disabled = input<boolean>(false);
 
-  public id = `app-checkbox-${Math.random().toString(36).substring(2, 9)}`;
-
   public open = signal(false);
 
   public toggle(): void {
