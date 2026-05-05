@@ -4,6 +4,9 @@
       <div class="typ-h1 truncate">Campaigns</div>
 
       <div class="flex flex-row justify-end items-center gap-hw-small">
+        @if (authService.user()!.admin) {
+          <app-button icon="map" (click)="editor()"></app-button>
+        }
         <app-user-menu></app-user-menu>
         <app-button icon="plus-circle" (click)="create()"></app-button>
       </div>

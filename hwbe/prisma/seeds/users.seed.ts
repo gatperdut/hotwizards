@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 type NamedUserSeed = {
   handle: string;
   initials: string;
+  admin: boolean;
 };
 
 export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
@@ -13,22 +14,27 @@ export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
     {
       handle: 'Carlos',
       initials: 'crb',
+      admin: true,
     },
     {
       handle: 'Josep',
       initials: 'jam',
+      admin: false,
     },
     {
       handle: 'Javi',
       initials: 'jps',
+      admin: false,
     },
     {
       handle: 'Vicent',
       initials: 'vfg',
+      admin: false,
     },
     {
       handle: 'Victor',
       initials: 'vps',
+      admin: false,
     },
   ];
 
