@@ -1,13 +1,11 @@
-.anchored {
-  position: fixed;
-  top: anchor(bottom);
-  left: anchor(left);
-  width: anchor-size(width);
-  position-try-fallbacks: flip-block;
-}
-
 .app-select {
   &:disabled .caret {
-    @apply opacity-70;
+    @apply opacity-30;
   }
+}
+
+.anchored {
+  top: anchor(bottom);
+  left: anchor(left);
+  position-try-fallbacks: flip-block;
 }

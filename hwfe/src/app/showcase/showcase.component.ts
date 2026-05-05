@@ -6,6 +6,7 @@ import { ButtonComponent } from '../ui/button/button.component';
 import { CheckboxComponent } from '../ui/checkbox/checkbox.component';
 import { InputTextComponent } from '../ui/input-text/input-text.component';
 import { LinkComponent } from '../ui/link/link.component';
+import { MenuComponent } from '../ui/menu/menu.component';
 import { SelectComponent } from '../ui/select/select.component';
 import { ToastService } from '../ui/toast/services/toast.service';
 
@@ -16,7 +17,14 @@ type SelectItem = {
 
 @Component({
   selector: 'app-showcase',
-  imports: [ButtonComponent, InputTextComponent, LinkComponent, CheckboxComponent, SelectComponent],
+  imports: [
+    ButtonComponent,
+    InputTextComponent,
+    LinkComponent,
+    CheckboxComponent,
+    SelectComponent,
+    MenuComponent,
+  ],
   templateUrl: './showcase.component.html',
   styleUrl: './showcase.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

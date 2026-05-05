@@ -1,15 +1,8 @@
 @reference "../../../styles.css";
 
 .app-button {
-  app-icon {
-    &.icon-with-label {
-      @apply inline-block
-             relative
-             right-3
-             bottom-0.5;
-    }
-  }
-  @apply px-2
+  @apply pl-2
+         pr-2
          h-10
          cursor-pointer
          active:scale-95
