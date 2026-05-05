@@ -10,9 +10,9 @@ import {
 } from '@hw/shared';
 import { tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
+import { PanzoomDirective } from '../../../shared/panzoom.directive';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
-import { PanzoomDirective } from './directives/panzoom.directive';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
