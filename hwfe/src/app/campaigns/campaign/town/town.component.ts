@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserMenuComponent } from '@hw/hwfe/app/shared/user-menu/user-menu.component';
 import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
@@ -20,7 +21,13 @@ import { TownMembershipComponent } from './town-membership/town-membership.compo
 
 @Component({
   selector: 'app-town',
-  imports: [ButtonComponent, TownMembershipComponent, WhoComponent, AdventurePickerComponent],
+  imports: [
+    ButtonComponent,
+    TownMembershipComponent,
+    WhoComponent,
+    AdventurePickerComponent,
+    UserMenuComponent,
+  ],
   templateUrl: './town.component.html',
   styleUrl: './town.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

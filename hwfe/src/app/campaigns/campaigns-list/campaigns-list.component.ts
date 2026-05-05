@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form, SchemaPath } from '@angular/forms/signals';
+import { Router } from '@angular/router';
 import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import {
@@ -21,6 +22,7 @@ import {
 } from '@hw/shared';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
+import { AuthService } from '../../auth/services/auth.service';
 import { UserMenuComponent } from '../../shared/user-menu/user-menu.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
@@ -57,6 +59,8 @@ export class CampaignsListComponent {
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
+  public authService = inject(AuthService);
+  private router = inject(Router);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
@@ -224,5 +228,9 @@ export class CampaignsListComponent {
         }
       });
     });
+  }
+
+  public editor(): void {
+    void this.router.navigate(['home', 'editor']);
   }
 }

@@ -8,6 +8,7 @@ import { campaignGuard } from './campaigns/campaign/guards/campaign.guard.js';
 import { townGuard } from './campaigns/campaign/guards/town.guard.js';
 import { OfflineGuard } from './health/offline.guard.js';
 import { OnlineGuard } from './health/online.guard.js';
+import { AdminGuard } from './shared/admin.guard.js';
 
 export const routes: Routes = [
   {
@@ -87,6 +88,12 @@ export const routes: Routes = [
                     canActivate: [boardGuard],
                   },
                 ],
+              },
+              {
+                path: 'editor',
+                loadComponent: () =>
+                  import('./editor/editor.component').then((m) => m.EditorComponent),
+                canActivate: [AdminGuard],
               },
             ],
           },

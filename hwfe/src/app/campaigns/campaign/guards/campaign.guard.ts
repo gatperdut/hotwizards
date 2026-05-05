@@ -1,13 +1,11 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, MaybeAsync, Router, UrlTree } from '@angular/router';
+import { CanActivateFn, GuardResult, MaybeAsync, Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { catchError, map, of, tap } from 'rxjs';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
 
-export const campaignGuard: CanActivateFn = (
-  activatedRouteSnapshot,
-): MaybeAsync<boolean | UrlTree> => {
+export const campaignGuard: CanActivateFn = (activatedRouteSnapshot): MaybeAsync<GuardResult> => {
   const campaignService = inject(CampaignService);
   const campaignsApiService = inject(CampaignsApiService);
   const router = inject(Router);
