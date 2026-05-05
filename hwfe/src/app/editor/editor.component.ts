@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { OverflowService } from '../shared/overflow.service';
 import { PanzoomDirective } from '../shared/panzoom.directive';
+import { PixiCanvasComponent } from './pixi-canvas.component';
 
 @Component({
   selector: 'app-editor',
-  imports: [PanzoomDirective],
+  imports: [PixiCanvasComponent, PanzoomDirective],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
