@@ -152,4 +152,29 @@
       [searchable]="true"
     />
   </div>
+
+  <div class="flex flex-row gap-hw-small flex-wrap">
+    <app-menu
+      id="actions-menu"
+      label="Actions"
+      icon="user"
+      [items]="[
+        { label: 'Edit', icon: 'user' },
+        { label: 'Export', icon: 'plus-circle', color: 'secondary' },
+        { label: 'Delete', icon: 'trash', color: 'warning' },
+      ]"
+    />
+
+    <app-menu
+      id="actions-menu"
+      label="Actions"
+      icon="user"
+      [disabled]="true"
+      [items]="[
+        { label: 'Edit', icon: 'user' },
+        { label: 'Export', icon: 'plus-circle', color: 'secondary' },
+        { label: 'Delete', icon: 'trash', color: 'warning' },
+      ]"
+    />
+  </div>
 </div>

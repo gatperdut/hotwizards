@@ -4,13 +4,15 @@
   [class]="classes()"
   [disabled]="disabled()"
 >
-  @let icn = icon();
-  @if (icn) {
-    <app-icon [name]="icn" [class.icon-with-label]="label()"></app-icon>
-  }
+  <div class="flex items-center relative">
+    @let icon = this.icon();
+    @if (icon) {
+      <app-icon [name]="icon" class="relative mx-1 right-1.5 bottom-1"></app-icon>
+    }
 
-  @let lbl = label();
-  @if (lbl) {
-    <span>{{ lbl }}</span>
-  }
+    @let label = this.label();
+    @if (label) {
+      <span>{{ label }}</span>
+    }
+  </div>
 </button>

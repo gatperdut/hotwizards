@@ -1,6 +1,6 @@
 <div class="flex flex-col">
   @if (label()) {
-    <label [for]="id" class="typ-small truncate w-0 min-w-full">{{ label() }}</label>
+    <label [for]="id" class="typ-small truncate">{{ label() }}</label>
   }
 
   <div class="relative flex group">
@@ -29,7 +29,7 @@
     <div
       role="alert"
       [id]="`error-${id}`"
-      class="typ-error truncate w-0 min-w-full"
+      class="typ-error truncate"
       [class]="{ invisible: !errorVisibility() }"
     >
       {{ error() ? error().message : 'Placeholder' }}

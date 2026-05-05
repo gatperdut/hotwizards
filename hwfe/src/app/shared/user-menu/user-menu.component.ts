@@ -5,7 +5,7 @@ import {
   PushDialogResult,
 } from '@hw/hwfe/push/push-dialog/push-dialog.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
-import { MenuComponent } from '../../ui/menu/menu.component';
+import { AppMenuItem, MenuComponent } from '../../ui/menu/menu.component';
 
 @Component({
   selector: 'app-user-menu',
@@ -17,7 +17,12 @@ import { MenuComponent } from '../../ui/menu/menu.component';
 export class UserMenuComponent {
   private dialogService = inject(DialogService);
 
-  public open(): void {
+  public items: AppMenuItem[] = [
+    { label: 'Push notifications', icon: 'user', callback: () => this.pushNotifications() },
+    { label: 'Logout', icon: 'arrow-left-start-on-rectangle', callback: open, color: 'warning' },
+  ];
+
+  public pushNotifications(): void {
     const dialog: LazyDialog<PushDialogComponent, PushDialogData, PushDialogResult> = {
       importFn: () =>
         import('../../../push/push-dialog/push-dialog.component').then(

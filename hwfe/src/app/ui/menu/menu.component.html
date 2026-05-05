@@ -1,8 +1,16 @@
-<app-button (click)="toggle()" [disabled]="disabled()" [icon]="icon()"> </app-button>
+<app-button
+  (click)="toggle()"
+  [disabled]="disabled()"
+  [label]="label()"
+  [icon]="icon()"
+  [style.anchor-name]="`--${id}`"
+>
+</app-button>
 
 @if (open()) {
   <div
-    class="flex flex-col justify-start items-stretch gap-hw-small fixed mt-hw-xsmall bg-background hw-border border-primary p-hw-xsmall"
+    class="flex flex-col justify-start items-stretch gap-hw-small fixed mt-hw-small bg-background hw-border border-primary p-hw-xsmall anchored"
+    [style.position-anchor]="`--${id}`"
   >
     @for (item of items(); track item.label) {
       <app-button
@@ -10,6 +18,7 @@
         [disabled]="!!item.disabled"
         [label]="item.label"
         [color]="item.color || 'primary'"
+        (click)="item.callback?.()"
         buttonClasses="w-full"
       ></app-button>
     }

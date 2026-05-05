@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { ButtonComponent } from '../button/button.component';
 
-export interface MenuItem {
+export interface AppMenuItem {
   label: string;
   callback?: () => void;
   icon?: string;
@@ -31,8 +31,10 @@ export class MenuComponent {
 
   public label = input<string>();
   public icon = input<string>();
-  public items = input.required<MenuItem[]>();
+  public items = input.required<AppMenuItem[]>();
   public disabled = input<boolean>(false);
+
+  public id = `app-menu-${Math.random().toString(36).substring(2, 9)}`;
 
   public open = signal(false);
 
@@ -40,7 +42,7 @@ export class MenuComponent {
     this.open.update((v) => !v);
   }
 
-  public handleClick(item: MenuItem): void {
+  public handleClick(item: AppMenuItem): void {
     if (item.disabled || item.separator) {
       return;
     }
