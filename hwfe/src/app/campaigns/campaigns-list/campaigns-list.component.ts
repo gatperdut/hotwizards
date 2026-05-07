@@ -231,6 +231,17 @@ export class CampaignsListComponent {
   }
 
   public editor(): void {
+    const dialog: LazyDialog<
+      CampaignEditorDialogComponent,
+      CampaignEditorDialogData,
+      CampaignEditorDialogResult
+    > = {
+      importFn: () =>
+        import('../campaign-editor-dialog/campaign-editor-dialog.component').then(
+          (m) => m.CampaignEditorDialogComponent,
+        ),
+    };
+
     void this.router.navigate(['home', 'editor']);
   }
 }

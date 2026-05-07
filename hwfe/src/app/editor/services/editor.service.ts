@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Map } from './types/map.type';
+import { Map } from '../types/map.type';
 
 @Injectable()
 export class EditorService {

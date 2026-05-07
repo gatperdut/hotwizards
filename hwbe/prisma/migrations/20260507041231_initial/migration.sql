@@ -80,6 +80,7 @@ CREATE TABLE "Character" (
 CREATE TABLE "AdventureTemplate" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "map" JSONB,
 
     CONSTRAINT "AdventureTemplate_pkey" PRIMARY KEY ("id")
 );
