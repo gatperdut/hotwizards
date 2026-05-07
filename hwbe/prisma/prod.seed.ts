@@ -1,10 +1,7 @@
 import { PrismaClient } from '@hw/prismagen/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import 'dotenv/config';
-import { seedAdventureTemplates } from './seeds/adventure-templates.seed.js';
-import { seedAdventures } from './seeds/adventures.seed.js';
-import { seedCampaigns } from './seeds/campaigns.seed.js';
-import { seedUsers } from './seeds/users.seed.js';
+import { seedProdUsers } from './seeds/prod-users.seed.js';
 
 const connectionString: string = process.env['HWBE_DB_URL'] as string;
 
@@ -13,13 +10,7 @@ const adapter: PrismaPg = new PrismaPg({ connectionString: connectionString });
 const prismaClient = new PrismaClient({ adapter: adapter });
 
 async function main(): Promise<void> {
-  await seedUsers(prismaClient);
-
-  await seedAdventureTemplates(prismaClient);
-
-  await seedCampaigns(prismaClient);
-
-  await seedAdventures(prismaClient);
+  await seedProdUsers(prismaClient);
 }
 
 main()

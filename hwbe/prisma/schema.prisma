@@ -109,7 +109,7 @@ model Character {
 model AdventureTemplate {
   id   Int    @id @default(autoincrement())
   name String
-  map  Json?
+  map  Json
 
   adventures Adventure[]
 }
