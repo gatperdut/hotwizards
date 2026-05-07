@@ -1,34 +1,31 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { Assets, FederatedPointerEvent, Graphics, Sprite, Text, TextStyle } from 'pixi.js';
-import { from, Observable, tap } from 'rxjs';
-import {
-  ground2World,
-  groundZIndex,
-  screen2World,
-  world2Ground,
-  world2Screen,
-} from '../shared/coords';
+import { Assets, FederatedPointerEvent, Sprite } from 'pixi.js';
+import { tap } from 'rxjs';
+import { ground2World, groundZIndex, screen2World, world2Ground } from '../shared/coords';
+import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
-import { CellHalfH, CellHalfW } from './consts/cell-size.const';
 import { GroundHitArea } from './consts/ground-hit-area.const';
 import { MapHeight, MapWidth } from './consts/map-size.const';
 import { EditorService } from './services/editor.service';
+import { GridService } from './services/grid.service';
 import { ViewportService } from './services/viewport.service';
 
 @Component({
   selector: 'app-pixi-canvas',
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
-  providers: [OverflowService, EditorService, ViewportService],
+  providers: [OverflowService, EditorService, ViewportService, GridService],
 })
 export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -36,52 +33,43 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private overflowService = inject(OverflowService);
   private editorService = inject(EditorService);
   private viewportService = inject(ViewportService);
+  private gridService = inject(GridService);
   private activatedRoute = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   public ngOnInit(): void {
-    this.editorService.map.set(this.activatedRoute.snapshot.data['adventureTemplate']);
+    this.editorService.map.set(this.activatedRoute.snapshot.data['adventureTemplate'].map);
 
     this.overflowService.hide();
   }
 
   public ngAfterViewInit(): void {
-    void this.init().subscribe();
+    void this.init();
   }
 
-  private init(): Observable<void> {
-    return from(
-      this.viewportService.app.init({
-        canvas: this.canvasRef.nativeElement,
-        resizeTo: this.viewportService.window,
-        backgroundAlpha: 0,
-      }),
-    ).pipe(
-      tap(() => {
-        this.viewportService.setup();
+  private init(): void {
+    this.viewportService
+      .setup(this.canvasRef)
+      .pipe(
+        tap(() => {
+          fromPixiEvent<FederatedPointerEvent>(this.viewportService.viewport, 'pointertap')
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((event): void => {
+              this.tap(event);
+            });
 
-        this.viewportService.viewport.on('pointertap', (e) => {
-          if (this.viewportService.dragging) {
-            return;
-          }
+          this.viewportService.center();
 
-          const worldPos = this.viewportService.viewport.toWorld(e.global);
-          const tilePos = screen2World(worldPos.x, worldPos.y);
-
-          if (tilePos.x < 0 || tilePos.y < 0 || tilePos.x >= MapWidth || tilePos.y >= MapHeight) {
-            return;
-          }
-
-          console.log(`Clicked tile: (${tilePos.x}, ${tilePos.y})`);
-        });
-
-        this.viewportService.center();
-
-        void this.draw();
-      }),
-    );
+          void this.draw();
+        }),
+      )
+      .subscribe();
   }
 
   private async draw(): Promise<void> {
+    this.gridService.drawGrid(this.viewportService.viewport);
+    this.gridService.drawCoordinates(this.viewportService.viewport);
+
     const texture1 = await Assets.load('/tiles/ground/ground_01.png');
     const texture2 = await Assets.load('/tiles/ground/ground_02.png');
     const texture3 = await Assets.load('/tiles/ground/ground_03.png');
@@ -138,51 +126,21 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
       e.stopPropagation();
       console.log('Sprite clicked!', ground2World(sprite4.position.x, sprite4.position.y));
     });
-
-    this.drawGrid();
-    this.drawCoordinates();
   }
 
-  private drawGrid(): void {
-    const grid = new Graphics();
-    grid.zIndex = -1;
-    grid.setStrokeStyle({ color: 0x444444, pixelLine: true });
-
-    for (let row = 0; row <= MapHeight; row++) {
-      const startX = (0 + row) * CellHalfW;
-      const startY = (0 + row) * CellHalfH;
-      const endX = (MapHeight + row) * CellHalfW;
-      const endY = -(MapHeight - row) * CellHalfH;
-      grid.moveTo(startX, startY).lineTo(endX, endY);
+  private tap(event: FederatedPointerEvent): void {
+    if (this.viewportService.dragging) {
+      return;
     }
 
-    for (let col = 0; col <= MapWidth; col++) {
-      const startX = (0 + col) * CellHalfW;
-      const startY = (0 - col) * CellHalfH;
-      const endX = (MapWidth + col) * CellHalfW;
-      const endY = (MapWidth - col) * CellHalfH;
-      grid.moveTo(startX, startY).lineTo(endX, endY);
+    const worldPos = this.viewportService.viewport.toWorld(event.global);
+    const tilePos = screen2World(worldPos.x, worldPos.y);
+
+    if (tilePos.x < 0 || tilePos.y < 0 || tilePos.x >= MapWidth || tilePos.y >= MapHeight) {
+      return;
     }
 
-    grid.stroke();
-    this.viewportService.viewport.addChild(grid);
-  }
-
-  private drawCoordinates(): void {
-    const style = new TextStyle({
-      fontSize: 8,
-      fill: 0x444444,
-    });
-
-    for (let y = 0; y < MapHeight; y++) {
-      for (let x = 0; x < MapWidth; x++) {
-        const label = new Text({ text: `${x},${y}`, style });
-        label.zIndex = -1;
-        label.anchor.set(0.5, 0.5);
-        label.position.copyFrom(world2Screen(x, y));
-        this.viewportService.viewport.addChild(label);
-      }
-    }
+    this.editorService.editCell(tilePos.x, tilePos.y);
   }
 
   public ngOnDestroy(): void {
