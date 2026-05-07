@@ -23,6 +23,11 @@ import {
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { AuthService } from '../../auth/services/auth.service';
+import {
+  EditorSelectDialogComponent,
+  EditorSelectDialogData,
+  EditorSelectDialogResult,
+} from '../../editor-select-dialog/editor-select-dialog.component';
 import { UserMenuComponent } from '../../shared/user-menu/user-menu.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
@@ -232,16 +237,16 @@ export class CampaignsListComponent {
 
   public editor(): void {
     const dialog: LazyDialog<
-      CampaignEditorDialogComponent,
-      CampaignEditorDialogData,
-      CampaignEditorDialogResult
+      EditorSelectDialogComponent,
+      EditorSelectDialogData,
+      EditorSelectDialogResult
     > = {
       importFn: () =>
-        import('../campaign-editor-dialog/campaign-editor-dialog.component').then(
-          (m) => m.CampaignEditorDialogComponent,
+        import('../../editor-select-dialog/editor-select-dialog.component').then(
+          (m) => m.EditorSelectDialogComponent,
         ),
     };
 
-    void this.router.navigate(['home', 'editor']);
+    void this.dialogService.open(dialog, null);
   }
 }

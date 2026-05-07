@@ -3,7 +3,9 @@
     <div class="typ-h2">Edit adventure</div>
   </ng-template>
 
-  <ng-template appDialogContent> </ng-template>
+  <ng-template appDialogContent>
+    <app-adventure-picker [actions]="adventurePickerActions"></app-adventure-picker>
+  </ng-template>
 
   <ng-template appDialogActions>
     <app-button

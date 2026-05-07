@@ -1,22 +1,32 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import {
+  ConfirmationDialogComponent,
+  ConfirmationDialogData,
+  ConfirmationDialogResult,
+} from '@hw/hwfe/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { UserMenuComponent } from '@hw/hwfe/app/shared/user-menu/user-menu.component';
 import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
+import { DialogService, LazyDialog } from '@hw/hwfe/app/ui/dialog/services/dialog.service';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import {
   CampaignsDownstream,
   CampaignsUpstream,
+  HwAdventureTemplate,
   HwCampaign,
   MembershipsDownstream,
   MembershipsUpstream,
 } from '@hw/shared';
-import { catchError, EMPTY, of, tap } from 'rxjs';
+import { catchError, EMPTY, filter, of, switchMap, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
-import { AdventurePickerComponent } from './adventure-picker/adventure-picker.component';
+import {
+  AdventurePickerAction,
+  AdventurePickerComponent,
+} from './adventure-picker/adventure-picker.component';
 import { TownMembershipComponent } from './town-membership/town-membership.component';
 
 @Component({
@@ -39,6 +49,7 @@ export class TownComponent {
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private campaignsApiService = inject(CampaignsApiService);
+  private dialogService = inject(DialogService);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
@@ -189,4 +200,45 @@ export class TownComponent {
   public back(): void {
     void this.router.navigate(['home', 'campaigns']);
   }
+
+  public adventurePickerActions: AdventurePickerAction[] = this.campaignService.campaign().master.me
+    ? [
+        {
+          label: 'Start',
+          action: (adventureTemplate: HwAdventureTemplate): void => {
+            const dialog: LazyDialog<
+              ConfirmationDialogComponent,
+              ConfirmationDialogData,
+              ConfirmationDialogResult
+            > = {
+              importFn: () =>
+                import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
+                  (m) => m.ConfirmationDialogComponent,
+                ),
+            };
+            void this.dialogService
+              .open(dialog, {
+                title: 'Start adventure',
+                question: `Are you sure you want to start the adventure ${adventureTemplate.name}?`,
+              })
+              .then((dialogRef) => {
+                dialogRef.afterClosed$
+                  .pipe(
+                    filter((confirmed) => !!confirmed),
+                    switchMap(() =>
+                      this.campaignsApiService.startAdventure(
+                        this.campaignService.campaign().id,
+                        adventureTemplate.id,
+                      ),
+                    ),
+                  )
+                  .subscribe();
+              });
+          },
+          disabled: () =>
+            !this.campaignService.activeMemberships().length ||
+            !!this.campaignService.pendingMemberships().length,
+        },
+      ]
+    : [];
 }
