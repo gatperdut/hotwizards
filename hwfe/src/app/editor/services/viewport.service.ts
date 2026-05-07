@@ -1,8 +1,8 @@
 import { DestroyRef, DOCUMENT, inject, Injectable } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Viewport } from 'pixi-viewport';
-import { Application } from 'pixi.js';
-import { debounceTime, fromEvent } from 'rxjs';
+import { Application, EventEmitter } from 'pixi.js';
+import { debounceTime, fromEvent, Observable } from 'rxjs';
 import { world2Screen } from '../../shared/coords';
 import { MapHeight, MapWidth } from '../consts/map-size.const';
 
@@ -27,21 +27,32 @@ export class ViewportService {
 
     this.viewport.sortableChildren = true;
 
-    this.viewport.on('drag-start', () => {
-      this.startDrag();
-    });
+    this.app.stage.addChild(this.viewport);
+    this.viewport.drag().pinch().wheel();
 
-    this.viewport.on('drag-end', () => {
-      this.endDrag();
-    });
+    this.fromPixiEvent(this.viewport, 'drag-start')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.startDrag();
+      });
 
-    this.viewport.on('pinch-start', () => {
-      this.startDrag();
-    });
+    this.fromPixiEvent(this.viewport, 'pinch-start')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.startDrag();
+      });
 
-    this.viewport.on('pinch-end', () => {
-      this.endDrag();
-    });
+    this.fromPixiEvent(this.viewport, 'drag-end')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.endDrag();
+      });
+
+    this.fromPixiEvent(this.viewport, 'pinch-end')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.endDrag();
+      });
 
     fromEvent(this.window, 'resize')
       .pipe(takeUntilDestroyed(this.destroyRef), debounceTime(150))
@@ -63,5 +74,17 @@ export class ViewportService {
     setTimeout(() => {
       this.dragging = false;
     }, 50);
+  }
+
+  private fromPixiEvent<T>(target: EventEmitter, event: string): Observable<T> {
+    return new Observable<T>((observer) => {
+      const handler = (value: T): void => observer.next(value);
+      target.on(event, handler);
+      return () => target.off(event, handler);
+    });
+  }
+
+  public shutdown(): void {
+    this.app.destroy();
   }
 }
