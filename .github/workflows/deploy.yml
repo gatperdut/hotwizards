@@ -89,6 +89,7 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/hw
             npm run hwbe:prisma:migrate:deploy
+            npm run hwbe:prisma:db:seed
 
       - name: HWBE - pm2
         uses: appleboy/ssh-action@v1.2.5

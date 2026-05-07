@@ -1,16 +1,16 @@
 import { PrismaClient } from '@hw/prismagen/client';
 import * as bcrypt from 'bcrypt';
 
-type NamedUserSeed = {
+type NamedDevUserSeed = {
   handle: string;
   initials: string;
   admin: boolean;
 };
 
-export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
+export async function seedDevUsers(prismaClient: PrismaClient): Promise<void> {
   const salt: string = await bcrypt.genSalt();
 
-  const namedUserSeeds: NamedUserSeed[] = [
+  const namedUserSeeds: NamedDevUserSeed[] = [
     {
       handle: 'Carlos',
       initials: 'crb',
