@@ -26,14 +26,12 @@
               color="secondary"
               (click)="info(adventureTemplate)"
             ></app-button>
-            @if (master()) {
+
+            @for (action of actions(); track $index) {
               <app-button
-                label="Start"
-                (click)="start(adventureTemplate)"
-                [disabled]="
-                  !campaignService.activeMemberships().length ||
-                  !!campaignService.pendingMemberships().length
-                "
+                [label]="action.label"
+                (click)="action.action(adventureTemplate)"
+                [disabled]="action.disabled?.() || false"
               ></app-button>
             }
           </div>
