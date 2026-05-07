@@ -11,6 +11,8 @@ export { HwCampaignSearchDto } from './campaigns/campaign-search.dto.js';
 export { HwCampaign } from './campaigns/campaign.interface.js';
 export { HwCharacter } from './characters/character.interface.js';
 export { ToArray } from './decorators/to-array.decorator.js';
+export { HwCell } from './editor/cell.type.js';
+export { HwMap } from './editor/map.type.js';
 export { HwHealthStatus } from './health/health-status.interface.js';
 export { Match } from './match.validator.js';
 export { HwMembershipAcceptDto } from './memberships/membership-accept.dto.js';

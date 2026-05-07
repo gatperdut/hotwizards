@@ -1,5 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwAdventureTemplate, Paginated } from '@hw/shared';
+import { HwAdventureTemplate, HwMap, Paginated } from '@hw/shared';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -33,7 +33,8 @@ export class AdventureTemplatesService {
     const total: number = await this.prismaService.adventureTemplate.count({ where: where });
 
     return {
-      items: adventureTemplates,
+      // TODO as unknown? ugh
+      items: adventureTemplates.map((at) => ({ ...at, map: at.map as unknown as HwMap })),
       meta: {
         page: page || 0,
         pageSize: pageSize || 10,
