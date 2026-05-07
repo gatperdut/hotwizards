@@ -11,11 +11,11 @@ export class SetMembershipGuard implements CanActivate {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
 
-    const paramsMembershipId = request.params?.membershipId;
-    if (!paramsMembershipId || Array.isArray(paramsMembershipId)) {
+    const rawMembershipId = request.params?.membershipId;
+    if (!rawMembershipId || Array.isArray(rawMembershipId)) {
       return false;
     }
-    const membershipId = parseInt(paramsMembershipId);
+    const membershipId = parseInt(rawMembershipId);
     if (typeof membershipId !== 'number' || Number.isNaN(membershipId)) {
       return false;
     }

@@ -47,6 +47,7 @@ export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
       create: {
         email: email,
         handle: namedUserSeed.handle,
+        admin: namedUserSeed.admin,
         password: await bcrypt.hash(`${namedUserSeed.initials.repeat(3)}`, salt),
       },
     });

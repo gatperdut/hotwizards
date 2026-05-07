@@ -11,11 +11,11 @@ export class SetAdventureGuard implements CanActivate {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
 
-    const paramsAdventureId = request.params?.adventureId;
-    if (!paramsAdventureId || Array.isArray(paramsAdventureId)) {
+    const rawAdventureId = request.params?.adventureId;
+    if (!rawAdventureId || Array.isArray(rawAdventureId)) {
       return false;
     }
-    const adventureId = parseInt(paramsAdventureId);
+    const adventureId = parseInt(rawAdventureId);
     if (typeof adventureId !== 'number' || Number.isNaN(adventureId)) {
       return false;
     }

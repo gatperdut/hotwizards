@@ -1,5 +1,5 @@
 import { User } from '@hw/prismagen/client';
-import { HwAdventure, HwCampaign, HwMembership } from '@hw/shared';
+import { HwAdventure, HwAdventureTemplate, HwCampaign, HwMembership } from '@hw/shared';
 import { Request } from 'express';
 
 export type HwRequest = Request & {
@@ -7,4 +7,5 @@ export type HwRequest = Request & {
   campaign: HwCampaign;
   membership: HwMembership;
   adventure: HwAdventure;
+  adventureTemplate: HwAdventureTemplate;
 };
