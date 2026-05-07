@@ -74,9 +74,6 @@ export class EditorComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log(`Clicked tile: (${tilePos.x}, ${tilePos.y})`);
         });
 
-        this.viewportService.app.stage.addChild(this.viewportService.viewport);
-        this.viewportService.viewport.drag().pinch().wheel();
-
         this.viewportService.center();
 
         void this.draw();
