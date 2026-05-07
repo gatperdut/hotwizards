@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adventureTemplateResolver } from './adventure-templates/resolvers/adventure-template.resolver.js';
 import { AuthenticatedGuard } from './auth/guards/authenticated.guard.js';
 import { UnuthenticatedGuard } from './auth/guards/unauthenticated.guard.js';
 import { AuthenticatedComponent } from './authenticated/authenticated.component.js';
@@ -92,7 +93,15 @@ export const routes: Routes = [
                 path: 'editor',
                 loadComponent: () =>
                   import('./editor/editor.component').then((m) => m.EditorComponent),
+                resolve: { adventureTemplate: adventureTemplateResolver },
                 // TODO
+                // canActivate: [AdminGuard],
+              },
+              {
+                path: 'editor/:adventureTemplateId',
+                loadComponent: () =>
+                  import('./editor/editor.component').then((m) => m.EditorComponent),
+                resolve: { adventureTemplate: adventureTemplateResolver },
                 // canActivate: [AdminGuard],
               },
             ],

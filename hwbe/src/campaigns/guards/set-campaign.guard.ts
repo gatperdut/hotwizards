@@ -11,11 +11,11 @@ export class SetCampaignGuard implements CanActivate {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
 
-    const paramsCampaignId = request.params?.campaignId;
-    if (!paramsCampaignId || Array.isArray(paramsCampaignId)) {
+    const rawCampaignId = request.params?.campaignId;
+    if (!rawCampaignId || Array.isArray(rawCampaignId)) {
       return false;
     }
-    const campaignId = parseInt(paramsCampaignId);
+    const campaignId = parseInt(rawCampaignId);
     if (typeof campaignId !== 'number' || Number.isNaN(campaignId)) {
       return false;
     }

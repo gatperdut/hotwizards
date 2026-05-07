@@ -26,4 +26,10 @@ export class AdventureTemplatesApiService {
       params: { ...params },
     });
   }
+
+  public get(adventureTemplateId: number): Observable<HwAdventureTemplate> {
+    return this.httpClient.get<HwAdventureTemplate>(
+      `/api/adventure-templates/${adventureTemplateId}`,
+    );
+  }
 }
