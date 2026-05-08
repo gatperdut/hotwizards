@@ -1,16 +1,23 @@
-import { Injectable } from '@angular/core';
-import { Viewport } from 'pixi-viewport';
+import { inject, Injectable } from '@angular/core';
 import { Container, Graphics, Text, TextStyle } from 'pixi.js';
 import { world2Screen } from '../../shared/coords';
 import { CellHalfH, CellHalfW } from '../consts/cell-size.const';
 import { MapHeight, MapWidth } from '../consts/map-size.const';
+import { ViewportService } from './viewport.service';
 
 @Injectable()
 export class GridService {
+  private viewportService = inject(ViewportService);
+
   public grid = new Graphics();
   public coordinates = new Container();
 
-  public drawGrid(viewport: Viewport): void {
+  public draw(): void {
+    this.drawGrid();
+    this.drawCoordinates();
+  }
+
+  private drawGrid(): void {
     this.grid.zIndex = -1;
     this.grid.setStrokeStyle({ color: 0x444444, pixelLine: true });
 
@@ -31,10 +38,10 @@ export class GridService {
     }
 
     this.grid.stroke();
-    viewport.addChild(this.grid);
+    this.viewportService.viewport.addChild(this.grid);
   }
 
-  public drawCoordinates(viewport: Viewport): void {
+  private drawCoordinates(): void {
     const style = new TextStyle({
       fontSize: 8,
       fill: 0x444444,
@@ -50,6 +57,11 @@ export class GridService {
       }
     }
 
-    viewport.addChild(this.coordinates);
+    this.viewportService.viewport.addChild(this.coordinates);
+  }
+
+  public shutdown(): void {
+    this.grid.destroy(true);
+    this.coordinates.destroy(true);
   }
 }

@@ -1,5 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwAdventureTemplate, HwMap } from '@hw/shared';
+import { HwAdventureTemplate, HwDungeon } from '@hw/shared';
 
 export const AdventureTemplateHwRelations = {
   include: {},
@@ -15,7 +15,6 @@ export const adventureTemplateToHwAdventureTemplate = (
   return {
     id: adventureTemplate.id,
     name: adventureTemplate.name,
-    // TODO as unknown? ugh
-    map: adventureTemplate.map as unknown as HwMap,
+    dungeon: adventureTemplate.dungeon as unknown as HwDungeon,
   };
 };
