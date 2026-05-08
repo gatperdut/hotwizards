@@ -3,6 +3,12 @@ import { HwDungeon } from '@hw/shared';
 import { Sprite } from 'pixi.js';
 import { forkJoin, map, Observable, of } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
+import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import {
+  CellEditorDialogComponent,
+  CellEditorDialogData,
+  CellEditorDialogResult,
+} from '../cell-editor-dialog/cell-editor-dialog.component';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { GroundHitArea } from '../consts/ground-hit-area.const';
 import { HwCellPixi } from '../interfaces/cell-pixi.interface';
@@ -14,13 +20,25 @@ import { ViewportService } from './viewport.service';
 export class EditorService {
   private textureService = inject(TextureService);
   private viewportService = inject(ViewportService);
+  private dialogService = inject(DialogService);
 
   public map = signal<HwDungeonPixi>(null!);
 
   public editCell(x: number, y: number): void {
     const cell = this.cellAt(x, y);
 
-    console.log('cell', cell);
+    const dialog: LazyDialog<
+      CellEditorDialogComponent,
+      CellEditorDialogData,
+      CellEditorDialogResult
+    > = {
+      importFn: () =>
+        import('../cell-editor-dialog/cell-editor-dialog.component').then(
+          (m) => m.CellEditorDialogComponent,
+        ),
+    };
+
+    void this.dialogService.open(dialog, { cell: cell });
   }
 
   private cellAt(x: number, y: number): HwCellPixi | undefined {

@@ -1,9 +1,35 @@
-<app-dialog sizeClass="max-w-md">
-  <ng-template appDialogTitle> </ng-template>
+<form [formRoot]="form">
+  <app-dialog sizeClass="max-w-md">
+    <ng-template appDialogTitle>
+      <div class="typ-h2">Edit cell</div>
+    </ng-template>
 
-  <ng-template appDialogContent>
-    <div class="flex flex-col gap-hw-average"></div>
-  </ng-template>
+    <ng-template appDialogContent>
+      <div class="flex flex-col gap-hw-average">
+        <app-select
+          label="Ground sprite path"
+          placeholder="Select ground sprite path"
+          [form]="form.groundSpritePath"
+          [displayFn]="groundSpritePathDisplayFn"
+          [options]="groundSpritePaths"
+          class="w-[300px] max-w-[500px]"
+        />
+      </div>
+    </ng-template>
 
-  <ng-template appDialogActions> </ng-template>
-</app-dialog>
+    <ng-template appDialogActions>
+      <app-button
+        label="Cancel"
+        type="button"
+        appearance="outlined"
+        (click)="dialogRef.close(undefined)"
+      ></app-button>
+
+      @if (data.cell) {
+        <app-button label="Delete" type="button" color="warning" (click)="delete()"></app-button>
+      }
+
+      <app-button label="Accept" type="submit" [disabled]="form().invalid()"></app-button>
+    </ng-template>
+  </app-dialog>
+</form>
