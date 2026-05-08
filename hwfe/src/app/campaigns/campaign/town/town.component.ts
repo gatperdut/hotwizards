@@ -19,7 +19,7 @@ import {
   MembershipsDownstream,
   MembershipsUpstream,
 } from '@hw/shared';
-import { catchError, EMPTY, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, filter, from, of, switchMap, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';
 import { CampaignService } from '../campaign.service';
@@ -216,24 +216,23 @@ export class TownComponent {
                   (m) => m.ConfirmationDialogComponent,
                 ),
             };
-            void this.dialogService
-              .open(dialog, {
+            from(
+              this.dialogService.open(dialog, {
                 title: 'Start adventure',
                 question: `Are you sure you want to start the adventure ${adventureTemplate.name}?`,
-              })
-              .then((dialogRef) => {
-                dialogRef.afterClosed$
-                  .pipe(
-                    filter((confirmed) => !!confirmed),
-                    switchMap(() =>
-                      this.campaignsApiService.startAdventure(
-                        this.campaignService.campaign().id,
-                        adventureTemplate.id,
-                      ),
-                    ),
-                  )
-                  .subscribe();
-              });
+              }),
+            )
+              .pipe(
+                switchMap((dialogRef) => dialogRef.afterClosed$),
+                filter((confirmed) => !!confirmed),
+                switchMap(() =>
+                  this.campaignsApiService.startAdventure(
+                    this.campaignService.campaign().id,
+                    adventureTemplate.id,
+                  ),
+                ),
+              )
+              .subscribe();
           },
           disabled: () =>
             !this.campaignService.activeMemberships().length ||

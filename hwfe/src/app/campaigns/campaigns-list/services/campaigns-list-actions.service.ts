@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HwCampaign, HwMembership } from '@hw/shared';
-import { filter, switchMap } from 'rxjs';
+import { filter, from, switchMap } from 'rxjs';
 import { MembershipsApiService } from '../../../memberships/memberships-api.service';
 import {
   ConfirmationDialogComponent,
@@ -102,26 +102,25 @@ export class CampaignsListActionsService {
         ),
     };
 
-    void this.dialogService
-      .open(dialog, {
+    from(
+      this.dialogService.open(dialog, {
         title: self ? 'Abandon' : 'Kick out',
         question: self
           ? 'Are you sure you want to abandon the campaign?'
           : `Are you sure you want to kick ${membership.user.handle} out?`,
         color: 'warning',
-      })
-      .then((dialogRef) => {
-        dialogRef.afterClosed$
-          .pipe(
-            filter((confirmed) => !!confirmed),
-            switchMap(() =>
-              self
-                ? this.membershipsApiService.abandon(membership.id)
-                : this.membershipsApiService.kickout(membership.id),
-            ),
-          )
-          .subscribe();
-      });
+      }),
+    )
+      .pipe(
+        switchMap((dialogRef) => dialogRef.afterClosed$),
+        filter((confirmed) => !!confirmed),
+        switchMap(() =>
+          self
+            ? this.membershipsApiService.abandon(membership.id)
+            : this.membershipsApiService.kickout(membership.id),
+        ),
+      )
+      .subscribe();
   }
 
   public playAction(campaign: HwCampaign): AppCardAction {
@@ -149,20 +148,19 @@ export class CampaignsListActionsService {
             ),
         };
 
-        void this.dialogService
-          .open(dialog, {
+        from(
+          this.dialogService.open(dialog, {
             title: 'Delete campaign',
             question: 'Are you sure you want to delete the campaign?',
             color: 'warning',
-          })
-          .then((dialogRef) => {
-            dialogRef.afterClosed$
-              .pipe(
-                filter((confirmed) => !!confirmed),
-                switchMap(() => this.campaignsApiService.delete(campaign.id)),
-              )
-              .subscribe();
-          });
+          }),
+        )
+          .pipe(
+            switchMap((dialogRef) => dialogRef.afterClosed$),
+            filter((confirmed) => !!confirmed),
+            switchMap(() => this.campaignsApiService.delete(campaign.id)),
+          )
+          .subscribe();
       },
     };
   }
