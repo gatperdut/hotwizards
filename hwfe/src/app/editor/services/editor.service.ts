@@ -1,5 +1,5 @@
 import { inject, Injectable, Injector, signal } from '@angular/core';
-import { GroundSpritePath, GroundSpritePaths, HwDungeon } from '@hw/shared';
+import { HwDungeon } from '@hw/shared';
 import { Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
@@ -14,6 +14,7 @@ import { DungeonWidth } from '../consts/dungeon-size.const';
 import { GroundHitArea } from '../consts/ground-hit-area.const';
 import { HwCellPixi } from '../interfaces/cell-pixi.interface';
 import { HwDungeonPixi } from '../interfaces/dungeon-pixi.interface';
+import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -30,7 +31,7 @@ export class EditorService {
     return {
       ...dungeon,
       cells: dungeon.cells.map((cell): HwCellPixi => {
-        return this.createPixiCell(cell.x, cell.y, cell.groundSpritePath);
+        return this.createPixiCell(cell.x, cell.y, cell.groundSpritePath as GroundSpritePath);
       }),
     };
   }

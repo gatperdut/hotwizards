@@ -19,5 +19,5 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src/**/*.ts", "../shared/src/pixi/ground-path.const.ts"]
+  "include": ["src/**/*.ts"]
 }
