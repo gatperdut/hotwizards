@@ -20,7 +20,7 @@ export class TextureService {
     '/tiles/ground/ground_10.png',
     '/tiles/ground/ground_11.png',
     '/tiles/ground/ground_12.png',
-  ];
+  ] as const;
 
   public load(path: string): Observable<Texture> {
     if (!this.texturesPaths.includes(path)) {

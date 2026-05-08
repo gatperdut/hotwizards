@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Container, Graphics, Text, TextStyle } from 'pixi.js';
 import { world2Screen } from '../../shared/coords';
 import { CellHalfH, CellHalfW } from '../consts/cell-size.const';
-import { MapHeight, MapWidth } from '../consts/map-size.const';
+import { DungeonHeight, DungeonWidth } from '../consts/dungeon-size.const';
 import { ViewportService } from './viewport.service';
 
 @Injectable()
@@ -21,19 +21,19 @@ export class GridService {
     this.grid.zIndex = -1;
     this.grid.setStrokeStyle({ color: 0x444444, pixelLine: true });
 
-    for (let row = 0; row <= MapHeight; row++) {
+    for (let row = 0; row <= DungeonHeight; row++) {
       const startX = (0 + row) * CellHalfW;
       const startY = (0 + row) * CellHalfH;
-      const endX = (MapHeight + row) * CellHalfW;
-      const endY = -(MapHeight - row) * CellHalfH;
+      const endX = (DungeonHeight + row) * CellHalfW;
+      const endY = -(DungeonHeight - row) * CellHalfH;
       this.grid.moveTo(startX, startY).lineTo(endX, endY);
     }
 
-    for (let col = 0; col <= MapWidth; col++) {
+    for (let col = 0; col <= DungeonWidth; col++) {
       const startX = (0 + col) * CellHalfW;
       const startY = (0 - col) * CellHalfH;
-      const endX = (MapWidth + col) * CellHalfW;
-      const endY = (MapWidth - col) * CellHalfH;
+      const endX = (DungeonWidth + col) * CellHalfW;
+      const endY = (DungeonWidth - col) * CellHalfH;
       this.grid.moveTo(startX, startY).lineTo(endX, endY);
     }
 
@@ -47,8 +47,8 @@ export class GridService {
       fill: 0x444444,
     });
 
-    for (let y = 0; y < MapHeight; y++) {
-      for (let x = 0; x < MapWidth; x++) {
+    for (let y = 0; y < DungeonHeight; y++) {
+      for (let x = 0; x < DungeonWidth; x++) {
         const label = new Text({ text: `${x},${y}`, style });
         label.zIndex = -1;
         label.anchor.set(0.5, 0.5);
