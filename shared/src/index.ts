@@ -21,6 +21,7 @@ export { HwMembership } from './memberships/membership.interface.js';
 export { Paginated } from './pagination/paginated.interface.js';
 export { PaginationMeta } from './pagination/pagination-meta.interface.js';
 export { PaginationDto } from './pagination/pagination.dto.js';
+export { GroundSpritePath, GroundSpritePaths } from './pixi/ground-path.const.js';
 export { PushPayload } from './push/push-payload.interface.js';
 export { HwRulesetEditDto } from './rulesets/ruleset-edit.dto.js';
 export { HwRuleset } from './rulesets/ruleset.interface.js';
