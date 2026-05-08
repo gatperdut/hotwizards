@@ -1,4 +1,4 @@
-import { Gender, Klass } from '@hw/prismagen/client';
+import { Gender, Klass } from '@hw/prismagen/browser';
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class HwMembershipAcceptDto {

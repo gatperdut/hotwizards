@@ -22,12 +22,20 @@ export class DialogService {
   private appRef = inject(ApplicationRef);
   private injector = inject(Injector);
 
-  public async open<C, D, R>(lazy: LazyDialog<C, D, R>, data: D): Promise<DialogRef<R>> {
+  public async open<C, D, R>(
+    lazy: LazyDialog<C, D, R>,
+    data: D,
+    injector?: Injector,
+  ): Promise<DialogRef<R>> {
     const component = await lazy.importFn();
-    return this.openInternal(component, data);
+    return this.openInternal(component, data, injector);
   }
 
-  private openInternal<T, D = any, R = any>(component: Type<T>, data: D): DialogRef<R> {
+  private openInternal<T, D = any, R = any>(
+    component: Type<T>,
+    data: D,
+    injector?: Injector,
+  ): DialogRef<R> {
     const dialogRef = new DialogRef<R>();
 
     const componentRef = createComponent(component, {
@@ -37,7 +45,7 @@ export class DialogService {
           { provide: APP_DIALOG_DATA, useValue: data },
           { provide: DialogRef, useValue: dialogRef },
         ],
-        parent: this.injector,
+        parent: injector || this.injector,
       }),
     });
 

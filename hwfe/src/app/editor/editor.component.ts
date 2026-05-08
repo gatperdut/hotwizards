@@ -11,10 +11,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared';
 import { FederatedPointerEvent } from 'pixi.js';
-import { forkJoin, tap } from 'rxjs';
+import { filter, forkJoin, tap } from 'rxjs';
 import { screen2World } from '../shared/coords';
 import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
+import { CellData } from './cell-editor-dialog/cell-editor-dialog.component';
 import { DungeonHeight, DungeonWidth } from './consts/dungeon-size.const';
 import { EditorService } from './services/editor.service';
 import { GridService } from './services/grid.service';
@@ -52,7 +53,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         tap(() => {
           this.adventureTemplate = this.activatedRoute.snapshot.data['adventureTemplate'];
           this.editorService.dungeon.set(
-            this.editorService.dungeon2DungeonPixi(this.adventureTemplate.dungeon),
+            this.editorService.dungeon2PixiDungeon(this.adventureTemplate.dungeon),
           );
         }),
         tap(() => {
@@ -83,7 +84,11 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.editorService.editCell(tilePos.x, tilePos.y);
+    const cellPixi = this.editorService.createPixiCell(tilePos.x, tilePos.y);
+    this.editorService.editCell(cellPixi).pipe(
+      filter((cellData) => cellData !== undefined && cellData !== null),
+      tap((cellData: CellData) => {}),
+    );
   }
 
   public ngOnDestroy(): void {

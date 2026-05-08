@@ -1,4 +1,4 @@
-import { Movement } from '@hw/prismagen/client';
+import { Movement } from '@hw/prismagen/browser';
 
 export interface HwRuleset {
   id: number;
