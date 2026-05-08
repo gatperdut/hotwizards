@@ -26,7 +26,12 @@
       ></app-button>
 
       @if (data.cell) {
-        <app-button label="Delete" type="button" color="warning" (click)="delete()"></app-button>
+        <app-button
+          label="Delete"
+          type="button"
+          color="warning"
+          (click)="dialogRef.close(null)"
+        ></app-button>
       }
 
       <app-button label="Accept" type="submit" [disabled]="form().invalid()"></app-button>

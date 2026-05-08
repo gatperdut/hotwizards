@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared';
 import { FederatedPointerEvent } from 'pixi.js';
-import { from, switchMap, tap } from 'rxjs';
+import { forkJoin, tap } from 'rxjs';
 import { screen2World } from '../shared/coords';
 import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
@@ -47,24 +47,19 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   private init(): void {
     this.overflowService.hide();
 
-    this.viewportService
-      .setup(this.canvasRef)
+    forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
       .pipe(
         tap(() => {
           this.adventureTemplate = this.activatedRoute.snapshot.data['adventureTemplate'];
-        }),
-        switchMap(() => {
-          return from(this.editorService.dungeon2DungeonPixi(this.adventureTemplate.dungeon)).pipe(
-            tap((mapPixi) => {
-              this.editorService.map.set(mapPixi);
-            }),
+          this.editorService.dungeon.set(
+            this.editorService.dungeon2DungeonPixi(this.adventureTemplate.dungeon),
           );
         }),
         tap(() => {
           fromPixiEvent<FederatedPointerEvent>(this.viewportService.viewport, 'pointertap')
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event): void => {
-              this.tap(event);
+              this.tapEmptyCell(event);
             });
         }),
         tap(() => {
@@ -76,7 +71,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       .subscribe();
   }
 
-  private tap(event: FederatedPointerEvent): void {
+  private tapEmptyCell(event: FederatedPointerEvent): void {
     if (this.viewportService.dragging) {
       return;
     }

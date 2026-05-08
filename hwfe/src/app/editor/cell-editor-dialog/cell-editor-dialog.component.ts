@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormRoot, required } from '@angular/forms/signals';
+import { GroundSpritePaths } from '@hw/shared';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -8,15 +9,13 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
-import { GroundSpritePaths } from '../consts/ground-path.const';
 import { HwCellPixi } from '../interfaces/cell-pixi.interface';
-import { EditorService } from '../services/editor.service';
 
 export type CellEditorDialogData = {
   cell: HwCellPixi;
 };
 
-export type CellEditorDialogResult = HwCellPixi | undefined;
+export type CellEditorDialogResult = HwCellPixi | undefined | null;
 
 type CellData = {
   groundSpritePath: string;
@@ -40,12 +39,9 @@ type CellData = {
 export class CellEditorDialogComponent {
   public data = inject<CellEditorDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
-  private editorService = inject(EditorService);
 
   public model = signal<CellData>({
-    groundSpritePath:
-      this.data.cell?.groundSpritePath ||
-      GroundSpritePaths[Math.floor(Math.random() * GroundSpritePaths.length)],
+    groundSpritePath: this.data.cell.groundSpritePath,
   });
 
   public form = form(
@@ -59,6 +55,4 @@ export class CellEditorDialogComponent {
   public groundSpritePaths = GroundSpritePaths.slice();
   public groundSpritePathDisplayFn = (groundSpritePath: string): string =>
     groundSpritePath.split('/').pop() as string;
-
-  public delete(): void {}
 }
