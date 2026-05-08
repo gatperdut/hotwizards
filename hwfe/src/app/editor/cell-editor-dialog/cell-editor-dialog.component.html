@@ -25,7 +25,8 @@
         (click)="dialogRef.close(undefined)"
       ></app-button>
 
-      @if (data.cell) {
+      <!-- TODO cannot rely on existence, will always exist -->
+      @if (data.cellPixi) {
         <app-button
           label="Delete"
           type="button"

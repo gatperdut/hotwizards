@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { form, FormRoot, required } from '@angular/forms/signals';
-import { GroundSpritePaths } from '@hw/shared';
+import { GroundSpritePath, GroundSpritePaths } from '@hw/shared';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -10,16 +10,17 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { HwCellPixi } from '../interfaces/cell-pixi.interface';
+import { EditorService } from '../services/editor.service';
+
+export type CellData = {
+  groundSpritePath: GroundSpritePath;
+};
 
 export type CellEditorDialogData = {
-  cell: HwCellPixi;
+  cellPixi: HwCellPixi;
 };
 
-export type CellEditorDialogResult = HwCellPixi | undefined | null;
-
-type CellData = {
-  groundSpritePath: string;
-};
+export type CellEditorDialogResult = CellData | undefined | null;
 
 @Component({
   selector: 'app-cell-editor-dialog',
@@ -39,9 +40,10 @@ type CellData = {
 export class CellEditorDialogComponent {
   public data = inject<CellEditorDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
+  private editorService = inject(EditorService);
 
   public model = signal<CellData>({
-    groundSpritePath: this.data.cell.groundSpritePath,
+    groundSpritePath: this.data.cellPixi.groundSpritePath,
   });
 
   public form = form(
@@ -49,8 +51,29 @@ export class CellEditorDialogComponent {
     (schemaPath) => {
       required(schemaPath.groundSpritePath, { message: 'A ground sprite path is required' });
     },
-    { submission: { action: async () => {} } },
+    {
+      submission: {
+        action: async () => {
+          this.dialogRef.close(this.model());
+        },
+      },
+    },
   );
+
+  constructor() {
+    effect(() => {
+      const groundSpritePath = this.model().groundSpritePath;
+
+      this.editorService.destroyGroundSprite(this.data.cellPixi.pixi.groundSprite);
+
+      this.data.cellPixi.groundSpritePath = groundSpritePath;
+      this.data.cellPixi.pixi.groundSprite = this.editorService.createGroundSprite(
+        this.data.cellPixi.x,
+        this.data.cellPixi.y,
+        groundSpritePath,
+      );
+    });
+  }
 
   public groundSpritePaths = GroundSpritePaths.slice();
   public groundSpritePathDisplayFn = (groundSpritePath: string): string =>

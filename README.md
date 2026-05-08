@@ -3,6 +3,7 @@
 ## Development notes
 
 - Deal with `as unknown`?
+- Deal with pixi `.on()`.
 
 ### Fully reset application development
 

@@ -1,4 +1,4 @@
-import { MembershipStatus } from '@hw/prismagen/client';
+import { MembershipStatus } from '@hw/prismagen/browser';
 import { HwCharacter } from '../characters/character.interface.js';
 import { HwMe } from '../shared/me.interface.js';
 import { HwUser } from '../users/user.interface.js';
