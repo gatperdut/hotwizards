@@ -30,6 +30,7 @@
     "shared:build": "npm run build -w @hw/shared",
     "shared:clean": "npm run clean -w @hw/shared",
     "prismagen:clean": "npm run clean -w @hw/prismagen",
+    "db:reset": "npm run prismagen:clean && npm run hwbe:prisma:gen && npm run hwbe:prisma:migrate:reset && npm run hwbe:prisma:migrate:dev && npm run hwbe:prisma:db:seed",
     "clean": "rm -rf node_modules package-lock.json",
     "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run prismagen:clean && npm run clean"
   },

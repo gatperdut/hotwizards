@@ -1,11 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { HwCell, HwDungeon } from '@hw/shared';
+import { HwDungeon } from '@hw/shared';
 import { Sprite } from 'pixi.js';
 import { forkJoin, map, Observable, of } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
+import { DungeonWidth } from '../consts/dungeon-size.const';
 import { GroundHitArea } from '../consts/ground-hit-area.const';
-import { MapWidth } from '../consts/map-size.const';
-import { HwDungeonPixi } from '../interfaces/map.interface';
+import { HwCellPixi } from '../interfaces/cell-pixi.interface';
+import { HwDungeonPixi } from '../interfaces/dungeon-pixi.interface';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -22,7 +23,7 @@ export class EditorService {
     console.log('cell', cell);
   }
 
-  private cellAt(x: number, y: number): HwCell | undefined {
+  private cellAt(x: number, y: number): HwCellPixi | undefined {
     return this.map().cells.find((c) => c.x === x && c.y === y);
   }
 
@@ -31,13 +32,13 @@ export class EditorService {
       return of({ ...dungeon, cells: [] });
     }
 
-    const texturesByPath = [...new Set(dungeon.cells.map((cell) => cell.sprite))];
+    const textures = [...new Set(dungeon.cells.map((cell) => cell.groundSpritePath))];
 
-    return forkJoin(texturesByPath.map((path) => this.textureService.load(path))).pipe(
+    return forkJoin(textures.map((path) => this.textureService.load(path))).pipe(
       map(() => ({
-        cells: dungeon.cells.map((cell) => {
-          const sprite = new Sprite(this.textureService.textures[cell.sprite]);
-          sprite.zIndex = groundZIndex(cell.x, cell.y, MapWidth);
+        cells: dungeon.cells.map((cell): HwCellPixi => {
+          const sprite = new Sprite(this.textureService.textures[cell.groundSpritePath]);
+          sprite.zIndex = groundZIndex(cell.x, cell.y, DungeonWidth);
           sprite.position.copyFrom(world2Ground(cell.x, cell.y));
           sprite.setSize(64, 64);
           sprite.anchor.set(0.5, 0.5);
@@ -53,7 +54,7 @@ export class EditorService {
           return {
             ...cell,
             pixi: {
-              sprite: sprite,
+              groundSprite: sprite,
             },
           };
         }),

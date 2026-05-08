@@ -5,7 +5,7 @@ import { Application, FederatedPointerEvent } from 'pixi.js';
 import { debounceTime, from, fromEvent, Observable, tap } from 'rxjs';
 import { world2Screen } from '../../shared/coords';
 import { fromPixiEvent } from '../../shared/from-pixi-event';
-import { MapHeight, MapWidth } from '../consts/map-size.const';
+import { DungeonHeight, DungeonWidth } from '../consts/dungeon-size.const';
 
 @Injectable()
 export class ViewportService {
@@ -72,7 +72,7 @@ export class ViewportService {
     );
   }
 
-  public center(x = MapWidth / 2, y = MapHeight / 2): void {
+  public center(x = DungeonWidth / 2, y = DungeonHeight / 2): void {
     const centerPoint = world2Screen(x, y);
     this.viewport.moveCenter(centerPoint.x, centerPoint.y);
   }
