@@ -1,4 +1,4 @@
-export const GroundPaths = [
+export const GroundSpritePaths = [
   '/tiles/ground/ground_01.png',
   '/tiles/ground/ground_02.png',
   '/tiles/ground/ground_03.png',
@@ -13,4 +13,4 @@ export const GroundPaths = [
   '/tiles/ground/ground_12.png',
 ] as const;
 
-export type GroundPath = (typeof GroundPaths)[number];
+export type GroundSpritePath = (typeof GroundSpritePaths)[number];
