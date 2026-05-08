@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { form, FormRoot, required } from '@angular/forms/signals';
-import { GroundSpritePath, GroundSpritePaths } from '@hw/shared';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -11,6 +10,7 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { HwCellPixi } from '../interfaces/cell-pixi.interface';
 import { EditorService } from '../services/editor.service';
+import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
 
 export type CellData = {
   groundSpritePath: GroundSpritePath;
@@ -43,7 +43,7 @@ export class CellEditorDialogComponent {
   private editorService = inject(EditorService);
 
   public model = signal<CellData>({
-    groundSpritePath: this.data.cellPixi.groundSpritePath,
+    groundSpritePath: this.data.cellPixi.groundSpritePath as GroundSpritePath,
   });
 
   public form = form(

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { GroundSpritePaths } from '@hw/shared';
 import { Assets, Texture } from 'pixi.js';
 import { forkJoin, from, Observable, tap } from 'rxjs';
+import { GroundSpritePaths } from '../types/ground-sprite-paths.const';
 
 @Injectable()
 export class TextureService {
