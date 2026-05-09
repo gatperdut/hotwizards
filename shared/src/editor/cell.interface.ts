@@ -3,6 +3,6 @@ export interface HwCell {
   y: number;
   // TODO don't use strings, move sprite paths to shared?!
   baseSpritePath: string;
-  featureSpritePath?: string;
+  featureSpritePath: string | null;
   traversable: boolean;
 }

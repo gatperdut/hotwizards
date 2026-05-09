@@ -15,7 +15,8 @@ import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { BaseSpritePath } from '../types/base-sprite-paths.const';
-import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
+import { FeatureSpritePath } from '../types/feature-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '../types/floor-sprite-paths.const';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -53,8 +54,8 @@ export class EditorService {
   public createPixiCell(
     x: number,
     y: number,
-    baseSpritePath: BaseSpritePath = GroundSpritePaths[
-      Math.floor(Math.random() * GroundSpritePaths.length)
+    baseSpritePath: BaseSpritePath = FloorSpritePaths[
+      Math.floor(Math.random() * FloorSpritePaths.length)
     ],
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
@@ -63,8 +64,8 @@ export class EditorService {
       x: x,
       y: y,
       baseSpritePath: baseSpritePath,
-      featureSpritePath: undefined,
-      traversable: GroundSpritePaths.includes(baseSpritePath as GroundSpritePath),
+      featureSpritePath: null,
+      traversable: FloorSpritePaths.includes(baseSpritePath as FloorSpritePath),
       pixi: {
         baseSprite: baseSprite,
       },
@@ -88,6 +89,19 @@ export class EditorService {
     this.viewportService.viewport.addChild(baseSprite);
 
     return baseSprite;
+  }
+
+  public createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
+    const featureSprite = new Sprite(this.textureService.textures[featureSpritePath]);
+    featureSprite.zIndex = groundZIndex(x, y, DungeonWidth);
+    featureSprite.position.copyFrom(world2Ground(x, y));
+    featureSprite.setSize(64, 64);
+    featureSprite.anchor.set(0.5, 0.5);
+    featureSprite.eventMode = 'none';
+
+    this.viewportService.viewport.addChild(featureSprite);
+
+    return featureSprite;
   }
 
   public destroySprite(baseSprite: Sprite): void {
@@ -121,6 +135,10 @@ export class EditorService {
     );
   }
 
+  public findCell(x: number, y: number): HwPixiCell | undefined {
+    return this.pixiDungeon().cells.find((cell) => cell.x === x && cell.y === y);
+  }
+
   public addCell(cell: HwPixiCell): void {
     this.pixiDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
   }
@@ -151,6 +169,19 @@ export class EditorService {
         cellTransformData.baseSpritePath,
       );
       cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
+    }
+    if (cell.featureSpritePath !== cellTransformData.featureSpritePath) {
+      if (cell.featureSpritePath) {
+        this.destroySprite(cell.pixi.featureSprite as Sprite);
+      }
+      cell.featureSpritePath = cellTransformData.featureSpritePath;
+      if (cellTransformData.featureSpritePath) {
+        cell.pixi.featureSprite = this.createFeatureSprite(
+          cell.x,
+          cell.y,
+          cellTransformData.featureSpritePath,
+        );
+      }
     }
     this.updateCell(cell);
   }

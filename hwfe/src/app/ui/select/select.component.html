@@ -17,8 +17,17 @@
         <div class="opacity-70">{{ placeholder() }}</div>
       }
     } @else {
-      <div [class]="{ 'opacity-70': !form()().value() }">
-        {{ displayFn()(form()().value()) || placeholder() }}
+      <div class="flex items-center gap-1.5">
+        @if (canClearSingle() && form()().value()) {
+          <app-icon
+            name="x-mark"
+            class="typ-input caret"
+            (click)="$event.stopPropagation(); clearSingle()"
+          ></app-icon>
+        }
+        <div [class]="{ 'opacity-70': !form()().value() }">
+          {{ displayFn()(form()().value()) || placeholder() }}
+        </div>
       </div>
     }
   </div>

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form, FormRoot, required } from '@angular/forms/signals';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -10,11 +11,15 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { BaseSpritePath, BaseSpritePaths } from '../types/base-sprite-paths.const';
-import { FeatureSpritePath } from '../types/feature-sprite-paths.const';
+import { FeatureSpritePath, FeatureSpritePaths } from '../types/feature-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '../types/floor-sprite-paths.const';
 
-export type CellTransformData = {
+type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
-  featureSpritePath?: FeatureSpritePath;
+  featureSpritePath: FeatureSpritePath | null;
+};
+
+export type CellTransformData = CellTransformEditableData & {
   traversable: boolean;
 };
 
@@ -34,6 +39,7 @@ export type CellEditorDialogResult = CellTransformData | undefined | null;
     FormRoot,
     SelectComponent,
     ButtonComponent,
+    JsonPipe,
   ],
   templateUrl: './cell-editor-dialog.component.html',
   styleUrl: './cell-editor-dialog.component.css',
@@ -43,10 +49,16 @@ export class CellEditorDialogComponent {
   public data = inject<CellEditorDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
 
-  public model = signal<CellTransformData>({
+  public result = computed<CellTransformData>(() => ({
+    ...this.model(),
+    traversable:
+      FloorSpritePaths.includes(this.model().baseSpritePath as FloorSpritePath) &&
+      !this.model().featureSpritePath,
+  }));
+
+  public model = signal<CellTransformEditableData>({
     baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
     featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
-    traversable: this.data.cell.traversable,
   });
 
   public form = form(
@@ -57,13 +69,15 @@ export class CellEditorDialogComponent {
     {
       submission: {
         action: async () => {
-          this.dialogRef.close(this.model());
+          this.dialogRef.close(this.result());
         },
       },
     },
   );
 
   public baseSpritePaths = BaseSpritePaths.slice();
-  public baseSpritePathDisplayFn = (baseSpritePath: string): string =>
-    baseSpritePath.split('/').pop() as string;
+  public featureSpritePaths = FeatureSpritePaths.slice();
+
+  public spritePathDisplayFn = (baseSpritePath: string): string =>
+    baseSpritePath?.split('/').pop()?.split('.')[0] as string;
 }
