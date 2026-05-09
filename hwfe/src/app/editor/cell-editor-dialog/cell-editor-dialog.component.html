@@ -25,15 +25,12 @@
         (click)="dialogRef.close(undefined)"
       ></app-button>
 
-      <!-- TODO cannot rely on existence, will always exist -->
-      @if (data.cellPixi) {
-        <app-button
-          label="Delete"
-          type="button"
-          color="warning"
-          (click)="dialogRef.close(null)"
-        ></app-button>
-      }
+      <app-button
+        label="Delete"
+        type="button"
+        color="warning"
+        (click)="dialogRef.close(null)"
+      ></app-button>
 
       <app-button label="Accept" type="submit" [disabled]="form().invalid()"></app-button>
     </ng-template>

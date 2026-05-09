@@ -12,8 +12,8 @@ import {
 } from '../cell-editor-dialog/cell-editor-dialog.component';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { GroundHitArea } from '../consts/ground-hit-area.const';
-import { HwCellPixi } from '../interfaces/cell-pixi.interface';
-import { HwDungeonPixi } from '../interfaces/dungeon-pixi.interface';
+import { HwPixiCell } from '../interfaces/pixi-cell.interface';
+import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
@@ -25,20 +25,20 @@ export class EditorService {
   private dialogService = inject(DialogService);
   private injector = inject(Injector);
 
-  public pixiDungeon = signal<HwDungeonPixi>(null!);
+  public pixiDungeon = signal<HwPixiDungeon>(null!);
 
   public dungeon = computed(() => this.pixiDungeon2Dungeon(this.pixiDungeon()));
 
-  public dungeon2PixiDungeon(dungeon: HwDungeon): HwDungeonPixi {
+  public dungeon2PixiDungeon(dungeon: HwDungeon): HwPixiDungeon {
     return {
       ...dungeon,
-      cells: dungeon.cells.map((cell): HwCellPixi => {
+      cells: dungeon.cells.map((cell): HwPixiCell => {
         return this.createPixiCell(cell.x, cell.y, cell.groundSpritePath as GroundSpritePath);
       }),
     };
   }
 
-  public pixiDungeon2Dungeon(dungeon: HwDungeonPixi): HwDungeon {
+  public pixiDungeon2Dungeon(dungeon: HwPixiDungeon): HwDungeon {
     if (!dungeon) {
       return null!;
     }
@@ -57,7 +57,7 @@ export class EditorService {
     x: number,
     y: number,
     groundSpritePath = GroundSpritePaths[Math.floor(Math.random() * GroundSpritePaths.length)],
-  ): HwCellPixi {
+  ): HwPixiCell {
     const groundSprite = this.createGroundSprite(x, y, groundSpritePath);
 
     const pixiCell = {
@@ -96,7 +96,7 @@ export class EditorService {
     groundSprite.destroy();
   }
 
-  public editCell(cellPixi: HwCellPixi): Observable<CellEditorDialogResult> {
+  public editCell(cell: HwPixiCell): Observable<CellEditorDialogResult> {
     const dialog: LazyDialog<
       CellEditorDialogComponent,
       CellEditorDialogData,
@@ -108,36 +108,32 @@ export class EditorService {
         ),
     };
 
-    return from(this.dialogService.open(dialog, { cellPixi: cellPixi }, this.injector)).pipe(
+    return from(this.dialogService.open(dialog, { cell: cell }, this.injector)).pipe(
       switchMap((dialogRef) => dialogRef.afterClosed$),
       filter((cellData) => cellData !== undefined),
       tap((cellData) => {
         if (cellData === null) {
-          this.destroyCell(cellPixi);
+          this.destroyCell(cell);
           return;
         }
 
-        this.transformCell(cellPixi, cellData);
+        this.transformCell(cell, cellData);
       }),
     );
   }
 
-  private findCell(x: number, y: number): HwCellPixi | undefined {
-    return this.pixiDungeon().cells.find((cellPixi) => cellPixi.x === x && cellPixi.y === y);
+  public addCell(cell: HwPixiCell): void {
+    this.pixiDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
   }
 
-  public addCell(pixiCell: HwCellPixi): void {
-    this.pixiDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, pixiCell] }));
-  }
-
-  public removeCell(cell: HwCellPixi): void {
+  public removeCell(cell: HwPixiCell): void {
     this.pixiDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.filter((someCell) => someCell.x !== cell.x || someCell.y !== cell.y),
     }));
   }
 
-  public updateCell(cell: HwCellPixi): void {
+  public updateCell(cell: HwPixiCell): void {
     this.pixiDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.map((someCell) =>
@@ -146,7 +142,7 @@ export class EditorService {
     }));
   }
 
-  private transformCell(cell: HwCellPixi, cellTransformData: CellTransformData): void {
+  private transformCell(cell: HwPixiCell, cellTransformData: CellTransformData): void {
     this.destroyGroundSprite(cell.pixi.groundSprite);
     cell.groundSpritePath = cellTransformData.groundSpritePath;
     cell.pixi.groundSprite = this.createGroundSprite(
@@ -158,7 +154,7 @@ export class EditorService {
     this.viewportService.viewport.addChild(cell.pixi.groundSprite);
   }
 
-  private destroyCell(cell: HwCellPixi): void {
+  private destroyCell(cell: HwPixiCell): void {
     this.removeCell(cell);
     this.destroyGroundSprite(cell.pixi.groundSprite);
   }

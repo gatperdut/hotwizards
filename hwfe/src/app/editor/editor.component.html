@@ -1,5 +1,7 @@
 <pre class="absolute top-3 left-3 typ-code">
-  <div>viewport children {{viewportService.viewport?.children?.length || '?'}}</div>
+  @if (viewportService.viewport) {
+    <div>viewport children {{viewportService.viewport.children.length || '?'}}</div>
+  }
   <div>{{ editorService.dungeon() | json }}</div>
 </pre>
 
