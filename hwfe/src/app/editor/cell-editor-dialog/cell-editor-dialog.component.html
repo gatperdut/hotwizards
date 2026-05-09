@@ -32,7 +32,11 @@
         (click)="dialogRef.close(null)"
       ></app-button>
 
-      <app-button label="Accept" type="submit" [disabled]="form().invalid()"></app-button>
+      <app-button
+        label="Accept"
+        type="submit"
+        [disabled]="form().invalid() || !form().dirty()"
+      ></app-button>
     </ng-template>
   </app-dialog>
 </form>
