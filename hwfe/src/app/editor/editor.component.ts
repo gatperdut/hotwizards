@@ -16,7 +16,6 @@ import { forkJoin, tap } from 'rxjs';
 import { screen2World } from '../shared/coords';
 import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
-import { DungeonHeight, DungeonWidth } from './consts/dungeon-size.const';
 import { EditorService } from './services/editor.service';
 import { GridService } from './services/grid.service';
 import { TextureService } from './services/texture.service';
@@ -78,16 +77,14 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const worldPos = this.viewportService.viewport.toWorld(event.global);
-    const tilePos = screen2World(worldPos.x, worldPos.y);
+    const world = this.viewportService.viewport.toWorld(event.global);
+    const cell = screen2World(world.x, world.y);
 
-    if (tilePos.x < 0 || tilePos.y < 0 || tilePos.x >= DungeonWidth || tilePos.y >= DungeonHeight) {
+    if (this.editorService.findCell(cell.x, cell.y)) {
       return;
     }
 
-    console.log('tapEmptyCell');
-    const pixiCell = this.editorService.createPixiCell(tilePos.x, tilePos.y);
-    this.editorService.addCell(pixiCell);
+    this.editorService.addCell(this.editorService.createPixiCell(cell.x, cell.y));
   }
 
   public ngOnDestroy(): void {

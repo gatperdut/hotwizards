@@ -29,9 +29,10 @@ export class SelectComponent {
   public displayFn = input<(item: any) => string>((item) => item);
   public form = input.required<Field<any>>();
   public searchField = model('');
-  public multiple = input<boolean>(false);
-  public loading = input<boolean>(false);
+  public multiple = input(false);
+  public loading = input(false);
   public searchable = input(false);
+  public canClearSingle = input(false);
 
   constructor(private elementRef: ElementRef) {}
 
@@ -84,6 +85,11 @@ export class SelectComponent {
     } else {
       return this.form() && this.trackFn()(this.form()) === this.trackFn()(option);
     }
+  }
+
+  public clearSingle(): void {
+    this.form()().value.set(null);
+    this.form()().markAsDirty();
   }
 
   @HostListener('document:click', ['$event'])

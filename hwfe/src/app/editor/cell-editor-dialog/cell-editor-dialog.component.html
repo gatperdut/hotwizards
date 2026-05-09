@@ -12,13 +12,23 @@
             label="Base sprite path"
             placeholder="Select base sprite path"
             [form]="form.baseSpritePath"
-            [displayFn]="baseSpritePathDisplayFn"
+            [displayFn]="spritePathDisplayFn"
             [options]="baseSpritePaths"
           />
         </div>
         <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Feature</div>
+          <app-select
+            label="Feature sprite path"
+            placeholder="Select feature sprite path"
+            [form]="form.featureSpritePath!"
+            [displayFn]="spritePathDisplayFn"
+            [options]="featureSpritePaths"
+            [canClearSingle]="true"
+          />
         </div>
+
+        <pre class="typ-small break-all whitespace-break-spaces">{{ result() | json }}</pre>
       </div>
     </ng-template>
 
