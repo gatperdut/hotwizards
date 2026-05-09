@@ -5,15 +5,20 @@
     </ng-template>
 
     <ng-template appDialogContent>
-      <div class="flex flex-col gap-hw-average">
-        <app-select
-          label="Base sprite path"
-          placeholder="Select base sprite path"
-          [form]="form.baseSpritePath"
-          [displayFn]="baseSpritePathDisplayFn"
-          [options]="baseSpritePaths"
-          class="w-[300px] max-w-[500px]"
-        />
+      <div class="flex flex-col gap-hw-xlarge">
+        <div class="flex flex-col gap-hw-average">
+          <div class="typ-h2">Base sprite</div>
+          <app-select
+            label="Base sprite path"
+            placeholder="Select base sprite path"
+            [form]="form.baseSpritePath"
+            [displayFn]="baseSpritePathDisplayFn"
+            [options]="baseSpritePaths"
+          />
+        </div>
+        <div class="flex flex-col gap-hw-average">
+          <div class="typ-h2">Feature</div>
+        </div>
       </div>
     </ng-template>
 

@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwDungeon } from '@hw/shared';
-import { Sprite } from 'pixi.js';
-import { filter, from, Observable, switchMap, tap } from 'rxjs';
+import { FederatedPointerEvent, Sprite } from 'pixi.js';
+import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
@@ -72,10 +72,7 @@ export class EditorService {
       },
     };
 
-    cell.pixi.baseSprite.on('pointertap', (event) => {
-      event.stopPropagation();
-      this.editCell(cell).subscribe();
-    });
+    cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
     this.viewportService.viewport.addChild(cell.pixi.baseSprite);
 
     return cell;
@@ -149,6 +146,7 @@ export class EditorService {
     this.destroybaseSprite(cell.pixi.baseSprite);
     cell.baseSpritePath = cellTransformData.baseSpritePath;
     cell.pixi.baseSprite = this.createBaseSprite(cell.x, cell.y, cellTransformData.baseSpritePath);
+    cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
     this.updateCell(cell);
     this.viewportService.viewport.addChild(cell.pixi.baseSprite);
   }
@@ -156,5 +154,10 @@ export class EditorService {
   private destroyCell(cell: HwPixiCell): void {
     this.removeCell(cell);
     this.destroybaseSprite(cell.pixi.baseSprite);
+  }
+
+  private baseSpriteTap(event: FederatedPointerEvent, cell: HwPixiCell): void {
+    event.stopPropagation();
+    this.editCell(cell).pipe(take(1)).subscribe();
   }
 }
