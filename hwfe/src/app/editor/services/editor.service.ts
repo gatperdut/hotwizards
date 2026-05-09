@@ -11,9 +11,10 @@ import {
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
 import { BaseSpritePath } from '../consts/base-sprite-paths.const';
+import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { FeatureSpritePath } from '../consts/feature-sprite-paths.const';
-import { FloorSpritePath, FloorSpritePaths } from '../consts/floor-sprite-paths.const';
+import { FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
@@ -75,8 +76,10 @@ export class EditorService {
       y: y,
       baseSpritePath: baseSpritePath,
       featureSpritePath: featureSpritePath,
-      traversable:
-        FloorSpritePaths.includes(baseSpritePath as FloorSpritePath) && !featureSpritePath,
+      traversable: cellIsTraversable({
+        baseSpritePath: baseSpritePath,
+        featureSpritePath: featureSpritePath,
+      }),
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
@@ -107,6 +110,7 @@ export class EditorService {
     const featureSprite = new Sprite(this.textureService.textures[featureSpritePath]);
     featureSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     featureSprite.position.copyFrom(world2Ground(x, y));
+    featureSprite.position.y -= 30;
     featureSprite.setSize(64, 64);
     featureSprite.anchor.set(0.5, 0.5);
     featureSprite.eventMode = 'none';
