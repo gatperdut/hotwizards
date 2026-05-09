@@ -10,9 +10,12 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { BaseSpritePath, BaseSpritePaths } from '../types/base-sprite-paths.const';
+import { FeatureSpritePath } from '../types/feature-sprite-paths.const';
 
 export type CellTransformData = {
   baseSpritePath: BaseSpritePath;
+  featureSpritePath?: FeatureSpritePath;
+  traversable: boolean;
 };
 
 export type CellEditorDialogData = {
@@ -42,6 +45,8 @@ export class CellEditorDialogComponent {
 
   public model = signal<CellTransformData>({
     baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
+    featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
+    traversable: this.data.cell.traversable,
   });
 
   public form = form(

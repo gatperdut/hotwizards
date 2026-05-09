@@ -15,7 +15,7 @@ import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { BaseSpritePath } from '../types/base-sprite-paths.const';
-import { GroundSpritePaths } from '../types/ground-sprite-paths.const';
+import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -46,11 +46,7 @@ export class EditorService {
 
     return {
       ...dungeon,
-      cells: dungeon.cells.map((cell) => ({
-        x: cell.x,
-        y: cell.y,
-        baseSpritePath: cell.baseSpritePath,
-      })),
+      cells: dungeon.cells.map(({ pixi: _pixi, ...cell }) => cell),
     };
   }
 
@@ -67,13 +63,14 @@ export class EditorService {
       x: x,
       y: y,
       baseSpritePath: baseSpritePath,
+      featureSpritePath: undefined,
+      traversable: GroundSpritePaths.includes(baseSpritePath as GroundSpritePath),
       pixi: {
         baseSprite: baseSprite,
       },
     };
 
     cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
-    this.viewportService.viewport.addChild(cell.pixi.baseSprite);
 
     return cell;
   }
@@ -88,10 +85,12 @@ export class EditorService {
     baseSprite.cursor = 'pointer';
     baseSprite.hitArea = BaseSpriteHitArea;
 
+    this.viewportService.viewport.addChild(baseSprite);
+
     return baseSprite;
   }
 
-  public destroybaseSprite(baseSprite: Sprite): void {
+  public destroySprite(baseSprite: Sprite): void {
     this.viewportService.viewport.removeChild(baseSprite);
     baseSprite.destroy();
   }
@@ -143,17 +142,22 @@ export class EditorService {
   }
 
   private transformCell(cell: HwPixiCell, cellTransformData: CellTransformData): void {
-    this.destroybaseSprite(cell.pixi.baseSprite);
-    cell.baseSpritePath = cellTransformData.baseSpritePath;
-    cell.pixi.baseSprite = this.createBaseSprite(cell.x, cell.y, cellTransformData.baseSpritePath);
-    cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
+    if (cell.baseSpritePath !== cellTransformData.baseSpritePath) {
+      cell.baseSpritePath = cellTransformData.baseSpritePath;
+      this.destroySprite(cell.pixi.baseSprite);
+      cell.pixi.baseSprite = this.createBaseSprite(
+        cell.x,
+        cell.y,
+        cellTransformData.baseSpritePath,
+      );
+      cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
+    }
     this.updateCell(cell);
-    this.viewportService.viewport.addChild(cell.pixi.baseSprite);
   }
 
   private destroyCell(cell: HwPixiCell): void {
     this.removeCell(cell);
-    this.destroybaseSprite(cell.pixi.baseSprite);
+    this.destroySprite(cell.pixi.baseSprite);
   }
 
   private baseSpriteTap(event: FederatedPointerEvent, cell: HwPixiCell): void {
