@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Assets, Texture } from 'pixi.js';
 import { forkJoin, from, Observable, tap } from 'rxjs';
-import { BaseSpritePaths } from '../types/base-sprite-paths.const';
-import { FeatureSpritePaths } from '../types/feature-sprite-paths.const';
+import { BaseSpritePaths } from '../consts/base-sprite-paths.const';
+import { FeatureSpritePaths } from '../consts/feature-sprite-paths.const';
 
 @Injectable()
 export class TextureService {
