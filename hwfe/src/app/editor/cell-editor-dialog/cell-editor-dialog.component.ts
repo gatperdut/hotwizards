@@ -10,8 +10,8 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { BaseSpritePath, BaseSpritePaths } from '../consts/base-sprite-paths.const';
+import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { FeatureSpritePath, FeatureSpritePaths } from '../consts/feature-sprite-paths.const';
-import { FloorSpritePath, FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 
 type CellTransformEditableData = {
@@ -51,9 +51,7 @@ export class CellEditorDialogComponent {
 
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
-    traversable:
-      FloorSpritePaths.includes(this.model().baseSpritePath as FloorSpritePath) &&
-      !this.model().featureSpritePath,
+    traversable: cellIsTraversable(this.model()),
   }));
 
   public model = signal<CellTransformEditableData>({
