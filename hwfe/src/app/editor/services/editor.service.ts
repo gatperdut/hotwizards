@@ -1,4 +1,4 @@
-import { inject, Injectable, Injector, signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwDungeon } from '@hw/shared';
 import { Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, tap } from 'rxjs';
@@ -25,7 +25,9 @@ export class EditorService {
   private dialogService = inject(DialogService);
   private injector = inject(Injector);
 
-  public dungeon = signal<HwDungeonPixi>(null!);
+  public pixiDungeon = signal<HwDungeonPixi>(null!);
+
+  public dungeon = computed(() => this.pixiDungeon2Dungeon(this.pixiDungeon()));
 
   public dungeon2PixiDungeon(dungeon: HwDungeon): HwDungeonPixi {
     return {
@@ -36,6 +38,21 @@ export class EditorService {
     };
   }
 
+  public pixiDungeon2Dungeon(dungeon: HwDungeonPixi): HwDungeon {
+    if (!dungeon) {
+      return null!;
+    }
+
+    return {
+      ...dungeon,
+      cells: dungeon.cells.map((cell) => ({
+        x: cell.x,
+        y: cell.y,
+        groundSpritePath: cell.groundSpritePath,
+      })),
+    };
+  }
+
   public createPixiCell(
     x: number,
     y: number,
@@ -43,7 +60,7 @@ export class EditorService {
   ): HwCellPixi {
     const groundSprite = this.createGroundSprite(x, y, groundSpritePath);
 
-    const cellPixi = {
+    const pixiCell = {
       x: x,
       y: y,
       groundSpritePath: groundSpritePath,
@@ -52,13 +69,13 @@ export class EditorService {
       },
     };
 
-    cellPixi.pixi.groundSprite.on('pointertap', (event) => {
+    pixiCell.pixi.groundSprite.on('pointertap', (event) => {
       event.stopPropagation();
-      this.editCell(cellPixi).subscribe();
+      this.editCell(pixiCell).subscribe();
     });
-    this.viewportService.viewport.addChild(cellPixi.pixi.groundSprite);
+    this.viewportService.viewport.addChild(pixiCell.pixi.groundSprite);
 
-    return cellPixi;
+    return pixiCell;
   }
 
   public createGroundSprite(x: number, y: number, groundSpritePath: GroundSpritePath): Sprite {
@@ -70,8 +87,6 @@ export class EditorService {
     groundSprite.eventMode = 'static';
     groundSprite.cursor = 'pointer';
     groundSprite.hitArea = GroundHitArea;
-
-    this.viewportService.viewport.addChild(groundSprite);
 
     return groundSprite;
   }
@@ -112,18 +127,29 @@ export class EditorService {
   }
 
   private findCell(x: number, y: number): HwCellPixi | undefined {
-    return this.dungeon().cells.find((cellPixi) => cellPixi.x === x && cellPixi.y === y);
+    return this.pixiDungeon().cells.find((cellPixi) => cellPixi.x === x && cellPixi.y === y);
   }
 
-  public addCell(cellPixi: HwCellPixi): void {
-    this.dungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cellPixi] }));
+  public addCell(pixiCell: HwCellPixi): void {
+    this.pixiDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, pixiCell] }));
+  }
+
+  public removeCell(pixiCell: HwCellPixi): void {
+    this.pixiDungeon.update((dungeon) => ({
+      ...dungeon,
+      cells: dungeon.cells.filter(
+        (somePixiCell) => somePixiCell.x !== pixiCell.x || somePixiCell.y !== pixiCell.y,
+      ),
+    }));
   }
 
   private transformCell(cellPixi: HwCellPixi, cellData: CellData): void {
     // TODO
   }
 
-  private destroyCell(cellPixi: HwCellPixi): void {
-    // TODO
+  private destroyCell(pixiCell: HwCellPixi): void {
+    this.removeCell(pixiCell);
+    this.viewportService.viewport.removeChild(pixiCell.pixi.groundSprite);
+    pixiCell.pixi.groundSprite.destroy();
   }
 }
