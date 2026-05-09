@@ -11,10 +11,11 @@ import {
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
 import { DungeonWidth } from '../consts/dungeon-size.const';
-import { GroundHitArea } from '../consts/ground-hit-area.const';
+import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
-import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
+import { BaseSpritePath } from '../types/base-sprite-paths.const';
+import { GroundSpritePaths } from '../types/ground-sprite-paths.const';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -33,7 +34,7 @@ export class EditorService {
     return {
       ...dungeon,
       cells: dungeon.cells.map((cell): HwPixiCell => {
-        return this.createPixiCell(cell.x, cell.y, cell.groundSpritePath as GroundSpritePath);
+        return this.createPixiCell(cell.x, cell.y, cell.baseSpritePath as BaseSpritePath);
       }),
     };
   }
@@ -48,7 +49,7 @@ export class EditorService {
       cells: dungeon.cells.map((cell) => ({
         x: cell.x,
         y: cell.y,
-        groundSpritePath: cell.groundSpritePath,
+        baseSpritePath: cell.baseSpritePath,
       })),
     };
   }
@@ -56,44 +57,46 @@ export class EditorService {
   public createPixiCell(
     x: number,
     y: number,
-    groundSpritePath = GroundSpritePaths[Math.floor(Math.random() * GroundSpritePaths.length)],
+    baseSpritePath: BaseSpritePath = GroundSpritePaths[
+      Math.floor(Math.random() * GroundSpritePaths.length)
+    ],
   ): HwPixiCell {
-    const groundSprite = this.createGroundSprite(x, y, groundSpritePath);
+    const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
 
-    const pixiCell = {
+    const cell: HwPixiCell = {
       x: x,
       y: y,
-      groundSpritePath: groundSpritePath,
+      baseSpritePath: baseSpritePath,
       pixi: {
-        groundSprite: groundSprite,
+        baseSprite: baseSprite,
       },
     };
 
-    pixiCell.pixi.groundSprite.on('pointertap', (event) => {
+    cell.pixi.baseSprite.on('pointertap', (event) => {
       event.stopPropagation();
-      this.editCell(pixiCell).subscribe();
+      this.editCell(cell).subscribe();
     });
-    this.viewportService.viewport.addChild(pixiCell.pixi.groundSprite);
+    this.viewportService.viewport.addChild(cell.pixi.baseSprite);
 
-    return pixiCell;
+    return cell;
   }
 
-  public createGroundSprite(x: number, y: number, groundSpritePath: GroundSpritePath): Sprite {
-    const groundSprite = new Sprite(this.textureService.textures[groundSpritePath]);
-    groundSprite.zIndex = groundZIndex(x, y, DungeonWidth);
-    groundSprite.position.copyFrom(world2Ground(x, y));
-    groundSprite.setSize(64, 64);
-    groundSprite.anchor.set(0.5, 0.5);
-    groundSprite.eventMode = 'static';
-    groundSprite.cursor = 'pointer';
-    groundSprite.hitArea = GroundHitArea;
+  public createBaseSprite(x: number, y: number, baseSpritePath: BaseSpritePath): Sprite {
+    const baseSprite = new Sprite(this.textureService.textures[baseSpritePath]);
+    baseSprite.zIndex = groundZIndex(x, y, DungeonWidth);
+    baseSprite.position.copyFrom(world2Ground(x, y));
+    baseSprite.setSize(64, 64);
+    baseSprite.anchor.set(0.5, 0.5);
+    baseSprite.eventMode = 'static';
+    baseSprite.cursor = 'pointer';
+    baseSprite.hitArea = BaseSpriteHitArea;
 
-    return groundSprite;
+    return baseSprite;
   }
 
-  public destroyGroundSprite(groundSprite: Sprite): void {
-    this.viewportService.viewport.removeChild(groundSprite);
-    groundSprite.destroy();
+  public destroybaseSprite(baseSprite: Sprite): void {
+    this.viewportService.viewport.removeChild(baseSprite);
+    baseSprite.destroy();
   }
 
   public editCell(cell: HwPixiCell): Observable<CellEditorDialogResult> {
@@ -143,19 +146,15 @@ export class EditorService {
   }
 
   private transformCell(cell: HwPixiCell, cellTransformData: CellTransformData): void {
-    this.destroyGroundSprite(cell.pixi.groundSprite);
-    cell.groundSpritePath = cellTransformData.groundSpritePath;
-    cell.pixi.groundSprite = this.createGroundSprite(
-      cell.x,
-      cell.y,
-      cellTransformData.groundSpritePath,
-    );
+    this.destroybaseSprite(cell.pixi.baseSprite);
+    cell.baseSpritePath = cellTransformData.baseSpritePath;
+    cell.pixi.baseSprite = this.createBaseSprite(cell.x, cell.y, cellTransformData.baseSpritePath);
     this.updateCell(cell);
-    this.viewportService.viewport.addChild(cell.pixi.groundSprite);
+    this.viewportService.viewport.addChild(cell.pixi.baseSprite);
   }
 
   private destroyCell(cell: HwPixiCell): void {
     this.removeCell(cell);
-    this.destroyGroundSprite(cell.pixi.groundSprite);
+    this.destroybaseSprite(cell.pixi.baseSprite);
   }
 }
