@@ -13,7 +13,7 @@ import {
 import { BaseSpritePath } from '../consts/base-sprite-paths.const';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
-import { FeatureSpritePath } from '../consts/feature-sprite-paths.const';
+import { FeatureSpriteOffsets, FeatureSpritePath } from '../consts/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
@@ -110,7 +110,8 @@ export class EditorService {
     const featureSprite = new Sprite(this.textureService.textures[featureSpritePath]);
     featureSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     featureSprite.position.copyFrom(world2Ground(x, y));
-    featureSprite.position.y -= 30;
+    featureSprite.position.x += FeatureSpriteOffsets[featureSpritePath].x;
+    featureSprite.position.y += FeatureSpriteOffsets[featureSpritePath].y;
     featureSprite.setSize(64, 64);
     featureSprite.anchor.set(0.5, 0.5);
     featureSprite.eventMode = 'none';
@@ -205,6 +206,9 @@ export class EditorService {
   private destroyCell(cell: HwPixiCell): void {
     this.removeCell(cell);
     this.destroySprite(cell.pixi.baseSprite);
+    if (cell.pixi.featureSprite) {
+      this.destroySprite(cell.pixi.featureSprite);
+    }
   }
 
   private baseSpriteTap(event: FederatedPointerEvent, cell: HwPixiCell): void {
