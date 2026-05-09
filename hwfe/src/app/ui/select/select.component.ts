@@ -71,6 +71,8 @@ export class SelectComponent {
       this.isOpen.set(false);
       this.form()().markAsTouched();
     }
+
+    this.form()().markAsDirty();
   }
 
   public isSelected(option: any): boolean {
