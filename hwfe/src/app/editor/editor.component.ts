@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -11,11 +12,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared';
 import { FederatedPointerEvent } from 'pixi.js';
-import { filter, forkJoin, tap } from 'rxjs';
+import { forkJoin, tap } from 'rxjs';
 import { screen2World } from '../shared/coords';
 import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
-import { CellData } from './cell-editor-dialog/cell-editor-dialog.component';
 import { DungeonHeight, DungeonWidth } from './consts/dungeon-size.const';
 import { EditorService } from './services/editor.service';
 import { GridService } from './services/grid.service';
@@ -23,7 +23,8 @@ import { TextureService } from './services/texture.service';
 import { ViewportService } from './services/viewport.service';
 
 @Component({
-  selector: 'app-pixi-canvas',
+  selector: 'app-editor',
+  imports: [JsonPipe],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
   providers: [OverflowService, EditorService, ViewportService, GridService, TextureService],
@@ -32,8 +33,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private overflowService = inject(OverflowService);
-  private editorService = inject(EditorService);
-  private viewportService = inject(ViewportService);
+  public editorService = inject(EditorService);
+  public viewportService = inject(ViewportService);
   private gridService = inject(GridService);
   private textureService = inject(TextureService);
   private activatedRoute = inject(ActivatedRoute);
@@ -52,7 +53,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       .pipe(
         tap(() => {
           this.adventureTemplate = this.activatedRoute.snapshot.data['adventureTemplate'];
-          this.editorService.dungeon.set(
+          this.editorService.pixiDungeon.set(
             this.editorService.dungeon2PixiDungeon(this.adventureTemplate.dungeon),
           );
         }),
@@ -60,13 +61,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
           fromPixiEvent<FederatedPointerEvent>(this.viewportService.viewport, 'pointertap')
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((event): void => {
+              event.stopPropagation();
               this.tapEmptyCell(event);
             });
         }),
         tap(() => {
-          this.viewportService.center();
-
           this.gridService.draw();
+          this.viewportService.center();
         }),
       )
       .subscribe();
@@ -84,11 +85,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const cellPixi = this.editorService.createPixiCell(tilePos.x, tilePos.y);
-    this.editorService.editCell(cellPixi).pipe(
-      filter((cellData) => cellData !== undefined && cellData !== null),
-      tap((cellData: CellData) => {}),
-    );
+    console.log('tapEmptyCell');
+    const pixiCell = this.editorService.createPixiCell(tilePos.x, tilePos.y);
+    this.editorService.addCell(pixiCell);
   }
 
   public ngOnDestroy(): void {
