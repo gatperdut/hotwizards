@@ -11,7 +11,7 @@ import { SelectComponent } from '../../ui/select/select.component';
 import { HwCellPixi } from '../interfaces/cell-pixi.interface';
 import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
 
-export type CellData = {
+export type CellTransformData = {
   groundSpritePath: GroundSpritePath;
 };
 
@@ -19,7 +19,7 @@ export type CellEditorDialogData = {
   cellPixi: HwCellPixi;
 };
 
-export type CellEditorDialogResult = CellData | undefined | null;
+export type CellEditorDialogResult = CellTransformData | undefined | null;
 
 @Component({
   selector: 'app-cell-editor-dialog',
@@ -40,7 +40,7 @@ export class CellEditorDialogComponent {
   public data = inject<CellEditorDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
 
-  public model = signal<CellData>({
+  public model = signal<CellTransformData>({
     groundSpritePath: this.data.cellPixi.groundSpritePath as GroundSpritePath,
   });
 
