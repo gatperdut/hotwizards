@@ -8,26 +8,36 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       x: 5,
       y: 2,
       baseSpritePath: '/tiles/ground/ground_01.png',
+      featureSpritePath: undefined,
+      traversable: true,
     },
     {
       x: 6,
       y: 2,
       baseSpritePath: '/tiles/ground/ground_02.png',
+      featureSpritePath: undefined,
+      traversable: true,
     },
     {
       x: 5,
       y: 3,
       baseSpritePath: '/tiles/ground/ground_03.png',
+      featureSpritePath: undefined,
+      traversable: true,
     },
     {
       x: 6,
       y: 3,
       baseSpritePath: '/tiles/ground/ground_04.png',
+      featureSpritePath: undefined,
+      traversable: true,
     },
     {
       x: 6,
       y: 4,
       baseSpritePath: '/tiles/water/water_05.png',
+      featureSpritePath: undefined,
+      traversable: true,
     },
   ];
 
