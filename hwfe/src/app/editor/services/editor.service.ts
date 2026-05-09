@@ -10,13 +10,13 @@ import {
   CellEditorDialogResult,
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
+import { BaseSpritePath } from '../consts/base-sprite-paths.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
+import { FeatureSpritePath } from '../consts/feature-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
-import { BaseSpritePath } from '../types/base-sprite-paths.const';
-import { FeatureSpritePath } from '../types/feature-sprite-paths.const';
-import { FloorSpritePath, FloorSpritePaths } from '../types/floor-sprite-paths.const';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -34,9 +34,15 @@ export class EditorService {
   public dungeon2PixiDungeon(dungeon: HwDungeon): HwPixiDungeon {
     return {
       ...dungeon,
-      cells: dungeon.cells.map((cell): HwPixiCell => {
-        return this.createPixiCell(cell.x, cell.y, cell.baseSpritePath as BaseSpritePath);
-      }),
+      cells: dungeon.cells.map(
+        (cell): HwPixiCell =>
+          this.createPixiCell(
+            cell.x,
+            cell.y,
+            cell.baseSpritePath as BaseSpritePath,
+            cell.featureSpritePath as FeatureSpritePath,
+          ),
+      ),
     };
   }
 
@@ -57,17 +63,23 @@ export class EditorService {
     baseSpritePath: BaseSpritePath = FloorSpritePaths[
       Math.floor(Math.random() * FloorSpritePaths.length)
     ],
+    featureSpritePath: FeatureSpritePath | null = null,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
+    const featureSprite = featureSpritePath
+      ? this.createFeatureSprite(x, y, featureSpritePath)
+      : null;
 
     const cell: HwPixiCell = {
       x: x,
       y: y,
       baseSpritePath: baseSpritePath,
-      featureSpritePath: null,
-      traversable: FloorSpritePaths.includes(baseSpritePath as FloorSpritePath),
+      featureSpritePath: featureSpritePath,
+      traversable:
+        FloorSpritePaths.includes(baseSpritePath as FloorSpritePath) && !featureSpritePath,
       pixi: {
         baseSprite: baseSprite,
+        featureSprite: featureSprite,
       },
     };
 

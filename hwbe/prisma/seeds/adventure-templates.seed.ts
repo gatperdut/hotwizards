@@ -29,7 +29,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       x: 6,
       y: 3,
       baseSpritePath: '/tiles/floor/floor_04.png',
-      featureSpritePath: null,
+      featureSpritePath: '/tiles/feature/chair_w.png',
       traversable: true,
     },
     {

@@ -9,10 +9,10 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
+import { BaseSpritePath, BaseSpritePaths } from '../consts/base-sprite-paths.const';
+import { FeatureSpritePath, FeatureSpritePaths } from '../consts/feature-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
-import { BaseSpritePath, BaseSpritePaths } from '../types/base-sprite-paths.const';
-import { FeatureSpritePath, FeatureSpritePaths } from '../types/feature-sprite-paths.const';
-import { FloorSpritePath, FloorSpritePaths } from '../types/floor-sprite-paths.const';
 
 type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
