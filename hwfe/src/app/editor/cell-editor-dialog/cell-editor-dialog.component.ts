@@ -9,10 +9,10 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
-import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
+import { BaseSpritePath, BaseSpritePaths } from '../types/base-sprite-paths.const';
 
 export type CellTransformData = {
-  groundSpritePath: GroundSpritePath;
+  baseSpritePath: BaseSpritePath;
 };
 
 export type CellEditorDialogData = {
@@ -41,13 +41,13 @@ export class CellEditorDialogComponent {
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
 
   public model = signal<CellTransformData>({
-    groundSpritePath: this.data.cell.groundSpritePath as GroundSpritePath,
+    baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
   });
 
   public form = form(
     this.model,
     (schemaPath) => {
-      required(schemaPath.groundSpritePath, { message: 'A ground sprite path is required' });
+      required(schemaPath.baseSpritePath, { message: 'A base sprite path is required' });
     },
     {
       submission: {
@@ -58,7 +58,7 @@ export class CellEditorDialogComponent {
     },
   );
 
-  public groundSpritePaths = GroundSpritePaths.slice();
-  public groundSpritePathDisplayFn = (groundSpritePath: string): string =>
-    groundSpritePath.split('/').pop() as string;
+  public baseSpritePaths = BaseSpritePaths.slice();
+  public baseSpritePathDisplayFn = (baseSpritePath: string): string =>
+    baseSpritePath.split('/').pop() as string;
 }
