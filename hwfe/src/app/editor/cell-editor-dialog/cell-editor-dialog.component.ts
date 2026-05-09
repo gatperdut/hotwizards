@@ -8,7 +8,7 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
-import { HwCellPixi } from '../interfaces/cell-pixi.interface';
+import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { GroundSpritePath, GroundSpritePaths } from '../types/ground-sprite-paths.const';
 
 export type CellTransformData = {
@@ -16,7 +16,7 @@ export type CellTransformData = {
 };
 
 export type CellEditorDialogData = {
-  cellPixi: HwCellPixi;
+  cell: HwPixiCell;
 };
 
 export type CellEditorDialogResult = CellTransformData | undefined | null;
@@ -41,7 +41,7 @@ export class CellEditorDialogComponent {
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
 
   public model = signal<CellTransformData>({
-    groundSpritePath: this.data.cellPixi.groundSpritePath as GroundSpritePath,
+    groundSpritePath: this.data.cell.groundSpritePath as GroundSpritePath,
   });
 
   public form = form(
