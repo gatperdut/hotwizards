@@ -14,7 +14,23 @@
             [form]="form.baseSpritePath"
             [displayFn]="spritePathDisplayFn"
             [options]="baseSpritePaths"
+            [hasValidation]="false"
           />
+          <div class="flex flex-row start items-center gap-1.5">
+            <app-button
+              label="Random floor"
+              type="button"
+              appearance="outlined"
+              (click)="randomFloor()"
+            ></app-button>
+
+            <app-button
+              label="Random water"
+              type="button"
+              appearance="outlined"
+              (click)="randomWater()"
+            ></app-button>
+          </div>
         </div>
         <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Feature</div>

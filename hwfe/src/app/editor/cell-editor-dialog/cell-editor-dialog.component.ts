@@ -1,6 +1,13 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { form, FormRoot, required } from '@angular/forms/signals';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { form, FormRoot, required, validate } from '@angular/forms/signals';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -12,6 +19,9 @@ import { SelectComponent } from '../../ui/select/select.component';
 import { BaseSpritePath, BaseSpritePaths } from '../consts/base-sprite-paths.const';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { FeatureSpritePath, FeatureSpritePaths } from '../consts/feature-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '../consts/floor-sprite-paths.const';
+import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
+import { WaterSpritePaths } from '../consts/water-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 
 type CellTransformEditableData = {
@@ -49,6 +59,13 @@ export class CellEditorDialogComponent {
   public data = inject<CellEditorDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
 
+  constructor() {
+    effect(() => {
+      this.form.baseSpritePath().value();
+      this.form.featureSpritePath().markAsTouched();
+    });
+  }
+
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
     traversable: cellIsTraversable(this.model()),
@@ -63,6 +80,22 @@ export class CellEditorDialogComponent {
     this.model,
     (schemaPath) => {
       required(schemaPath.baseSpritePath, { message: 'A base sprite path is required' });
+      validate(schemaPath.featureSpritePath, ({ value, valueOf }) => {
+        if (!value) {
+          return null;
+        }
+
+        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
+        if (FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+          return null;
+        }
+
+        return {
+          kind: 'incompatible',
+          message: 'Features must be on a floor.',
+        };
+        return null;
+      });
     },
     {
       submission: {
@@ -76,6 +109,17 @@ export class CellEditorDialogComponent {
   public baseSpritePaths = BaseSpritePaths.slice();
   public featureSpritePaths = FeatureSpritePaths.slice();
 
-  public spritePathDisplayFn = (baseSpritePath: string): string =>
-    baseSpritePath?.split('/').pop()?.split('.')[0] as string;
+  public spritePathDisplayFn = spritePathDisplayFn;
+
+  public randomFloor(): void {
+    this.form
+      .baseSpritePath()
+      .value.set(FloorSpritePaths[Math.floor(Math.random() * FloorSpritePaths.length)]);
+  }
+
+  public randomWater(): void {
+    this.form
+      .baseSpritePath()
+      .value.set(WaterSpritePaths[Math.floor(Math.random() * WaterSpritePaths.length)]);
+  }
 }

@@ -42,6 +42,16 @@
     }
   </div>
 </button>
+@if (hasValidation()) {
+  <div
+    role="alert"
+    [id]="`error-${id}`"
+    class="typ-error truncate"
+    [class]="{ invisible: !errorVisibility() }"
+  >
+    {{ error() ? error().message : 'Placeholder' }}
+  </div>
+}
 
 @if (isOpen()) {
   <div
