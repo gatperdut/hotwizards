@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
-import { HwDungeon } from '@hw/shared';
+import { HwAdventureTemplate, HwDungeon } from '@hw/shared';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
@@ -40,6 +40,8 @@ export class EditorService {
   private viewportService = inject(ViewportService);
   private dialogService = inject(DialogService);
   private injector = inject(Injector);
+
+  public adventureTemplate = signal<Omit<HwAdventureTemplate, 'dungeon'>>(null!);
 
   public pixiDungeon = signal<HwPixiDungeon>(null!);
 

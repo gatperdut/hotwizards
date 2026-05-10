@@ -1,11 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwAdventureTemplate, HwAdventureTemplateSearchDto, Paginated } from '@hw/shared';
+import {
+  HwAdventureTemplate,
+  HwAdventureTemplateEditDto,
+  HwAdventureTemplateSearchDto,
+  Paginated,
+} from '@hw/shared';
 import { Observable } from 'rxjs';
+import { ApiNotificationService } from '../../services/api-notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class AdventureTemplatesApiService {
   private httpClient = inject(HttpClient);
+  private apiNotificationService = inject(ApiNotificationService);
 
   public search(dto: HwAdventureTemplateSearchDto): Observable<Paginated<HwAdventureTemplate>> {
     const params: Partial<HwAdventureTemplateSearchDto> = {};
@@ -31,5 +38,19 @@ export class AdventureTemplatesApiService {
     return this.httpClient.get<HwAdventureTemplate>(
       `/api/adventure-templates/${adventureTemplateId}`,
     );
+  }
+
+  public update(
+    adventureTemplateId: number,
+    params: HwAdventureTemplateEditDto,
+  ): Observable<number> {
+    return this.httpClient
+      .patch<number>(`/api/adventure-templates/${adventureTemplateId}`, params)
+      .pipe(
+        this.apiNotificationService.notify(
+          'Adventure template updated',
+          'Adventure template could not be updated',
+        ),
+      );
   }
 }

@@ -1,3 +1,4 @@
+export { HwAdventureTemplateEditDto } from './adventure-templates/adventure-template-edit.dto.js';
 export { HwAdventureTemplateSearchDto } from './adventure-templates/adventure-template-search.dto.js';
 export { HwAdventureTemplate } from './adventure-templates/adventure-template.interface.js';
 export { HwAdventure } from './adventures/adventure.interface.js';
