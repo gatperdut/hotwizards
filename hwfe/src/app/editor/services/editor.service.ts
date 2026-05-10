@@ -13,22 +13,11 @@ import {
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
-import {
-  BaseSpriteOffsets,
-  BaseSpritePath,
-  BaseSpriteSizes,
-} from '../consts/sprite-paths/base-sprite-paths.const';
-import {
-  DoorSpriteOffsets,
-  DoorSpritePath,
-  DoorSpriteSizes,
-} from '../consts/sprite-paths/door-sprite-paths.const';
-import {
-  FeatureSpriteOffsets,
-  FeatureSpritePath,
-  FeatureSpriteSizes,
-} from '../consts/sprite-paths/feature-sprite-paths.const';
+import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
+import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
+import { FeatureSpritePath } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
+import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { TextureService } from './texture.service';
@@ -111,53 +100,35 @@ export class EditorService {
     return cell;
   }
 
+  private createSprite(x: number, y: number, spritePath: SpritePath): Sprite {
+    const sprite = new Sprite(this.textureService.textures[spritePath]);
+    sprite.zIndex = groundZIndex(x, y, DungeonWidth);
+    sprite.position.copyFrom(world2Ground(x, y));
+    sprite.setSize(SpriteSizes[spritePath].x, SpriteSizes[spritePath].y);
+    sprite.position.x += SpriteOffsets[spritePath].x;
+    sprite.position.y += SpriteOffsets[spritePath].y;
+    sprite.anchor.set(0.5, 0.5);
+    this.viewportService.viewport.addChild(sprite);
+    return sprite;
+  }
+
   private createBaseSprite(x: number, y: number, baseSpritePath: BaseSpritePath): Sprite {
-    const baseSprite = new Sprite(this.textureService.textures[baseSpritePath]);
-    baseSprite.zIndex = groundZIndex(x, y, DungeonWidth);
-    baseSprite.position.copyFrom(world2Ground(x, y));
-    baseSprite.setSize(BaseSpriteSizes[baseSpritePath].x, BaseSpriteSizes[baseSpritePath].y);
-    baseSprite.position.x += BaseSpriteOffsets[baseSpritePath].x;
-    baseSprite.position.y += BaseSpriteOffsets[baseSpritePath].y;
-    baseSprite.anchor.set(0.5, 0.5);
+    const baseSprite = this.createSprite(x, y, baseSpritePath);
     baseSprite.eventMode = 'static';
     baseSprite.cursor = 'pointer';
     baseSprite.hitArea = BaseSpriteHitArea;
-
-    this.viewportService.viewport.addChild(baseSprite);
-
     return baseSprite;
   }
 
   private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
-    const featureSprite = new Sprite(this.textureService.textures[featureSpritePath]);
-    featureSprite.zIndex = groundZIndex(x, y, DungeonWidth);
-    featureSprite.position.copyFrom(world2Ground(x, y));
-    featureSprite.setSize(
-      FeatureSpriteSizes[featureSpritePath].x,
-      FeatureSpriteSizes[featureSpritePath].y,
-    );
-    featureSprite.position.x += FeatureSpriteOffsets[featureSpritePath].x;
-    featureSprite.position.y += FeatureSpriteOffsets[featureSpritePath].y;
-    featureSprite.anchor.set(0.5, 0.5);
+    const featureSprite = this.createSprite(x, y, featureSpritePath);
     featureSprite.eventMode = 'none';
-
-    this.viewportService.viewport.addChild(featureSprite);
-
     return featureSprite;
   }
 
   private createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
-    const doorSprite = new Sprite(this.textureService.textures[doorSpritePath]);
-    doorSprite.zIndex = groundZIndex(x, y, DungeonWidth);
-    doorSprite.position.copyFrom(world2Ground(x, y));
-    doorSprite.setSize(DoorSpriteSizes[doorSpritePath].x, DoorSpriteSizes[doorSpritePath].y);
-    doorSprite.position.x += DoorSpriteOffsets[doorSpritePath].x;
-    doorSprite.position.y += DoorSpriteOffsets[doorSpritePath].y;
-    doorSprite.anchor.set(0.5, 0.5);
+    const doorSprite = this.createSprite(x, y, doorSpritePath);
     doorSprite.eventMode = 'none';
-
-    this.viewportService.viewport.addChild(doorSprite);
-
     return doorSprite;
   }
 
