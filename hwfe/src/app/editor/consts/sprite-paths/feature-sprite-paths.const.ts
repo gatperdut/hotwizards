@@ -1,4 +1,4 @@
-import { SpriteOffset } from '../types/sprite-offset.type';
+import { SpriteOffset } from '../../types/sprite-offset.type';
 
 export const FeatureSpritePaths = [
   '/tiles/feature/barrel.png',
@@ -20,6 +20,25 @@ export const FeatureSpritePaths = [
 ] as const;
 
 export type FeatureSpritePath = (typeof FeatureSpritePaths)[number];
+
+export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
+  '/tiles/feature/barrel.png': { x: 64, y: 64 },
+  '/tiles/feature/chair_e.png': { x: 64, y: 64 },
+  '/tiles/feature/chair_n.png': { x: 64, y: 64 },
+  '/tiles/feature/chair_s.png': { x: 64, y: 64 },
+  '/tiles/feature/chair_w.png': { x: 64, y: 64 },
+  '/tiles/feature/fire_shrine.png': { x: 64, y: 64 },
+  '/tiles/feature/plinth.png': { x: 64, y: 64 },
+  '/tiles/feature/throne_e.png': { x: 64, y: 64 },
+  '/tiles/feature/throne_n.png': { x: 64, y: 64 },
+  '/tiles/feature/throne_s.png': { x: 64, y: 64 },
+  '/tiles/feature/throne_w.png': { x: 64, y: 64 },
+  '/tiles/feature/tombstone_x.png': { x: 64, y: 64 },
+  '/tiles/feature/tombstone_y.png': { x: 64, y: 64 },
+  '/tiles/feature/vase.png': { x: 64, y: 64 },
+  '/tiles/feature/water_shrine.png': { x: 64, y: 64 },
+  '/tiles/feature/well.png': { x: 64, y: 64 },
+};
 
 export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 0, y: -32 },

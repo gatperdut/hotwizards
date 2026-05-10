@@ -5,7 +5,7 @@
     </ng-template>
 
     <ng-template appDialogContent>
-      <div class="flex flex-col gap-hw-xlarge">
+      <div class="flex flex-col gap-hw-average">
         <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Base sprite</div>
           <app-select
@@ -40,6 +40,17 @@
             [form]="form.featureSpritePath!"
             [displayFn]="spritePathDisplayFn"
             [options]="featureSpritePaths"
+            [canClearSingle]="true"
+          />
+        </div>
+        <div class="flex flex-col gap-hw-average">
+          <div class="typ-h2">Door</div>
+          <app-select
+            label="Door sprite path"
+            placeholder="Select door sprite path"
+            [form]="form.doorSpritePath!"
+            [displayFn]="spritePathDisplayFn"
+            [options]="doorSpritePaths"
             [canClearSingle]="true"
           />
         </div>
