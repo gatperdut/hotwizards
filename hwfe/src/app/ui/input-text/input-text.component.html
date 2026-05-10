@@ -4,19 +4,32 @@
   }
 
   <div class="relative flex group">
-    <input
-      [id]="id"
-      class="app-input-text typ-input w-full hw-border pl-hw-small"
-      [type]="type()"
-      [formField]="field()"
-      [placeholder]="placeholder()"
-      [autocomplete]="autocomplete()"
-      [aria-invalid]="errorVisibility() ? 'true' : null"
-      [aria-describedby]="errorVisibility() ? `error-${id}` : null"
-      (focus)="state().markAsTouched()"
-      [class]="{ 'has-validation': hasValidation() }"
-    />
-
+    @if (textarea()) {
+      <textarea
+        [id]="id"
+        class="app-input-text typ-input bg-transparent focus:outline-0 focus:bg-primary border-primary w-full hw-border rounded-tr-[unset]! pl-hw-small h-40 custom-scrollbar"
+        [formField]="field()"
+        [placeholder]="placeholder() || 'Text'"
+        [autocomplete]="autocomplete()"
+        [aria-invalid]="errorVisibility() ? 'true' : null"
+        [aria-describedby]="errorVisibility() ? `error-${id}` : null"
+        (focus)="state().markAsTouched()"
+        [class]="{ 'has-validation': hasValidation() }"
+      ></textarea>
+    } @else {
+      <input
+        [id]="id"
+        class="app-input-text typ-input bg-transparent focus:outline-0 focus:bg-primary border-primary w-full hw-border pl-hw-small h-10"
+        [type]="type()"
+        [formField]="field()"
+        [placeholder]="placeholder() || 'Text'"
+        [autocomplete]="autocomplete()"
+        [aria-invalid]="errorVisibility() ? 'true' : null"
+        [aria-describedby]="errorVisibility() ? `error-${id}` : null"
+        (focus)="state().markAsTouched()"
+        [class]="{ 'pl-hw-small': hasValidation() }"
+      />
+    }
     <div
       class="absolute inset-y-0 right-3 flex items-center pointer-events-none"
       [class.invisible]="!state().pending() && !loading()"
