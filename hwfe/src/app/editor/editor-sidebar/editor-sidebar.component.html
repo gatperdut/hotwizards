@@ -1,1 +1,9 @@
-<div class="w-[50px]"></div>
+<nav class="fixed left-0 top-0 h-dvh flex flex-col gap-hw-xsmall p-2.5 z-20">
+  @for (sidebarButton of sidebarButtons; track $index) {
+    <app-sidebar-button
+      [icon]="sidebarButton.icon"
+      [callback]="sidebarButton.callback"
+      [actions]="sidebarButton.actions ?? []"
+    />
+  }
+</nav>
