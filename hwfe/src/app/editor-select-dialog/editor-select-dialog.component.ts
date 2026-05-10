@@ -1,6 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared';
+import { filter, from, switchMap, tap } from 'rxjs';
+import {
+  AdventureTemplateEditorDialogComponent,
+  AdventureTemplateEditorDialogData,
+  AdventureTemplateEditorDialogResult,
+} from '../adventure-templates/adventure-template-editor-dialog/adventure-template-editor-dialog.component';
 import {
   AdventurePickerAction,
   AdventurePickerComponent,
@@ -11,7 +17,7 @@ import { DialogComponent } from '../ui/dialog/dialog.component';
 import { DialogActionsDirective } from '../ui/dialog/directives/dialog-actions.directive';
 import { DialogContentDirective } from '../ui/dialog/directives/dialog-content.directive';
 import { DialogTitleDirective } from '../ui/dialog/directives/dialog-title.directive';
-import { APP_DIALOG_DATA } from '../ui/dialog/services/dialog.service';
+import { APP_DIALOG_DATA, DialogService, LazyDialog } from '../ui/dialog/services/dialog.service';
 
 export type EditorSelectDialogData = void;
 
@@ -35,6 +41,7 @@ export class EditorSelectDialogComponent {
   public data = inject<EditorSelectDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<EditorSelectDialogResult>>(DialogRef);
   private router = inject(Router);
+  private dialogService = inject(DialogService);
 
   public adventurePickerActions: AdventurePickerAction[] = [
     {
@@ -45,4 +52,32 @@ export class EditorSelectDialogComponent {
       },
     },
   ];
+
+  public create(): void {
+    this.dialogRef.close();
+
+    const dialog: LazyDialog<
+      AdventureTemplateEditorDialogComponent,
+      AdventureTemplateEditorDialogData,
+      AdventureTemplateEditorDialogResult
+    > = {
+      importFn: () =>
+        import('../adventure-templates/adventure-template-editor-dialog/adventure-template-editor-dialog.component').then(
+          (m) => m.AdventureTemplateEditorDialogComponent,
+        ),
+    };
+    from(
+      this.dialogService.open(dialog, {
+        dto: { name: '', info: '', dungeon: { cells: [] } },
+      }),
+    )
+      .pipe(
+        switchMap((dialogRef) => dialogRef.afterClosed$),
+        filter((adventureTemplate) => !!adventureTemplate),
+        tap((adventureTemplate): void => {
+          void this.router.navigate(['home', 'editor', adventureTemplate.id]);
+        }),
+      )
+      .subscribe();
+  }
 }

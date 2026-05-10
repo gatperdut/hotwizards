@@ -158,11 +158,13 @@ export class CellEditorDialogComponent {
     this.form
       .baseSpritePath()
       .value.set(FloorSpritePaths[Math.floor(Math.random() * FloorSpritePaths.length)]);
+    this.form.baseSpritePath().markAsDirty();
   }
 
   public randomWater(): void {
     this.form
       .baseSpritePath()
       .value.set(WaterSpritePaths[Math.floor(Math.random() * WaterSpritePaths.length)]);
+    this.form.baseSpritePath().markAsDirty();
   }
 }

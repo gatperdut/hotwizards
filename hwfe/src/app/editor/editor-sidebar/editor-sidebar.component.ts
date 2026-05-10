@@ -1,5 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HwAdventureTemplate } from '@hw/shared';
+import { filter, from, switchMap, tap } from 'rxjs';
 import {
   AdventureTemplateEditorDialogComponent,
   AdventureTemplateEditorDialogData,
@@ -55,10 +57,23 @@ export class EditorSidebarComponent {
               (m) => m.AdventureTemplateEditorDialogComponent,
             ),
         };
-        void this.dialogService.open(dialog, {
-          adventureTemplateId: adventureTemplate.id,
-          dto: { name: adventureTemplate.name, info: adventureTemplate.info, dungeon: dungeon },
-        });
+        from(
+          this.dialogService.open(dialog, {
+            adventureTemplateId: adventureTemplate.id,
+            dto: { name: adventureTemplate.name, info: adventureTemplate.info, dungeon: dungeon },
+          }),
+        )
+          .pipe(
+            switchMap((dialogRef) => dialogRef.afterClosed$),
+            filter((adventureTemplate) => !!adventureTemplate),
+            tap((adventureTemplate: HwAdventureTemplate): void => {
+              this.editorService.adventureTemplate.set({
+                ...adventureTemplate,
+                dungeon: dungeon,
+              });
+            }),
+          )
+          .subscribe();
       },
     },
     {

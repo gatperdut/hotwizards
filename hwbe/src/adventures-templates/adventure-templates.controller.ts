@@ -29,6 +29,12 @@ export class AdventureTemplatesController {
     return adventureTemplate;
   }
 
+  @Patch()
+  @UseGuards(AdminGuard)
+  public create(@Body() body: HwAdventureTemplateEditDto): Promise<number> {
+    return this.adventureTemplatesService.create(body.name, body.info, body.dungeon);
+  }
+
   @Patch(':adventureTemplateId')
   @UseGuards(AdminGuard, SetAdventureTemplateGuard)
   public update(

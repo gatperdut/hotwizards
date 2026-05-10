@@ -44,6 +44,17 @@ export class AdventureTemplatesService {
     };
   }
 
+  public async create(name: string, info: string, dungeon: object): Promise<number> {
+    const adventureTemplate = await this.prismaService.adventureTemplate.create({
+      data: { name: name, info: info, dungeon: dungeon },
+    });
+
+    // TODO deal with ws
+    // this.adventureTemplatesGateway.handleDownUpdateAdventureTemplate(adventureTemplate.id);
+
+    return adventureTemplate.id;
+  }
+
   public async update(
     adventureTemplate: HwAdventureTemplate,
     name: string,
@@ -52,10 +63,10 @@ export class AdventureTemplatesService {
   ): Promise<number> {
     await this.prismaService.adventureTemplate.update({
       where: { id: adventureTemplate.id },
-      data: { name: name, dungeon: dungeon },
+      data: { name: name, info: info, dungeon: dungeon },
     });
 
-    // TODO deal with ws
+    // TODO deal with ws?
     // this.adventureTemplatesGateway.handleDownUpdateAdventureTemplate(adventureTemplate.id);
 
     return adventureTemplate.id;
