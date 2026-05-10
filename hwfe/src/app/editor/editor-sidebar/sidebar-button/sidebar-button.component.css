@@ -1,0 +1,5 @@
+.anchored {
+  top: anchor(top);
+  left: anchor(right);
+  position-try-fallbacks: flip-block;
+}

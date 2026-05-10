@@ -266,6 +266,10 @@ export class EditorService {
   }
 
   private baseSpriteTap(event: FederatedPointerEvent, cell: HwPixiCell): void {
+    if (this.viewportService.dragging) {
+      return;
+    }
+
     event.stopPropagation();
     this.editCell(cell).pipe(take(1)).subscribe();
   }
