@@ -30,7 +30,7 @@ export class EditorService {
   private dialogService = inject(DialogService);
   private injector = inject(Injector);
 
-  public adventureTemplate = signal<Omit<HwAdventureTemplate, 'dungeon'>>(null!);
+  public adventureTemplate = signal<HwAdventureTemplate>(null!);
 
   public pixiDungeon = signal<HwPixiDungeon>(null!);
 

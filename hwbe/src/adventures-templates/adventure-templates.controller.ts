@@ -35,6 +35,11 @@ export class AdventureTemplatesController {
     @CurrentAdventureTemplate() adventureTemplate: HwAdventureTemplate,
     @Body() body: HwAdventureTemplateEditDto,
   ): Promise<number> {
-    return this.adventureTemplatesService.update(adventureTemplate, body.name, body.dungeon);
+    return this.adventureTemplatesService.update(
+      adventureTemplate,
+      body.name,
+      body.info,
+      body.dungeon,
+    );
   }
 }

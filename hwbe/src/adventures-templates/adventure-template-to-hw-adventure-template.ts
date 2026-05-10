@@ -15,6 +15,7 @@ export const adventureTemplateToHwAdventureTemplate = (
   return {
     id: adventureTemplate.id,
     name: adventureTemplate.name,
+    info: adventureTemplate.info,
     dungeon: adventureTemplate.dungeon as unknown as HwDungeon,
   };
 };

@@ -7,7 +7,22 @@
     </ng-template>
 
     <ng-template appDialogContent>
-      <div class="flex flex-col gap-hw-average"></div>
+      <div class="flex flex-col gap-hw-average">
+        <app-input-text
+          [field]="form.name"
+          label="Name"
+          type="text"
+          autocomplete="off"
+          placeholder="Maximum 40 characters"
+        ></app-input-text>
+
+        <app-input-text
+          [field]="form.info"
+          label="Information"
+          type="text"
+          autocomplete="off"
+        ></app-input-text>
+      </div>
     </ng-template>
 
     <ng-template appDialogActions>
