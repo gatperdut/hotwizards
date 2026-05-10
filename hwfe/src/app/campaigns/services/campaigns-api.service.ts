@@ -35,8 +35,8 @@ export class CampaignsApiService {
     });
   }
 
-  public get(id: number): Observable<HwCampaign> {
-    return this.httpClient.get<HwCampaign>(`/api/campaigns/${id}`);
+  public get(campaignId: number): Observable<HwCampaign> {
+    return this.httpClient.get<HwCampaign>(`/api/campaigns/${campaignId}`);
   }
 
   public create(params: HwCampaignEditDto): Observable<number> {
@@ -47,25 +47,25 @@ export class CampaignsApiService {
       );
   }
 
-  public invite(id: number, params: HwMembershipCreateDto): Observable<number[]> {
+  public invite(campaignId: number, params: HwMembershipCreateDto): Observable<number[]> {
     return this.httpClient
-      .post<number[]>(`/api/campaigns/${id}/memberships`, params)
+      .post<number[]>(`/api/campaigns/${campaignId}/memberships`, params)
       .pipe(
         this.apiNotificationService.notify('Invitations sent', 'Invitations could not be sent'),
       );
   }
 
-  public update(id: number, params: HwCampaignEditDto): Observable<number> {
+  public update(campaignId: number, params: HwCampaignEditDto): Observable<number> {
     return this.httpClient
-      .patch<number>(`/api/campaigns/${id}`, params)
+      .patch<number>(`/api/campaigns/${campaignId}`, params)
       .pipe(
         this.apiNotificationService.notify('Campaign updated', 'Campaign could not be updated'),
       );
   }
 
-  public delete(id: number): Observable<number> {
+  public delete(campaignId: number): Observable<number> {
     return this.httpClient
-      .delete<number>(`/api/campaigns/${id}`)
+      .delete<number>(`/api/campaigns/${campaignId}`)
       .pipe(
         this.apiNotificationService.notify('Campaign deleted', 'Campaign could not be deleted'),
       );

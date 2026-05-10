@@ -43,4 +43,20 @@ export class AdventureTemplatesService {
       },
     };
   }
+
+  public async update(
+    adventureTemplate: HwAdventureTemplate,
+    name: string,
+    dungeon: object,
+  ): Promise<number> {
+    await this.prismaService.adventureTemplate.update({
+      where: { id: adventureTemplate.id },
+      data: { name: name, dungeon: dungeon },
+    });
+
+    // TODO deal with ws
+    // this.adventureTemplatesGateway.handleDownUpdateAdventureTemplate(adventureTemplate.id);
+
+    return adventureTemplate.id;
+  }
 }

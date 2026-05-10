@@ -1,4 +1,9 @@
-import { HwAdventureTemplate, HwAdventureTemplateSearchDto, Paginated } from '@hw/shared';
+import {
+  HwAdventureTemplate,
+  HwAdventureTemplateEditDto,
+  HwAdventureTemplateSearchDto,
+  Paginated,
+} from '@hw/shared';
 import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from '../users/guards/admin.guard.js';
 import { AdventureTemplatesService } from './adventure-templates.service.js';
@@ -29,7 +34,7 @@ export class AdventureTemplatesController {
   public update(
     @CurrentAdventureTemplate() adventureTemplate: HwAdventureTemplate,
     @Body() body: HwAdventureTemplateEditDto,
-  ) {
-    return this.adventureTemplatesService.update(adventureTemplate, body);
+  ): Promise<number> {
+    return this.adventureTemplatesService.update(adventureTemplate, body.name, body.dungeon);
   }
 }
