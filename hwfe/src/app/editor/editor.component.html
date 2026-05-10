@@ -1,10 +1,13 @@
-<pre class="absolute top-3 left-3 typ-code">
+<pre class="absolute top-3 left-14 typ-code">
   @if (viewportService.viewport) {
     <div>viewport children {{viewportService.viewport.children.length || '?'}}</div>
   }
   <div>{{ editorService.dungeon() | json }}</div>
 </pre>
 
-<div class="overflow-hidden">
-  <canvas class="overflow-hidden" #canvas></canvas>
+<div class="flex flex-row">
+  <app-editor-sidebar></app-editor-sidebar>
+  <div class="overflow-hidden">
+    <canvas class="overflow-hidden" #canvas></canvas>
+  </div>
 </div>

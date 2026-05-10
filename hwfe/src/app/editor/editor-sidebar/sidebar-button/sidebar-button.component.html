@@ -1,0 +1,11 @@
+<div class="relative flex flex-row items-center">
+  <app-button (click)="onTrigger()" [icon]="icon()"> </app-button>
+
+  @if (actions().length && expanded) {
+    <div class="absolute left-full top-0 flex flex-row items-center gap-hw-xsmall pl-hw-xsmall">
+      @for (action of actions(); track $index) {
+        <app-button color="secondary" [icon]="action.icon" (click)="onAction(action)"> </app-button>
+      }
+    </div>
+  }
+</div>

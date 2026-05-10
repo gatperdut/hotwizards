@@ -16,6 +16,8 @@ import { forkJoin, tap } from 'rxjs';
 import { screen2World } from '../shared/coords';
 import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
+import { DungeonHeight, DungeonWidth } from './consts/dungeon-size.const';
+import { EditorSidebarComponent } from './editor-sidebar/editor-sidebar.component';
 import { EditorService } from './services/editor.service';
 import { GridService } from './services/grid.service';
 import { TextureService } from './services/texture.service';
@@ -23,7 +25,7 @@ import { ViewportService } from './services/viewport.service';
 
 @Component({
   selector: 'app-editor',
-  imports: [JsonPipe],
+  imports: [EditorSidebarComponent, JsonPipe],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
   providers: [OverflowService, EditorService, ViewportService, GridService, TextureService],
@@ -79,6 +81,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
     const world = this.viewportService.viewport.toWorld(event.global);
     const cell = screen2World(world.x, world.y);
+
+    if (cell.x < 0 || cell.y >= DungeonWidth || cell.y < 0 || cell.y >= DungeonHeight) {
+      return;
+    }
 
     if (this.editorService.findCell(cell.x, cell.y)) {
       return;
