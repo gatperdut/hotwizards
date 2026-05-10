@@ -111,7 +111,7 @@ export class EditorService {
     return cell;
   }
 
-  public createBaseSprite(x: number, y: number, baseSpritePath: BaseSpritePath): Sprite {
+  private createBaseSprite(x: number, y: number, baseSpritePath: BaseSpritePath): Sprite {
     const baseSprite = new Sprite(this.textureService.textures[baseSpritePath]);
     baseSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     baseSprite.position.copyFrom(world2Ground(x, y));
@@ -128,7 +128,7 @@ export class EditorService {
     return baseSprite;
   }
 
-  public createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
+  private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
     const featureSprite = new Sprite(this.textureService.textures[featureSpritePath]);
     featureSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     featureSprite.position.copyFrom(world2Ground(x, y));
@@ -146,7 +146,7 @@ export class EditorService {
     return featureSprite;
   }
 
-  public createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
+  private createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
     const doorSprite = new Sprite(this.textureService.textures[doorSpritePath]);
     doorSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     doorSprite.position.copyFrom(world2Ground(x, y));
@@ -166,7 +166,7 @@ export class EditorService {
     baseSprite.destroy();
   }
 
-  public editCell(cell: HwPixiCell): Observable<CellEditorDialogResult> {
+  private editCell(cell: HwPixiCell): Observable<CellEditorDialogResult> {
     const dialog: LazyDialog<
       CellEditorDialogComponent,
       CellEditorDialogData,
@@ -200,14 +200,14 @@ export class EditorService {
     this.pixiDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
   }
 
-  public removeCell(cell: HwPixiCell): void {
+  private removeCell(cell: HwPixiCell): void {
     this.pixiDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.filter((someCell) => someCell.x !== cell.x || someCell.y !== cell.y),
     }));
   }
 
-  public updateCell(cell: HwPixiCell): void {
+  private updateCell(cell: HwPixiCell): void {
     this.pixiDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.map((someCell) =>
@@ -253,6 +253,7 @@ export class EditorService {
         );
       }
     }
+    cell.traversable = cellIsTraversable(cell);
     this.updateCell(cell);
   }
 
