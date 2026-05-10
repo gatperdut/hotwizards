@@ -1,5 +1,5 @@
 import { HwAdventureTemplate, HwAdventureTemplateSearchDto, Paginated } from '@hw/shared';
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from '../users/guards/admin.guard.js';
 import { AdventureTemplatesService } from './adventure-templates.service.js';
 import { CurrentAdventureTemplate } from './decorators/current-adventure-template.decorator.js';
@@ -22,5 +22,14 @@ export class AdventureTemplatesController {
     @CurrentAdventureTemplate() adventureTemplate: HwAdventureTemplate,
   ): HwAdventureTemplate {
     return adventureTemplate;
+  }
+
+  @Patch(':adventureTemplateId')
+  @UseGuards(AdminGuard, SetAdventureTemplateGuard)
+  public update(
+    @CurrentAdventureTemplate() adventureTemplate: HwAdventureTemplate,
+    @Body() body: HwAdventureTemplateEditDto,
+  ) {
+    return this.adventureTemplatesService.update(adventureTemplate, body);
   }
 }

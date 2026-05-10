@@ -20,6 +20,7 @@ export class SidebarButtonComponent {
   public callback = input<() => void>();
   public actions = input<SidebarButtonAction[]>([]);
 
+  public id = `app-sidebar-button-${Math.random().toString(36).substring(2, 9)}`;
   public expanded = false;
 
   public onTrigger(): void {
