@@ -230,10 +230,11 @@ body {
 /* Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
+  background-color: red;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   @apply bg-background;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-primary rounded-full;
+  @apply bg-off-medium rounded-full;
 }

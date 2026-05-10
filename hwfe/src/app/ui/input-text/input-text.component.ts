@@ -14,8 +14,9 @@ export class InputTextComponent {
   public type = input<'text' | 'password' | 'email'>('text');
   public autocomplete = input<'username' | 'new-password' | 'current-password' | 'off'>('off');
   public placeholder = input<string | undefined>(undefined);
-  public loading = input<boolean>(false);
-  public hasValidation = input<boolean>(true);
+  public loading = input(false);
+  public hasValidation = input(true);
+  public textarea = input(false);
 
   public id = `app-input-text-${Math.random().toString(36).substring(2, 9)}`;
 
