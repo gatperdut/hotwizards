@@ -11,6 +11,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       featureSpritePath: null,
       doorSpritePath: null,
       traversable: true,
+      spawn: true,
     },
     {
       x: 6,
@@ -19,6 +20,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       featureSpritePath: null,
       doorSpritePath: null,
       traversable: true,
+      spawn: true,
     },
     {
       x: 5,
@@ -27,6 +29,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       featureSpritePath: null,
       doorSpritePath: null,
       traversable: true,
+      spawn: true,
     },
     {
       x: 6,
@@ -35,6 +38,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       featureSpritePath: '/tiles/feature/chair_w.png',
       doorSpritePath: null,
       traversable: true,
+      spawn: true,
     },
     {
       x: 6,
@@ -43,6 +47,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       featureSpritePath: null,
       doorSpritePath: null,
       traversable: true,
+      spawn: false,
     },
   ];
 

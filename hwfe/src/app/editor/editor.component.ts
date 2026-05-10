@@ -88,7 +88,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    this.editorService.addCell(this.editorService.createPixiCell(cell.x, cell.y));
+    this.editorService.addCell(
+      this.editorService.createPixiCell(cell.x, cell.y, undefined, undefined, undefined, false),
+    );
   }
 
   public ngOnDestroy(): void {

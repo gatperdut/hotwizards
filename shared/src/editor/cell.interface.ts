@@ -6,4 +6,5 @@ export interface HwCell {
   featureSpritePath: string | null;
   doorSpritePath: string | null;
   traversable: boolean;
+  spawn: boolean;
 }

@@ -36,6 +36,16 @@ export class EditorService {
 
   public dungeon = computed(() => this.pixiDungeon2Dungeon(this.pixiDungeon()));
 
+  public errors = computed<string[]>(() => {
+    const result: string[] = [];
+
+    if (this.pixiDungeon().cells.filter((cell) => cell.spawn).length !== 4) {
+      result.push('There must be 4 spawn points');
+    }
+
+    return result;
+  });
+
   public dungeon2PixiDungeon(dungeon: HwDungeon): HwPixiDungeon {
     return {
       ...dungeon,
@@ -47,6 +57,7 @@ export class EditorService {
             cell.baseSpritePath as BaseSpritePath,
             cell.featureSpritePath as FeatureSpritePath,
             cell.doorSpritePath as DoorSpritePath,
+            cell.spawn,
           ),
       ),
     };
@@ -71,6 +82,7 @@ export class EditorService {
     ],
     featureSpritePath: FeatureSpritePath | null = null,
     doorSpritePath: DoorSpritePath | null = null,
+    spawn: boolean,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
     const featureSprite = featureSpritePath
@@ -93,6 +105,7 @@ export class EditorService {
         featureSprite: featureSprite,
         doorSprite: doorSprite,
       },
+      spawn: spawn,
     };
 
     cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
