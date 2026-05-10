@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { form, FormRoot, required, validate } from '@angular/forms/signals';
 import { ButtonComponent } from '../../ui/button/button.component';
+import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
 import { DialogActionsDirective } from '../../ui/dialog/directives/dialog-actions.directive';
@@ -32,6 +33,7 @@ type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
   featureSpritePath: FeatureSpritePath | null;
   doorSpritePath: DoorSpritePath | null;
+  spawn: boolean;
 };
 
 export type CellTransformData = CellTransformEditableData & {
@@ -54,6 +56,7 @@ export type CellEditorDialogResult = CellTransformData | undefined | null;
     FormRoot,
     SelectComponent,
     ButtonComponent,
+    CheckboxComponent,
     JsonPipe,
   ],
   templateUrl: './cell-editor-dialog.component.html',
@@ -69,9 +72,11 @@ export class CellEditorDialogComponent {
       this.form.baseSpritePath().value();
       this.form.featureSpritePath().value();
       this.form.doorSpritePath().value();
+      this.form.spawn().value();
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
       this.form.doorSpritePath().markAsTouched();
+      this.form.spawn().markAsTouched();
     });
   }
 
@@ -84,6 +89,7 @@ export class CellEditorDialogComponent {
     baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
     featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
     doorSpritePath: this.data.cell.doorSpritePath as DoorSpritePath,
+    spawn: this.data.cell.spawn,
   });
 
   public form = form(
@@ -99,7 +105,7 @@ export class CellEditorDialogComponent {
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
           return {
             kind: 'locationCrowded',
-            message: 'Features must be on a floor',
+            message: 'A feature cannot be placed on water',
           };
         }
 
@@ -107,7 +113,15 @@ export class CellEditorDialogComponent {
         if (doorSpritePath) {
           return {
             kind: 'locationCrowded',
-            message: 'There cannot be a feature where a door is',
+            message: 'A feature cannot be placed together with a door',
+          };
+        }
+
+        const spawn = valueOf(schemaPath.spawn);
+        if (spawn) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A feature cannot be placed in a spawn cell',
           };
         }
 
@@ -123,7 +137,7 @@ export class CellEditorDialogComponent {
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
           return {
             kind: 'locationCrowded',
-            message: 'Doors must be on a floor',
+            message: 'A door cannot be placed on water',
           };
         }
 
@@ -131,7 +145,45 @@ export class CellEditorDialogComponent {
         if (featureSpritePath) {
           return {
             kind: 'locationCrowded',
-            message: 'There cannot be a door where a feature is',
+            message: 'A door cannot be placed together with a feature',
+          };
+        }
+        const spawn = valueOf(schemaPath.spawn);
+        if (spawn) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A door cannot be placed in a spawn cell',
+          };
+        }
+
+        return null;
+      });
+
+      validate(schemaPath.spawn, ({ value, valueOf }) => {
+        if (!value()) {
+          return null;
+        }
+
+        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
+        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+          return {
+            kind: 'locationCrowded',
+            message: 'Spawn cells cannot be water cells',
+          };
+        }
+
+        const featureSpritePath = valueOf(schemaPath.featureSpritePath);
+        if (featureSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A spawn cell cannot contain a feature',
+          };
+        }
+        const spawn = valueOf(schemaPath.spawn);
+        if (spawn) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A spawn cell cannot contain a door',
           };
         }
 

@@ -30,6 +30,7 @@
             @for (action of actions(); track $index) {
               <app-button
                 [label]="action.label"
+                [color]="action.color || 'primary'"
                 (click)="action.action(adventureTemplate)"
                 [disabled]="action.disabled?.() || false"
               ></app-button>

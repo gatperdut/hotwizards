@@ -45,6 +45,13 @@ export class EditorSelectDialogComponent {
 
   public adventurePickerActions: AdventurePickerAction[] = [
     {
+      label: 'delete',
+      color: 'warning',
+      action: (adventureTemplate: HwAdventureTemplate): void => {
+        // TODO implement adventure template delete
+      },
+    },
+    {
       label: 'Edit',
       action: (adventureTemplate: HwAdventureTemplate): void => {
         this.dialogRef.close();
