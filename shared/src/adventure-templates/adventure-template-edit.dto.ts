@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsObject, IsString, MaxLength } from 'class-validator';
+import { HwDungeon } from '../editor/dungeon.interface.js';
 
 export class HwAdventureTemplateEditDto {
   @IsString()
@@ -12,5 +13,5 @@ export class HwAdventureTemplateEditDto {
   info: string;
 
   @IsObject()
-  dungeon: object;
+  dungeon: HwDungeon;
 }

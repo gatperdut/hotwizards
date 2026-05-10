@@ -1,5 +1,5 @@
 <form [formRoot]="form">
-  <app-dialog sizeClass="max-w-md">
+  <app-dialog sizeClass="max-w-lg">
     <ng-template appDialogTitle>
       <div class="typ-h2">
         {{ data.adventureTemplateId ? 'Edit adventure template' : 'Create adventure template' }}
@@ -31,7 +31,7 @@
         label="Cancel"
         type="button"
         appearance="outlined"
-        (click)="dialogRef.close(false)"
+        (click)="dialogRef.close(undefined)"
       ></app-button>
       <app-button
         [label]="data.adventureTemplateId ? 'Update' : 'Create'"

@@ -40,6 +40,17 @@ export class AdventureTemplatesApiService {
     );
   }
 
+  public create(params: HwAdventureTemplateEditDto): Observable<number> {
+    return this.httpClient
+      .patch<number>(`/api/adventure-templates`, params)
+      .pipe(
+        this.apiNotificationService.notify(
+          'Adventure template created',
+          'Adventure template could not be created',
+        ),
+      );
+  }
+
   public update(
     adventureTemplateId: number,
     params: HwAdventureTemplateEditDto,

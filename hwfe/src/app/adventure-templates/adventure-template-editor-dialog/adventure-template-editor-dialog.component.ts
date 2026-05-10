@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
-import { HwAdventureTemplateEditDto } from '@hw/shared';
+import { HwAdventureTemplate, HwAdventureTemplateEditDto } from '@hw/shared';
 import { firstValueFrom } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -17,7 +17,7 @@ export type AdventureTemplateEditorDialogData = {
   dto: HwAdventureTemplateEditDto;
 };
 
-export type AdventureTemplateEditorDialogResult = boolean;
+export type AdventureTemplateEditorDialogResult = HwAdventureTemplate | undefined;
 
 @Component({
   selector: 'app-adventure-template-editor-dialog',
@@ -61,15 +61,11 @@ export class AdventureTemplateEditorDialogComponent {
                   this.data.adventureTemplateId,
                   this.model(),
                 )
-              : // TODO create
-                this.adventureTemplatesApiService.update(
-                  this.data.adventureTemplateId!,
-                  this.model(),
-                ),
+              : this.adventureTemplatesApiService.create(this.model()),
           );
 
           if (typeof result === 'number') {
-            this.dialogRef.close(true);
+            this.dialogRef.close({ id: result, ...this.model() });
             return;
           }
 
