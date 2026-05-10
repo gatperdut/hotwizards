@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
   HostListener,
   input,
@@ -33,6 +34,7 @@ export class SelectComponent {
   public loading = input(false);
   public searchable = input(false);
   public canClearSingle = input(false);
+  public hasValidation = input<boolean>(true);
 
   constructor(private elementRef: ElementRef) {}
 
@@ -42,6 +44,10 @@ export class SelectComponent {
   public searchForm = form(this.searchField as ModelSignal<string>, (schemaPath) => {
     debounce(schemaPath, 400);
   });
+
+  public error = computed(() => this.form()().errors()[0]);
+
+  public errorVisibility = computed(() => this.form()().touched() && this.error());
 
   public open(): void {
     if (this.form()().disabled()) {
