@@ -48,8 +48,12 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
 
   await prismaClient.adventureTemplate.createMany({
     data: [
-      { name: 'The Sunken Tomb', dungeon: { cells: sunkenTombCells as unknown as InputJsonValue } },
-      { name: 'Raid on Blackmoor Keep', dungeon: { cells: [] } },
+      {
+        name: 'The Sunken Tomb',
+        info: 'Explore the Sunken Tomb!',
+        dungeon: { cells: sunkenTombCells as unknown as InputJsonValue },
+      },
+      { name: 'Raid on Blackmoor Keep', info: 'Raid the Blackmoor Keep!', dungeon: { cells: [] } },
     ],
   });
 }

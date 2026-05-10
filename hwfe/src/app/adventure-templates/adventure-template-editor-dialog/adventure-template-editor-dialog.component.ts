@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
-import { HwCampaignEditDto } from '@hw/shared';
+import { HwAdventureTemplateEditDto } from '@hw/shared';
+import { firstValueFrom } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -11,12 +12,12 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { AdventureTemplatesApiService } from '../services/adventure-templates-api.service';
 
-export type AdventureTemplateDialogData = {
+export type AdventureTemplateEditorDialogData = {
   adventureTemplateId?: number;
-  dto: HwCampaignEditDto;
+  dto: HwAdventureTemplateEditDto;
 };
 
-export type AdventureTemplateDialogResult = boolean;
+export type AdventureTemplateEditorDialogResult = boolean;
 
 @Component({
   selector: 'app-adventure-template-editor-dialog',
@@ -33,25 +34,52 @@ export type AdventureTemplateDialogResult = boolean;
   styleUrl: './adventure-template-editor-dialog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdventureTemplateDialogComponent {
-  public data = inject<AdventureTemplateDialogData>(APP_DIALOG_DATA);
-  public dialogRef = inject<DialogRef<AdventureTemplateDialogResult>>(DialogRef);
+export class AdventureTemplateEditorDialogComponent {
+  public data = inject<AdventureTemplateEditorDialogData>(APP_DIALOG_DATA);
+  public dialogRef = inject<DialogRef<AdventureTemplateEditorDialogResult>>(DialogRef);
   private adventureTemplatesApiService = inject(AdventureTemplatesApiService);
 
-  public model = signal({
+  public model = signal<HwAdventureTemplateEditDto>({
     name: this.data.dto.name,
-    aoo: this.data.dto.aoo,
-    movement: this.data.dto.movement,
+    info: this.data.dto.info,
+    dungeon: this.data.dto.dungeon,
   });
   public form = form(
     this.model,
     (schemaPath) => {
       required(schemaPath.name, { message: 'The name is required' });
       maxLength(schemaPath.name, 40, { message: '40 characters or less' });
+
+      required(schemaPath.info, { message: 'The information is required' });
     },
     {
       submission: {
-        action: async () => {},
+        action: async () => {
+          const result = await firstValueFrom(
+            this.data.adventureTemplateId
+              ? this.adventureTemplatesApiService.update(
+                  this.data.adventureTemplateId,
+                  this.model(),
+                )
+              : // TODO create
+                this.adventureTemplatesApiService.update(
+                  this.data.adventureTemplateId!,
+                  this.model(),
+                ),
+          );
+
+          if (typeof result === 'number') {
+            this.dialogRef.close(true);
+            return;
+          }
+
+          return {
+            kind: 'serverError',
+            message: this.data.adventureTemplateId
+              ? 'Campaign could not be updated'
+              : 'Campaign could not be created',
+          };
+        },
       },
     },
   );

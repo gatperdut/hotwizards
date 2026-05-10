@@ -49,7 +49,7 @@ export class CampaignEditorDialogComponent {
   public movements = Object.values(Movement);
   public movementDisplayFn = (movement: Movement): string => this.movementsService.name(movement);
 
-  public model = signal({
+  public model = signal<HwCampaignEditDto>({
     name: this.data.dto.name,
     aoo: this.data.dto.aoo,
     movement: this.data.dto.movement,

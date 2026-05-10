@@ -47,6 +47,7 @@ export class AdventureTemplatesService {
   public async update(
     adventureTemplate: HwAdventureTemplate,
     name: string,
+    info: string,
     dungeon: object,
   ): Promise<number> {
     await this.prismaService.adventureTemplate.update({
