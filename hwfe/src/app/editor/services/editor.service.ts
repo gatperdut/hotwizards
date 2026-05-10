@@ -10,12 +10,25 @@ import {
   CellEditorDialogResult,
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
-import { BaseSpritePath } from '../consts/base-sprite-paths.const';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
-import { FeatureSpriteOffsets, FeatureSpritePath } from '../consts/feature-sprite-paths.const';
-import { FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
+import {
+  BaseSpriteOffsets,
+  BaseSpritePath,
+  BaseSpriteSizes,
+} from '../consts/sprite-paths/base-sprite-paths.const';
+import {
+  DoorSpriteOffsets,
+  DoorSpritePath,
+  DoorSpriteSizes,
+} from '../consts/sprite-paths/door-sprite-paths.const';
+import {
+  FeatureSpriteOffsets,
+  FeatureSpritePath,
+  FeatureSpriteSizes,
+} from '../consts/sprite-paths/feature-sprite-paths.const';
+import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { TextureService } from './texture.service';
@@ -42,6 +55,7 @@ export class EditorService {
             cell.y,
             cell.baseSpritePath as BaseSpritePath,
             cell.featureSpritePath as FeatureSpritePath,
+            cell.doorSpritePath as DoorSpritePath,
           ),
       ),
     };
@@ -65,17 +79,20 @@ export class EditorService {
       Math.floor(Math.random() * FloorSpritePaths.length)
     ],
     featureSpritePath: FeatureSpritePath | null = null,
+    doorSpritePath: DoorSpritePath | null = null,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
     const featureSprite = featureSpritePath
       ? this.createFeatureSprite(x, y, featureSpritePath)
       : null;
+    const doorSprite = doorSpritePath ? this.createDoorSprite(x, y, doorSpritePath) : null;
 
     const cell: HwPixiCell = {
       x: x,
       y: y,
       baseSpritePath: baseSpritePath,
       featureSpritePath: featureSpritePath,
+      doorSpritePath: doorSpritePath,
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
         featureSpritePath: featureSpritePath,
@@ -83,6 +100,7 @@ export class EditorService {
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
+        doorSprite: doorSprite,
       },
     };
 
@@ -95,7 +113,9 @@ export class EditorService {
     const baseSprite = new Sprite(this.textureService.textures[baseSpritePath]);
     baseSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     baseSprite.position.copyFrom(world2Ground(x, y));
-    baseSprite.setSize(64, 64);
+    baseSprite.setSize(BaseSpriteSizes[baseSpritePath].x, BaseSpriteSizes[baseSpritePath].y);
+    baseSprite.position.x += BaseSpriteOffsets[baseSpritePath].x;
+    baseSprite.position.y += BaseSpriteOffsets[baseSpritePath].y;
     baseSprite.anchor.set(0.5, 0.5);
     baseSprite.eventMode = 'static';
     baseSprite.cursor = 'pointer';
@@ -110,15 +130,33 @@ export class EditorService {
     const featureSprite = new Sprite(this.textureService.textures[featureSpritePath]);
     featureSprite.zIndex = groundZIndex(x, y, DungeonWidth);
     featureSprite.position.copyFrom(world2Ground(x, y));
+    featureSprite.setSize(
+      FeatureSpriteSizes[featureSpritePath].x,
+      FeatureSpriteSizes[featureSpritePath].y,
+    );
     featureSprite.position.x += FeatureSpriteOffsets[featureSpritePath].x;
     featureSprite.position.y += FeatureSpriteOffsets[featureSpritePath].y;
-    featureSprite.setSize(64, 64);
     featureSprite.anchor.set(0.5, 0.5);
     featureSprite.eventMode = 'none';
 
     this.viewportService.viewport.addChild(featureSprite);
 
     return featureSprite;
+  }
+
+  public createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
+    const doorSprite = new Sprite(this.textureService.textures[doorSpritePath]);
+    doorSprite.zIndex = groundZIndex(x, y, DungeonWidth);
+    doorSprite.position.copyFrom(world2Ground(x, y));
+    doorSprite.setSize(DoorSpriteSizes[doorSpritePath].x, DoorSpriteSizes[doorSpritePath].y);
+    doorSprite.position.x += DoorSpriteOffsets[doorSpritePath].x;
+    doorSprite.position.y += DoorSpriteOffsets[doorSpritePath].y;
+    doorSprite.anchor.set(0.5, 0.5);
+    doorSprite.eventMode = 'none';
+
+    this.viewportService.viewport.addChild(doorSprite);
+
+    return doorSprite;
   }
 
   public destroySprite(baseSprite: Sprite): void {
@@ -200,6 +238,19 @@ export class EditorService {
         );
       }
     }
+    if (cell.doorSpritePath !== cellTransformData.doorSpritePath) {
+      if (cell.doorSpritePath) {
+        this.destroySprite(cell.pixi.doorSprite as Sprite);
+      }
+      cell.doorSpritePath = cellTransformData.doorSpritePath;
+      if (cellTransformData.doorSpritePath) {
+        cell.pixi.doorSprite = this.createDoorSprite(
+          cell.x,
+          cell.y,
+          cellTransformData.doorSpritePath,
+        );
+      }
+    }
     this.updateCell(cell);
   }
 
@@ -208,6 +259,9 @@ export class EditorService {
     this.destroySprite(cell.pixi.baseSprite);
     if (cell.pixi.featureSprite) {
       this.destroySprite(cell.pixi.featureSprite);
+    }
+    if (cell.pixi.doorSprite) {
+      this.destroySprite(cell.pixi.doorSprite);
     }
   }
 

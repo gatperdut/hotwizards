@@ -16,17 +16,22 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
-import { BaseSpritePath, BaseSpritePaths } from '../consts/base-sprite-paths.const';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
-import { FeatureSpritePath, FeatureSpritePaths } from '../consts/feature-sprite-paths.const';
-import { FloorSpritePath, FloorSpritePaths } from '../consts/floor-sprite-paths.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
-import { WaterSpritePaths } from '../consts/water-sprite-paths.const';
+import { BaseSpritePath, BaseSpritePaths } from '../consts/sprite-paths/base-sprite-paths.const';
+import { DoorSpritePath, DoorSpritePaths } from '../consts/sprite-paths/door-sprite-paths.const';
+import {
+  FeatureSpritePath,
+  FeatureSpritePaths,
+} from '../consts/sprite-paths/feature-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
+import { WaterSpritePaths } from '../consts/sprite-paths/water-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 
 type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
   featureSpritePath: FeatureSpritePath | null;
+  doorSpritePath: DoorSpritePath | null;
 };
 
 export type CellTransformData = CellTransformEditableData & {
@@ -62,7 +67,11 @@ export class CellEditorDialogComponent {
   constructor() {
     effect(() => {
       this.form.baseSpritePath().value();
+      this.form.featureSpritePath().value();
+      this.form.doorSpritePath().value();
+      this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
+      this.form.doorSpritePath().markAsTouched();
     });
   }
 
@@ -74,6 +83,7 @@ export class CellEditorDialogComponent {
   public model = signal<CellTransformEditableData>({
     baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
     featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
+    doorSpritePath: this.data.cell.doorSpritePath as DoorSpritePath,
   });
 
   public form = form(
@@ -81,22 +91,54 @@ export class CellEditorDialogComponent {
     (schemaPath) => {
       required(schemaPath.baseSpritePath, { message: 'A base sprite path is required' });
       validate(schemaPath.featureSpritePath, ({ value, valueOf }) => {
-        if (!value) {
+        if (!value()) {
           return null;
         }
 
         const baseSpritePath = valueOf(schemaPath.baseSpritePath);
-        if (FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+          return {
+            kind: 'locationCrowded',
+            message: 'Features must be on a floor',
+          };
+        }
+
+        const doorSpritePath = valueOf(schemaPath.doorSpritePath);
+        if (doorSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'There cannot be a feature where a door is',
+          };
+        }
+
+        return null;
+      });
+
+      validate(schemaPath.doorSpritePath, ({ value, valueOf }) => {
+        if (!value()) {
           return null;
         }
 
-        return {
-          kind: 'incompatible',
-          message: 'Features must be on a floor.',
-        };
+        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
+        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+          return {
+            kind: 'locationCrowded',
+            message: 'Doors must be on a floor',
+          };
+        }
+
+        const featureSpritePath = valueOf(schemaPath.featureSpritePath);
+        if (featureSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'There cannot be a door where a feature is',
+          };
+        }
+
         return null;
       });
     },
+
     {
       submission: {
         action: async () => {
@@ -108,6 +150,7 @@ export class CellEditorDialogComponent {
 
   public baseSpritePaths = BaseSpritePaths.slice();
   public featureSpritePaths = FeatureSpritePaths.slice();
+  public doorSpritePaths = DoorSpritePaths.slice();
 
   public spritePathDisplayFn = spritePathDisplayFn;
 
