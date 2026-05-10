@@ -1,0 +1,27 @@
+<form [formRoot]="form">
+  <app-dialog sizeClass="max-w-md">
+    <ng-template appDialogTitle>
+      <div class="typ-h2">
+        {{ data.adventureTemplateId ? 'Edit adventure template' : 'Create adventure template' }}
+      </div>
+    </ng-template>
+
+    <ng-template appDialogContent>
+      <div class="flex flex-col gap-hw-average"></div>
+    </ng-template>
+
+    <ng-template appDialogActions>
+      <app-button
+        label="Cancel"
+        type="button"
+        appearance="outlined"
+        (click)="dialogRef.close(false)"
+      ></app-button>
+      <app-button
+        [label]="data.adventureTemplateId ? 'Update' : 'Create'"
+        type="submit"
+        [disabled]="form().invalid()"
+      ></app-button>
+    </ng-template>
+  </app-dialog>
+</form>
