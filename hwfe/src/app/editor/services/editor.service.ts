@@ -14,6 +14,7 @@ import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
+import { CharacterSpritePaths } from '../consts/sprite-paths/character-sprite-paths.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
 import { FeatureSpritePath } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
@@ -110,6 +111,21 @@ export class EditorService {
 
     cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
 
+    if (x === 6 && y === 2) {
+      this.createMonsterSprite(6, 2, '/tiles/characters/barbarian_male_s.png');
+    }
+
+    if (x === 5 && y === 2) {
+      this.createMonsterSprite(5, 2, '/tiles/characters/barbarian_male_n.png');
+    }
+    if (x === 6 && y === 3) {
+      this.createMonsterSprite(6, 3, '/tiles/characters/dwarf_male_e.png');
+    }
+
+    if (x === 5 && y === 3) {
+      this.createMonsterSprite(5, 3, '/tiles/characters/dwarf_male_w.png');
+    }
+
     return cell;
   }
 
@@ -141,6 +157,16 @@ export class EditorService {
 
   private createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
     const doorSprite = this.createSprite(x, y, doorSpritePath);
+    doorSprite.eventMode = 'none';
+    return doorSprite;
+  }
+
+  private createMonsterSprite(
+    x: number,
+    y: number,
+    monsterSpritePath: CharacterSpritePaths,
+  ): Sprite {
+    const doorSprite = this.createSprite(x, y, monsterSpritePath);
     doorSprite.eventMode = 'none';
     return doorSprite;
   }
