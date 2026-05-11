@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared';
 import { filter, from, switchMap, tap } from 'rxjs';
 import {
-  AdventureTemplateEditorDialogComponent,
-  AdventureTemplateEditorDialogData,
-  AdventureTemplateEditorDialogResult,
-} from '../adventure-templates/adventure-template-editor-dialog/adventure-template-editor-dialog.component';
+  SaveAdventureTemplateDialogComponent,
+  SaveAdventureTemplateDialogData,
+  SaveAdventureTemplateDialogResult,
+} from '../adventure-templates/save-adventure-template-dialog/save-adventure-template-dialog.component';
 import {
   AdventurePickerAction,
   AdventurePickerComponent,
@@ -64,13 +64,13 @@ export class EditorSelectDialogComponent {
     this.dialogRef.close();
 
     const dialog: LazyDialog<
-      AdventureTemplateEditorDialogComponent,
-      AdventureTemplateEditorDialogData,
-      AdventureTemplateEditorDialogResult
+      SaveAdventureTemplateDialogComponent,
+      SaveAdventureTemplateDialogData,
+      SaveAdventureTemplateDialogResult
     > = {
       importFn: () =>
-        import('../adventure-templates/adventure-template-editor-dialog/adventure-template-editor-dialog.component').then(
-          (m) => m.AdventureTemplateEditorDialogComponent,
+        import('../adventure-templates/save-adventure-template-dialog/save-adventure-template-dialog.component').then(
+          (m) => m.SaveAdventureTemplateDialogComponent,
         ),
     };
     from(

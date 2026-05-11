@@ -108,7 +108,6 @@ export class CellEditorDialogComponent {
             message: 'A feature cannot be placed on water',
           };
         }
-
         const doorSpritePath = valueOf(schemaPath.doorSpritePath);
         if (doorSpritePath) {
           return {
@@ -116,7 +115,6 @@ export class CellEditorDialogComponent {
             message: 'A feature cannot be placed together with a door',
           };
         }
-
         const spawn = valueOf(schemaPath.spawn);
         if (spawn) {
           return {
@@ -140,7 +138,6 @@ export class CellEditorDialogComponent {
             message: 'A door cannot be placed on water',
           };
         }
-
         const featureSpritePath = valueOf(schemaPath.featureSpritePath);
         if (featureSpritePath) {
           return {
@@ -179,8 +176,8 @@ export class CellEditorDialogComponent {
             message: 'A spawn cell cannot contain a feature',
           };
         }
-        const spawn = valueOf(schemaPath.spawn);
-        if (spawn) {
+        const doorSpritePath = valueOf(schemaPath.doorSpritePath);
+        if (doorSpritePath) {
           return {
             kind: 'locationCrowded',
             message: 'A spawn cell cannot contain a door',

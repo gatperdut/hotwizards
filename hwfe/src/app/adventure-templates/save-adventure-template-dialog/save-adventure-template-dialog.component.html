@@ -2,7 +2,7 @@
   <app-dialog sizeClass="max-w-lg">
     <ng-template appDialogTitle>
       <div class="typ-h2">
-        {{ data.adventureTemplateId ? 'Edit adventure template' : 'Create adventure template' }}
+        {{ data.adventureTemplateId ? 'Save adventure template' : 'Create adventure template' }}
       </div>
     </ng-template>
 
@@ -34,7 +34,7 @@
         (click)="dialogRef.close(undefined)"
       ></app-button>
       <app-button
-        [label]="data.adventureTemplateId ? 'Update' : 'Create'"
+        [label]="data.adventureTemplateId ? 'Save' : 'Create'"
         type="submit"
         [disabled]="form().invalid()"
       ></app-button>
