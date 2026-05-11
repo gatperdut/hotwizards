@@ -1,10 +1,23 @@
 <div class="flex flex-row items-center">
-  <app-button (click)="onTrigger()" [icon]="icon()" [style.anchor-name]="`--${id}`"> </app-button>
+  <app-button
+    (click)="onTrigger()"
+    [icon]="icon()"
+    [style.anchor-name]="`--${id}`"
+    [color]="color()"
+    [disabled]="disabled()"
+  >
+  </app-button>
 
   @if (actions().length && expanded) {
     <div class="flex flex-row items-center gap-1 pl-1 anchored" [style.position-anchor]="`--${id}`">
       @for (action of actions(); track $index) {
-        <app-button color="secondary" [icon]="action.icon" (click)="onAction(action)"> </app-button>
+        <app-button
+          color="secondary"
+          [icon]="action.icon"
+          (click)="onAction(action)"
+          [disabled]="action.disabled || false"
+        >
+        </app-button>
       }
     </div>
   }

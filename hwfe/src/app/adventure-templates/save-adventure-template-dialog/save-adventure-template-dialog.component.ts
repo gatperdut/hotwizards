@@ -12,15 +12,15 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';
 import { AdventureTemplatesApiService } from '../services/adventure-templates-api.service';
 
-export type AdventureTemplateEditorDialogData = {
+export type SaveAdventureTemplateDialogData = {
   adventureTemplateId?: number;
   dto: HwAdventureTemplateEditDto;
 };
 
-export type AdventureTemplateEditorDialogResult = HwAdventureTemplate | undefined;
+export type SaveAdventureTemplateDialogResult = HwAdventureTemplate | undefined;
 
 @Component({
-  selector: 'app-adventure-template-editor-dialog',
+  selector: 'app-save-adventure-template-dialog',
   imports: [
     DialogComponent,
     DialogTitleDirective,
@@ -30,13 +30,13 @@ export type AdventureTemplateEditorDialogResult = HwAdventureTemplate | undefine
     InputTextComponent,
     FormRoot,
   ],
-  templateUrl: './adventure-template-editor-dialog.component.html',
-  styleUrl: './adventure-template-editor-dialog.component.css',
+  templateUrl: './save-adventure-template-dialog.component.html',
+  styleUrl: './save-adventure-template-dialog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdventureTemplateEditorDialogComponent {
-  public data = inject<AdventureTemplateEditorDialogData>(APP_DIALOG_DATA);
-  public dialogRef = inject<DialogRef<AdventureTemplateEditorDialogResult>>(DialogRef);
+export class SaveAdventureTemplateDialogComponent {
+  public data = inject<SaveAdventureTemplateDialogData>(APP_DIALOG_DATA);
+  public dialogRef = inject<DialogRef<SaveAdventureTemplateDialogResult>>(DialogRef);
   private adventureTemplatesApiService = inject(AdventureTemplatesApiService);
 
   public model = signal<HwAdventureTemplateEditDto>({

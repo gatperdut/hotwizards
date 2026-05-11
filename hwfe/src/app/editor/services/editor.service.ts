@@ -39,8 +39,8 @@ export class EditorService {
   public errors = computed<string[]>(() => {
     const result: string[] = [];
 
-    if (this.pixiDungeon().cells.filter((cell) => cell.spawn).length !== 4) {
-      result.push('There must be 4 spawn points');
+    if (this.pixiDungeon()?.cells.filter((cell) => cell.spawn).length !== 4) {
+      result.push('There must be exactly 4 spawn cells.');
     }
 
     return result;
@@ -238,6 +238,7 @@ export class EditorService {
       }
     }
     cell.traversable = cellIsTraversable(cell);
+    cell.spawn = cellTransformData.spawn;
     this.updateCell(cell);
   }
 

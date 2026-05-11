@@ -4,6 +4,7 @@ import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 export interface SidebarButtonAction {
   icon: string;
   callback: () => void;
+  disabled?: boolean;
 }
 
 @Component({
@@ -19,6 +20,8 @@ export class SidebarButtonComponent {
   public icon = input.required<string>();
   public callback = input<() => void>();
   public actions = input<SidebarButtonAction[]>([]);
+  public color = input<'primary' | 'secondary' | 'warning'>('primary');
+  public disabled = input(false);
 
   public id = `app-sidebar-button-${Math.random().toString(36).substring(2, 9)}`;
   public expanded = false;
