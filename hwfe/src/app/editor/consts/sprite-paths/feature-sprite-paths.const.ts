@@ -38,7 +38,7 @@ export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/vase.png': { x: 64, y: 64 },
   '/tiles/feature/water_shrine.png': { x: 64, y: 64 },
   '/tiles/feature/well.png': { x: 64, y: 64 },
-};
+} as const;
 
 export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 0, y: -32 },
@@ -57,4 +57,4 @@ export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/vase.png': { x: 0, y: -34 },
   '/tiles/feature/water_shrine.png': { x: 1, y: -34 },
   '/tiles/feature/well.png': { x: -1, y: -32 },
-};
+} as const;

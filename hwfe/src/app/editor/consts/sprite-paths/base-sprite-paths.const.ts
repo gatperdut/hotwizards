@@ -32,7 +32,7 @@ export const BaseSpriteSizes: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/water/water_11.png': { x: 64, y: 64 },
   '/tiles/water/water_12.png': { x: 64, y: 64 },
   '/tiles/water/water_13.png': { x: 64, y: 64 },
-};
+} as const;
 
 export const BaseSpriteOffsets: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/floor/floor_01.png': { x: 0, y: 0 },
@@ -60,4 +60,4 @@ export const BaseSpriteOffsets: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/water/water_11.png': { x: 0, y: 0 },
   '/tiles/water/water_12.png': { x: 0, y: 0 },
   '/tiles/water/water_13.png': { x: 0, y: 0 },
-};
+} as const;
