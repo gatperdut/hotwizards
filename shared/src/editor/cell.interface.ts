@@ -1,3 +1,5 @@
+import { HwMonster } from './monster.interface.js';
+
 export interface HwCell {
   x: number;
   y: number;
@@ -5,7 +7,7 @@ export interface HwCell {
   baseSpritePath: string;
   featureSpritePath: string | null;
   doorSpritePath: string | null;
-  monsterSpritePath: string | null;
+  monster: HwMonster;
   traversable: boolean;
   spawn: boolean;
 }
