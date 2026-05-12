@@ -13,4 +13,4 @@ export const MonsterSpritePaths = [
   '/tiles/monsters/goblin_3_w.png',
 ] as const;
 
-export type MonsterSpritePaths = (typeof MonsterSpritePaths)[number];
+export type MonsterSpritePath = (typeof MonsterSpritePaths)[number];

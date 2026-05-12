@@ -14,10 +14,10 @@ import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
-import { CreatureSpritePath } from '../consts/sprite-paths/creature-sprite-paths.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
 import { FeatureSpritePath } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
+import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
@@ -58,6 +58,7 @@ export class EditorService {
             cell.baseSpritePath as BaseSpritePath,
             cell.featureSpritePath as FeatureSpritePath,
             cell.doorSpritePath as DoorSpritePath,
+            cell.monsterSpritePath as MonsterSpritePath,
             cell.spawn,
           ),
       ),
@@ -83,6 +84,7 @@ export class EditorService {
     ],
     featureSpritePath: FeatureSpritePath | null = null,
     doorSpritePath: DoorSpritePath | null = null,
+    monsterSpritePath: MonsterSpritePath | null = null,
     spawn: boolean,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
@@ -90,6 +92,9 @@ export class EditorService {
       ? this.createFeatureSprite(x, y, featureSpritePath)
       : null;
     const doorSprite = doorSpritePath ? this.createDoorSprite(x, y, doorSpritePath) : null;
+    const monsterSprite = monsterSpritePath
+      ? this.createCreatureSprite(x, y, monsterSpritePath)
+      : null;
 
     const cell: HwPixiCell = {
       x: x,
@@ -97,6 +102,7 @@ export class EditorService {
       baseSpritePath: baseSpritePath,
       featureSpritePath: featureSpritePath,
       doorSpritePath: doorSpritePath,
+      monsterSpritePath: monsterSpritePath,
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
         featureSpritePath: featureSpritePath,
@@ -105,26 +111,12 @@ export class EditorService {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
         doorSprite: doorSprite,
+        monsterSprite: monsterSprite,
       },
       spawn: spawn,
     };
 
     cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
-
-    if (x === 6 && y === 2) {
-      this.createCreatureSprite(6, 2, '/tiles/monsters/goblin_2_s.png');
-    }
-
-    if (x === 5 && y === 2) {
-      this.createCreatureSprite(5, 2, '/tiles/monsters/goblin_2_n.png');
-    }
-    if (x === 6 && y === 3) {
-      this.createCreatureSprite(6, 3, '/tiles/characters/dwarf_male_e.png');
-    }
-
-    if (x === 5 && y === 3) {
-      this.createCreatureSprite(5, 3, '/tiles/characters/dwarf_male_w.png');
-    }
 
     return cell;
   }
@@ -161,12 +153,8 @@ export class EditorService {
     return doorSprite;
   }
 
-  private createCreatureSprite(
-    x: number,
-    y: number,
-    creatureSpritePath: CreatureSpritePath,
-  ): Sprite {
-    const creatureSprite = this.createSprite(x, y, creatureSpritePath);
+  private createCreatureSprite(x: number, y: number, monsterSpritePath: MonsterSpritePath): Sprite {
+    const creatureSprite = this.createSprite(x, y, monsterSpritePath);
     creatureSprite.eventMode = 'none';
     return creatureSprite;
   }
@@ -260,6 +248,19 @@ export class EditorService {
           cell.x,
           cell.y,
           cellTransformData.doorSpritePath,
+        );
+      }
+    }
+    if (cell.monsterSpritePath !== cellTransformData.monsterSpritePath) {
+      if (cell.monsterSpritePath) {
+        this.destroySprite(cell.pixi.doorSprite as Sprite);
+      }
+      cell.monsterSpritePath = cellTransformData.monsterSpritePath;
+      if (cellTransformData.monsterSpritePath) {
+        cell.pixi.doorSprite = this.createCreatureSprite(
+          cell.x,
+          cell.y,
+          cellTransformData.monsterSpritePath,
         );
       }
     }

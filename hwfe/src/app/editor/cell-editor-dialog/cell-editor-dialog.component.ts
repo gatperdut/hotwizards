@@ -26,6 +26,10 @@ import {
   FeatureSpritePaths,
 } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePath, FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
+import {
+  MonsterSpritePath,
+  MonsterSpritePaths,
+} from '../consts/sprite-paths/monster-sprite-paths.const';
 import { WaterSpritePaths } from '../consts/sprite-paths/water-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 
@@ -33,6 +37,7 @@ type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
   featureSpritePath: FeatureSpritePath | null;
   doorSpritePath: DoorSpritePath | null;
+  monsterSpritePath: MonsterSpritePath | null;
   spawn: boolean;
 };
 
@@ -72,10 +77,12 @@ export class CellEditorDialogComponent {
       this.form.baseSpritePath().value();
       this.form.featureSpritePath().value();
       this.form.doorSpritePath().value();
+      this.form.monsterSpritePath().value();
       this.form.spawn().value();
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
       this.form.doorSpritePath().markAsTouched();
+      this.form.monsterSpritePath().markAsTouched();
       this.form.spawn().markAsTouched();
     });
   }
@@ -89,6 +96,7 @@ export class CellEditorDialogComponent {
     baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
     featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
     doorSpritePath: this.data.cell.doorSpritePath as DoorSpritePath,
+    monsterSpritePath: this.data.cell.monsterSpritePath as MonsterSpritePath,
     spawn: this.data.cell.spawn,
   });
 
@@ -113,6 +121,13 @@ export class CellEditorDialogComponent {
           return {
             kind: 'locationCrowded',
             message: 'A feature cannot be placed together with a door',
+          };
+        }
+        const monsterSpritePath = valueOf(schemaPath.monsterSpritePath);
+        if (monsterSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A feature cannot be placed together with a creature',
           };
         }
         const spawn = valueOf(schemaPath.spawn);
@@ -145,11 +160,55 @@ export class CellEditorDialogComponent {
             message: 'A door cannot be placed together with a feature',
           };
         }
+        const monsterSpritePath = valueOf(schemaPath.monsterSpritePath);
+        if (monsterSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A door cannot be placed together with a creature',
+          };
+        }
         const spawn = valueOf(schemaPath.spawn);
         if (spawn) {
           return {
             kind: 'locationCrowded',
             message: 'A door cannot be placed in a spawn cell',
+          };
+        }
+
+        return null;
+      });
+
+      validate(schemaPath.monsterSpritePath, ({ value, valueOf }) => {
+        if (!value()) {
+          return null;
+        }
+
+        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
+        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A creature cannot be placed on water',
+          };
+        }
+        const featureSpritePath = valueOf(schemaPath.featureSpritePath);
+        if (featureSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A creature cannot be placed together with a feature',
+          };
+        }
+        const doorSpritePath = valueOf(schemaPath.doorSpritePath);
+        if (doorSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A creature cannot be placed together with a door',
+          };
+        }
+        const spawn = valueOf(schemaPath.spawn);
+        if (spawn) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A creature cannot be placed in a spawn cell',
           };
         }
 
@@ -165,7 +224,7 @@ export class CellEditorDialogComponent {
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
           return {
             kind: 'locationCrowded',
-            message: 'Spawn cells cannot be water cells',
+            message: 'A spawn cell cannot be on water',
           };
         }
 
@@ -181,6 +240,13 @@ export class CellEditorDialogComponent {
           return {
             kind: 'locationCrowded',
             message: 'A spawn cell cannot contain a door',
+          };
+        }
+        const monsterSpritePath = valueOf(schemaPath.monsterSpritePath);
+        if (monsterSpritePath) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A spawn cell cannot contain a creature',
           };
         }
 
@@ -200,6 +266,7 @@ export class CellEditorDialogComponent {
   public baseSpritePaths = BaseSpritePaths.slice();
   public featureSpritePaths = FeatureSpritePaths.slice();
   public doorSpritePaths = DoorSpritePaths.slice();
+  public monsterSpritePaths = MonsterSpritePaths.slice();
 
   public spritePathDisplayFn = spritePathDisplayFn;
 
