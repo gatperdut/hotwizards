@@ -5,6 +5,7 @@ export interface HwCell {
   baseSpritePath: string;
   featureSpritePath: string | null;
   doorSpritePath: string | null;
+  monsterSpritePath: string | null;
   traversable: boolean;
   spawn: boolean;
 }
