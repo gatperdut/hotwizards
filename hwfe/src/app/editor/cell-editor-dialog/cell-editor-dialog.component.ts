@@ -8,6 +8,8 @@ import {
   signal,
 } from '@angular/core';
 import { form, FormRoot, required, validate } from '@angular/forms/signals';
+import { Direction } from '@hw/shared';
+import { Directions } from '../../../../../shared/dist/shared/src/direction/direction.const';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -27,8 +29,10 @@ import {
 } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePath, FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import {
+  monsterSpritepath,
   MonsterSpritePath,
-  MonsterSpritePaths,
+  MonsterType,
+  MonsterTypes,
 } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { WaterSpritePaths } from '../consts/sprite-paths/water-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
@@ -37,12 +41,16 @@ type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
   featureSpritePath: FeatureSpritePath | null;
   doorSpritePath: DoorSpritePath | null;
-  monsterSpritePath: MonsterSpritePath | null;
+  monsterType: MonsterType | null;
+  monsterDirection: Direction;
   spawn: boolean;
 };
 
-export type CellTransformData = CellTransformEditableData & {
+export type CellTransformData = CellTransformEditableData & CellTransformDerivedData;
+
+export type CellTransformDerivedData = {
   traversable: boolean;
+  monsterSpritePath: MonsterSpritePath | null;
 };
 
 export type CellEditorDialogData = {
@@ -77,12 +85,14 @@ export class CellEditorDialogComponent {
       this.form.baseSpritePath().value();
       this.form.featureSpritePath().value();
       this.form.doorSpritePath().value();
-      this.form.monsterSpritePath().value();
+      this.form.monsterType().value();
+      this.form.monsterDirection().value();
       this.form.spawn().value();
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
       this.form.doorSpritePath().markAsTouched();
-      this.form.monsterSpritePath().markAsTouched();
+      this.form.monsterType().markAsTouched();
+      this.form.monsterDirection().markAsTouched();
       this.form.spawn().markAsTouched();
     });
   }
@@ -90,13 +100,15 @@ export class CellEditorDialogComponent {
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
     traversable: cellIsTraversable(this.model()),
+    monsterSpritePath: monsterSpritepath(this.model().monsterType, this.model().monsterDirection),
   }));
 
   public model = signal<CellTransformEditableData>({
     baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
     featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
     doorSpritePath: this.data.cell.doorSpritePath as DoorSpritePath,
-    monsterSpritePath: this.data.cell.monsterSpritePath as MonsterSpritePath,
+    monsterType: this.data.cell.monster.type as MonsterType,
+    monsterDirection: this.data.cell.monster.direction,
     spawn: this.data.cell.spawn,
   });
 
@@ -123,8 +135,8 @@ export class CellEditorDialogComponent {
             message: 'A feature cannot be placed together with a door',
           };
         }
-        const monsterSpritePath = valueOf(schemaPath.monsterSpritePath);
-        if (monsterSpritePath) {
+        const monsterType = valueOf(schemaPath.monsterType);
+        if (monsterType) {
           return {
             kind: 'locationCrowded',
             message: 'A feature cannot be placed together with a creature',
@@ -160,8 +172,8 @@ export class CellEditorDialogComponent {
             message: 'A door cannot be placed together with a feature',
           };
         }
-        const monsterSpritePath = valueOf(schemaPath.monsterSpritePath);
-        if (monsterSpritePath) {
+        const monsterType = valueOf(schemaPath.monsterType);
+        if (monsterType) {
           return {
             kind: 'locationCrowded',
             message: 'A door cannot be placed together with a creature',
@@ -178,7 +190,7 @@ export class CellEditorDialogComponent {
         return null;
       });
 
-      validate(schemaPath.monsterSpritePath, ({ value, valueOf }) => {
+      validate(schemaPath.monsterType, ({ value, valueOf }) => {
         if (!value()) {
           return null;
         }
@@ -242,8 +254,8 @@ export class CellEditorDialogComponent {
             message: 'A spawn cell cannot contain a door',
           };
         }
-        const monsterSpritePath = valueOf(schemaPath.monsterSpritePath);
-        if (monsterSpritePath) {
+        const monsterType = valueOf(schemaPath.monsterType);
+        if (monsterType) {
           return {
             kind: 'locationCrowded',
             message: 'A spawn cell cannot contain a creature',
@@ -266,9 +278,12 @@ export class CellEditorDialogComponent {
   public baseSpritePaths = BaseSpritePaths.slice();
   public featureSpritePaths = FeatureSpritePaths.slice();
   public doorSpritePaths = DoorSpritePaths.slice();
-  public monsterSpritePaths = MonsterSpritePaths.slice();
+  public monsterTypes = MonsterTypes.slice();
+  public directions = Directions.slice();
 
   public spritePathDisplayFn = spritePathDisplayFn;
+  public monsterTypeDisplayFn = (monsterType: MonsterType): string => monsterType;
+  public directionDisplayFn = (direction: Direction): string => direction;
 
   public randomFloor(): void {
     this.form

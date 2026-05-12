@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
-import { HwAdventureTemplate, HwDungeon } from '@hw/shared';
+import { HwAdventureTemplate, HwDungeon, HwMonster } from '@hw/shared';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
@@ -58,7 +58,7 @@ export class EditorService {
             cell.baseSpritePath as BaseSpritePath,
             cell.featureSpritePath as FeatureSpritePath,
             cell.doorSpritePath as DoorSpritePath,
-            cell.monsterSpritePath as MonsterSpritePath,
+            cell.monster,
             cell.spawn,
           ),
       ),
@@ -84,7 +84,7 @@ export class EditorService {
     ],
     featureSpritePath: FeatureSpritePath | null = null,
     doorSpritePath: DoorSpritePath | null = null,
-    monsterSpritePath: MonsterSpritePath | null = null,
+    monster: HwMonster,
     spawn: boolean,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
@@ -92,8 +92,8 @@ export class EditorService {
       ? this.createFeatureSprite(x, y, featureSpritePath)
       : null;
     const doorSprite = doorSpritePath ? this.createDoorSprite(x, y, doorSpritePath) : null;
-    const monsterSprite = monsterSpritePath
-      ? this.createCreatureSprite(x, y, monsterSpritePath)
+    const monsterSprite = monster.spritePath
+      ? this.createMonsterSprite(x, y, monster.spritePath as MonsterSpritePath)
       : null;
 
     const cell: HwPixiCell = {
@@ -102,7 +102,7 @@ export class EditorService {
       baseSpritePath: baseSpritePath,
       featureSpritePath: featureSpritePath,
       doorSpritePath: doorSpritePath,
-      monsterSpritePath: monsterSpritePath,
+      monster: monster,
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
         featureSpritePath: featureSpritePath,
@@ -153,15 +153,15 @@ export class EditorService {
     return doorSprite;
   }
 
-  private createCreatureSprite(x: number, y: number, monsterSpritePath: MonsterSpritePath): Sprite {
-    const creatureSprite = this.createSprite(x, y, monsterSpritePath);
-    creatureSprite.eventMode = 'none';
-    return creatureSprite;
+  private createMonsterSprite(x: number, y: number, monsterSpritePath: MonsterSpritePath): Sprite {
+    const monsterSprite = this.createSprite(x, y, monsterSpritePath);
+    monsterSprite.eventMode = 'none';
+    return monsterSprite;
   }
 
-  public destroySprite(baseSprite: Sprite): void {
-    this.viewportService.viewport.removeChild(baseSprite);
-    baseSprite.destroy();
+  public destroySprite(sprite: Sprite): void {
+    this.viewportService.viewport.removeChild(sprite);
+    sprite.destroy();
   }
 
   private editCell(cell: HwPixiCell): Observable<CellEditorDialogResult> {
@@ -251,16 +251,21 @@ export class EditorService {
         );
       }
     }
-    if (cell.monsterSpritePath !== cellTransformData.monsterSpritePath) {
-      if (cell.monsterSpritePath) {
-        this.destroySprite(cell.pixi.doorSprite as Sprite);
+    if (
+      cell.monster.type !== cellTransformData.monsterType ||
+      cell.monster.direction !== cellTransformData.monsterDirection
+    ) {
+      if (cell.monster.type) {
+        this.destroySprite(cell.pixi.monsterSprite as Sprite);
       }
-      cell.monsterSpritePath = cellTransformData.monsterSpritePath;
-      if (cellTransformData.monsterSpritePath) {
-        cell.pixi.doorSprite = this.createCreatureSprite(
+      cell.monster.type = cellTransformData.monsterType;
+      cell.monster.spritePath = cellTransformData.monsterSpritePath;
+      cell.monster.direction = cellTransformData.monsterDirection;
+      if (cellTransformData.monsterType) {
+        cell.pixi.monsterSprite = this.createMonsterSprite(
           cell.x,
           cell.y,
-          cellTransformData.monsterSpritePath,
+          cellTransformData.monsterSpritePath as MonsterSpritePath,
         );
       }
     }

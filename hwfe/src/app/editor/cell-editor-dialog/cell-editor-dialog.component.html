@@ -37,7 +37,7 @@
           <app-select
             label="Feature sprite path"
             placeholder="Select feature sprite path"
-            [form]="form.featureSpritePath!"
+            [form]="form.featureSpritePath"
             [displayFn]="spritePathDisplayFn"
             [options]="featureSpritePaths"
             [canClearSingle]="true"
@@ -48,7 +48,7 @@
           <app-select
             label="Door sprite path"
             placeholder="Select door sprite path"
-            [form]="form.doorSpritePath!"
+            [form]="form.doorSpritePath"
             [displayFn]="spritePathDisplayFn"
             [options]="doorSpritePaths"
             [canClearSingle]="true"
@@ -57,12 +57,20 @@
         <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Monster</div>
           <app-select
-            label="Monster sprite path"
-            placeholder="Select monster sprite path"
-            [form]="form.monsterSpritePath!"
-            [displayFn]="spritePathDisplayFn"
-            [options]="monsterSpritePaths"
+            label="Monster"
+            placeholder="Select monster"
+            [form]="form.monsterType"
+            [displayFn]="monsterTypeDisplayFn"
+            [options]="monsterTypes"
             [canClearSingle]="true"
+          />
+          <app-select
+            label="Direction"
+            placeholder="Select direction"
+            [form]="form.monsterDirection"
+            [displayFn]="directionDisplayFn"
+            [options]="directions"
+            [canClearSingle]="false"
           />
         </div>
         <div class="flex flex-col gap-hw-average">
