@@ -15,7 +15,10 @@ import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
-import { FeatureSpritePath } from '../consts/sprite-paths/feature-sprite-paths.const';
+import {
+  FeatureSpritePath,
+  FeatureSpriteZOffsets,
+} from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
@@ -144,6 +147,7 @@ export class EditorService {
   private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
     const featureSprite = this.createSprite(x, y, featureSpritePath);
     featureSprite.eventMode = 'none';
+    featureSprite.zIndex += FeatureSpriteZOffsets[featureSpritePath];
     return featureSprite;
   }
 
