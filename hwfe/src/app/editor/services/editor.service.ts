@@ -283,6 +283,11 @@ export class EditorService {
     if (cell.pixi.doorSprite) {
       this.destroySprite(cell.pixi.doorSprite);
     }
+    if (cell.monster.type) {
+      cell.monster.type = null;
+      cell.monster.spritePath = null;
+      this.destroySprite(cell.pixi.monsterSprite as Sprite);
+    }
   }
 
   private baseSpriteTap(event: FederatedPointerEvent, cell: HwPixiCell): void {
