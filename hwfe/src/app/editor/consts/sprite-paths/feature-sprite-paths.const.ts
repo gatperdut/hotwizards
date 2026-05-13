@@ -2,6 +2,12 @@ import { SpriteOffset } from '../../types/sprite-offset.type';
 
 export const FeatureSpritePaths = [
   '/tiles/feature/barrel.png',
+  '/tiles/feature/bed_w/bed_w_1.png',
+  '/tiles/feature/bed_w/bed_w_2.png',
+  '/tiles/feature/bed_w/bed_w_3.png',
+  '/tiles/feature/bed_w/bed_w_4.png',
+  '/tiles/feature/bed_w/bed_w_5.png',
+  '/tiles/feature/bed_w/bed_w_6.png',
   '/tiles/feature/chair_e.png',
   '/tiles/feature/chair_n.png',
   '/tiles/feature/chair_s.png',
@@ -23,6 +29,12 @@ export type FeatureSpritePath = (typeof FeatureSpritePaths)[number];
 
 export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 64, y: 64 },
+  '/tiles/feature/bed_w/bed_w_1.png': { x: 47, y: 64 },
+  '/tiles/feature/bed_w/bed_w_2.png': { x: 43, y: 64 },
+  '/tiles/feature/bed_w/bed_w_3.png': { x: 43, y: 64 },
+  '/tiles/feature/bed_w/bed_w_4.png': { x: 43, y: 64 },
+  '/tiles/feature/bed_w/bed_w_5.png': { x: 43, y: 64 },
+  '/tiles/feature/bed_w/bed_w_6.png': { x: 43, y: 64 },
   '/tiles/feature/chair_e.png': { x: 64, y: 64 },
   '/tiles/feature/chair_n.png': { x: 64, y: 64 },
   '/tiles/feature/chair_s.png': { x: 64, y: 64 },
@@ -42,6 +54,12 @@ export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
 
 export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 0, y: -32 },
+  '/tiles/feature/bed_w/bed_w_1.png': { x: 8 - 5, y: -62 - 20 },
+  '/tiles/feature/bed_w/bed_w_2.png': { x: 21 - 5, y: -46 - 20 },
+  '/tiles/feature/bed_w/bed_w_3.png': { x: 32 - 5, y: -30 - 20 },
+  '/tiles/feature/bed_w/bed_w_4.png': { x: -22 - 5, y: -15 - 20 },
+  '/tiles/feature/bed_w/bed_w_5.png': { x: -11 - 5, y: 1 - 20 },
+  '/tiles/feature/bed_w/bed_w_6.png': { x: 0 - 5, y: 17 - 20 },
   '/tiles/feature/chair_e.png': { x: -1, y: -30 },
   '/tiles/feature/chair_n.png': { x: 0, y: -30 },
   '/tiles/feature/chair_s.png': { x: 0, y: -30 },
@@ -57,4 +75,29 @@ export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/vase.png': { x: 0, y: -34 },
   '/tiles/feature/water_shrine.png': { x: 1, y: -34 },
   '/tiles/feature/well.png': { x: -1, y: -32 },
+} as const;
+
+export const FeatureSpriteZOffsets: Record<FeatureSpritePath, number> = {
+  '/tiles/feature/barrel.png': 0,
+  '/tiles/feature/bed_w/bed_w_1.png': 10,
+  '/tiles/feature/bed_w/bed_w_2.png': 10,
+  '/tiles/feature/bed_w/bed_w_3.png': 10,
+  '/tiles/feature/bed_w/bed_w_4.png': 10,
+  '/tiles/feature/bed_w/bed_w_5.png': 10,
+  '/tiles/feature/bed_w/bed_w_6.png': 10,
+  '/tiles/feature/chair_e.png': 0,
+  '/tiles/feature/chair_n.png': 0,
+  '/tiles/feature/chair_s.png': 0,
+  '/tiles/feature/chair_w.png': 0,
+  '/tiles/feature/fire_shrine.png': 0,
+  '/tiles/feature/plinth.png': 0,
+  '/tiles/feature/throne_e.png': 0,
+  '/tiles/feature/throne_n.png': 0,
+  '/tiles/feature/throne_s.png': 0,
+  '/tiles/feature/throne_w.png': 0,
+  '/tiles/feature/tombstone_x.png': 0,
+  '/tiles/feature/tombstone_y.png': 0,
+  '/tiles/feature/vase.png': 0,
+  '/tiles/feature/water_shrine.png': 0,
+  '/tiles/feature/well.png': 0,
 } as const;
