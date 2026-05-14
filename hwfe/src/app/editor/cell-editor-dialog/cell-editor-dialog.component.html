@@ -7,6 +7,10 @@
     <ng-template appDialogContent>
       <div class="flex flex-col gap-hw-average">
         <div class="flex flex-col gap-hw-average">
+          @if (data.cell.secondary) {
+            <div class="typ-body text-warning!">This is a secondary cell.</div>
+          }
+
           <div class="typ-h2">Base sprite</div>
           <app-select
             label="Base sprite path"

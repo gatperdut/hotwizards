@@ -26,6 +26,7 @@ import { DoorSpritePath, DoorSpritePaths } from '../consts/sprite-paths/door-spr
 import {
   FeatureSpritePath,
   FeatureSpritePaths,
+  FeatureSpriteSecondaries,
 } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePath, FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import {
@@ -36,6 +37,7 @@ import {
 } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { WaterSpritePaths } from '../consts/sprite-paths/water-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
+import { EditorService } from '../services/editor.service';
 
 type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
@@ -46,11 +48,18 @@ type CellTransformEditableData = {
   spawn: boolean;
 };
 
-export type CellTransformData = CellTransformEditableData & CellTransformDerivedData;
+export type CellTransformData = CellTransformEditableData &
+  CellTransformDerivedData &
+  CellTransformExternalData;
 
 export type CellTransformDerivedData = {
   traversable: boolean;
   monsterSpritePath: MonsterSpritePath | null;
+};
+
+export type CellTransformExternalData = {
+  madeSecondary: Pick<HwPixiCell, 'x' | 'y'>[];
+  unmadeSecondary: Pick<HwPixiCell, 'x' | 'y'>[];
 };
 
 export type CellEditorDialogData = {
@@ -79,6 +88,7 @@ export type CellEditorDialogResult = CellTransformData | undefined | null;
 export class CellEditorDialogComponent {
   public data = inject<CellEditorDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<CellEditorDialogResult>>(DialogRef);
+  private editorService = inject(EditorService);
 
   constructor() {
     effect(() => {
@@ -95,12 +105,81 @@ export class CellEditorDialogComponent {
       this.form.monsterDirection().markAsTouched();
       this.form.spawn().markAsTouched();
     });
+
+    effect(() => {
+      const featureSpritePath = this.form.featureSpritePath().value();
+      const originalFeatureSpritePath = this.data.cell.featureSpritePath;
+
+      this.externalData.update((value) => ({
+        ...value,
+        madeSecondary: [],
+      }));
+
+      if (originalFeatureSpritePath) {
+        this.externalData.update((value) => ({
+          ...value,
+          unmadeSecondary: FeatureSpriteSecondaries[originalFeatureSpritePath as FeatureSpritePath]
+            .map((offset) => {
+              const cell = this.editorService.findCell(
+                this.data.cell.x + offset.x,
+                this.data.cell.y + offset.y,
+              );
+              if (!cell) {
+                return null;
+              }
+              return { x: cell.x, y: cell.y };
+            })
+            .filter((affectedCell) => !!affectedCell),
+        }));
+        if (featureSpritePath) {
+          this.externalData.update((value) => ({
+            ...value,
+            madeSecondary: FeatureSpriteSecondaries[featureSpritePath as FeatureSpritePath]
+              .map((offset) => {
+                const cell = this.editorService.findCell(
+                  this.data.cell.x + offset.x,
+                  this.data.cell.y + offset.y,
+                );
+                if (!cell) {
+                  return null;
+                }
+                return { x: cell.x, y: cell.y };
+              })
+              .filter((affectedCell) => !!affectedCell),
+          }));
+        }
+      } else {
+        if (featureSpritePath) {
+          this.externalData.update((value) => ({
+            ...value,
+            madeSecondary: FeatureSpriteSecondaries[featureSpritePath as FeatureSpritePath]
+              .map((offset) => {
+                const cell = this.editorService.findCell(
+                  this.data.cell.x + offset.x,
+                  this.data.cell.y + offset.y,
+                );
+                if (!cell) {
+                  return null;
+                }
+                return { x: cell.x, y: cell.y };
+              })
+              .filter((affectedCell) => !!affectedCell),
+          }));
+        }
+      }
+    });
   }
+
+  private externalData = signal<CellTransformExternalData>({
+    madeSecondary: [],
+    unmadeSecondary: [],
+  });
 
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
-    traversable: cellIsTraversable(this.model()),
+    traversable: cellIsTraversable({ ...this.model(), secondary: this.data.cell.traversable }),
     monsterSpritePath: monsterSpritepath(this.model().monsterType, this.model().monsterDirection),
+    ...this.externalData(),
   }));
 
   public model = signal<CellTransformEditableData>({
@@ -116,6 +195,22 @@ export class CellEditorDialogComponent {
     this.model,
     (schemaPath) => {
       required(schemaPath.baseSpritePath, { message: 'A base sprite path is required' });
+      validate(schemaPath.baseSpritePath, ({ value, valueOf: _valueOf }) => {
+        if (!value) {
+          return null;
+        }
+
+        const secondary = this.data.cell.secondary;
+        if (secondary && !FloorSpritePaths.includes(value() as FloorSpritePath)) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A secondary cell cannot be water',
+          };
+        }
+
+        return null;
+      });
+
       validate(schemaPath.featureSpritePath, ({ value, valueOf }) => {
         if (!value()) {
           return null;
@@ -148,6 +243,71 @@ export class CellEditorDialogComponent {
             kind: 'locationCrowded',
             message: 'A feature cannot be placed in a spawn cell',
           };
+        }
+        const secondary = this.data.cell.secondary;
+        if (secondary) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A feature cannot be placed in a secondary cell',
+          };
+        }
+
+        const enoughRoomErrors = FeatureSpriteSecondaries[value() as FeatureSpritePath]
+          .map((offset) => {
+            const coords = `+(${offset.x}, ${offset.y})`;
+            const cell = this.editorService.findCell(
+              this.data.cell.x + offset.x,
+              this.data.cell.y + offset.y,
+            );
+
+            if (!cell) {
+              return {
+                kind: 'locationCrowded',
+                message: `A cell must be present at ${coords}.`,
+              };
+            }
+            if (!FloorSpritePaths.includes(cell.baseSpritePath as FloorSpritePath)) {
+              return {
+                kind: 'locationCrowded',
+                message: `The cell at ${coords} is water.`,
+              };
+            }
+            if (cell.featureSpritePath) {
+              return {
+                kind: 'locationCrowded',
+                message: `There is a feature at ${coords}.`,
+              };
+            }
+            if (cell.doorSpritePath) {
+              return {
+                kind: 'locationCrowded',
+                message: `There is a door at ${coords}.`,
+              };
+            }
+            if (cell.monster.type) {
+              return {
+                kind: 'locationCrowded',
+                message: `There is a monster at ${coords}.`,
+              };
+            }
+            if (cell.spawn) {
+              return {
+                kind: 'locationCrowded',
+                message: `Cell at ${coords} is a spawn cell.`,
+              };
+            }
+            if (cell.secondary) {
+              return {
+                kind: 'locationCrowded',
+                message: `Cell at ${coords} is secondary.`,
+              };
+            }
+
+            return null;
+          })
+          .filter((error) => !!error);
+        if (enoughRoomErrors.length) {
+          return enoughRoomErrors[0];
         }
 
         return null;
@@ -184,6 +344,13 @@ export class CellEditorDialogComponent {
           return {
             kind: 'locationCrowded',
             message: 'A door cannot be placed in a spawn cell',
+          };
+        }
+        const secondary = this.data.cell.secondary;
+        if (secondary) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A door cannot be placed in a secondary cell',
           };
         }
 
@@ -223,6 +390,13 @@ export class CellEditorDialogComponent {
             message: 'A creature cannot be placed in a spawn cell',
           };
         }
+        const secondary = this.data.cell.secondary;
+        if (secondary) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A creature cannot be placed in a secondary cell',
+          };
+        }
 
         return null;
       });
@@ -259,6 +433,13 @@ export class CellEditorDialogComponent {
           return {
             kind: 'locationCrowded',
             message: 'A spawn cell cannot contain a creature',
+          };
+        }
+        const secondary = this.data.cell.secondary;
+        if (secondary) {
+          return {
+            kind: 'locationCrowded',
+            message: 'A spawn cell cannot be secondary',
           };
         }
 

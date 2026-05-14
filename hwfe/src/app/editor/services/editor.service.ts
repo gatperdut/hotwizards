@@ -15,10 +15,7 @@ import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
-import {
-  FeatureSpritePath,
-  FeatureSpriteZOffsets,
-} from '../consts/sprite-paths/feature-sprite-paths.const';
+import { FeatureSpritePath } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
@@ -63,6 +60,7 @@ export class EditorService {
             cell.doorSpritePath as DoorSpritePath,
             cell.monster,
             cell.spawn,
+            cell.secondary,
           ),
       ),
     };
@@ -89,6 +87,7 @@ export class EditorService {
     doorSpritePath: DoorSpritePath | null = null,
     monster: HwMonster,
     spawn: boolean,
+    secondary: boolean,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
     const featureSprite = featureSpritePath
@@ -109,6 +108,7 @@ export class EditorService {
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
         featureSpritePath: featureSpritePath,
+        secondary: secondary,
       }),
       pixi: {
         baseSprite: baseSprite,
@@ -117,6 +117,7 @@ export class EditorService {
         monsterSprite: monsterSprite,
       },
       spawn: spawn,
+      secondary: secondary,
     };
 
     cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
@@ -147,7 +148,6 @@ export class EditorService {
   private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
     const featureSprite = this.createSprite(x, y, featureSpritePath);
     featureSprite.eventMode = 'none';
-    featureSprite.zIndex += FeatureSpriteZOffsets[featureSpritePath];
     return featureSprite;
   }
 
@@ -275,6 +275,12 @@ export class EditorService {
     }
     cell.traversable = cellIsTraversable(cell);
     cell.spawn = cellTransformData.spawn;
+    cellTransformData.unmadeSecondary.forEach((affectedCell) => {
+      this.findCell(affectedCell.x, affectedCell.y)!.secondary = false;
+    });
+    cellTransformData.madeSecondary.forEach((affectedCell) => {
+      this.findCell(affectedCell.x, affectedCell.y)!.secondary = true;
+    });
     this.updateCell(cell);
   }
 
