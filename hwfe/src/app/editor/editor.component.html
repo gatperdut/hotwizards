@@ -2,10 +2,6 @@
   @if (viewportService.viewport) {
     <div>viewport children {{ viewportService.viewport.children.length || '?' }}</div>
   }
-
-  {{ editorService.errors() | json }}
-
-  <div>{{ editorService.dungeon() | json }}</div>
 </pre>
 
 <div class="flex flex-row">

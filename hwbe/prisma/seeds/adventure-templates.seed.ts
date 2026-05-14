@@ -17,6 +17,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       },
       traversable: true,
       spawn: true,
+      secondary: false,
     },
     {
       x: 6,
@@ -31,6 +32,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       },
       traversable: true,
       spawn: true,
+      secondary: false,
     },
     {
       x: 5,
@@ -45,6 +47,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       },
       traversable: true,
       spawn: true,
+      secondary: false,
     },
     {
       x: 6,
@@ -59,6 +62,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       },
       traversable: true,
       spawn: true,
+      secondary: false,
     },
     {
       x: 6,
@@ -73,6 +77,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
       },
       traversable: true,
       spawn: false,
+      secondary: false,
     },
   ];
 

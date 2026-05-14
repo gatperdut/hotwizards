@@ -10,4 +10,5 @@ export interface HwCell {
   monster: HwMonster;
   traversable: boolean;
   spawn: boolean;
+  secondary: boolean;
 }
