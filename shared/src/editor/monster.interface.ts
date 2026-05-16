@@ -1,4 +1,4 @@
-import { Direction } from '../direction/direction.const.js';
+import { Direction } from '../directions/directions.const.js';
 
 export interface HwMonster {
   type: string | null;

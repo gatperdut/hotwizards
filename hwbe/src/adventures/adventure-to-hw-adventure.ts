@@ -1,5 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwAdventure } from '@hw/shared';
+import { HwAdventure } from '@hw/shared/adventures';
 import { adventureTemplateToHwAdventureTemplate } from '../adventures-templates/adventure-template-to-hw-adventure-template.js';
 
 export const AdventureHwRelations = {

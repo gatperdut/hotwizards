@@ -12,7 +12,7 @@ import { debounce, form, SchemaPath } from '@angular/forms/signals';
 import { AdventureTemplatesApiService } from '@hw/hwfe/app/adventure-templates/services/adventure-templates-api.service';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { PaginatorComponent } from '@hw/hwfe/app/ui/paginator/paginator.component';
-import { HwAdventureTemplate, HwAdventureTemplateSearchDto } from '@hw/shared';
+import { HwAdventureTemplate, HwAdventureTemplateSearchDto } from '@hw/shared/adventure-templates';
 import { map, tap } from 'rxjs';
 import { AdventurePickerFilterComponent } from './adventure-picker-filter/adventure-picker-filter.component';
 

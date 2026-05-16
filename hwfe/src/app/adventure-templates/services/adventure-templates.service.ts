@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HwAdventureTemplate } from '@hw/shared';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 
 @Injectable({ providedIn: 'root' })
 export class AdventureTemplatesService {

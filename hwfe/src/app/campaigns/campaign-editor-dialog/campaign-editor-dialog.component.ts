@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
 import { Movement } from '@hw/prismagen/browser';
-import { HwCampaignEditDto } from '@hw/shared';
+import { HwCampaignEditDto } from '@hw/shared/campaigns';
 import { firstValueFrom } from 'rxjs';
 import { MovementsService } from '../../rulesets/services/movements.service';
 import { ButtonComponent } from '../../ui/button/button.component';

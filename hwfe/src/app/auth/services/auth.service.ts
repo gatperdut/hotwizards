@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { HwAuthLoginDto, HwAuthResponse, HwUser, type HwAuthRegisterDto } from '@hw/shared';
+import { HwAuthLoginDto, HwAuthRegisterDto, HwAuthResponse } from '@hw/shared/auth';
+import { HwUser } from '@hw/shared/users';
 import { catchError, EMPTY, Observable, switchMap, tap, throwError } from 'rxjs';
 import { ToastService } from '../../ui/toast/services/toast.service';
 import { UsersApiService } from '../../users/users-api.service';

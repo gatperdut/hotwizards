@@ -12,14 +12,13 @@ import { debounce, form, SchemaPath } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import { HwCampaign, HwCampaignSearchDto } from '@hw/shared/campaigns';
 import {
   CampaignsDownstream,
   CampaignsUpstream,
-  HwCampaign,
-  HwCampaignSearchDto,
   MembershipsDownstream,
   MembershipsUpstream,
-} from '@hw/shared';
+} from '@hw/shared/sockets';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { AuthService } from '../../auth/services/auth.service';

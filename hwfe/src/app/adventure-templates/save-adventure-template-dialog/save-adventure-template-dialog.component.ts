@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
-import { HwAdventureTemplate, HwAdventureTemplateEditDto } from '@hw/shared';
+import { HwAdventureTemplate, HwAdventureTemplateEditDto } from '@hw/shared/adventure-templates';
 import { firstValueFrom } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';

@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HwCampaign, HwMembership } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwMembership } from '@hw/shared/memberships';
 import { filter, from, switchMap } from 'rxjs';
 import { MembershipsApiService } from '../../../memberships/memberships-api.service';
 import {

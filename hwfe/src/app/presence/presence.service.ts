@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { HwUser } from '@hw/shared';
+import { HwUser } from '@hw/shared/users';
 
 @Injectable()
 export class PresenceService {

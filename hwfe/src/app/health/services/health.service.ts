@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwHealthStatus } from '@hw/shared';
+import { HwHealthStatus } from '@hw/shared/health';
 import { map, shareReplay } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

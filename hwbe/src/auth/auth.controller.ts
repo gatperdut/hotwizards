@@ -1,4 +1,4 @@
-import { HwAuthLoginDto, HwAuthRegisterDto, HwAuthVerifyTokenDto } from '@hw/shared';
+import { HwAuthLoginDto, HwAuthRegisterDto, HwAuthVerifyTokenDto } from '@hw/shared/auth';
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service.js';
 import { HwTokenPayload } from './types/token-payload.type.js';

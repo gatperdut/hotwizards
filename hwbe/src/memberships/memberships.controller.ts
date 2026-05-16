@@ -1,4 +1,5 @@
-import { HwCampaign, HwMembership, HwMembershipAcceptDto } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwMembership, HwMembershipAcceptDto } from '@hw/shared/memberships';
 import { Body, Controller, Delete, Patch, UseGuards } from '@nestjs/common';
 import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
 import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';

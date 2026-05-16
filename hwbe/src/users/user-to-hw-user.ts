@@ -1,5 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwUser } from '@hw/shared';
+import { HwUser } from '@hw/shared/users';
 
 export const UserHwRelations = {
   include: {},

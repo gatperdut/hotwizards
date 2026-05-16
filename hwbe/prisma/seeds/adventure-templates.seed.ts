@@ -1,5 +1,5 @@
 import { PrismaClient } from '@hw/prismagen/client';
-import { HwCell } from '@hw/shared';
+import { HwCell } from '@hw/shared/editor';
 import { InputJsonValue } from '@prisma/client/runtime/client';
 
 export async function seedAdventureTemplates(prismaClient: PrismaClient): Promise<void> {

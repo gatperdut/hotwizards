@@ -1,4 +1,6 @@
-import { HwAdventure, HwCampaign, HwUser } from '@hw/shared';
+import { HwAdventure } from '@hw/shared/adventures';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwUser } from '@hw/shared/users';
 import { Controller, Delete, Post, UseGuards } from '@nestjs/common';
 import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
 import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';

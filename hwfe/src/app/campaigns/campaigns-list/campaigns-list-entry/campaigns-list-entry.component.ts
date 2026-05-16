@@ -5,7 +5,9 @@ import {
   InfoDialogResult,
 } from '@hw/hwfe/app/shared/info-dialog/info-dialog.component';
 import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
-import { HwAdventure, HwCampaign, HwMembership } from '@hw/shared';
+import { HwAdventure } from '@hw/shared/adventures';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwMembership } from '@hw/shared/memberships';
 import { KlassesService } from '../../../characters/services/klasses.service';
 import { AppCardAction, AppCardMiniAction, CardComponent } from '../../../ui/card/card.component';
 import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';

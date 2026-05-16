@@ -1,5 +1,6 @@
 import { Movement, Prisma } from '@hw/prismagen/client';
-import { HwCampaign, Paginated } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { Paginated } from '@hw/shared/pagination';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service.js';

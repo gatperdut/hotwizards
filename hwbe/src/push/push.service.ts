@@ -1,4 +1,5 @@
-import { HwUser, PushPayload } from '@hw/shared';
+import { PushPayload } from '@hw/shared/push';
+import { HwUser } from '@hw/shared/users';
 import { Injectable } from '@nestjs/common';
 import webpush, { PushSubscription } from 'web-push';
 import { PrismaService } from '../prisma/prisma.service.js';

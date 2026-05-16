@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwMembershipAcceptDto } from '@hw/shared';
+import { HwMembershipAcceptDto } from '@hw/shared/memberships';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../services/api-notification.service';
 

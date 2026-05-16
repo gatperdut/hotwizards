@@ -1,4 +1,4 @@
-import { Direction } from '@hw/shared';
+import { Direction } from '@hw/shared/directions';
 
 export const MonsterSpritePaths = [
   '/tiles/monsters/chaos_mage_n.png',

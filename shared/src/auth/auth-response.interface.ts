@@ -1,4 +1,4 @@
-import { HwUser } from '@hw/shared';
+import { HwUser } from '../users/user.interface.js';
 
 export interface HwAuthResponse {
   user: HwUser;

@@ -19,6 +19,22 @@
     "class-transformer": "^0.5.1"
   },
   "exports": {
-    ".": "./dist/shared/src/index.js"
+    "./adventure-templates": "./dist/shared/src/adventure-templates/index.js",
+    "./adventures": "./dist/shared/src/adventures/index.js",
+    "./auth": "./dist/shared/src/auth/index.js",
+    "./campaigns": "./dist/shared/src/campaigns/index.js",
+    "./characters": "./dist/shared/src/characters/index.js",
+    "./decorators": "./dist/shared/src/decorators/index.js",
+    "./directions": "./dist/shared/src/directions/index.js",
+    "./editor": "./dist/shared/src/editor/index.js",
+    "./health": "./dist/shared/src/health/index.js",
+    "./memberships": "./dist/shared/src/memberships/index.js",
+    "./pagination": "./dist/shared/src/pagination/index.js",
+    "./push": "./dist/shared/src/push/index.js",
+    "./rulesets": "./dist/shared/src/rulesets/index.js",
+    "./shared": "./dist/shared/src/shared/index.js",
+    "./sockets": "./dist/shared/src/sockets/index.js",
+    "./users": "./dist/shared/src/users/index.js",
+    "./validators": "./dist/shared/src/validators/index.js"
   }
 }

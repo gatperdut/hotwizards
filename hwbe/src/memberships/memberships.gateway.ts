@@ -1,5 +1,4 @@
-// presence/presence.gateway.ts
-import { MembershipsDownstream, MembershipsUpstream } from '@hw/shared';
+import { MembershipsDownstream, MembershipsUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
   OnGatewayInit,

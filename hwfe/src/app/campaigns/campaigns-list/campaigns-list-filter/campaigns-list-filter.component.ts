@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FieldTree } from '@angular/forms/signals';
 import { InputTextComponent } from '@hw/hwfe/app/ui/input-text/input-text.component';
-import { HwCampaignSearchDto } from '@hw/shared';
+import { HwCampaignSearchDto } from '@hw/shared/campaigns';
 
 @Component({
   selector: 'app-campaigns-list-filter',

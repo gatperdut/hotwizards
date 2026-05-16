@@ -1,4 +1,4 @@
-import { HwUser } from '@hw/shared';
+import { HwUser } from '@hw/shared/users';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { HwRequest } from '../auth/types/request.type.js';
 

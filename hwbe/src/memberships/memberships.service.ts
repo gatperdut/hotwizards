@@ -1,5 +1,6 @@
 import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
-import { HwCampaign, HwMembership } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwMembership } from '@hw/shared/memberships';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { KlassesService } from '../characters/klasses.service.js';

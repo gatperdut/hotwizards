@@ -1,4 +1,4 @@
-import { HwAdventure } from '@hw/shared';
+import { HwAdventure } from '@hw/shared/adventures';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { HwRequest } from '../../auth/types/request.type.js';
 

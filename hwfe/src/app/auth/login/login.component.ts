@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { form, FormRoot, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import { HwAuthLoginDto } from '@hw/shared';
+import { HwAuthLoginDto } from '@hw/shared/auth';
 import { firstValueFrom } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';

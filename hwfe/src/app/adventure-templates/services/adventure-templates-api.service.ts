@@ -4,8 +4,8 @@ import {
   HwAdventureTemplate,
   HwAdventureTemplateEditDto,
   HwAdventureTemplateSearchDto,
-  Paginated,
-} from '@hw/shared';
+} from '@hw/shared/adventure-templates';
+import { Paginated } from '@hw/shared/pagination';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../../services/api-notification.service';
 

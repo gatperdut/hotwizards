@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { HwCharacter, HwUser } from '@hw/shared';
+import { HwCharacter } from '@hw/shared/characters';
+import { HwUser } from '@hw/shared/users';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { OnlineMarkComponent } from '../../users/online-mark/online-mark.component';
 

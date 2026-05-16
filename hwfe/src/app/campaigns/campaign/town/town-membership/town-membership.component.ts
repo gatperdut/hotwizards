@@ -6,7 +6,8 @@ import {
   AppCardMiniAction,
   CardComponent,
 } from '@hw/hwfe/app/ui/card/card.component';
-import { HwCharacter, HwMembership } from '@hw/shared';
+import { HwCharacter } from '@hw/shared/characters';
+import { HwMembership } from '@hw/shared/memberships';
 
 @Component({
   selector: 'app-town-membership',

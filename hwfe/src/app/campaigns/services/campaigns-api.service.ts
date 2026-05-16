@@ -1,12 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import {
-  HwCampaign,
-  HwCampaignEditDto,
-  HwCampaignSearchDto,
-  HwMembershipCreateDto,
-  Paginated,
-} from '@hw/shared';
+import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto } from '@hw/shared/campaigns';
+import { HwMembershipCreateDto } from '@hw/shared/memberships';
+import { Paginated } from '@hw/shared/pagination';
+
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../../services/api-notification.service';
 

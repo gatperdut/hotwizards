@@ -18,7 +18,7 @@ import {
   validateAsync,
 } from '@angular/forms/signals';
 import { Router } from '@angular/router';
-import { HwAuthRegisterDto } from '@hw/shared';
+import { HwAuthRegisterDto } from '@hw/shared/auth';
 import { debounceTime, firstValueFrom, of } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { InputTextComponent } from '../../ui/input-text/input-text.component';

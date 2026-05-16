@@ -1,4 +1,5 @@
-import { HwAuthResponse, HwUser } from '@hw/shared';
+import { HwAuthResponse } from '@hw/shared/auth';
+import { HwUser } from '@hw/shared/users';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';

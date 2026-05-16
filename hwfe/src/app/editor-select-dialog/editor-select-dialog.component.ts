@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { HwAdventureTemplate } from '@hw/shared';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { filter, from, switchMap, tap } from 'rxjs';
 import {
   SaveAdventureTemplateDialogComponent,

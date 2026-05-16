@@ -1,4 +1,4 @@
-import { HwUser } from '@hw/shared';
+import { HwUser } from '@hw/shared/users';
 import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { PushSubscription } from 'web-push';
 import { CurrentUser } from '../users/current-user.decorator.js';
