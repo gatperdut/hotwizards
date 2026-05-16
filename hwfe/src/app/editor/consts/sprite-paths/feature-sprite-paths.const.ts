@@ -3,6 +3,7 @@ import { SpriteOffset } from '../../types/sprite-offset.type';
 export const FeatureSpritePaths = [
   '/tiles/feature/barrel.png',
   '/tiles/feature/bed_w.png',
+  '/tiles/feature/bed_s.png',
   '/tiles/feature/chair_e.png',
   '/tiles/feature/chair_n.png',
   '/tiles/feature/chair_s.png',
@@ -25,6 +26,7 @@ export type FeatureSpritePath = (typeof FeatureSpritePaths)[number];
 export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 64, y: 64 },
   '/tiles/feature/bed_w.png': { x: 128, y: 128 },
+  '/tiles/feature/bed_s.png': { x: 128, y: 128 },
   '/tiles/feature/chair_e.png': { x: 64, y: 64 },
   '/tiles/feature/chair_n.png': { x: 64, y: 64 },
   '/tiles/feature/chair_s.png': { x: 64, y: 64 },
@@ -45,6 +47,7 @@ export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
 export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 0, y: -32 },
   '/tiles/feature/bed_w.png': { x: 13, y: -67 },
+  '/tiles/feature/bed_s.png': { x: 13, y: -67 },
   '/tiles/feature/chair_e.png': { x: -1, y: -30 },
   '/tiles/feature/chair_n.png': { x: 0, y: -30 },
   '/tiles/feature/chair_s.png': { x: 0, y: -30 },
@@ -70,6 +73,13 @@ export const FeatureSpriteSecondaries: Record<FeatureSpritePath, SpriteOffset[]>
     { x: 0, y: -1 },
     { x: 1, y: -1 },
     { x: 2, y: -1 },
+  ],
+  '/tiles/feature/bed_s.png': [
+    { x: 0, y: -1 },
+    { x: 0, y: -2 },
+    { x: 1, y: 0 },
+    { x: 1, y: -1 },
+    { x: 1, y: -2 },
   ],
   '/tiles/feature/chair_e.png': [],
   '/tiles/feature/chair_n.png': [],

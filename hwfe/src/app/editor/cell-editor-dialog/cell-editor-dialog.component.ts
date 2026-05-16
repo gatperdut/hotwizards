@@ -243,7 +243,11 @@ export class CellEditorDialogComponent {
             if (cell.spawn) {
               return this.error(`Cell at ${coords} is a spawn cell.`);
             }
-            if (cell.secondary) {
+            if (
+              cell.secondary &&
+              cell.secondary.x !== this.data.cell.x &&
+              cell.secondary.y !== this.data.cell.y
+            ) {
               return this.error(`Cell at ${coords} is secondary.`);
             }
 
