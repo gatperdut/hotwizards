@@ -1,5 +1,6 @@
 import { Prisma, User } from '@hw/prismagen/client';
-import { HwUser, Paginated } from '@hw/shared';
+import { Paginated } from '@hw/shared/pagination';
+import { HwUser } from '@hw/shared/users';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 

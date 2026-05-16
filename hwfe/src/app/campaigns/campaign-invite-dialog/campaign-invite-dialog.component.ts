@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormRoot, minLength } from '@angular/forms/signals';
-import { HwCampaign, HwUser } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwUser } from '@hw/shared/users';
 import { firstValueFrom, map } from 'rxjs';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';

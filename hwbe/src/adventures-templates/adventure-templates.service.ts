@@ -1,5 +1,6 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwAdventureTemplate, Paginated } from '@hw/shared';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
+import { Paginated } from '@hw/shared/pagination';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { adventureTemplateToHwAdventureTemplate } from './adventure-template-to-hw-adventure-template.js';

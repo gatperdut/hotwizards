@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { FieldTree } from '@angular/forms/signals';
 import { InputTextComponent } from '@hw/hwfe/app/ui/input-text/input-text.component';
-import { HwAdventureTemplateSearchDto } from '@hw/shared';
+import { HwAdventureTemplateSearchDto } from '@hw/shared/adventure-templates';
 
 @Component({
   selector: 'app-adventure-picker-filter',

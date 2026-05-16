@@ -1,10 +1,10 @@
+import { Paginated } from '@hw/shared/pagination';
 import {
   HwUser,
   HwUserAvailabilityEmailDto,
   HwUserAvailabilityHandleDto,
   HwUserSearchDto,
-  Paginated,
-} from '@hw/shared';
+} from '@hw/shared/users';
 import { Controller, Get, Query } from '@nestjs/common';
 import { CurrentUser } from './current-user.decorator.js';
 import { UsersService } from './users.service.js';

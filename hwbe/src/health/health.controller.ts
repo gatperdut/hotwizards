@@ -1,4 +1,4 @@
-import { HwHealthStatus } from '@hw/shared';
+import { HwHealthStatus } from '@hw/shared/health';
 import { Controller, Get } from '@nestjs/common';
 
 @Controller('health')

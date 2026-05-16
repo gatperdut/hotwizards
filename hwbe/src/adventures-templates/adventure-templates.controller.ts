@@ -2,8 +2,8 @@ import {
   HwAdventureTemplate,
   HwAdventureTemplateEditDto,
   HwAdventureTemplateSearchDto,
-  Paginated,
-} from '@hw/shared';
+} from '@hw/shared/adventure-templates';
+import { Paginated } from '@hw/shared/pagination';
 import { Body, Controller, Get, Patch, Query, UseGuards } from '@nestjs/common';
 import { AdminGuard } from '../users/guards/admin.guard.js';
 import { AdventureTemplatesService } from './adventure-templates.service.js';

@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
-import { HwAdventureTemplate, HwDungeon, HwMonster, HwSecondary } from '@hw/shared';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
+import { HwDungeon, HwMonster, HwSecondary } from '@hw/shared/editor';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';

@@ -7,7 +7,7 @@ import {
   AdventuresUpstream,
   CampaignsDownstream,
   CampaignsUpstream,
-} from '@hw/shared';
+} from '@hw/shared/sockets';
 import { tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';

@@ -1,4 +1,6 @@
-import { HwAdventure, HwCampaign, HwUser } from '@hw/shared';
+import { HwAdventure } from '@hw/shared/adventures';
+import { HwCampaign } from '@hw/shared/campaigns';
+import { HwUser } from '@hw/shared/users';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { KlassesService } from '../characters/klasses.service.js';

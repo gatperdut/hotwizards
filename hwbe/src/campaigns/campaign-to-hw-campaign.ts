@@ -1,5 +1,5 @@
 import { Prisma, Ruleset } from '@hw/prismagen/client';
-import { HwCampaign } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
 import {
   AdventureHwRelations,
   adventureToHwAdventure,

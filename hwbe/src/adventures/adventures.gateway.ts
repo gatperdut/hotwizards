@@ -1,4 +1,4 @@
-import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared';
+import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
   OnGatewayInit,

@@ -1,4 +1,4 @@
-import { HwMembership } from '@hw/shared';
+import { HwMembership } from '@hw/shared/memberships';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { HwRequest } from '../../auth/types/request.type.js';
 

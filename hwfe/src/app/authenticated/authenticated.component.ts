@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { PresenceDownstream, PresenceUpstream } from '@hw/shared';
+import { PresenceDownstream, PresenceUpstream } from '@hw/shared/sockets';
 import { Socket } from 'socket.io-client';
 import { PresenceService } from '../presence/presence.service';
 

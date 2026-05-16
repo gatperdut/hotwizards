@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { HwCampaign } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
 
 @Injectable()
 export class CampaignService {

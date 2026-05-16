@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn, Router } from '@angular/router';
-import { HwAdventureTemplate } from '@hw/shared';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { catchError, EMPTY, Observable } from 'rxjs';
 import { ToastService } from '../../ui/toast/services/toast.service.js';
 import { AdventureTemplatesApiService } from '../services/adventure-templates-api.service.js';

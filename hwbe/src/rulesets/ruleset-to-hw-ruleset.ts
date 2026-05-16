@@ -1,5 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwRuleset } from '@hw/shared';
+import { HwRuleset } from '@hw/shared/rulesets';
 
 export const RulesetHwRelations = {
   include: {},

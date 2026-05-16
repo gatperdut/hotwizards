@@ -1,5 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
-import { HwMembership } from '@hw/shared';
+import { HwMembership } from '@hw/shared/memberships';
 import { userToHwUser } from '../users/user-to-hw-user.js';
 
 export const MembershipHwRelations = {

@@ -1,5 +1,6 @@
 // presence/presence.gateway.ts
-import { HwUser, PresenceDownstream, PresenceUpstream } from '@hw/shared';
+import { PresenceDownstream, PresenceUpstream } from '@hw/shared/sockets';
+import { HwUser } from '@hw/shared/users';
 import {
   ConnectedSocket,
   OnGatewayDisconnect,

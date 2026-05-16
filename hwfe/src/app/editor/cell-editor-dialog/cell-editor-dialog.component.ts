@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
-import { Direction, Directions } from '@hw/shared';
+import { Direction, Directions } from '@hw/shared/directions';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';

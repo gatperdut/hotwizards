@@ -1,5 +1,5 @@
 // presence/presence.gateway.ts
-import { CampaignsDownstream, CampaignsUpstream } from '@hw/shared';
+import { CampaignsDownstream, CampaignsUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
   OnGatewayInit,

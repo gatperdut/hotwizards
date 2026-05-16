@@ -1,13 +1,9 @@
 import { User } from '@hw/prismagen/client';
-import {
-  HwCampaign,
-  HwCampaignEditDto,
-  HwCampaignSearchDto,
-  HwMembershipCreateDto,
-  HwStartAdventureDto,
-  HwUser,
-  Paginated,
-} from '@hw/shared';
+import { HwStartAdventureDto } from '@hw/shared/adventures';
+import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto } from '@hw/shared/campaigns';
+import { HwMembershipCreateDto } from '@hw/shared/memberships';
+import { Paginated } from '@hw/shared/pagination';
+import { HwUser } from '@hw/shared/users';
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { MembershipsService } from '../memberships/memberships.service.js';
 import { CurrentUser } from '../users/current-user.decorator.js';

@@ -1,5 +1,5 @@
-import { Match } from '@hw/shared';
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { Match } from '../validators/match.validator.js';
 
 export class HwAuthRegisterDto {
   @IsNotEmpty()

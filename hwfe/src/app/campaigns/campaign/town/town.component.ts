@@ -11,14 +11,14 @@ import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { DialogService, LazyDialog } from '@hw/hwfe/app/ui/dialog/services/dialog.service';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
+import { HwCampaign } from '@hw/shared/campaigns';
 import {
   CampaignsDownstream,
   CampaignsUpstream,
-  HwAdventureTemplate,
-  HwCampaign,
   MembershipsDownstream,
   MembershipsUpstream,
-} from '@hw/shared';
+} from '@hw/shared/sockets';
 import { catchError, EMPTY, filter, from, of, switchMap, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignsApiService } from '../../services/campaigns-api.service';

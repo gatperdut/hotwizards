@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { Paginated } from '@hw/shared/pagination';
 import {
   HwUser,
   HwUserAvailabilityEmailDto,
   HwUserAvailabilityHandleDto,
   HwUserSearchDto,
-  Paginated,
-} from '@hw/shared';
+} from '@hw/shared/users';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

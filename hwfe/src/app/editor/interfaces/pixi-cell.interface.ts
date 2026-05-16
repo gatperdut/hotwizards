@@ -1,4 +1,4 @@
-import { HwCell } from '@hw/shared';
+import { HwCell } from '@hw/shared/editor';
 import { Sprite } from 'pixi.js';
 
 export interface HwPixiCell extends HwCell {

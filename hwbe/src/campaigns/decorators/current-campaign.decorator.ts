@@ -1,5 +1,5 @@
 import { HwRequest } from '@hw/hwbe/auth/types/request.type.js';
-import { HwCampaign } from '@hw/shared';
+import { HwCampaign } from '@hw/shared/campaigns';
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const CurrentCampaign = createParamDecorator(

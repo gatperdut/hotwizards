@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
 import { Gender, Klass } from '@hw/prismagen/browser';
-import { HwMembershipAcceptDto } from '@hw/shared';
+import { HwMembershipAcceptDto } from '@hw/shared/memberships';
 import { firstValueFrom } from 'rxjs';
 import { GendersService } from '../../characters/services/genders.service';
 import { KlassesService } from '../../characters/services/klasses.service';
