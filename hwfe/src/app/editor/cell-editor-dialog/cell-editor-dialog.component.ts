@@ -131,41 +131,23 @@ export class CellEditorDialogComponent {
             })
             .filter((affectedCell) => !!affectedCell),
         }));
-        if (featureSpritePath) {
-          this.externalData.update((value) => ({
-            ...value,
-            madeSecondary: FeatureSpriteSecondaries[featureSpritePath as FeatureSpritePath]
-              .map((offset) => {
-                const cell = this.editorService.findCell(
-                  this.data.cell.x + offset.x,
-                  this.data.cell.y + offset.y,
-                );
-                if (!cell) {
-                  return null;
-                }
-                return { x: cell.x, y: cell.y };
-              })
-              .filter((affectedCell) => !!affectedCell),
-          }));
-        }
-      } else {
-        if (featureSpritePath) {
-          this.externalData.update((value) => ({
-            ...value,
-            madeSecondary: FeatureSpriteSecondaries[featureSpritePath as FeatureSpritePath]
-              .map((offset) => {
-                const cell = this.editorService.findCell(
-                  this.data.cell.x + offset.x,
-                  this.data.cell.y + offset.y,
-                );
-                if (!cell) {
-                  return null;
-                }
-                return { x: cell.x, y: cell.y };
-              })
-              .filter((affectedCell) => !!affectedCell),
-          }));
-        }
+      }
+      if (featureSpritePath) {
+        this.externalData.update((value) => ({
+          ...value,
+          madeSecondary: FeatureSpriteSecondaries[featureSpritePath as FeatureSpritePath]
+            .map((offset) => {
+              const cell = this.editorService.findCell(
+                this.data.cell.x + offset.x,
+                this.data.cell.y + offset.y,
+              );
+              if (!cell) {
+                return null;
+              }
+              return { x: cell.x, y: cell.y };
+            })
+            .filter((affectedCell) => !!affectedCell),
+        }));
       }
     });
   }
@@ -220,24 +202,19 @@ export class CellEditorDialogComponent {
           return null;
         }
 
-        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
-        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+        if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
           return this.error('A feature cannot be placed on water');
         }
-        const doorSpritePath = valueOf(schemaPath.doorSpritePath);
-        if (doorSpritePath) {
+        if (valueOf(schemaPath.doorSpritePath)) {
           return this.error('A feature cannot be placed together with a door');
         }
-        const monsterType = valueOf(schemaPath.monsterType);
-        if (monsterType) {
+        if (valueOf(schemaPath.monsterType)) {
           return this.error('A feature cannot be placed together with a creature');
         }
-        const spawn = valueOf(schemaPath.spawn);
-        if (spawn) {
+        if (valueOf(schemaPath.spawn)) {
           return this.error('A feature cannot be placed in a spawn cell');
         }
-        const secondary = this.data.cell.secondary;
-        if (secondary) {
+        if (this.data.cell.secondary) {
           return this.error('A feature cannot be placed in a secondary cell');
         }
 
@@ -286,24 +263,19 @@ export class CellEditorDialogComponent {
           return null;
         }
 
-        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
-        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+        if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
           return this.error('A door cannot be placed on water');
         }
-        const featureSpritePath = valueOf(schemaPath.featureSpritePath);
-        if (featureSpritePath) {
+        if (valueOf(schemaPath.featureSpritePath)) {
           return this.error('A door cannot be placed together with a feature');
         }
-        const monsterType = valueOf(schemaPath.monsterType);
-        if (monsterType) {
+        if (valueOf(schemaPath.monsterType)) {
           return this.error('A door cannot be placed together with a creature');
         }
-        const spawn = valueOf(schemaPath.spawn);
-        if (spawn) {
+        if (valueOf(schemaPath.spawn)) {
           return this.error('A door cannot be placed in a spawn cell');
         }
-        const secondary = this.data.cell.secondary;
-        if (secondary) {
+        if (this.data.cell.secondary) {
           return this.error('A door cannot be placed in a secondary cell');
         }
 
@@ -315,24 +287,19 @@ export class CellEditorDialogComponent {
           return null;
         }
 
-        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
-        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+        if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
           return this.error('A creature cannot be placed on water');
         }
-        const featureSpritePath = valueOf(schemaPath.featureSpritePath);
-        if (featureSpritePath) {
+        if (valueOf(schemaPath.featureSpritePath)) {
           return this.error('A creature cannot be placed together with a feature');
         }
-        const doorSpritePath = valueOf(schemaPath.doorSpritePath);
-        if (doorSpritePath) {
+        if (valueOf(schemaPath.doorSpritePath)) {
           return this.error('A creature cannot be placed together with a door');
         }
-        const spawn = valueOf(schemaPath.spawn);
-        if (spawn) {
+        if (valueOf(schemaPath.spawn)) {
           return this.error('A creature cannot be placed in a spawn cell');
         }
-        const secondary = this.data.cell.secondary;
-        if (secondary) {
+        if (this.data.cell.secondary) {
           return this.error('A creature cannot be placed in a secondary cell');
         }
 
@@ -344,25 +311,20 @@ export class CellEditorDialogComponent {
           return null;
         }
 
-        const baseSpritePath = valueOf(schemaPath.baseSpritePath);
-        if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
+        if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
           return this.error('A spawn cell cannot be on water');
         }
 
-        const featureSpritePath = valueOf(schemaPath.featureSpritePath);
-        if (featureSpritePath) {
+        if (valueOf(schemaPath.featureSpritePath)) {
           return this.error('A spawn cell cannot contain a feature');
         }
-        const doorSpritePath = valueOf(schemaPath.doorSpritePath);
-        if (doorSpritePath) {
+        if (valueOf(schemaPath.doorSpritePath)) {
           return this.error('A spawn cell cannot contain a door');
         }
-        const monsterType = valueOf(schemaPath.monsterType);
-        if (monsterType) {
+        if (valueOf(schemaPath.monsterType)) {
           return this.error('A spawn cell cannot contain a creature');
         }
-        const secondary = this.data.cell.secondary;
-        if (secondary) {
+        if (this.data.cell.secondary) {
           return this.error('A spawn cell cannot be secondary');
         }
 
