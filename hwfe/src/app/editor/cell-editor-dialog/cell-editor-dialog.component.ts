@@ -7,7 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { form, FormRoot, required, validate } from '@angular/forms/signals';
+import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
 import { Direction } from '@hw/shared';
 import { Directions } from '../../../../../shared/dist/shared/src/direction/direction.const';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -191,6 +191,13 @@ export class CellEditorDialogComponent {
     spawn: this.data.cell.spawn,
   });
 
+  private error(message: string): ValidationError {
+    return {
+      kind: 'editorError',
+      message: message,
+    };
+  }
+
   public form = form(
     this.model,
     (schemaPath) => {
@@ -202,10 +209,7 @@ export class CellEditorDialogComponent {
 
         const secondary = this.data.cell.secondary;
         if (secondary && !FloorSpritePaths.includes(value() as FloorSpritePath)) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A secondary cell cannot be water',
-          };
+          return this.error('A secondary cell cannot be water');
         }
 
         return null;
@@ -218,38 +222,23 @@ export class CellEditorDialogComponent {
 
         const baseSpritePath = valueOf(schemaPath.baseSpritePath);
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A feature cannot be placed on water',
-          };
+          return this.error('A feature cannot be placed on water');
         }
         const doorSpritePath = valueOf(schemaPath.doorSpritePath);
         if (doorSpritePath) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A feature cannot be placed together with a door',
-          };
+          return this.error('A feature cannot be placed together with a door');
         }
         const monsterType = valueOf(schemaPath.monsterType);
         if (monsterType) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A feature cannot be placed together with a creature',
-          };
+          return this.error('A feature cannot be placed together with a creature');
         }
         const spawn = valueOf(schemaPath.spawn);
         if (spawn) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A feature cannot be placed in a spawn cell',
-          };
+          return this.error('A feature cannot be placed in a spawn cell');
         }
         const secondary = this.data.cell.secondary;
         if (secondary) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A feature cannot be placed in a secondary cell',
-          };
+          return this.error('A feature cannot be placed in a secondary cell');
         }
 
         const enoughRoomErrors = FeatureSpriteSecondaries[value() as FeatureSpritePath]
@@ -261,46 +250,25 @@ export class CellEditorDialogComponent {
             );
 
             if (!cell) {
-              return {
-                kind: 'locationCrowded',
-                message: `A cell must be present at ${coords}.`,
-              };
+              return this.error(`A cell must be present at ${coords}.`);
             }
             if (!FloorSpritePaths.includes(cell.baseSpritePath as FloorSpritePath)) {
-              return {
-                kind: 'locationCrowded',
-                message: `The cell at ${coords} is water.`,
-              };
+              return this.error(`The cell at ${coords} is water.`);
             }
             if (cell.featureSpritePath) {
-              return {
-                kind: 'locationCrowded',
-                message: `There is a feature at ${coords}.`,
-              };
+              return this.error(`There is a feature at ${coords}.`);
             }
             if (cell.doorSpritePath) {
-              return {
-                kind: 'locationCrowded',
-                message: `There is a door at ${coords}.`,
-              };
+              return this.error(`There is a door at ${coords}.`);
             }
             if (cell.monster.type) {
-              return {
-                kind: 'locationCrowded',
-                message: `There is a monster at ${coords}.`,
-              };
+              return this.error(`There is a monster at ${coords}.`);
             }
             if (cell.spawn) {
-              return {
-                kind: 'locationCrowded',
-                message: `Cell at ${coords} is a spawn cell.`,
-              };
+              return this.error(`Cell at ${coords} is a spawn cell.`);
             }
             if (cell.secondary) {
-              return {
-                kind: 'locationCrowded',
-                message: `Cell at ${coords} is secondary.`,
-              };
+              return this.error(`Cell at ${coords} is secondary.`);
             }
 
             return null;
@@ -320,38 +288,23 @@ export class CellEditorDialogComponent {
 
         const baseSpritePath = valueOf(schemaPath.baseSpritePath);
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A door cannot be placed on water',
-          };
+          return this.error('A door cannot be placed on water');
         }
         const featureSpritePath = valueOf(schemaPath.featureSpritePath);
         if (featureSpritePath) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A door cannot be placed together with a feature',
-          };
+          return this.error('A door cannot be placed together with a feature');
         }
         const monsterType = valueOf(schemaPath.monsterType);
         if (monsterType) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A door cannot be placed together with a creature',
-          };
+          return this.error('A door cannot be placed together with a creature');
         }
         const spawn = valueOf(schemaPath.spawn);
         if (spawn) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A door cannot be placed in a spawn cell',
-          };
+          return this.error('A door cannot be placed in a spawn cell');
         }
         const secondary = this.data.cell.secondary;
         if (secondary) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A door cannot be placed in a secondary cell',
-          };
+          return this.error('A door cannot be placed in a secondary cell');
         }
 
         return null;
@@ -364,38 +317,23 @@ export class CellEditorDialogComponent {
 
         const baseSpritePath = valueOf(schemaPath.baseSpritePath);
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A creature cannot be placed on water',
-          };
+          return this.error('A creature cannot be placed on water');
         }
         const featureSpritePath = valueOf(schemaPath.featureSpritePath);
         if (featureSpritePath) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A creature cannot be placed together with a feature',
-          };
+          return this.error('A creature cannot be placed together with a feature');
         }
         const doorSpritePath = valueOf(schemaPath.doorSpritePath);
         if (doorSpritePath) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A creature cannot be placed together with a door',
-          };
+          return this.error('A creature cannot be placed together with a door');
         }
         const spawn = valueOf(schemaPath.spawn);
         if (spawn) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A creature cannot be placed in a spawn cell',
-          };
+          return this.error('A creature cannot be placed in a spawn cell');
         }
         const secondary = this.data.cell.secondary;
         if (secondary) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A creature cannot be placed in a secondary cell',
-          };
+          return this.error('A creature cannot be placed in a secondary cell');
         }
 
         return null;
@@ -408,39 +346,24 @@ export class CellEditorDialogComponent {
 
         const baseSpritePath = valueOf(schemaPath.baseSpritePath);
         if (!FloorSpritePaths.includes(baseSpritePath as FloorSpritePath)) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A spawn cell cannot be on water',
-          };
+          return this.error('A spawn cell cannot be on water');
         }
 
         const featureSpritePath = valueOf(schemaPath.featureSpritePath);
         if (featureSpritePath) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A spawn cell cannot contain a feature',
-          };
+          return this.error('A spawn cell cannot contain a feature');
         }
         const doorSpritePath = valueOf(schemaPath.doorSpritePath);
         if (doorSpritePath) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A spawn cell cannot contain a door',
-          };
+          return this.error('A spawn cell cannot contain a door');
         }
         const monsterType = valueOf(schemaPath.monsterType);
         if (monsterType) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A spawn cell cannot contain a creature',
-          };
+          return this.error('A spawn cell cannot contain a creature');
         }
         const secondary = this.data.cell.secondary;
         if (secondary) {
-          return {
-            kind: 'locationCrowded',
-            message: 'A spawn cell cannot be secondary',
-          };
+          return this.error('A spawn cell cannot be secondary');
         }
 
         return null;
