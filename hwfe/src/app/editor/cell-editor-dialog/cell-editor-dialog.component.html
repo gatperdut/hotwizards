@@ -103,7 +103,7 @@
         label="Delete"
         type="button"
         color="warning"
-        [disabled]="data.cell.secondary"
+        [disabled]="!!data.cell.secondary"
         (click)="dialogRef.close(null)"
       ></app-button>
 

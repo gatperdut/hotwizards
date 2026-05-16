@@ -1,4 +1,5 @@
 import { HwMonster } from './monster.interface.js';
+import { HwSecondary } from './secondary.interface.js';
 
 export interface HwCell {
   x: number;
@@ -10,5 +11,5 @@ export interface HwCell {
   monster: HwMonster;
   traversable: boolean;
   spawn: boolean;
-  secondary: boolean;
+  secondary: HwSecondary | null;
 }
