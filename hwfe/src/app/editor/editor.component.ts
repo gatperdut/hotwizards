@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -24,7 +23,7 @@ import { ViewportService } from './services/viewport.service';
 
 @Component({
   selector: 'app-editor',
-  imports: [EditorSidebarComponent, JsonPipe],
+  imports: [EditorSidebarComponent],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
   providers: [OverflowService, EditorService, ViewportService, GridService, TextureService],
@@ -98,7 +97,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         undefined,
         { type: null, spritePath: null, direction: 'w' },
         false,
-        false,
+        null,
       ),
     );
   }

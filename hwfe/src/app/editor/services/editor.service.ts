@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
-import { HwAdventureTemplate, HwDungeon, HwMonster } from '@hw/shared';
+import { HwAdventureTemplate, HwDungeon, HwMonster, HwSecondary } from '@hw/shared';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
@@ -87,7 +87,7 @@ export class EditorService {
     doorSpritePath: DoorSpritePath | null = null,
     monster: HwMonster,
     spawn: boolean,
-    secondary: boolean,
+    secondary: HwSecondary | null,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
     const featureSprite = featureSpritePath
@@ -276,10 +276,10 @@ export class EditorService {
     cell.traversable = cellIsTraversable(cell);
     cell.spawn = cellTransformData.spawn;
     cellTransformData.unmadeSecondary.forEach((affectedCell) => {
-      this.findCell(affectedCell.x, affectedCell.y)!.secondary = false;
+      this.findCell(affectedCell.x, affectedCell.y)!.secondary = null;
     });
     cellTransformData.madeSecondary.forEach((affectedCell) => {
-      this.findCell(affectedCell.x, affectedCell.y)!.secondary = true;
+      this.findCell(affectedCell.x, affectedCell.y)!.secondary = { x: cell.x, y: cell.y };
     });
     this.updateCell(cell);
   }

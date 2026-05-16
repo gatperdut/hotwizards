@@ -8,8 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
-import { Direction } from '@hw/shared';
-import { Directions } from '../../../../../shared/dist/shared/src/direction/direction.const';
+import { Direction, Directions } from '@hw/shared';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -159,7 +158,7 @@ export class CellEditorDialogComponent {
 
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
-    traversable: cellIsTraversable({ ...this.model(), secondary: this.data.cell.traversable }),
+    traversable: cellIsTraversable({ ...this.model(), secondary: this.data.cell.secondary }),
     monsterSpritePath: monsterSpritepath(this.model().monsterType, this.model().monsterDirection),
     ...this.externalData(),
   }));
