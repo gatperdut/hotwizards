@@ -232,7 +232,6 @@ export class CellEditorDialogComponent {
         const enoughRoomErrors = FeatureSpriteSecondaries[value() as FeatureSpritePath]
           .map((offset) => {
             const coords = `+(${offset.x}, ${offset.y})`;
-            console.log(coords);
             const cell = this.editorService.findCell(
               this.data.cell.x + offset.x,
               this.data.cell.y + offset.y,
