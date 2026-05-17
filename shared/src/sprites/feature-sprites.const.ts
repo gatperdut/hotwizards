@@ -1,3 +1,4 @@
+import { ChestSpritePaths, ChestSpriteSecondaries } from './chest-sprites.const.js';
 import { SpriteOffset } from './sprite-offset.const.js';
 
 export const FeatureSpritePaths = [
@@ -12,10 +13,7 @@ export const FeatureSpritePaths = [
   '/tiles/feature/chair_n.png',
   '/tiles/feature/chair_s.png',
   '/tiles/feature/chair_w.png',
-  '/tiles/feature/chest_s.png',
-  '/tiles/feature/chest_w.png',
-  '/tiles/feature/chest_large_s.png',
-  '/tiles/feature/chest_large_w.png',
+  ...ChestSpritePaths,
   '/tiles/feature/fire_shrine.png',
   '/tiles/feature/plinth.png',
   '/tiles/feature/table_s.png',
@@ -69,10 +67,7 @@ export const FeatureSpriteSecondaries: Record<FeatureSpritePath, SpriteOffset[]>
   '/tiles/feature/chair_n.png': [],
   '/tiles/feature/chair_s.png': [],
   '/tiles/feature/chair_w.png': [],
-  '/tiles/feature/chest_s.png': [],
-  '/tiles/feature/chest_w.png': [],
-  '/tiles/feature/chest_large_s.png': [{ x: 1, y: 0 }],
-  '/tiles/feature/chest_large_w.png': [{ x: 0, y: -1 }],
+  ...ChestSpriteSecondaries,
   '/tiles/feature/fire_shrine.png': [],
   '/tiles/feature/plinth.png': [],
   '/tiles/feature/table_s.png': [

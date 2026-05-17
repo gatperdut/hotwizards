@@ -12,8 +12,8 @@ import { Direction, Directions } from '@hw/shared/directions';
 import {
   BaseSpritePath,
   BaseSpritePaths,
+  ClosedDoorSpritePaths,
   DoorSpritePath,
-  DoorSpritePaths,
   FeatureSpritePath,
   FeatureSpritePaths,
   FeatureSpriteSecondaries,
@@ -23,6 +23,8 @@ import {
   MonsterSpritePath,
   MonsterType,
   MonsterTypes,
+  OpenChestSpritePath,
+  OpenChestSpritePaths,
   WaterSpritePaths,
 } from '@hw/shared/sprites';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -209,7 +211,7 @@ export class CellEditorDialogComponent {
           return this.error('A feature cannot be placed together with a door');
         }
         if (valueOf(schemaPath.monsterType)) {
-          return this.error('A feature cannot be placed together with a creature');
+          return this.error('A feature cannot be placed together with a monster');
         }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A feature cannot be placed in a spawn cell');
@@ -274,7 +276,7 @@ export class CellEditorDialogComponent {
           return this.error('A door cannot be placed together with a feature');
         }
         if (valueOf(schemaPath.monsterType)) {
-          return this.error('A door cannot be placed together with a creature');
+          return this.error('A door cannot be placed together with a monster');
         }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A door cannot be placed in a spawn cell');
@@ -292,19 +294,19 @@ export class CellEditorDialogComponent {
         }
 
         if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
-          return this.error('A creature cannot be placed on water');
+          return this.error('A monster cannot be placed on water');
         }
         if (valueOf(schemaPath.featureSpritePath)) {
-          return this.error('A creature cannot be placed together with a feature');
+          return this.error('A monster cannot be placed together with a feature');
         }
         if (valueOf(schemaPath.doorSpritePath)) {
-          return this.error('A creature cannot be placed together with a door');
+          return this.error('A monster cannot be placed together with a door');
         }
         if (valueOf(schemaPath.spawn)) {
-          return this.error('A creature cannot be placed in a spawn cell');
+          return this.error('A monster cannot be placed in a spawn cell');
         }
         if (this.data.cell.secondary) {
-          return this.error('A creature cannot be placed in a secondary cell');
+          return this.error('A monster cannot be placed in a secondary cell');
         }
 
         return null;
@@ -326,7 +328,7 @@ export class CellEditorDialogComponent {
           return this.error('A spawn cell cannot contain a door');
         }
         if (valueOf(schemaPath.monsterType)) {
-          return this.error('A spawn cell cannot contain a creature');
+          return this.error('A spawn cell cannot contain a monster');
         }
         if (this.data.cell.secondary) {
           return this.error('A spawn cell cannot be secondary');
@@ -335,7 +337,6 @@ export class CellEditorDialogComponent {
         return null;
       });
     },
-
     {
       submission: {
         action: async () => {
@@ -346,8 +347,10 @@ export class CellEditorDialogComponent {
   );
 
   public baseSpritePaths = BaseSpritePaths.slice();
-  public featureSpritePaths = FeatureSpritePaths.slice();
-  public doorSpritePaths = DoorSpritePaths.slice();
+  public featureSpritePaths = FeatureSpritePaths.slice().filter(
+    (path) => !OpenChestSpritePaths.includes(path as OpenChestSpritePath),
+  );
+  public doorSpritePaths = ClosedDoorSpritePaths.slice();
   public monsterTypes = MonsterTypes.slice();
   public directions = Directions.slice();
 
