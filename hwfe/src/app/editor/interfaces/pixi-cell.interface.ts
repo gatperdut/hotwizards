@@ -5,6 +5,7 @@ export interface HwPixiCell extends HwCell {
   pixi: {
     baseSprite: Sprite;
     featureSprite: Sprite | null;
+    featureTrapSprite: Sprite | null;
     doorSprite: Sprite | null;
     monsterSprite: Sprite | null;
     floorTrapSprite: Sprite | null;

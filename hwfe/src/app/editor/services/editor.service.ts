@@ -6,6 +6,7 @@ import {
   DoorSpritePath,
   FeatureSpritePath,
   FeatureSpriteSecondaries,
+  FeatureTrapSpritePath,
   FloorSpritePaths,
   FloorTrapSpritePath,
   MonsterSpritePath,
@@ -103,6 +104,9 @@ export class EditorService {
     const featureSprite = feature.spritePath
       ? this.createFeatureSprite(x, y, feature.spritePath)
       : null;
+    const featureTrapSprite = feature.trapped
+      ? this.createFeatureTrapSprite(x, y, '/tiles/feature-traps/feature-trap.png')
+      : null;
     const doorSprite = doorSpritePath ? this.createDoorSprite(x, y, doorSpritePath) : null;
     const monsterSprite = monster.spritePath
       ? this.createMonsterSprite(x, y, monster.spritePath as MonsterSpritePath)
@@ -128,6 +132,7 @@ export class EditorService {
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
+        featureTrapSprite: featureTrapSprite,
         doorSprite: doorSprite,
         monsterSprite: monsterSprite,
         floorTrapSprite: floorTrapSprite,
@@ -169,6 +174,18 @@ export class EditorService {
     return featureSprite;
   }
 
+  private createFeatureTrapSprite(
+    x: number,
+    y: number,
+    featureTrapSpritePath: FeatureTrapSpritePath,
+  ): Sprite {
+    const featureTrapSprite = this.createSprite(x, y, featureTrapSpritePath);
+    featureTrapSprite.zIndex += FeatureSpriteZIndex;
+    featureTrapSprite.eventMode = 'none';
+    featureTrapSprite.tint = 0xbbbbbb;
+    return featureTrapSprite;
+  }
+
   private createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
     const doorSprite = this.createSprite(x, y, doorSpritePath);
     doorSprite.eventMode = 'none';
@@ -188,12 +205,14 @@ export class EditorService {
   ): Sprite {
     const floorTrapSprite = this.createSprite(x, y, floorTrapSpritePath);
     floorTrapSprite.eventMode = 'none';
+    floorTrapSprite.tint = 0xbb3333;
     return floorTrapSprite;
   }
 
   private createSpawnSprite(x: number, y: number, spawnSpritePath: SpawnSpritePath): Sprite {
     const spawnSprite = this.createSprite(x, y, spawnSpritePath);
     spawnSprite.eventMode = 'none';
+    spawnSprite.tint = 0xbbbbbb;
     return spawnSprite;
   }
 
@@ -276,6 +295,17 @@ export class EditorService {
         );
       }
     }
+    if (cell.pixi.featureTrapSprite) {
+      this.destroySprite(cell.pixi.featureTrapSprite);
+    }
+    cell.feature.trapped = cellTransformData.featureTrapped;
+    if (cell.feature.spritePath && cellTransformData.featureTrapped) {
+      cell.pixi.featureTrapSprite = this.createFeatureTrapSprite(
+        cell.x,
+        cell.y,
+        '/tiles/feature-traps/feature-trap.png',
+      );
+    }
     if (cell.doorSpritePath !== cellTransformData.doorSpritePath) {
       if (cell.doorSpritePath) {
         this.destroySprite(cell.pixi.doorSprite!);
@@ -348,6 +378,9 @@ export class EditorService {
       FeatureSpriteSecondaries[cell.feature.spritePath!].map((offset) => {
         this.findCell(cell.x + offset.x, cell.y + offset.y)!.secondary = null;
       });
+    }
+    if (cell.pixi.featureTrapSprite) {
+      this.destroySprite(cell.pixi.featureTrapSprite);
     }
     if (cell.pixi.doorSprite) {
       this.destroySprite(cell.pixi.doorSprite);
