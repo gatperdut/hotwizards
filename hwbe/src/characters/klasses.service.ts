@@ -4,6 +4,6 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class KlassesService {
   public portrait(klass: Klass, gender: Gender): string {
-    return `/characters/${klass.toLowerCase()}_${gender.toLowerCase()}.png`;
+    return `/portraits/${klass.toLowerCase()}_${gender.toLowerCase()}.png`;
   }
 }

@@ -157,8 +157,8 @@ export class MembershipsService {
       icon: self
         ? membership.character
           ? `${this.klassesService.portrait(membership.character.klass, membership.character.gender)}`
-          : '/characters/pending.gif'
-        : '/characters/zargon.png',
+          : '/portraits/pending.gif'
+        : '/portraits/zargon.png',
       url: self
         ? `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}`
         : `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns`,

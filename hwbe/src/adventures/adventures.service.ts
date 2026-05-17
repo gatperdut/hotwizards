@@ -54,7 +54,7 @@ export class AdventuresService {
 
     const icon =
       turn === 0
-        ? '/characters/zargon.png'
+        ? '/portraits/zargon.png'
         : `${this.klassesService.portrait(character.klass, character.gender)}`;
 
     void this.pushService.notifyUser(user.id, {
