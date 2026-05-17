@@ -1,4 +1,4 @@
-import { SpriteOffset } from '../../types/sprite-offset.type';
+import { SpriteOffset } from '@hw/shared/sprites';
 
 export const OpenDoorSpritePaths = [
   '/tiles/door/open_door_x.png',

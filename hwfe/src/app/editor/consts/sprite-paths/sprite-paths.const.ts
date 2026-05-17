@@ -1,4 +1,4 @@
-import { SpriteOffset } from '../../types/sprite-offset.type';
+import { SpriteOffset } from '@hw/shared/sprites';
 import { BaseSpriteOffsets, BaseSpritePaths, BaseSpriteSizes } from './base-sprite-paths.const';
 import {
   CreatureSpriteOffsets,
@@ -6,11 +6,9 @@ import {
   CreatureSpriteSizes,
 } from './creature-sprite-paths.const';
 import { DoorSpriteOffsets, DoorSpritePaths, DoorSpriteSizes } from './door-sprite-paths.const';
-import {
-  FeatureSpriteOffsets,
-  FeatureSpritePaths,
-  FeatureSpriteSizes,
-} from './feature-sprite-paths.const';
+import { FeatureSpriteOffsets, FeatureSpriteSizes } from './feature-sprite-paths.const';
+
+import { FeatureSpritePaths } from '@hw/shared/sprites';
 
 export const SpritePaths = [
   ...BaseSpritePaths,

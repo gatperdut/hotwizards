@@ -1,4 +1,4 @@
-import { SpriteOffset } from '../../types/sprite-offset.type';
+import { SpriteOffset } from '@hw/shared/sprites';
 import { CharacterSpritePaths } from './character-sprite-paths.const';
 import { MonsterSpritePaths } from './monster-sprite-paths.const';
 

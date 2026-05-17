@@ -33,6 +33,7 @@
     "./push": "./dist/shared/src/push/index.js",
     "./rulesets": "./dist/shared/src/rulesets/index.js",
     "./shared": "./dist/shared/src/shared/index.js",
+    "./sprites": "./dist/shared/src/sprites/index.js",
     "./sockets": "./dist/shared/src/sockets/index.js",
     "./users": "./dist/shared/src/users/index.js",
     "./validators": "./dist/shared/src/validators/index.js"
