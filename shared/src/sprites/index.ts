@@ -1,4 +1,13 @@
 export { BaseSpritePath, BaseSpritePaths } from './base-sprites.const.js';
+export {
+  ChestSpritePath,
+  ChestSpritePaths,
+  ChestSpriteSecondaries,
+  ClosedChestSpritePath,
+  ClosedChestSpritePaths,
+  OpenChestSpritePath,
+  OpenChestSpritePaths,
+} from './chest-sprites.const.js';
 export { CreatureSpritePath, CreatureSpritePaths } from './creature-sprites.const.js';
 export {
   ClosedDoorSpritePath,
