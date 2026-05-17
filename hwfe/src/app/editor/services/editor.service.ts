@@ -6,6 +6,7 @@ import {
   FeatureSpritePath,
   FeatureSpriteSecondaries,
   FloorSpritePaths,
+  MonsterSpritePath,
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
@@ -22,7 +23,6 @@ import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
 import { FeatureSpriteZIndex } from '../consts/sprite-paths/feature-sprite-paths.const';
-import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';

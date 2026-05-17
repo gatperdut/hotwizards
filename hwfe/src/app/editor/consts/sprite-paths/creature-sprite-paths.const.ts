@@ -1,5 +1,4 @@
-import { HeroSpritePaths, SpriteOffset } from '@hw/shared/sprites';
-import { MonsterSpritePaths } from './monster-sprite-paths.const';
+import { HeroSpritePaths, MonsterSpritePaths, SpriteOffset } from '@hw/shared/sprites';
 
 export const CreatureSpritePaths = [...HeroSpritePaths, ...MonsterSpritePaths] as const;
 
