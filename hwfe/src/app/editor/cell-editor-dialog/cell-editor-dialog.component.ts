@@ -10,9 +10,14 @@ import {
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
 import { Direction, Directions } from '@hw/shared/directions';
 import {
+  BaseSpritePath,
+  BaseSpritePaths,
   FeatureSpritePath,
   FeatureSpritePaths,
   FeatureSpriteSecondaries,
+  FloorSpritePath,
+  FloorSpritePaths,
+  WaterSpritePaths,
 } from '@hw/shared/sprites';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
@@ -25,16 +30,13 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
-import { BaseSpritePath, BaseSpritePaths } from '../consts/sprite-paths/base-sprite-paths.const';
 import { DoorSpritePath, DoorSpritePaths } from '../consts/sprite-paths/door-sprite-paths.const';
-import { FloorSpritePath, FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import {
   monsterSpritepath,
   MonsterSpritePath,
   MonsterType,
   MonsterTypes,
 } from '../consts/sprite-paths/monster-sprite-paths.const';
-import { WaterSpritePaths } from '../consts/sprite-paths/water-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { EditorService } from '../services/editor.service';
 

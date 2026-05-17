@@ -1,5 +1,5 @@
 import { HwCell } from '@hw/shared/editor';
-import { FloorSpritePath, FloorSpritePaths } from './sprite-paths/floor-sprite-paths.const';
+import { FloorSpritePath, FloorSpritePaths } from '@hw/shared/sprites';
 
 export const cellIsTraversable = (
   cell: Pick<HwCell, 'baseSpritePath' | 'featureSpritePath' | 'secondary'>,

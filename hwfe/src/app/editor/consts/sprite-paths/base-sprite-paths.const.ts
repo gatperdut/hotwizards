@@ -1,10 +1,4 @@
-import { SpriteOffset } from '@hw/shared/sprites';
-import { FloorSpritePaths } from './floor-sprite-paths.const';
-import { WaterSpritePaths } from './water-sprite-paths.const';
-
-export const BaseSpritePaths = [...FloorSpritePaths, ...WaterSpritePaths] as const;
-
-export type BaseSpritePath = (typeof BaseSpritePaths)[number];
+import { BaseSpritePath, SpriteOffset } from '@hw/shared/sprites';
 
 export const BaseSpriteSizes: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/floor/floor_01.png': { x: 64, y: 64 },

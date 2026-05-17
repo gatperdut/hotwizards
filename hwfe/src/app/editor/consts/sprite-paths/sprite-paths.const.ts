@@ -1,5 +1,5 @@
-import { SpriteOffset } from '@hw/shared/sprites';
-import { BaseSpriteOffsets, BaseSpritePaths, BaseSpriteSizes } from './base-sprite-paths.const';
+import { BaseSpritePaths, SpriteOffset } from '@hw/shared/sprites';
+import { BaseSpriteOffsets, BaseSpriteSizes } from './base-sprite-paths.const';
 import {
   CreatureSpriteOffsets,
   CreatureSpritePaths,
