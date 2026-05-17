@@ -9,6 +9,11 @@ import {
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
 import { Direction, Directions } from '@hw/shared/directions';
+import {
+  FeatureSpritePath,
+  FeatureSpritePaths,
+  FeatureSpriteSecondaries,
+} from '@hw/shared/sprites';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -22,11 +27,6 @@ import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
 import { BaseSpritePath, BaseSpritePaths } from '../consts/sprite-paths/base-sprite-paths.const';
 import { DoorSpritePath, DoorSpritePaths } from '../consts/sprite-paths/door-sprite-paths.const';
-import {
-  FeatureSpritePath,
-  FeatureSpritePaths,
-  FeatureSpriteSecondaries,
-} from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePath, FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import {
   monsterSpritepath,

@@ -1,4 +1,4 @@
-import { SpriteOffset } from '../../types/sprite-offset.type';
+import { SpriteOffset } from '@hw/shared/sprites';
 import { FloorSpritePaths } from './floor-sprite-paths.const';
 import { WaterSpritePaths } from './water-sprite-paths.const';
 

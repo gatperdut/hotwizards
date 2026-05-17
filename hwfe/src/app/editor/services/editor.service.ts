@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwDungeon, HwMonster, HwSecondary } from '@hw/shared/editor';
+import { FeatureSpritePath, FeatureSpriteSecondaries } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
 import { groundZIndex, world2Ground } from '../../shared/coords';
@@ -16,11 +17,7 @@ import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
-import {
-  FeatureSpritePath,
-  FeatureSpriteSecondaries,
-  FeatureSpriteZIndex,
-} from '../consts/sprite-paths/feature-sprite-paths.const';
+import { FeatureSpriteZIndex } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';

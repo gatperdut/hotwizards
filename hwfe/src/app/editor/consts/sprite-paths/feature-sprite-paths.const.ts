@@ -1,37 +1,4 @@
-import { SpriteOffset } from '../../types/sprite-offset.type';
-
-export const FeatureSpritePaths = [
-  '/tiles/feature/barrel.png',
-  '/tiles/feature/bed_n.png',
-  '/tiles/feature/bed_e.png',
-  '/tiles/feature/bed_s.png',
-  '/tiles/feature/bed_w.png',
-  '/tiles/feature/bookcase_s.png',
-  '/tiles/feature/bookcase_w.png',
-  '/tiles/feature/chair_e.png',
-  '/tiles/feature/chair_n.png',
-  '/tiles/feature/chair_s.png',
-  '/tiles/feature/chair_w.png',
-  '/tiles/feature/chest_s.png',
-  '/tiles/feature/chest_w.png',
-  '/tiles/feature/chest_large_s.png',
-  '/tiles/feature/chest_large_w.png',
-  '/tiles/feature/fire_shrine.png',
-  '/tiles/feature/plinth.png',
-  '/tiles/feature/table_s.png',
-  '/tiles/feature/table_w.png',
-  '/tiles/feature/throne_e.png',
-  '/tiles/feature/throne_n.png',
-  '/tiles/feature/throne_s.png',
-  '/tiles/feature/throne_w.png',
-  '/tiles/feature/tombstone_x.png',
-  '/tiles/feature/tombstone_y.png',
-  '/tiles/feature/vase.png',
-  '/tiles/feature/water_shrine.png',
-  '/tiles/feature/well.png',
-] as const;
-
-export type FeatureSpritePath = (typeof FeatureSpritePaths)[number];
+import { FeatureSpritePath, SpriteOffset } from '@hw/shared/sprites';
 
 export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/barrel.png': { x: 64, y: 64 },
@@ -93,73 +60,6 @@ export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
   '/tiles/feature/vase.png': { x: 0, y: -34 },
   '/tiles/feature/water_shrine.png': { x: 1, y: -34 },
   '/tiles/feature/well.png': { x: -1, y: -32 },
-} as const;
-
-export const FeatureSpriteSecondaries: Record<FeatureSpritePath, SpriteOffset[]> = {
-  '/tiles/feature/barrel.png': [],
-  '/tiles/feature/bed_n.png': [
-    { x: 0, y: -1 },
-    { x: 0, y: -2 },
-    { x: 1, y: 0 },
-    { x: 1, y: -1 },
-    { x: 1, y: -2 },
-  ],
-  '/tiles/feature/bed_e.png': [
-    { x: 1, y: 0 },
-    { x: 2, y: 0 },
-    { x: 0, y: -1 },
-    { x: 1, y: -1 },
-    { x: 2, y: -1 },
-  ],
-  '/tiles/feature/bed_s.png': [
-    { x: 0, y: -1 },
-    { x: 0, y: -2 },
-    { x: 1, y: 0 },
-    { x: 1, y: -1 },
-    { x: 1, y: -2 },
-  ],
-  '/tiles/feature/bed_w.png': [
-    { x: 1, y: 0 },
-    { x: 2, y: 0 },
-    { x: 0, y: -1 },
-    { x: 1, y: -1 },
-    { x: 2, y: -1 },
-  ],
-  '/tiles/feature/bookcase_s.png': [{ x: 1, y: 0 }],
-  '/tiles/feature/bookcase_w.png': [{ x: 0, y: -1 }],
-  '/tiles/feature/chair_e.png': [],
-  '/tiles/feature/chair_n.png': [],
-  '/tiles/feature/chair_s.png': [],
-  '/tiles/feature/chair_w.png': [],
-  '/tiles/feature/chest_s.png': [],
-  '/tiles/feature/chest_w.png': [],
-  '/tiles/feature/chest_large_s.png': [{ x: 1, y: 0 }],
-  '/tiles/feature/chest_large_w.png': [{ x: 0, y: -1 }],
-  '/tiles/feature/fire_shrine.png': [],
-  '/tiles/feature/plinth.png': [],
-  '/tiles/feature/table_s.png': [
-    { x: 1, y: 0 },
-    { x: 2, y: 0 },
-    { x: 0, y: -1 },
-    { x: 1, y: -1 },
-    { x: 2, y: -1 },
-  ],
-  '/tiles/feature/table_w.png': [
-    { x: 1, y: 0 },
-    { x: 2, y: 0 },
-    { x: 0, y: -1 },
-    { x: 1, y: -1 },
-    { x: 2, y: -1 },
-  ],
-  '/tiles/feature/throne_e.png': [],
-  '/tiles/feature/throne_n.png': [],
-  '/tiles/feature/throne_s.png': [],
-  '/tiles/feature/throne_w.png': [],
-  '/tiles/feature/tombstone_x.png': [],
-  '/tiles/feature/tombstone_y.png': [],
-  '/tiles/feature/vase.png': [],
-  '/tiles/feature/water_shrine.png': [],
-  '/tiles/feature/well.png': [],
 } as const;
 
 export const FeatureSpriteZIndex = 5;
