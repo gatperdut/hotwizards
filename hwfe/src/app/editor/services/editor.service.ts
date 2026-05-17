@@ -7,7 +7,9 @@ import {
   FeatureSpritePath,
   FeatureSpriteSecondaries,
   FloorSpritePaths,
+  FloorTrapSpritePath,
   MonsterSpritePath,
+  SpawnSpritePath,
   SpritePath,
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
@@ -61,10 +63,11 @@ export class EditorService {
           this.createPixiCell(
             cell.x,
             cell.y,
-            cell.baseSpritePath as BaseSpritePath,
-            cell.featureSpritePath as FeatureSpritePath,
-            cell.doorSpritePath as DoorSpritePath,
+            cell.baseSpritePath,
+            cell.featureSpritePath,
+            cell.doorSpritePath,
             cell.monster,
+            cell.floorTrapSpritePath,
             cell.spawn,
             cell.secondary,
           ),
@@ -92,6 +95,7 @@ export class EditorService {
     featureSpritePath: FeatureSpritePath | null = null,
     doorSpritePath: DoorSpritePath | null = null,
     monster: HwMonster,
+    floorTrapSpritePath: FloorTrapSpritePath | null = null,
     spawn: boolean,
     secondary: HwSecondary | null,
   ): HwPixiCell {
@@ -103,6 +107,10 @@ export class EditorService {
     const monsterSprite = monster.spritePath
       ? this.createMonsterSprite(x, y, monster.spritePath as MonsterSpritePath)
       : null;
+    const floorTrapSprite = floorTrapSpritePath
+      ? this.createFloorTrapSprite(x, y, floorTrapSpritePath)
+      : null;
+    const spawnSprite = spawn ? this.createSpawnSprite(x, y, '/tiles/spawns/spawn.png') : null;
 
     const cell: HwPixiCell = {
       x: x,
@@ -111,6 +119,7 @@ export class EditorService {
       featureSpritePath: featureSpritePath,
       doorSpritePath: doorSpritePath,
       monster: monster,
+      floorTrapSpritePath: floorTrapSpritePath,
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
         featureSpritePath: featureSpritePath,
@@ -121,6 +130,8 @@ export class EditorService {
         featureSprite: featureSprite,
         doorSprite: doorSprite,
         monsterSprite: monsterSprite,
+        floorTrapSprite: floorTrapSprite,
+        spawnSprite: spawnSprite,
       },
       spawn: spawn,
       secondary: secondary,
@@ -168,6 +179,22 @@ export class EditorService {
     const monsterSprite = this.createSprite(x, y, monsterSpritePath);
     monsterSprite.eventMode = 'none';
     return monsterSprite;
+  }
+
+  private createFloorTrapSprite(
+    x: number,
+    y: number,
+    floorTrapSpritePath: FloorTrapSpritePath,
+  ): Sprite {
+    const floorTrapSprite = this.createSprite(x, y, floorTrapSpritePath);
+    floorTrapSprite.eventMode = 'none';
+    return floorTrapSprite;
+  }
+
+  private createSpawnSprite(x: number, y: number, spawnSpritePath: SpawnSpritePath): Sprite {
+    const spawnSprite = this.createSprite(x, y, spawnSpritePath);
+    spawnSprite.eventMode = 'none';
+    return spawnSprite;
   }
 
   public destroySprite(sprite: Sprite): void {
@@ -238,7 +265,7 @@ export class EditorService {
     }
     if (cell.featureSpritePath !== cellTransformData.featureSpritePath) {
       if (cell.featureSpritePath) {
-        this.destroySprite(cell.pixi.featureSprite as Sprite);
+        this.destroySprite(cell.pixi.featureSprite!);
       }
       cell.featureSpritePath = cellTransformData.featureSpritePath;
       if (cellTransformData.featureSpritePath) {
@@ -251,7 +278,7 @@ export class EditorService {
     }
     if (cell.doorSpritePath !== cellTransformData.doorSpritePath) {
       if (cell.doorSpritePath) {
-        this.destroySprite(cell.pixi.doorSprite as Sprite);
+        this.destroySprite(cell.pixi.doorSprite!);
       }
       cell.doorSpritePath = cellTransformData.doorSpritePath;
       if (cellTransformData.doorSpritePath) {
@@ -267,7 +294,7 @@ export class EditorService {
       cell.monster.direction !== cellTransformData.monsterDirection
     ) {
       if (cell.monster.type) {
-        this.destroySprite(cell.pixi.monsterSprite as Sprite);
+        this.destroySprite(cell.pixi.monsterSprite!);
       }
       cell.monster.type = cellTransformData.monsterType;
       cell.monster.spritePath = cellTransformData.monsterSpritePath;
@@ -276,12 +303,34 @@ export class EditorService {
         cell.pixi.monsterSprite = this.createMonsterSprite(
           cell.x,
           cell.y,
-          cellTransformData.monsterSpritePath as MonsterSpritePath,
+          cellTransformData.monsterSpritePath!,
+        );
+      }
+    }
+    if (cell.floorTrapSpritePath !== cellTransformData.floorTrapSpritePath) {
+      if (cell.floorTrapSpritePath) {
+        this.destroySprite(cell.pixi.floorTrapSprite!);
+      }
+      cell.floorTrapSpritePath = cellTransformData.floorTrapSpritePath;
+      if (cellTransformData.floorTrapSpritePath) {
+        cell.pixi.floorTrapSprite = this.createFloorTrapSprite(
+          cell.x,
+          cell.y,
+          cellTransformData.floorTrapSpritePath,
         );
       }
     }
     cell.traversable = cellIsTraversable(cell);
-    cell.spawn = cellTransformData.spawn;
+    if (cell.spawn !== cellTransformData.spawn) {
+      if (cell.spawn) {
+        this.destroySprite(cell.pixi.spawnSprite!);
+      }
+      cell.spawn = cellTransformData.spawn;
+      if (cellTransformData.spawn) {
+        cell.pixi.spawnSprite = this.createSpawnSprite(cell.x, cell.y, '/tiles/spawns/spawn.png');
+      }
+    }
+
     cellTransformData.unmadeSecondary.forEach((affectedCell) => {
       this.findCell(affectedCell.x, affectedCell.y)!.secondary = null;
     });
@@ -296,7 +345,7 @@ export class EditorService {
     this.destroySprite(cell.pixi.baseSprite);
     if (cell.pixi.featureSprite) {
       this.destroySprite(cell.pixi.featureSprite);
-      FeatureSpriteSecondaries[cell.featureSpritePath as FeatureSpritePath].map((offset) => {
+      FeatureSpriteSecondaries[cell.featureSpritePath!].map((offset) => {
         this.findCell(cell.x + offset.x, cell.y + offset.y)!.secondary = null;
       });
     }
@@ -306,7 +355,13 @@ export class EditorService {
     if (cell.monster.type) {
       cell.monster.type = null;
       cell.monster.spritePath = null;
-      this.destroySprite(cell.pixi.monsterSprite as Sprite);
+      this.destroySprite(cell.pixi.monsterSprite!);
+    }
+    if (cell.pixi.floorTrapSprite) {
+      this.destroySprite(cell.pixi.floorTrapSprite);
+    }
+    if (cell.pixi.spawnSprite) {
+      this.destroySprite(cell.pixi.spawnSprite);
     }
   }
 

@@ -78,6 +78,25 @@
           />
         </div>
         <div class="flex flex-col gap-hw-average">
+          <div class="typ-h2">Floor trap</div>
+          <app-select
+            label="Floor trap sprite path"
+            placeholder="Select floor trap sprite path"
+            [form]="form.floorTrapSpritePath"
+            [displayFn]="spritePathDisplayFn"
+            [options]="floorTrapSpritePaths"
+            [canClearSingle]="true"
+          />
+          <div class="flex flex-row start items-center gap-1.5">
+            <app-button
+              label="Random floor trap"
+              type="button"
+              appearance="outlined"
+              (click)="randomFloorTrap()"
+            ></app-button>
+          </div>
+        </div>
+        <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Spawn point</div>
           <div class="flex flex-col gap-0">
             <app-checkbox [field]="form.spawn" label="Spawn point"></app-checkbox>

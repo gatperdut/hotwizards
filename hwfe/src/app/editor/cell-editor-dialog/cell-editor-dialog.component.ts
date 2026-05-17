@@ -19,6 +19,8 @@ import {
   FeatureSpriteSecondaries,
   FloorSpritePath,
   FloorSpritePaths,
+  FloorTrapSpritePath,
+  FloorTrapSpritePaths,
   monsterSpritePath,
   MonsterSpritePath,
   MonsterType,
@@ -47,6 +49,7 @@ type CellTransformEditableData = {
   doorSpritePath: DoorSpritePath | null;
   monsterType: MonsterType | null;
   monsterDirection: Direction;
+  floorTrapSpritePath: FloorTrapSpritePath;
   spawn: boolean;
 };
 
@@ -99,12 +102,14 @@ export class CellEditorDialogComponent {
       this.form.doorSpritePath().value();
       this.form.monsterType().value();
       this.form.monsterDirection().value();
+      this.form.floorTrapSpritePath().value();
       this.form.spawn().value();
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
       this.form.doorSpritePath().markAsTouched();
       this.form.monsterType().markAsTouched();
       this.form.monsterDirection().markAsTouched();
+      this.form.floorTrapSpritePath().markAsTouched();
       this.form.spawn().markAsTouched();
     });
 
@@ -172,6 +177,7 @@ export class CellEditorDialogComponent {
     doorSpritePath: this.data.cell.doorSpritePath as DoorSpritePath,
     monsterType: this.data.cell.monster.type as MonsterType,
     monsterDirection: this.data.cell.monster.direction,
+    floorTrapSpritePath: this.data.cell.floorTrapSpritePath as FloorTrapSpritePath,
     spawn: this.data.cell.spawn,
   });
 
@@ -213,6 +219,9 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.monsterType)) {
           return this.error('A feature cannot be placed together with a monster');
         }
+        if (valueOf(schemaPath.floorTrapSpritePath)) {
+          return this.error('A feature cannot be placed together with a floor trap');
+        }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A feature cannot be placed in a spawn cell');
         }
@@ -223,35 +232,39 @@ export class CellEditorDialogComponent {
         const enoughRoomErrors = FeatureSpriteSecondaries[value() as FeatureSpritePath]
           .map((offset) => {
             const coords = `+(${offset.x}, ${offset.y})`;
+            console.log(coords);
             const cell = this.editorService.findCell(
               this.data.cell.x + offset.x,
               this.data.cell.y + offset.y,
             );
 
             if (!cell) {
-              return this.error(`A cell must be present at ${coords}.`);
+              return this.error(`A cell must be present at ${coords}`);
             }
             if (!FloorSpritePaths.includes(cell.baseSpritePath as FloorSpritePath)) {
-              return this.error(`The cell at ${coords} is water.`);
+              return this.error(`The cell at ${coords} is water`);
             }
             if (cell.featureSpritePath) {
-              return this.error(`There is a feature at ${coords}.`);
+              return this.error(`There is a feature at ${coords}`);
             }
             if (cell.doorSpritePath) {
-              return this.error(`There is a door at ${coords}.`);
+              return this.error(`There is a door at ${coords}`);
             }
             if (cell.monster.type) {
-              return this.error(`There is a monster at ${coords}.`);
+              return this.error(`There is a monster at ${coords}`);
+            }
+            if (cell.floorTrapSpritePath) {
+              return this.error(`There is a floor trap at ${coords}`);
             }
             if (cell.spawn) {
-              return this.error(`Cell at ${coords} is a spawn cell.`);
+              return this.error(`Cell at ${coords} is a spawn cell`);
             }
             if (
               cell.secondary &&
               cell.secondary.x !== this.data.cell.x &&
               cell.secondary.y !== this.data.cell.y
             ) {
-              return this.error(`Cell at ${coords} is secondary.`);
+              return this.error(`Cell at ${coords} is secondary`);
             }
 
             return null;
@@ -278,6 +291,9 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.monsterType)) {
           return this.error('A door cannot be placed together with a monster');
         }
+        if (valueOf(schemaPath.floorTrapSpritePath)) {
+          return this.error('A door cannot be placed together with a floor trap');
+        }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A door cannot be placed in a spawn cell');
         }
@@ -302,11 +318,41 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.doorSpritePath)) {
           return this.error('A monster cannot be placed together with a door');
         }
+        if (valueOf(schemaPath.floorTrapSpritePath)) {
+          return this.error('A monster cannot be placed together with a floor trap');
+        }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A monster cannot be placed in a spawn cell');
         }
         if (this.data.cell.secondary) {
           return this.error('A monster cannot be placed in a secondary cell');
+        }
+
+        return null;
+      });
+
+      validate(schemaPath.floorTrapSpritePath, ({ value, valueOf }) => {
+        if (!value()) {
+          return null;
+        }
+
+        if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
+          return this.error('A floor trap cannot be placed on water');
+        }
+        if (valueOf(schemaPath.featureSpritePath)) {
+          return this.error('A floor trap cannot be placed together with a feature');
+        }
+        if (valueOf(schemaPath.doorSpritePath)) {
+          return this.error('A floor trap cannot be placed together with a door');
+        }
+        if (valueOf(schemaPath.monsterType)) {
+          return this.error('A floor trap cannot be placed together with a monster');
+        }
+        if (valueOf(schemaPath.spawn)) {
+          return this.error('A floor trap cannot be placed in a spawn cell');
+        }
+        if (this.data.cell.secondary) {
+          return this.error('A floor trap cannot be placed in a secondary cell');
         }
 
         return null;
@@ -330,6 +376,9 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.monsterType)) {
           return this.error('A spawn cell cannot contain a monster');
         }
+        if (valueOf(schemaPath.monsterType)) {
+          return this.error('A spawn cell cannot contain a floor trap');
+        }
         if (this.data.cell.secondary) {
           return this.error('A spawn cell cannot be secondary');
         }
@@ -352,6 +401,7 @@ export class CellEditorDialogComponent {
   );
   public doorSpritePaths = ClosedDoorSpritePaths.slice();
   public monsterTypes = MonsterTypes.slice();
+  public floorTrapSpritePaths = FloorTrapSpritePaths.slice();
   public directions = Directions.slice();
 
   public spritePathDisplayFn = spritePathDisplayFn;
@@ -370,5 +420,12 @@ export class CellEditorDialogComponent {
       .baseSpritePath()
       .value.set(WaterSpritePaths[Math.floor(Math.random() * WaterSpritePaths.length)]);
     this.form.baseSpritePath().markAsDirty();
+  }
+
+  public randomFloorTrap(): void {
+    this.form
+      .floorTrapSpritePath()
+      .value.set(FloorTrapSpritePaths[Math.floor(Math.random() * FloorTrapSpritePaths.length)]);
+    this.form.floorTrapSpritePath().markAsDirty();
   }
 }
