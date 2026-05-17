@@ -1,8 +1,4 @@
-import { HeroSpritePaths, MonsterSpritePaths, SpriteOffset } from '@hw/shared/sprites';
-
-export const CreatureSpritePaths = [...HeroSpritePaths, ...MonsterSpritePaths] as const;
-
-export type CreatureSpritePath = (typeof CreatureSpritePaths)[number];
+import { CreatureSpritePath, SpriteOffset } from '@hw/shared/sprites';
 
 export const CreatureSpriteSizes: Record<CreatureSpritePath, SpriteOffset> = {
   '/tiles/heroes/barbarian_male_n.png': { x: 60, y: 120 },

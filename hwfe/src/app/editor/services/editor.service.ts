@@ -3,10 +3,12 @@ import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwDungeon, HwMonster, HwSecondary } from '@hw/shared/editor';
 import {
   BaseSpritePath,
+  DoorSpritePath,
   FeatureSpritePath,
   FeatureSpriteSecondaries,
   FloorSpritePaths,
   MonsterSpritePath,
+  SpritePath,
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
@@ -21,9 +23,8 @@ import {
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
-import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
-import { FeatureSpriteZIndex } from '../consts/sprite-paths/feature-sprite-paths.const';
-import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
+import { FeatureSpriteZIndex } from '../consts/sprites/feature-sprites.const';
+import { SpriteOffsets, SpriteSizes } from '../consts/sprites/sprites.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { TextureService } from './texture.service';
