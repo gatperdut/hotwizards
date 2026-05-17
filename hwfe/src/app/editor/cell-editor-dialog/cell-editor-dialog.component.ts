@@ -17,6 +17,10 @@ import {
   FeatureSpriteSecondaries,
   FloorSpritePath,
   FloorSpritePaths,
+  monsterSpritePath,
+  MonsterSpritePath,
+  MonsterType,
+  MonsterTypes,
   WaterSpritePaths,
 } from '@hw/shared/sprites';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -31,12 +35,6 @@ import { SelectComponent } from '../../ui/select/select.component';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
 import { DoorSpritePath, DoorSpritePaths } from '../consts/sprite-paths/door-sprite-paths.const';
-import {
-  monsterSpritepath,
-  MonsterSpritePath,
-  MonsterType,
-  MonsterTypes,
-} from '../consts/sprite-paths/monster-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { EditorService } from '../services/editor.service';
 
@@ -161,7 +159,7 @@ export class CellEditorDialogComponent {
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
     traversable: cellIsTraversable({ ...this.model(), secondary: this.data.cell.secondary }),
-    monsterSpritePath: monsterSpritepath(this.model().monsterType, this.model().monsterDirection),
+    monsterSpritePath: monsterSpritePath(this.model().monsterType, this.model().monsterDirection),
     ...this.externalData(),
   }));
 

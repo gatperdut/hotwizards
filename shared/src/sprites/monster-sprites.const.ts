@@ -1,4 +1,4 @@
-import { Direction } from '@hw/shared/directions';
+import { Direction } from '../directions/directions.const.js';
 
 export const MonsterSpritePaths = [
   '/tiles/monsters/chaos_mage_n.png',
@@ -75,7 +75,7 @@ export const MonsterTypes = [
 
 export type MonsterType = (typeof MonsterTypes)[number];
 
-export const monsterSpritepath = (
+export const monsterSpritePath = (
   monsterType: MonsterType | null,
   direction: Direction | null,
 ): MonsterSpritePath | null => {
