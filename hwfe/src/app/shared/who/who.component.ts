@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { HwCharacter } from '@hw/shared/characters';
+import { HwCharacter, portrait } from '@hw/shared/characters';
 import { HwUser } from '@hw/shared/users';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { OnlineMarkComponent } from '../../users/online-mark/online-mark.component';
@@ -12,7 +12,7 @@ import { OnlineMarkComponent } from '../../users/online-mark/online-mark.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WhoComponent {
-  public klassesService = inject(KlassesService);
+  private klassesService = inject(KlassesService);
 
   public master = input(false);
   public user = input.required<HwUser>();
@@ -29,7 +29,7 @@ export class WhoComponent {
       return '/portraits/pending.gif';
     }
 
-    return this.klassesService.portrait(character.klass, character.gender);
+    return portrait(character.klass, character.gender);
   });
 
   public klass = computed(() => {

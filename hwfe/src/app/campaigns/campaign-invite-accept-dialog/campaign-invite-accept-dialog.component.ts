@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
 import { Gender, Klass } from '@hw/prismagen/browser';
+import { portrait } from '@hw/shared/characters';
 import { HwMembershipAcceptDto } from '@hw/shared/memberships';
 import { firstValueFrom } from 'rxjs';
 import { GendersService } from '../../characters/services/genders.service';
@@ -94,10 +95,10 @@ export class CampaignInviteAcceptDialogComponent {
     const gender = this.model().gender;
 
     return {
-      BARBARIAN: this.klassesService.portrait('BARBARIAN', gender),
-      DWARF: this.klassesService.portrait('DWARF', gender),
-      ELF: this.klassesService.portrait('ELF', gender),
-      WIZARD: this.klassesService.portrait('WIZARD', gender),
+      BARBARIAN: portrait('BARBARIAN', gender),
+      DWARF: portrait('DWARF', gender),
+      ELF: portrait('ELF', gender),
+      WIZARD: portrait('WIZARD', gender),
     };
   });
 

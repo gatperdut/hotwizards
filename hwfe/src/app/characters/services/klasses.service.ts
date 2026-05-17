@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Gender, Klass } from '@hw/prismagen/browser';
+import { Klass } from '@hw/prismagen/browser';
 
 @Injectable({ providedIn: 'root' })
 export class KlassesService {
@@ -14,9 +14,5 @@ export class KlassesService {
       case 'WIZARD':
         return 'Wizard';
     }
-  }
-
-  public portrait(klass: Klass, gender: Gender): string {
-    return `/portraits/${klass.toLowerCase()}_${gender.toLowerCase()}.png`;
   }
 }

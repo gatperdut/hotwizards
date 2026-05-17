@@ -1,9 +1,9 @@
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
+import { portrait } from '@hw/shared/characters';
 import { HwUser } from '@hw/shared/users';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { KlassesService } from '../characters/klasses.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { AdventuresGateway } from './adventures.gateway.js';
@@ -14,7 +14,6 @@ export class AdventuresService {
     private prismaService: PrismaService,
     private adventuresGateway: AdventuresGateway,
     private pushService: PushService,
-    private klassesService: KlassesService,
     private configService: ConfigService,
   ) {}
 
@@ -53,9 +52,7 @@ export class AdventuresService {
     const name = turn === 0 ? 'Zargon' : character!.name;
 
     const icon =
-      turn === 0
-        ? '/portraits/zargon.png'
-        : `${this.klassesService.portrait(character.klass, character.gender)}`;
+      turn === 0 ? '/portraits/zargon.png' : `${portrait(character.klass, character.gender)}`;
 
     void this.pushService.notifyUser(user.id, {
       title: campaign.name,
