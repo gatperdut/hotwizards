@@ -7,7 +7,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
     {
       x: 5,
       y: 2,
-      baseSpritePath: '/tiles/floor/floor_01.png',
+      baseSpritePath: '/tiles/floors/floor_01.png',
       featureSpritePath: null,
       doorSpritePath: null,
       monster: {
@@ -22,7 +22,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
     {
       x: 6,
       y: 2,
-      baseSpritePath: '/tiles/floor/floor_02.png',
+      baseSpritePath: '/tiles/floors/floor_02.png',
       featureSpritePath: null,
       doorSpritePath: null,
       monster: {
@@ -37,7 +37,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
     {
       x: 5,
       y: 3,
-      baseSpritePath: '/tiles/floor/floor_03.png',
+      baseSpritePath: '/tiles/floors/floor_03.png',
       featureSpritePath: null,
       doorSpritePath: null,
       monster: {
@@ -52,8 +52,8 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
     {
       x: 6,
       y: 3,
-      baseSpritePath: '/tiles/floor/floor_04.png',
-      featureSpritePath: '/tiles/feature/chair_w.png',
+      baseSpritePath: '/tiles/floors/floor_04.png',
+      featureSpritePath: '/tiles/features/chair_w.png',
       doorSpritePath: null,
       monster: {
         type: null,
@@ -67,7 +67,7 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
     {
       x: 6,
       y: 4,
-      baseSpritePath: '/tiles/water/water_05.png',
+      baseSpritePath: '/tiles/waters/water_05.png',
       featureSpritePath: null,
       doorSpritePath: null,
       monster: {

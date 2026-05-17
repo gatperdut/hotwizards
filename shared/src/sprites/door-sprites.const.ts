@@ -1,11 +1,11 @@
 export const OpenDoorSpritePaths = [
-  '/tiles/door/open_door_x.png',
-  '/tiles/door/open_door_y.png',
+  '/tiles/doors/open_door_x.png',
+  '/tiles/doors/open_door_y.png',
 ] as const;
 
 export const ClosedDoorSpritePaths = [
-  '/tiles/door/closed_door_x.png',
-  '/tiles/door/closed_door_y.png',
+  '/tiles/doors/closed_door_x.png',
+  '/tiles/doors/closed_door_y.png',
 ] as const;
 
 export const DoorSpritePaths = [...OpenDoorSpritePaths, ...ClosedDoorSpritePaths] as const;
