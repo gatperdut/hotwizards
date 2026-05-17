@@ -136,7 +136,7 @@ export class CampaignsService {
       void this.pushService.notifyUser(m.userId, {
         title: 'Campaign renamed',
         body: `Campaign ${campaign.name} has been renamed to ${name}`,
-        icon: '/characters/zargon.png',
+        icon: '/portraits/zargon.png',
         url: `/home/campaigns/${campaign.id}`,
       });
     });
@@ -158,7 +158,7 @@ export class CampaignsService {
       void this.pushService.notifyUser(m.userId, {
         title: campaign.name,
         body: 'The campaign has been deleted',
-        icon: '/characters/zargon.png',
+        icon: '/portraits/zargon.png',
         url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns`,
       });
     });

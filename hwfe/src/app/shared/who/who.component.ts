@@ -20,13 +20,13 @@ export class WhoComponent {
 
   public image = computed(() => {
     if (this.master()) {
-      return '/characters/zargon.png';
+      return '/portraits/zargon.png';
     }
 
     const character = this.character();
 
     if (!character) {
-      return '/characters/pending.gif';
+      return '/portraits/pending.gif';
     }
 
     return this.klassesService.portrait(character.klass, character.gender);
