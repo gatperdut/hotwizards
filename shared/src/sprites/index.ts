@@ -22,6 +22,7 @@ export {
   FeatureSpritePaths,
   FeatureSpriteSecondaries,
 } from './feature-sprites.const.js';
+export { FeatureTrapSpritePath, FeatureTrapSpritePaths } from './feature-trap-sprites.const.js';
 export { FloorSpritePath, FloorSpritePaths } from './floor-sprites.const.js';
 export { FloorTrapSpritePath, FloorTrapSpritePaths } from './floor-trap-sprites.const.js';
 export { HeroSpritePath, HeroSpritePaths } from './hero-sprites.const.js';
