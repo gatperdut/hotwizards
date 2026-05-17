@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { SpritePaths } from '@hw/shared/sprites';
 import { Assets, Texture } from 'pixi.js';
 import { forkJoin, from, Observable, tap } from 'rxjs';
-import { SpritePaths } from '../consts/sprite-paths/sprite-paths.const';
 
 @Injectable()
 export class TextureService {

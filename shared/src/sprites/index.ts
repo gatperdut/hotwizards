@@ -1,4 +1,13 @@
 export { BaseSpritePath, BaseSpritePaths } from './base-sprites.const.js';
+export { CreatureSpritePath, CreatureSpritePaths } from './creature-sprites.const.js';
+export {
+  ClosedDoorSpritePath,
+  ClosedDoorSpritePaths,
+  DoorSpritePath,
+  DoorSpritePaths,
+  OpenDoorSpritePath,
+  OpenDoorSpritePaths,
+} from './door-sprites.const.js';
 export {
   FeatureSpritePath,
   FeatureSpritePaths,
@@ -14,4 +23,5 @@ export {
   MonsterTypes,
 } from './monster-sprites.const.js';
 export { SpriteOffset } from './sprite-offset.const.js';
+export { SpritePath, SpritePaths } from './sprites.const.js';
 export { WaterSpritePath, WaterSpritePaths } from './water-sprites.const.js';

@@ -12,6 +12,8 @@ import { Direction, Directions } from '@hw/shared/directions';
 import {
   BaseSpritePath,
   BaseSpritePaths,
+  DoorSpritePath,
+  DoorSpritePaths,
   FeatureSpritePath,
   FeatureSpritePaths,
   FeatureSpriteSecondaries,
@@ -34,7 +36,6 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
-import { DoorSpritePath, DoorSpritePaths } from '../consts/sprite-paths/door-sprite-paths.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { EditorService } from '../services/editor.service';
 
