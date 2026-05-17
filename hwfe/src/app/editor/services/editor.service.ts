@@ -16,7 +16,10 @@ import { DungeonWidth } from '../consts/dungeon-size.const';
 import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { BaseSpritePath } from '../consts/sprite-paths/base-sprite-paths.const';
 import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
-import { FeatureSpritePath } from '../consts/sprite-paths/feature-sprite-paths.const';
+import {
+  FeatureSpritePath,
+  FeatureSpriteSecondaries,
+} from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
 import { SpriteOffsets, SpritePath, SpriteSizes } from '../consts/sprite-paths/sprite-paths.const';
@@ -290,6 +293,9 @@ export class EditorService {
     this.destroySprite(cell.pixi.baseSprite);
     if (cell.pixi.featureSprite) {
       this.destroySprite(cell.pixi.featureSprite);
+      FeatureSpriteSecondaries[cell.featureSpritePath as FeatureSpritePath].map((offset) => {
+        this.findCell(cell.x + offset.x, cell.y + offset.y)!.secondary = null;
+      });
     }
     if (cell.pixi.doorSprite) {
       this.destroySprite(cell.pixi.doorSprite);
