@@ -26,5 +26,5 @@ export const ground2World = (xGround: number, yGround: number): Point => {
 };
 
 export const groundZIndex = (xWorld: number, yWorld: number, mapWidth: number): number => {
-  return mapWidth - 1 - xWorld + yWorld;
+  return (mapWidth - 1 - xWorld + yWorld) * 10;
 };

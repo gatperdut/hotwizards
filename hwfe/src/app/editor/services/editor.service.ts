@@ -19,6 +19,7 @@ import { DoorSpritePath } from '../consts/sprite-paths/door-sprite-paths.const';
 import {
   FeatureSpritePath,
   FeatureSpriteSecondaries,
+  FeatureSpriteZIndex,
 } from '../consts/sprite-paths/feature-sprite-paths.const';
 import { FloorSpritePaths } from '../consts/sprite-paths/floor-sprite-paths.const';
 import { MonsterSpritePath } from '../consts/sprite-paths/monster-sprite-paths.const';
@@ -151,6 +152,7 @@ export class EditorService {
 
   private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
     const featureSprite = this.createSprite(x, y, featureSpritePath);
+    featureSprite.zIndex += FeatureSpriteZIndex;
     featureSprite.eventMode = 'none';
     return featureSprite;
   }

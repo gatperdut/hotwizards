@@ -161,3 +161,5 @@ export const FeatureSpriteSecondaries: Record<FeatureSpritePath, SpriteOffset[]>
   '/tiles/feature/water_shrine.png': [],
   '/tiles/feature/well.png': [],
 } as const;
+
+export const FeatureSpriteZIndex = 5;
