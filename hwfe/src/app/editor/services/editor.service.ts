@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
-import { HwDungeon, HwMonster, HwSecondary } from '@hw/shared/editor';
+import { HwDungeon, HwFeature, HwMonster, HwSecondary } from '@hw/shared/editor';
 import {
   BaseSpritePath,
   DoorSpritePath,
@@ -64,7 +64,7 @@ export class EditorService {
             cell.x,
             cell.y,
             cell.baseSpritePath,
-            cell.featureSpritePath,
+            cell.feature,
             cell.doorSpritePath,
             cell.monster,
             cell.floorTrapSpritePath,
@@ -92,7 +92,7 @@ export class EditorService {
     baseSpritePath: BaseSpritePath = FloorSpritePaths[
       Math.floor(Math.random() * FloorSpritePaths.length)
     ],
-    featureSpritePath: FeatureSpritePath | null = null,
+    feature: HwFeature,
     doorSpritePath: DoorSpritePath | null = null,
     monster: HwMonster,
     floorTrapSpritePath: FloorTrapSpritePath | null = null,
@@ -100,8 +100,8 @@ export class EditorService {
     secondary: HwSecondary | null,
   ): HwPixiCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
-    const featureSprite = featureSpritePath
-      ? this.createFeatureSprite(x, y, featureSpritePath)
+    const featureSprite = feature.spritePath
+      ? this.createFeatureSprite(x, y, feature.spritePath)
       : null;
     const doorSprite = doorSpritePath ? this.createDoorSprite(x, y, doorSpritePath) : null;
     const monsterSprite = monster.spritePath
@@ -116,13 +116,13 @@ export class EditorService {
       x: x,
       y: y,
       baseSpritePath: baseSpritePath,
-      featureSpritePath: featureSpritePath,
+      feature: feature,
       doorSpritePath: doorSpritePath,
       monster: monster,
       floorTrapSpritePath: floorTrapSpritePath,
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
-        featureSpritePath: featureSpritePath,
+        feature: { spritePath: feature.spritePath },
         secondary: secondary,
       }),
       pixi: {
@@ -263,11 +263,11 @@ export class EditorService {
       );
       cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
     }
-    if (cell.featureSpritePath !== cellTransformData.featureSpritePath) {
-      if (cell.featureSpritePath) {
+    if (cell.feature.spritePath !== cellTransformData.featureSpritePath) {
+      if (cell.feature.spritePath) {
         this.destroySprite(cell.pixi.featureSprite!);
       }
-      cell.featureSpritePath = cellTransformData.featureSpritePath;
+      cell.feature.spritePath = cellTransformData.featureSpritePath;
       if (cellTransformData.featureSpritePath) {
         cell.pixi.featureSprite = this.createFeatureSprite(
           cell.x,
@@ -345,7 +345,7 @@ export class EditorService {
     this.destroySprite(cell.pixi.baseSprite);
     if (cell.pixi.featureSprite) {
       this.destroySprite(cell.pixi.featureSprite);
-      FeatureSpriteSecondaries[cell.featureSpritePath!].map((offset) => {
+      FeatureSpriteSecondaries[cell.feature.spritePath!].map((offset) => {
         this.findCell(cell.x + offset.x, cell.y + offset.y)!.secondary = null;
       });
     }

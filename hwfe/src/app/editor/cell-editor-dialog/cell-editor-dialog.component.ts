@@ -40,16 +40,18 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
 import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
+import { FeatureSpriteTrappable } from '../consts/sprites/feature-sprites.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
 import { EditorService } from '../services/editor.service';
 
 type CellTransformEditableData = {
   baseSpritePath: BaseSpritePath;
   featureSpritePath: FeatureSpritePath | null;
+  featureTrapped: boolean;
   doorSpritePath: DoorSpritePath | null;
   monsterType: MonsterType | null;
   monsterDirection: Direction;
-  floorTrapSpritePath: FloorTrapSpritePath;
+  floorTrapSpritePath: FloorTrapSpritePath | null;
   spawn: boolean;
 };
 
@@ -99,6 +101,7 @@ export class CellEditorDialogComponent {
     effect(() => {
       this.form.baseSpritePath().value();
       this.form.featureSpritePath().value();
+      this.form.featureTrapped().value();
       this.form.doorSpritePath().value();
       this.form.monsterType().value();
       this.form.monsterDirection().value();
@@ -106,6 +109,7 @@ export class CellEditorDialogComponent {
       this.form.spawn().value();
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
+      this.form.featureTrapped().markAsTouched();
       this.form.doorSpritePath().markAsTouched();
       this.form.monsterType().markAsTouched();
       this.form.monsterDirection().markAsTouched();
@@ -115,7 +119,7 @@ export class CellEditorDialogComponent {
 
     effect(() => {
       const featureSpritePath = this.form.featureSpritePath().value();
-      const originalFeatureSpritePath = this.data.cell.featureSpritePath;
+      const originalFeatureSpritePath = this.data.cell.feature.spritePath;
 
       this.externalData.update((value) => ({
         ...value,
@@ -166,18 +170,23 @@ export class CellEditorDialogComponent {
 
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
-    traversable: cellIsTraversable({ ...this.model(), secondary: this.data.cell.secondary }),
+    traversable: cellIsTraversable({
+      ...this.model(),
+      feature: { spritePath: this.model().featureSpritePath },
+      secondary: this.data.cell.secondary,
+    }),
     monsterSpritePath: monsterSpritePath(this.model().monsterType, this.model().monsterDirection),
     ...this.externalData(),
   }));
 
   public model = signal<CellTransformEditableData>({
-    baseSpritePath: this.data.cell.baseSpritePath as BaseSpritePath,
-    featureSpritePath: this.data.cell.featureSpritePath as FeatureSpritePath,
-    doorSpritePath: this.data.cell.doorSpritePath as DoorSpritePath,
-    monsterType: this.data.cell.monster.type as MonsterType,
+    baseSpritePath: this.data.cell.baseSpritePath,
+    featureSpritePath: this.data.cell.feature.spritePath as FeatureSpritePath,
+    featureTrapped: this.data.cell.feature.trapped,
+    doorSpritePath: this.data.cell.doorSpritePath,
+    monsterType: this.data.cell.monster.type,
     monsterDirection: this.data.cell.monster.direction,
-    floorTrapSpritePath: this.data.cell.floorTrapSpritePath as FloorTrapSpritePath,
+    floorTrapSpritePath: this.data.cell.floorTrapSpritePath,
     spawn: this.data.cell.spawn,
   });
 
@@ -243,7 +252,7 @@ export class CellEditorDialogComponent {
             if (!FloorSpritePaths.includes(cell.baseSpritePath as FloorSpritePath)) {
               return this.error(`The cell at ${coords} is water`);
             }
-            if (cell.featureSpritePath) {
+            if (cell.feature.spritePath) {
               return this.error(`There is a feature at ${coords}`);
             }
             if (cell.doorSpritePath) {
@@ -398,6 +407,7 @@ export class CellEditorDialogComponent {
   public featureSpritePaths = FeatureSpritePaths.slice().filter(
     (path) => !OpenChestSpritePaths.includes(path as OpenChestSpritePath),
   );
+  public featureSpriteTrappable = FeatureSpriteTrappable;
   public doorSpritePaths = ClosedDoorSpritePaths.slice();
   public monsterTypes = MonsterTypes.slice();
   public floorTrapSpritePaths = FloorTrapSpritePaths.slice();

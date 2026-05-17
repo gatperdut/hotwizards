@@ -46,6 +46,12 @@
             [options]="featureSpritePaths"
             [canClearSingle]="true"
           />
+          @let featureSpritePath = model().featureSpritePath;
+          @if (featureSpritePath && featureSpriteTrappable[featureSpritePath]) {
+            <div class="flex flex-col gap-0">
+              <app-checkbox [field]="form.featureTrapped" label="Trapped"></app-checkbox>
+            </div>
+          }
         </div>
         <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Door</div>
