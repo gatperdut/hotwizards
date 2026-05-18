@@ -2,6 +2,8 @@ import { ChestSpritePaths, ChestSpriteSecondaries } from './chest-sprites.const.
 import { SpriteOffset } from './sprite-offset.const.js';
 
 export const FeatureSpritePaths = [
+  '/tiles/features/altar_s.png',
+  '/tiles/features/altar_w.png',
   '/tiles/features/barrel.png',
   '/tiles/features/bed_n.png',
   '/tiles/features/bed_e.png',
@@ -32,6 +34,20 @@ export const FeatureSpritePaths = [
 export type FeatureSpritePath = (typeof FeatureSpritePaths)[number];
 
 export const FeatureSpriteSecondaries: Record<FeatureSpritePath, SpriteOffset[]> = {
+  '/tiles/features/altar_s.png': [
+    { x: 1, y: 0 },
+    { x: 2, y: 0 },
+    { x: 0, y: -1 },
+    { x: 1, y: -1 },
+    { x: 2, y: -1 },
+  ],
+  '/tiles/features/altar_w.png': [
+    { x: 0, y: -1 },
+    { x: 0, y: -2 },
+    { x: 1, y: 0 },
+    { x: 1, y: -1 },
+    { x: 1, y: -2 },
+  ],
   '/tiles/features/barrel.png': [],
   '/tiles/features/bed_n.png': [
     { x: 0, y: -1 },

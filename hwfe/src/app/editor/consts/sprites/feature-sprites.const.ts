@@ -1,6 +1,8 @@
 import { FeatureSpritePath, SpriteOffset } from '@hw/shared/sprites';
 
 export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
+  '/tiles/features/altar_s.png': { x: 144, y: 144 },
+  '/tiles/features/altar_w.png': { x: 144, y: 144 },
   '/tiles/features/barrel.png': { x: 64, y: 64 },
   '/tiles/features/bed_n.png': { x: 112, y: 112 },
   '/tiles/features/bed_e.png': { x: 112, y: 112 },
@@ -36,6 +38,8 @@ export const FeatureSpriteSizes: Record<FeatureSpritePath, SpriteOffset> = {
 } as const;
 
 export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
+  '/tiles/features/altar_s.png': { x: 20, y: -53 },
+  '/tiles/features/altar_w.png': { x: -20, y: -53 },
   '/tiles/features/barrel.png': { x: 0, y: -32 },
   '/tiles/features/bed_n.png': { x: -16, y: -65 },
   '/tiles/features/bed_e.png': { x: 13, y: -58 },
@@ -71,6 +75,8 @@ export const FeatureSpriteOffsets: Record<FeatureSpritePath, SpriteOffset> = {
 } as const;
 
 export const FeatureSpriteTrappable: Record<FeatureSpritePath, boolean> = {
+  '/tiles/features/altar_s.png': false,
+  '/tiles/features/altar_w.png': false,
   '/tiles/features/barrel.png': false,
   '/tiles/features/bed_n.png': false,
   '/tiles/features/bed_e.png': false,
