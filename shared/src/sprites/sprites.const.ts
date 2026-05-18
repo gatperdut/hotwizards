@@ -5,6 +5,7 @@ import { FeatureSpritePaths } from './feature-sprites.const.js';
 import { FeatureTrapSpritePaths } from './feature-trap-sprites.const.js';
 import { FloorTrapSpritePaths } from './floor-trap-sprites.const.js';
 import { SpawnSpritePaths } from './spawn-sprites.const.js';
+import { StairsSpritePaths } from './stairs-sprites.const.js';
 
 export const SpritePaths = [
   ...BaseSpritePaths,
@@ -13,6 +14,7 @@ export const SpritePaths = [
   ...DoorSpritePaths,
   ...CreatureSpritePaths,
   ...FloorTrapSpritePaths,
+  ...StairsSpritePaths,
   ...SpawnSpritePaths,
 ] as const;
 

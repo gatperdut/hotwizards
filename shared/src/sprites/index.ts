@@ -36,4 +36,5 @@ export {
 export { SpawnSpritePath, SpawnSpritePaths } from './spawn-sprites.const.js';
 export { SpriteOffset } from './sprite-offset.const.js';
 export { SpritePath, SpritePaths } from './sprites.const.js';
+export { StairsSpritePath, StairsSpritePaths } from './stairs-sprites.const.js';
 export { WaterSpritePath, WaterSpritePaths } from './water-sprites.const.js';

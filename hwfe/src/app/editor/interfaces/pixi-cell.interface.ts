@@ -9,6 +9,7 @@ export interface HwPixiCell extends HwCell {
     doorSprite: Sprite | null;
     monsterSprite: Sprite | null;
     floorTrapSprite: Sprite | null;
+    stairsSprite: Sprite | null;
     spawnSprite: Sprite | null;
   };
 }

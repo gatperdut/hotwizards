@@ -27,6 +27,8 @@ import {
   MonsterTypes,
   OpenChestSpritePath,
   OpenChestSpritePaths,
+  StairsSpritePath,
+  StairsSpritePaths,
   WaterSpritePaths,
 } from '@hw/shared/sprites';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -52,6 +54,7 @@ type CellTransformEditableData = {
   monsterType: MonsterType | null;
   monsterDirection: Direction;
   floorTrapSpritePath: FloorTrapSpritePath | null;
+  stairsSpritePath: StairsSpritePath | null;
   spawn: boolean;
 };
 
@@ -106,6 +109,7 @@ export class CellEditorDialogComponent {
       this.form.monsterType().value();
       this.form.monsterDirection().value();
       this.form.floorTrapSpritePath().value();
+      this.form.stairsSpritePath().value();
       this.form.spawn().value();
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
@@ -114,6 +118,7 @@ export class CellEditorDialogComponent {
       this.form.monsterType().markAsTouched();
       this.form.monsterDirection().markAsTouched();
       this.form.floorTrapSpritePath().markAsTouched();
+      this.form.stairsSpritePath().markAsTouched();
       this.form.spawn().markAsTouched();
     });
 
@@ -187,6 +192,7 @@ export class CellEditorDialogComponent {
     monsterType: this.data.cell.monster.type,
     monsterDirection: this.data.cell.monster.direction,
     floorTrapSpritePath: this.data.cell.floorTrapSpritePath,
+    stairsSpritePath: this.data.cell.stairsSpritePath,
     spawn: this.data.cell.spawn,
   });
 
@@ -231,6 +237,9 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.floorTrapSpritePath)) {
           return this.error('A feature cannot be placed together with a floor trap');
         }
+        if (valueOf(schemaPath.stairsSpritePath)) {
+          return this.error('A feature cannot be placed together with a set of stairs');
+        }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A feature cannot be placed in a spawn cell');
         }
@@ -263,6 +272,9 @@ export class CellEditorDialogComponent {
             }
             if (cell.floorTrapSpritePath) {
               return this.error(`There is a floor trap at ${coords}`);
+            }
+            if (cell.stairsSpritePath) {
+              return this.error(`There is a set of stairs at ${coords}`);
             }
             if (cell.spawn) {
               return this.error(`Cell at ${coords} is a spawn cell`);
@@ -302,6 +314,9 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.floorTrapSpritePath)) {
           return this.error('A door cannot be placed together with a floor trap');
         }
+        if (valueOf(schemaPath.stairsSpritePath)) {
+          return this.error('A door cannot be placed together with a set of stairs');
+        }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A door cannot be placed in a spawn cell');
         }
@@ -328,6 +343,9 @@ export class CellEditorDialogComponent {
         }
         if (valueOf(schemaPath.floorTrapSpritePath)) {
           return this.error('A monster cannot be placed together with a floor trap');
+        }
+        if (valueOf(schemaPath.stairsSpritePath)) {
+          return this.error('A monster cannot be placed together with a set of stairs');
         }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A monster cannot be placed in a spawn cell');
@@ -356,11 +374,44 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.monsterType)) {
           return this.error('A floor trap cannot be placed together with a monster');
         }
+        if (valueOf(schemaPath.stairsSpritePath)) {
+          return this.error('A floor trap cannot be placed together with a set of stairs');
+        }
         if (valueOf(schemaPath.spawn)) {
           return this.error('A floor trap cannot be placed in a spawn cell');
         }
         if (this.data.cell.secondary) {
           return this.error('A floor trap cannot be placed in a secondary cell');
+        }
+
+        return null;
+      });
+
+      validate(schemaPath.stairsSpritePath, ({ value, valueOf }) => {
+        if (!value()) {
+          return null;
+        }
+
+        if (!FloorSpritePaths.includes(valueOf(schemaPath.baseSpritePath) as FloorSpritePath)) {
+          return this.error('A set of stairs cannot be placed on water');
+        }
+        if (valueOf(schemaPath.featureSpritePath)) {
+          return this.error('A set of stairs cannot be placed together with a feature');
+        }
+        if (valueOf(schemaPath.doorSpritePath)) {
+          return this.error('A set of stairs cannot be placed together with a door');
+        }
+        if (valueOf(schemaPath.monsterType)) {
+          return this.error('A set of stairs cannot be placed together with a monster');
+        }
+        if (valueOf(schemaPath.floorTrapSpritePath)) {
+          return this.error('A set of stairs cannot be placed together with a floor trap');
+        }
+        if (valueOf(schemaPath.spawn)) {
+          return this.error('A set of stairs cannot be placed in a spawn cell');
+        }
+        if (this.data.cell.secondary) {
+          return this.error('A set of stairs cannot be placed in a secondary cell');
         }
 
         return null;
@@ -387,6 +438,9 @@ export class CellEditorDialogComponent {
         if (valueOf(schemaPath.monsterType)) {
           return this.error('A spawn cell cannot contain a floor trap');
         }
+        if (valueOf(schemaPath.stairsSpritePath)) {
+          return this.error('A spawn cell cannot contain a set of stairs');
+        }
         if (this.data.cell.secondary) {
           return this.error('A spawn cell cannot be secondary');
         }
@@ -411,6 +465,7 @@ export class CellEditorDialogComponent {
   public doorSpritePaths = ClosedDoorSpritePaths.slice();
   public monsterTypes = MonsterTypes.slice();
   public floorTrapSpritePaths = FloorTrapSpritePaths.slice();
+  public stairsSpritePaths = StairsSpritePaths.slice();
   public directions = Directions.slice();
 
   public spritePathDisplayFn = spritePathDisplayFn;
