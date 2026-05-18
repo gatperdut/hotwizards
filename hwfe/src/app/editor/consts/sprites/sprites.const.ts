@@ -6,6 +6,7 @@ import { FeatureSpriteOffsets, FeatureSpriteSizes } from './feature-sprites.cons
 import { FeatureTrapSpriteOffsets, FeatureTrapSpriteSizes } from './feature-trap-sprites.const';
 import { FloorTrapSpriteOffsets, FloorTrapSpriteSizes } from './floor-trap-sprites.const';
 import { SpawnSpriteOffsets, SpawnSpriteSizes } from './spawn-sprites.const';
+import { StairsSpriteOffsets, StairsSpriteSizes } from './stairs-sprites.const';
 
 export const SpriteSizes: Record<SpritePath, SpriteOffset> = {
   ...BaseSpriteSizes,
@@ -14,6 +15,7 @@ export const SpriteSizes: Record<SpritePath, SpriteOffset> = {
   ...DoorSpriteSizes,
   ...CreatureSpriteSizes,
   ...FloorTrapSpriteSizes,
+  ...StairsSpriteSizes,
   ...SpawnSpriteSizes,
 } as const;
 
@@ -24,5 +26,6 @@ export const SpriteOffsets: Record<SpritePath, SpriteOffset> = {
   ...DoorSpriteOffsets,
   ...CreatureSpriteOffsets,
   ...FloorTrapSpriteOffsets,
+  ...StairsSpriteOffsets,
   ...SpawnSpriteOffsets,
 } as const;

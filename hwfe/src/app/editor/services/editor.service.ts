@@ -12,6 +12,7 @@ import {
   MonsterSpritePath,
   SpawnSpritePath,
   SpritePath,
+  StairsSpritePath,
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
@@ -53,6 +54,10 @@ export class EditorService {
       result.push('There must be exactly 4 spawn cells.');
     }
 
+    if (this.pixiDungeon()?.cells.filter((cell) => cell.stairsSpritePath).length !== 1) {
+      result.push('There must be exactly 1 set of stairs.');
+    }
+
     return result;
   });
 
@@ -69,6 +74,7 @@ export class EditorService {
             cell.doorSpritePath,
             cell.monster,
             cell.floorTrapSpritePath,
+            cell.stairsSpritePath,
             cell.spawn,
             cell.secondary,
           ),
@@ -97,6 +103,7 @@ export class EditorService {
     doorSpritePath: DoorSpritePath | null = null,
     monster: HwMonster,
     floorTrapSpritePath: FloorTrapSpritePath | null = null,
+    stairsSpritePath: StairsSpritePath | null = null,
     spawn: boolean,
     secondary: HwSecondary | null,
   ): HwPixiCell {
@@ -114,6 +121,7 @@ export class EditorService {
     const floorTrapSprite = floorTrapSpritePath
       ? this.createFloorTrapSprite(x, y, floorTrapSpritePath)
       : null;
+    const stairsSprite = stairsSpritePath ? this.createStairsSprite(x, y, stairsSpritePath) : null;
     const spawnSprite = spawn ? this.createSpawnSprite(x, y, '/tiles/spawns/spawn.png') : null;
 
     const cell: HwPixiCell = {
@@ -124,6 +132,9 @@ export class EditorService {
       doorSpritePath: doorSpritePath,
       monster: monster,
       floorTrapSpritePath: floorTrapSpritePath,
+      stairsSpritePath: stairsSpritePath,
+      spawn: spawn,
+      secondary: secondary,
       traversable: cellIsTraversable({
         baseSpritePath: baseSpritePath,
         feature: { spritePath: feature.spritePath },
@@ -136,10 +147,9 @@ export class EditorService {
         doorSprite: doorSprite,
         monsterSprite: monsterSprite,
         floorTrapSprite: floorTrapSprite,
+        stairsSprite: stairsSprite,
         spawnSprite: spawnSprite,
       },
-      spawn: spawn,
-      secondary: secondary,
     };
 
     cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
@@ -207,6 +217,12 @@ export class EditorService {
     floorTrapSprite.eventMode = 'none';
     floorTrapSprite.tint = 0xbb3333;
     return floorTrapSprite;
+  }
+
+  private createStairsSprite(x: number, y: number, stairsSpritePath: StairsSpritePath): Sprite {
+    const stairsSprite = this.createSprite(x, y, stairsSpritePath);
+    stairsSprite.eventMode = 'none';
+    return stairsSprite;
   }
 
   private createSpawnSprite(x: number, y: number, spawnSpritePath: SpawnSpritePath): Sprite {
@@ -351,6 +367,19 @@ export class EditorService {
       }
     }
     cell.traversable = cellIsTraversable(cell);
+    if (cell.stairsSpritePath !== cellTransformData.stairsSpritePath) {
+      if (cell.stairsSpritePath) {
+        this.destroySprite(cell.pixi.stairsSprite!);
+      }
+      cell.stairsSpritePath = cellTransformData.stairsSpritePath;
+      if (cellTransformData.stairsSpritePath) {
+        cell.pixi.stairsSprite = this.createStairsSprite(
+          cell.x,
+          cell.y,
+          cellTransformData.stairsSpritePath,
+        );
+      }
+    }
     if (cell.spawn !== cellTransformData.spawn) {
       if (cell.spawn) {
         this.destroySprite(cell.pixi.spawnSprite!);
@@ -392,6 +421,9 @@ export class EditorService {
     }
     if (cell.pixi.floorTrapSprite) {
       this.destroySprite(cell.pixi.floorTrapSprite);
+    }
+    if (cell.pixi.stairsSprite) {
+      this.destroySprite(cell.pixi.stairsSprite);
     }
     if (cell.pixi.spawnSprite) {
       this.destroySprite(cell.pixi.spawnSprite);

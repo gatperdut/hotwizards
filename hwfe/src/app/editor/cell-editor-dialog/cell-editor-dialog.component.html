@@ -103,6 +103,17 @@
           </div>
         </div>
         <div class="flex flex-col gap-hw-average">
+          <div class="typ-h2">Stairs</div>
+          <app-select
+            label="Stairs sprite path"
+            placeholder="Select stairs sprite path"
+            [form]="form.stairsSpritePath"
+            [displayFn]="spritePathDisplayFn"
+            [options]="stairsSpritePaths"
+            [canClearSingle]="true"
+          />
+        </div>
+        <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Spawn point</div>
           <div class="flex flex-col gap-0">
             <app-checkbox [field]="form.spawn" label="Spawn point"></app-checkbox>
