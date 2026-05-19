@@ -19,10 +19,10 @@ import {
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
+import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
-import { groundZIndex, world2Ground } from '../../shared/coords';
 import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
@@ -34,8 +34,8 @@ import {
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
 import { HwfeCorners } from '../interfaces/corners.interface';
-import { HwfeEditorDungeon } from '../interfaces/editor-cell';
 import { HwfeEditorCell } from '../interfaces/editor-cell.interface';
+import { HwfeEditorDungeon } from '../interfaces/editor-dungeon.interface';
 
 @Injectable()
 export class EditorService {
