@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import {
@@ -8,10 +17,13 @@ import {
   CampaignsDownstream,
   CampaignsUpstream,
 } from '@hw/shared/sockets';
-import { tap } from 'rxjs';
+import { forkJoin, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
+import { OverflowService } from '../map/services/overflow.service';
+import { TextureService } from '../map/services/texture.service';
+import { ViewportService } from '../map/services/viewport.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
@@ -20,16 +32,21 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   templateUrl: './dungeon.component.html',
   styleUrl: './dungeon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [OverflowService, ViewportService, TextureService],
 })
-export class DungeonComponent {
+export class DungeonComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
+
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
   private campaignService = inject(CampaignService);
   private campaignsApiService = inject(CampaignsApiService);
   private toastService = inject(ToastService);
   private router = inject(Router);
-
-  public tiles: number[] = Array.from({ length: 375 }, (_, i) => i);
+  private overflowService = inject(OverflowService);
+  public viewportService = inject(ViewportService);
+  private textureService = inject(TextureService);
+  private activatedRoute = inject(ActivatedRoute);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
@@ -42,6 +59,36 @@ export class DungeonComponent {
 
     this.campaignsListen();
     this.adventuresListen();
+  }
+
+  public ngAfterViewInit(): void {
+    void this.init();
+  }
+
+  public ngOnDestroy(): void {
+    this.overflowService.unhide();
+    this.textureService.shutdown();
+    this.viewportService.shutdown();
+  }
+
+  private init(): void {
+    this.overflowService.hide();
+
+    forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
+      .pipe(
+        tap(() => {
+          const adventureTemplate = this.activatedRoute.snapshot.data['adventure'];
+          // this.editorService.adventureTemplate.set(adventureTemplate);
+          // this.editorService.hwfeDungeon.set(
+          //   this.editorService.dungeon2PixiDungeon(adventureTemplate.dungeon),
+          // );
+        }),
+        tap(() => {
+          this.viewportService.viewport.setZoom(3);
+          this.viewportService.center(14, 21);
+        }),
+      )
+      .subscribe();
   }
 
   private campaignsListen(): void {

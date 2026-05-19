@@ -1,5 +1,6 @@
 import { Prisma } from '@hw/prismagen/client';
 import { HwAdventure } from '@hw/shared/adventures';
+import { HwDungeon } from '@hw/shared/dungeon';
 import { adventureTemplateToHwAdventureTemplate } from '../adventures-templates/adventure-template-to-hw-adventure-template.js';
 
 export const AdventureHwRelations = {
@@ -17,5 +18,6 @@ export const adventureToHwAdventure = (adventure: AdventureWithHwRelations): HwA
     templateId: adventure.templateId,
     template: adventureTemplateToHwAdventureTemplate(adventure.template),
     turn: adventure.turn,
+    dungeon: adventure.dungeon as unknown as HwDungeon,
   };
 };

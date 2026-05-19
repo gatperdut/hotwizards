@@ -43,6 +43,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     void this.init();
   }
 
+  public ngOnDestroy(): void {
+    this.overflowService.unhide();
+    this.gridService.shutdown();
+    this.textureService.shutdown();
+    this.viewportService.shutdown();
+  }
+
   private init(): void {
     this.overflowService.hide();
 
@@ -108,12 +115,5 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         null,
       ),
     );
-  }
-
-  public ngOnDestroy(): void {
-    this.overflowService.unhide();
-    this.gridService.shutdown();
-    this.textureService.shutdown();
-    this.viewportService.shutdown();
   }
 }

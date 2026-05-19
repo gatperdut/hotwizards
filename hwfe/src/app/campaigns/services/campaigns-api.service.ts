@@ -70,9 +70,7 @@ export class CampaignsApiService {
 
   public startAdventure(campaignId: number, adventureTemplateId: number): Observable<number> {
     return this.httpClient
-      .post<number>(`/api/campaigns/${campaignId}/adventure`, {
-        adventureTemplateId: adventureTemplateId,
-      })
+      .post<number>(`/api/campaigns/${campaignId}/adventure/${adventureTemplateId}`, null)
       .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be started'));
   }
 }

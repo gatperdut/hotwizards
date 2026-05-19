@@ -14,6 +14,7 @@ export class AdventuresApiService {
       .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be finished'));
   }
 
+  // TODO return type
   public endTurn(adventureId: number) {
     return this.httpClient.post(`/api/adventures/${adventureId}/end-turn`, null);
   }

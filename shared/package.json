@@ -26,6 +26,7 @@
     "./characters": "./dist/shared/src/characters/index.js",
     "./decorators": "./dist/shared/src/decorators/index.js",
     "./directions": "./dist/shared/src/directions/index.js",
+    "./dungeon": "./dist/shared/src/dungeon/index.js",
     "./editor": "./dist/shared/src/editor/index.js",
     "./health": "./dist/shared/src/health/index.js",
     "./map": "./dist/shared/src/map/index.js",

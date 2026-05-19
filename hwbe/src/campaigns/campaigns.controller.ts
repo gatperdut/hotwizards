@@ -1,10 +1,12 @@
 import { User } from '@hw/prismagen/client';
-import { HwStartAdventureDto } from '@hw/shared/adventures';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto } from '@hw/shared/campaigns';
 import { HwMembershipCreateDto } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
 import { HwUser } from '@hw/shared/users';
 import { Body, Controller, Delete, Get, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { CurrentAdventureTemplate } from '../adventures-templates/decorators/current-adventure-template.decorator.js';
+import { SetAdventureTemplateGuard } from '../adventures-templates/guards/set-adventure-template.guard.js';
 import { MembershipsService } from '../memberships/memberships.service.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { CampaignsService } from './campaigns.service.js';
@@ -63,12 +65,17 @@ export class CampaignsController {
     return this.membershipsService.create(campaign, params.userIds);
   }
 
-  @Post(':campaignId/adventure')
-  @UseGuards(SetCampaignGuard, CampaignMasterGuard, CampaignAdventureNotPresentGuard)
+  @Post(':campaignId/adventure/:adventureTemplateId')
+  @UseGuards(
+    SetCampaignGuard,
+    CampaignMasterGuard,
+    CampaignAdventureNotPresentGuard,
+    SetAdventureTemplateGuard,
+  )
   public startAdventure(
     @CurrentCampaign() campaign: HwCampaign,
-    @Body() params: HwStartAdventureDto,
+    @CurrentAdventureTemplate() adventureTemplate: HwAdventureTemplate,
   ): Promise<number> {
-    return this.campaignsService.startAdventure(campaign, params.adventureTemplateId);
+    return this.campaignsService.startAdventure(campaign, adventureTemplate);
   }
 }

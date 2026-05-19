@@ -125,4 +125,6 @@ model Adventure {
   campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   turn Int @default(0)
+
+  dungeon Json
 }

@@ -1,4 +1,5 @@
 import { HwAdventureTemplate } from '../adventure-templates/adventure-template.interface.js';
+import { HwDungeon } from '../dungeon/dungeon.interface.js';
 
 export interface HwAdventure {
   id: number;
@@ -6,4 +7,5 @@ export interface HwAdventure {
   templateId: number;
   template: HwAdventureTemplate;
   turn: number;
+  dungeon: HwDungeon;
 }
