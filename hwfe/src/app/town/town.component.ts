@@ -21,12 +21,12 @@ import {
 } from '@hw/shared/sockets';
 import { catchError, EMPTY, filter, from, of, switchMap, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { CampaignsApiService } from '../../services/campaigns-api.service';
-import { CampaignService } from '../campaign.service';
 import {
   AdventurePickerAction,
   AdventurePickerComponent,
-} from './adventure-picker/adventure-picker.component';
+} from '../adventures/adventure-picker/adventure-picker.component';
+import { CampaignService } from '../campaigns/campaign/campaign.service';
+import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
 import { TownMembershipComponent } from './town-membership/town-membership.component';
 
 @Component({
@@ -100,7 +100,7 @@ export class TownComponent {
               'home',
               'campaigns',
               this.campaignService.campaign().id,
-              'board',
+              'dungeon',
             ]);
           }),
         )
@@ -212,7 +212,7 @@ export class TownComponent {
               ConfirmationDialogResult
             > = {
               importFn: () =>
-                import('../../../shared/confirmation-dialog/confirmation-dialog.component').then(
+                import('../shared/confirmation-dialog/confirmation-dialog.component').then(
                   (m) => m.ConfirmationDialogComponent,
                 ),
             };

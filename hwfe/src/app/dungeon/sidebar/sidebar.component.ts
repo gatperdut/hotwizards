@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdventuresApiService } from '@hw/hwfe/app/adventures/services/adventures-api.service';
-import { AuthService } from '../../../../auth/services/auth.service';
-import { CampaignService } from '../../campaign.service';
+import { AuthService } from '../../auth/services/auth.service';
+import { CampaignService } from '../../campaigns/campaign/campaign.service';
 
 @Component({
   selector: 'app-sidebar',

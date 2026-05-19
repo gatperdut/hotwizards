@@ -14,6 +14,6 @@ export const townGuard: CanActivateFn = (): MaybeAsync<boolean | UrlTree> => {
   }
 
   return campaignService.campaign().adventure
-    ? router.createUrlTree(['home', 'campaigns', campaignService.campaign().id, 'board'])
+    ? router.createUrlTree(['home', 'campaigns', campaignService.campaign().id, 'dungeon'])
     : true;
 };

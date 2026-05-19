@@ -31,7 +31,7 @@ export const campaignGuard: CanActivateFn = (activatedRouteSnapshot): MaybeAsync
         'home',
         'campaigns',
         activatedRouteSnapshot.paramMap.get('campaignId'),
-        campaign.adventure ? 'board' : 'town',
+        campaign.adventure ? 'dungeon' : 'town',
       ]);
     }),
     catchError(() => {

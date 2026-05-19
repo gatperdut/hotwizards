@@ -4,8 +4,8 @@ import { AuthenticatedGuard } from './auth/guards/authenticated.guard.js';
 import { UnuthenticatedGuard } from './auth/guards/unauthenticated.guard.js';
 import { AuthenticatedComponent } from './authenticated/authenticated.component.js';
 import { CampaignService } from './campaigns/campaign/campaign.service.js';
-import { boardGuard } from './campaigns/campaign/guards/board.guard.js';
 import { campaignGuard } from './campaigns/campaign/guards/campaign.guard.js';
+import { dungeonGuard } from './campaigns/campaign/guards/dungeon.guard.js';
 import { townGuard } from './campaigns/campaign/guards/town.guard.js';
 import { OfflineGuard } from './health/offline.guard.js';
 import { OnlineGuard } from './health/online.guard.js';
@@ -74,18 +74,14 @@ export const routes: Routes = [
                   {
                     path: 'town',
                     loadComponent: () =>
-                      import('./campaigns/campaign/town/town.component').then(
-                        (m) => m.TownComponent,
-                      ),
+                      import('./town/town.component').then((m) => m.TownComponent),
                     canActivate: [townGuard],
                   },
                   {
-                    path: 'board',
+                    path: 'dungeon',
                     loadComponent: () =>
-                      import('./campaigns/campaign/board/board.component').then(
-                        (m) => m.BoardComponent,
-                      ),
-                    canActivate: [boardGuard],
+                      import('./dungeon/dungeon.component.js').then((m) => m.DungeonComponent),
+                    canActivate: [dungeonGuard],
                   },
                 ],
               },

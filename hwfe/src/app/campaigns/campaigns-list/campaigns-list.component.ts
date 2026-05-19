@@ -21,12 +21,12 @@ import {
 } from '@hw/shared/sockets';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { AuthService } from '../../auth/services/auth.service';
 import {
-  EditorSelectDialogComponent,
+  AdventureTemplatePickerDialogComponent,
   EditorSelectDialogData,
   EditorSelectDialogResult,
-} from '../../editor-select-dialog/editor-select-dialog.component';
+} from '../../adventure-templates/adventure-template-picker-dialog/adventure-template-picker-dialog.component';
+import { AuthService } from '../../auth/services/auth.service';
 import { UserMenuComponent } from '../../shared/user-menu/user-menu.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
@@ -236,13 +236,13 @@ export class CampaignsListComponent {
 
   public editor(): void {
     const dialog: LazyDialog<
-      EditorSelectDialogComponent,
+      AdventureTemplatePickerDialogComponent,
       EditorSelectDialogData,
       EditorSelectDialogResult
     > = {
       importFn: () =>
-        import('../../editor-select-dialog/editor-select-dialog.component').then(
-          (m) => m.EditorSelectDialogComponent,
+        import('../../adventure-templates/adventure-template-picker-dialog/adventure-template-picker-dialog.component').then(
+          (m) => m.AdventureTemplatePickerDialogComponent,
         ),
     };
 
