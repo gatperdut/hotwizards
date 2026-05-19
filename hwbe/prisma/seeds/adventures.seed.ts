@@ -16,6 +16,7 @@ export async function seedAdventures(prismaClient: PrismaClient): Promise<void> 
     data: {
       templateId: adventureTemplate.id,
       campaignId: campaign.id,
+      dungeon: {},
     },
   });
 }

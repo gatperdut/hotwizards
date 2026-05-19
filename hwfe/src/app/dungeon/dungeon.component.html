@@ -1,16 +1,12 @@
-<div class="flex flex-row gap-0">
-  <app-sidebar class="w-[50px] min-h-dvh"></app-sidebar>
+<pre class="absolute top-3 left-14 typ-code pointer-events-none">
+  @if (viewportService.viewport) {
+    <div>viewport children {{ viewportService.viewport.children.length || '?' }}</div>
+  }
+</pre>
 
-  <div class="ml-[32px] basis-full min-h-dvh cursor-grab active:cursor-grabbing">
-    <div
-      class="grid w-[2500px] h-[1500px] will-change-transform [content-visibility:auto] [contain-intrinsic-size:2500px_1500px]"
-      style="grid-template-columns: repeat(25, 100px); grid-template-rows: repeat(15, 100px)"
-    >
-      @for (tile of tiles; track $index) {
-        <div class="border-[3px] border-slate-700 flex items-center justify-center">
-          <span>{{ $index }} </span>
-        </div>
-      }
-    </div>
+<div class="flex flex-row">
+  <app-sidebar class="w-[50px] min-h-dvh"></app-sidebar>
+  <div class="overflow-hidden">
+    <canvas class="overflow-hidden" #canvas></canvas>
   </div>
 </div>

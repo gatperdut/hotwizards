@@ -1,4 +1,5 @@
 import { Movement, Prisma } from '@hw/prismagen/client';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { Paginated } from '@hw/shared/pagination';
 import { ConflictException, Injectable } from '@nestjs/common';
@@ -166,7 +167,10 @@ export class CampaignsService {
     return campaign.id;
   }
 
-  public async startAdventure(campaign: HwCampaign, adventureTemplateId: number): Promise<number> {
+  public async startAdventure(
+    campaign: HwCampaign,
+    adventureTemplate: HwAdventureTemplate,
+  ): Promise<number> {
     const pendingMemberships = campaign.memberships.filter((m) => m.status === 'PENDING');
 
     if (pendingMemberships.length) {
@@ -176,7 +180,9 @@ export class CampaignsService {
     const adventure = await this.prismaService.adventure.create({
       data: {
         campaignId: campaign.id,
-        templateId: adventureTemplateId,
+        templateId: adventureTemplate.id,
+        // TODO transform HwEditorDungeon to HwDungeon
+        dungeon: {},
       },
       include: {
         template: true,
