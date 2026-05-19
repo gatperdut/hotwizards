@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, GuardResult, MaybeAsync, Router } from '@angular/router';
 import { CampaignService } from '../campaign.service';
 
-export const boardGuard: CanActivateFn = (): MaybeAsync<GuardResult> => {
+export const dungeonGuard: CanActivateFn = (): MaybeAsync<GuardResult> => {
   const campaignService = inject(CampaignService);
   const router = inject(Router);
 

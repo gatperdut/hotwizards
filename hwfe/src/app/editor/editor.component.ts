@@ -11,15 +11,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { FederatedPointerEvent } from 'pixi.js';
 import { forkJoin, tap } from 'rxjs';
+import { DungeonHeight, DungeonWidth } from '../map/consts/dungeon-size.const';
+import { TextureService } from '../map/services/texture.service';
+import { ViewportService } from '../map/services/viewport.service';
 import { screen2World } from '../shared/coords';
 import { fromPixiEvent } from '../shared/from-pixi-event';
 import { OverflowService } from '../shared/overflow.service';
-import { DungeonHeight, DungeonWidth } from './consts/dungeon-size.const';
 import { EditorSidebarComponent } from './editor-sidebar/editor-sidebar.component';
 import { EditorService } from './services/editor.service';
 import { GridService } from './services/grid.service';
-import { TextureService } from './services/texture.service';
-import { ViewportService } from './services/viewport.service';
 
 @Component({
   selector: 'app-editor',

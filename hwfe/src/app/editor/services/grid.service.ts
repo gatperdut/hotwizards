@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Container, Graphics, Text, TextStyle } from 'pixi.js';
+import { DungeonHeight, DungeonWidth } from '../../map/consts/dungeon-size.const';
+import { ViewportService } from '../../map/services/viewport.service';
 import { world2Screen } from '../../shared/coords';
 import { CellHalfH, CellHalfW } from '../../sprites/cell-size.const';
-import { DungeonHeight, DungeonWidth } from '../consts/dungeon-size.const';
-import { ViewportService } from './viewport.service';
 
 @Injectable()
 export class GridService {

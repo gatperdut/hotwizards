@@ -10,18 +10,18 @@ import {
 } from '@hw/shared/sockets';
 import { tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { CampaignsApiService } from '../../services/campaigns-api.service';
-import { CampaignService } from '../campaign.service';
+import { CampaignService } from '../campaigns/campaign/campaign.service';
+import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
-  selector: 'app-board',
+  selector: 'app-dungeon',
   imports: [SidebarComponent],
-  templateUrl: './board.component.html',
-  styleUrl: './board.component.css',
+  templateUrl: './dungeon.component.html',
+  styleUrl: './dungeon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BoardComponent {
+export class DungeonComponent {
   private socketService = inject(SocketService);
   private destroyRef = inject(DestroyRef);
   private campaignService = inject(CampaignService);
