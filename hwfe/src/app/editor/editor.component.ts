@@ -66,7 +66,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         tap(() => {
           this.gridService.draw();
           this.viewportService.viewport.setZoom(3);
-          this.viewportService.center(9, 21);
+          this.viewportService.center(14, 21);
         }),
       )
       .subscribe();
