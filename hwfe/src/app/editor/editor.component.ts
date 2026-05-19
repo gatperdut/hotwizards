@@ -51,7 +51,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         tap(() => {
           const adventureTemplate = this.activatedRoute.snapshot.data['adventureTemplate'];
           this.editorService.adventureTemplate.set(adventureTemplate);
-          this.editorService.pixiDungeon.set(
+          this.editorService.hwfeDungeon.set(
             this.editorService.dungeon2PixiDungeon(adventureTemplate.dungeon),
           );
         }),
@@ -77,21 +77,26 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const world = this.viewportService.viewport.toWorld(event.global);
-    const cell = screen2World(world.x, world.y);
+    const worldCoords = this.viewportService.viewport.toWorld(event.global);
+    const cellCoords = screen2World(worldCoords.x, worldCoords.y);
 
-    if (cell.x < 0 || cell.y >= DungeonWidth || cell.y < 0 || cell.y >= DungeonHeight) {
+    if (
+      cellCoords.x < 0 ||
+      cellCoords.y >= DungeonWidth ||
+      cellCoords.y < 0 ||
+      cellCoords.y >= DungeonHeight
+    ) {
       return;
     }
 
-    if (this.editorService.findCell(cell.x, cell.y)) {
+    if (this.editorService.findCell(cellCoords.x, cellCoords.y)) {
       return;
     }
 
     this.editorService.addCell(
-      this.editorService.createPixiCell(
-        cell.x,
-        cell.y,
+      this.editorService.createHwfeEditorCell(
+        cellCoords.x,
+        cellCoords.y,
         undefined,
         { spritePath: null, trapped: false },
         undefined,

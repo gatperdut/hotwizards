@@ -23,6 +23,7 @@ export type EditorSelectDialogData = void;
 
 export type EditorSelectDialogResult = void;
 
+// TODO move inside adventure-templates?
 @Component({
   selector: 'app-editor-select-dialog',
   imports: [

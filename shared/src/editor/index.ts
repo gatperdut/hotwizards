@@ -1,7 +1,5 @@
-export { HwCell } from './cell.interface.js';
-export { HwCorners } from './corners.interface.js';
-export { HwDungeon } from './dungeon.interface.js';
-export { HwFeature } from './feature.interface.js';
-export { HwMonster } from './monster.interface.js';
-export { HwSecondary } from './secondary.interface.js';
-export { HwTrapped } from './trapped.interface.js';
+export { HwEditorCell } from './editor-cell.interface.js';
+export { HwEditorDungeon } from './editor-dungeon.interface.js';
+export { HwEditorFeature } from './editor-feature.interface.js';
+export { HwEditorMonster } from './editor-monster.interface.js';
+export { HwEditorTrapped } from './editor-trapped.interface.js';

@@ -1,23 +1,22 @@
+import { HwCorners } from '../map/corners.interface.js';
+import { HwSecondary } from '../map/secondary.interface.js';
 import { BaseSpritePath } from '../sprites/base-sprites.const.js';
 import { DoorSpritePath } from '../sprites/door-sprites.const.js';
 import { FloorTrapSpritePath } from '../sprites/floor-trap-sprites.const.js';
 import { StairsSpritePath } from '../sprites/stairs-sprites.const.js';
-import { HwCorners } from './corners.interface.js';
-import { HwFeature } from './feature.interface.js';
-import { HwMonster } from './monster.interface.js';
-import { HwSecondary } from './secondary.interface.js';
+import { HwEditorFeature } from './editor-feature.interface.js';
+import { HwEditorMonster } from './editor-monster.interface.js';
 
-export interface HwCell {
+export interface HwEditorCell {
   x: number;
   y: number;
   baseSpritePath: BaseSpritePath;
-  feature: HwFeature;
+  feature: HwEditorFeature;
   doorSpritePath: DoorSpritePath | null;
-  monster: HwMonster;
+  monster: HwEditorMonster;
   floorTrapSpritePath: FloorTrapSpritePath | null;
   stairsSpritePath: StairsSpritePath | null;
   corners: HwCorners;
-  traversable: boolean;
   spawn: boolean;
   secondary: HwSecondary | null;
 }

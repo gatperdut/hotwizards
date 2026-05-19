@@ -1,6 +1,8 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
-import { HwCorners, HwDungeon, HwFeature, HwMonster, HwSecondary } from '@hw/shared/editor';
+import { Directions } from '@hw/shared/directions';
+import { HwEditorDungeon, HwEditorFeature, HwEditorMonster } from '@hw/shared/editor';
+import { HwCorners, HwSecondary } from '@hw/shared/map';
 import {
   BaseSpritePath,
   CornerSpritePath,
@@ -17,8 +19,10 @@ import {
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
-import { Directions } from '../../../../../shared/dist/shared/src/directions/directions.const';
 import { groundZIndex, world2Ground } from '../../shared/coords';
+import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
+import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
+import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
   CellEditorDialogComponent,
@@ -26,14 +30,10 @@ import {
   CellEditorDialogResult,
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
-import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { DungeonWidth } from '../consts/dungeon-size.const';
-import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
-import { FeatureSpriteZIndex } from '../consts/sprites/feature-sprites.const';
-import { SpriteOffsets, SpriteSizes } from '../consts/sprites/sprites.const';
-import { HwPixiCell } from '../interfaces/pixi-cell.interface';
-import { HwPixiCorners } from '../interfaces/pixi-corners.interface';
-import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
+import { HwfeCorners } from '../interfaces/corners.interface';
+import { HwfeEditorDungeon } from '../interfaces/editor-cell';
+import { HwfeEditorCell } from '../interfaces/editor-cell.interface';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
 
@@ -46,30 +46,30 @@ export class EditorService {
 
   public adventureTemplate = signal<HwAdventureTemplate>(null!);
 
-  public pixiDungeon = signal<HwPixiDungeon>(null!);
+  public hwfeDungeon = signal<HwfeEditorDungeon>(null!);
 
-  public dungeon = computed(() => this.pixiDungeon2Dungeon(this.pixiDungeon()));
+  public dungeon = computed(() => this.hwfeDungeon2HwDungeon(this.hwfeDungeon()));
 
   public errors = computed<string[]>(() => {
     const result: string[] = [];
 
-    if (this.pixiDungeon()?.cells.filter((cell) => cell.spawn).length !== 4) {
+    if (this.hwfeDungeon()?.cells.filter((cell) => cell.spawn).length !== 4) {
       result.push('There must be exactly 4 spawn cells.');
     }
 
-    if (this.pixiDungeon()?.cells.filter((cell) => cell.stairsSpritePath).length !== 1) {
+    if (this.hwfeDungeon()?.cells.filter((cell) => cell.stairsSpritePath).length !== 1) {
       result.push('There must be exactly 1 set of stairs.');
     }
 
     return result;
   });
 
-  public dungeon2PixiDungeon(dungeon: HwDungeon): HwPixiDungeon {
+  public dungeon2PixiDungeon(dungeon: HwEditorDungeon): HwfeEditorDungeon {
     return {
       ...dungeon,
       cells: dungeon.cells.map(
-        (cell): HwPixiCell =>
-          this.createPixiCell(
+        (cell): HwfeEditorCell =>
+          this.createHwfeEditorCell(
             cell.x,
             cell.y,
             cell.baseSpritePath,
@@ -86,7 +86,7 @@ export class EditorService {
     };
   }
 
-  public pixiDungeon2Dungeon(dungeon: HwPixiDungeon): HwDungeon {
+  public hwfeDungeon2HwDungeon(dungeon: HwfeEditorDungeon): HwEditorDungeon {
     if (!dungeon) {
       return null!;
     }
@@ -97,21 +97,21 @@ export class EditorService {
     };
   }
 
-  public createPixiCell(
+  public createHwfeEditorCell(
     x: number,
     y: number,
     baseSpritePath: BaseSpritePath = FloorSpritePaths[
       Math.floor(Math.random() * FloorSpritePaths.length)
     ],
-    feature: HwFeature,
+    feature: HwEditorFeature,
     doorSpritePath: DoorSpritePath | null = null,
-    monster: HwMonster,
+    monster: HwEditorMonster,
     floorTrapSpritePath: FloorTrapSpritePath | null = null,
     stairsSpritePath: StairsSpritePath | null = null,
     corners: HwCorners,
     spawn: boolean,
     secondary: HwSecondary | null,
-  ): HwPixiCell {
+  ): HwfeEditorCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
     const featureSprite = feature.spritePath
       ? this.createFeatureSprite(x, y, feature.spritePath)
@@ -127,7 +127,7 @@ export class EditorService {
       ? this.createFloorTrapSprite(x, y, floorTrapSpritePath)
       : null;
     const stairsSprite = stairsSpritePath ? this.createStairsSprite(x, y, stairsSpritePath) : null;
-    const pixiCorners: HwPixiCorners = {
+    const pixiCorners: HwfeCorners = {
       n: corners.n ? this.createCornerSprite(x, y, '/tiles/corners/corner_n.png') : null,
       e: corners.e ? this.createCornerSprite(x, y, '/tiles/corners/corner_e.png') : null,
       s: corners.s ? this.createCornerSprite(x, y, '/tiles/corners/corner_s.png') : null,
@@ -135,7 +135,7 @@ export class EditorService {
     };
     const spawnSprite = spawn ? this.createSpawnSprite(x, y, '/tiles/spawns/spawn.png') : null;
 
-    const cell: HwPixiCell = {
+    const cell: HwfeEditorCell = {
       x: x,
       y: y,
       baseSpritePath: baseSpritePath,
@@ -147,11 +147,6 @@ export class EditorService {
       corners: corners,
       spawn: spawn,
       secondary: secondary,
-      traversable: cellIsTraversable({
-        baseSpritePath: baseSpritePath,
-        feature: { spritePath: feature.spritePath },
-        secondary: secondary,
-      }),
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
@@ -256,7 +251,7 @@ export class EditorService {
     sprite.destroy();
   }
 
-  private editCell(cell: HwPixiCell): Observable<CellEditorDialogResult> {
+  private editCell(cell: HwfeEditorCell): Observable<CellEditorDialogResult> {
     const dialog: LazyDialog<
       CellEditorDialogComponent,
       CellEditorDialogData,
@@ -282,23 +277,23 @@ export class EditorService {
     );
   }
 
-  public findCell(x: number, y: number): HwPixiCell | undefined {
-    return this.pixiDungeon().cells.find((cell) => cell.x === x && cell.y === y);
+  public findCell(x: number, y: number): HwfeEditorCell | undefined {
+    return this.hwfeDungeon().cells.find((cell) => cell.x === x && cell.y === y);
   }
 
-  public addCell(cell: HwPixiCell): void {
-    this.pixiDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
+  public addCell(cell: HwfeEditorCell): void {
+    this.hwfeDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
   }
 
-  private removeCell(cell: HwPixiCell): void {
-    this.pixiDungeon.update((dungeon) => ({
+  private removeCell(cell: HwfeEditorCell): void {
+    this.hwfeDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.filter((someCell) => someCell.x !== cell.x || someCell.y !== cell.y),
     }));
   }
 
-  private updateCell(cell: HwPixiCell): void {
-    this.pixiDungeon.update((dungeon) => ({
+  private updateCell(cell: HwfeEditorCell): void {
+    this.hwfeDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.map((someCell) =>
         someCell.x === cell.x && someCell.y === cell.y ? cell : someCell,
@@ -306,7 +301,7 @@ export class EditorService {
     }));
   }
 
-  private transformCell(cell: HwPixiCell, cellTransformData: CellTransformData): void {
+  private transformCell(cell: HwfeEditorCell, cellTransformData: CellTransformData): void {
     if (cell.baseSpritePath !== cellTransformData.baseSpritePath) {
       cell.baseSpritePath = cellTransformData.baseSpritePath;
       this.destroySprite(cell.pixi.baseSprite);
@@ -385,7 +380,6 @@ export class EditorService {
         );
       }
     }
-    cell.traversable = cellIsTraversable(cell);
     if (cell.stairsSpritePath !== cellTransformData.stairsSpritePath) {
       if (cell.stairsSpritePath) {
         this.destroySprite(cell.pixi.stairsSprite!);
@@ -441,7 +435,7 @@ export class EditorService {
     this.updateCell(cell);
   }
 
-  private destroyCell(cell: HwPixiCell): void {
+  private destroyCell(cell: HwfeEditorCell): void {
     this.removeCell(cell);
     this.destroySprite(cell.pixi.baseSprite);
     if (cell.pixi.featureSprite) {
@@ -477,7 +471,7 @@ export class EditorService {
     }
   }
 
-  private baseSpriteTap(event: FederatedPointerEvent, cell: HwPixiCell): void {
+  private baseSpriteTap(event: FederatedPointerEvent, cell: HwfeEditorCell): void {
     if (this.viewportService.dragging) {
       return;
     }

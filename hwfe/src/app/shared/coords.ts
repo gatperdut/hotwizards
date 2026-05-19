@@ -1,5 +1,5 @@
 import { Point } from 'pixi.js';
-import { CellHalfH, CellHalfW } from '../editor/consts/cell-size.const';
+import { CellHalfH, CellHalfW } from '../sprites/cell-size.const';
 
 export const screen2World = (xScreen: number, yScreen: number): Point => {
   const xWorld = (xScreen / CellHalfW - yScreen / CellHalfH) / 2;
