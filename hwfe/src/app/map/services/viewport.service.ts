@@ -3,9 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Viewport } from 'pixi-viewport';
 import { Application, FederatedPointerEvent } from 'pixi.js';
 import { debounceTime, from, fromEvent, Observable, tap } from 'rxjs';
-import { world2Screen } from '../../shared/coords';
-import { fromPixiEvent } from '../../shared/from-pixi-event';
+import { world2Screen } from '../consts/coords.const.';
 import { DungeonHeight, DungeonWidth } from '../consts/dungeon-size.const';
+import { fromPixiEvent } from '../consts/from-pixi-event.const';
 
 @Injectable()
 export class ViewportService {

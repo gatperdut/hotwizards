@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Container, Graphics, Text, TextStyle } from 'pixi.js';
+import { world2Screen } from '../../map/consts/coords.const.';
 import { DungeonHeight, DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { ViewportService } from '../../map/services/viewport.service';
-import { world2Screen } from '../../shared/coords';
 import { CellHalfH, CellHalfW } from '../../sprites/cell-size.const';
 
 @Injectable()
