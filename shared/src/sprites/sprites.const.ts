@@ -1,4 +1,5 @@
 import { BaseSpritePaths } from './base-sprites.const.js';
+import { CornerSpritePaths } from './corner-sprites.const.js';
 import { CreatureSpritePaths } from './creature-sprites.const.js';
 import { DoorSpritePaths } from './door-sprites.const.js';
 import { FeatureSpritePaths } from './feature-sprites.const.js';
@@ -9,6 +10,7 @@ import { StairsSpritePaths } from './stairs-sprites.const.js';
 
 export const SpritePaths = [
   ...BaseSpritePaths,
+  ...CornerSpritePaths,
   ...FeatureSpritePaths,
   ...FeatureTrapSpritePaths,
   ...DoorSpritePaths,

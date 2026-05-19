@@ -55,6 +55,10 @@ type CellTransformEditableData = {
   monsterDirection: Direction;
   floorTrapSpritePath: FloorTrapSpritePath | null;
   stairsSpritePath: StairsSpritePath | null;
+  cornerN: boolean;
+  cornerE: boolean;
+  cornerS: boolean;
+  cornerW: boolean;
   spawn: boolean;
 };
 
@@ -110,7 +114,12 @@ export class CellEditorDialogComponent {
       this.form.monsterDirection().value();
       this.form.floorTrapSpritePath().value();
       this.form.stairsSpritePath().value();
+      this.form.cornerN().value();
+      this.form.cornerE().value();
+      this.form.cornerS().value();
+      this.form.cornerW().value();
       this.form.spawn().value();
+
       this.form.baseSpritePath().markAsTouched();
       this.form.featureSpritePath().markAsTouched();
       this.form.featureTrapped().markAsTouched();
@@ -119,6 +128,10 @@ export class CellEditorDialogComponent {
       this.form.monsterDirection().markAsTouched();
       this.form.floorTrapSpritePath().markAsTouched();
       this.form.stairsSpritePath().markAsTouched();
+      this.form.cornerN().markAsTouched();
+      this.form.cornerE().markAsTouched();
+      this.form.cornerS().markAsTouched();
+      this.form.cornerW().markAsTouched();
       this.form.spawn().markAsTouched();
     });
 
@@ -193,6 +206,10 @@ export class CellEditorDialogComponent {
     monsterDirection: this.data.cell.monster.direction,
     floorTrapSpritePath: this.data.cell.floorTrapSpritePath,
     stairsSpritePath: this.data.cell.stairsSpritePath,
+    cornerN: this.data.cell.corners.n,
+    cornerE: this.data.cell.corners.e,
+    cornerS: this.data.cell.corners.s,
+    cornerW: this.data.cell.corners.w,
     spawn: this.data.cell.spawn,
   });
 

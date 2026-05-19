@@ -1,5 +1,6 @@
 import { SpriteOffset, SpritePath } from '@hw/shared/sprites';
 import { BaseSpriteOffsets, BaseSpriteSizes } from './base-sprites.const';
+import { CornerSpriteOffsets, CornerSpriteSizes } from './corner-sprites.const';
 import { CreatureSpriteOffsets, CreatureSpriteSizes } from './creature-sprites.const';
 import { DoorSpriteOffsets, DoorSpriteSizes } from './door-sprites.const';
 import { FeatureSpriteOffsets, FeatureSpriteSizes } from './feature-sprites.const';
@@ -10,6 +11,7 @@ import { StairsSpriteOffsets, StairsSpriteSizes } from './stairs-sprites.const';
 
 export const SpriteSizes: Record<SpritePath, SpriteOffset> = {
   ...BaseSpriteSizes,
+  ...CornerSpriteSizes,
   ...FeatureSpriteSizes,
   ...FeatureTrapSpriteSizes,
   ...DoorSpriteSizes,
@@ -21,6 +23,7 @@ export const SpriteSizes: Record<SpritePath, SpriteOffset> = {
 
 export const SpriteOffsets: Record<SpritePath, SpriteOffset> = {
   ...BaseSpriteOffsets,
+  ...CornerSpriteOffsets,
   ...FeatureSpriteOffsets,
   ...FeatureTrapSpriteOffsets,
   ...DoorSpriteOffsets,
