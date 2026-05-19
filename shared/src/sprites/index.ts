@@ -8,6 +8,7 @@ export {
   OpenChestSpritePath,
   OpenChestSpritePaths,
 } from './chest-sprites.const.js';
+export { CornerSpritePath, CornerSpritePaths } from './corner-sprites.const.js';
 export { CreatureSpritePath, CreatureSpritePaths } from './creature-sprites.const.js';
 export {
   ClosedDoorSpritePath,

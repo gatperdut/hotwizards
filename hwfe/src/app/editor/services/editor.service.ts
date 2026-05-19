@@ -1,8 +1,9 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
-import { HwDungeon, HwFeature, HwMonster, HwSecondary } from '@hw/shared/editor';
+import { HwCorners, HwDungeon, HwFeature, HwMonster, HwSecondary } from '@hw/shared/editor';
 import {
   BaseSpritePath,
+  CornerSpritePath,
   DoorSpritePath,
   FeatureSpritePath,
   FeatureSpriteSecondaries,
@@ -16,6 +17,7 @@ import {
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { filter, from, Observable, switchMap, take, tap } from 'rxjs';
+import { Directions } from '../../../../../shared/dist/shared/src/directions/directions.const';
 import { groundZIndex, world2Ground } from '../../shared/coords';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
@@ -30,6 +32,7 @@ import { BaseSpriteHitArea } from '../consts/ground-hit-area.const';
 import { FeatureSpriteZIndex } from '../consts/sprites/feature-sprites.const';
 import { SpriteOffsets, SpriteSizes } from '../consts/sprites/sprites.const';
 import { HwPixiCell } from '../interfaces/pixi-cell.interface';
+import { HwPixiCorners } from '../interfaces/pixi-corners.interface';
 import { HwPixiDungeon } from '../interfaces/pixi-dungeon.interface';
 import { TextureService } from './texture.service';
 import { ViewportService } from './viewport.service';
@@ -75,6 +78,7 @@ export class EditorService {
             cell.monster,
             cell.floorTrapSpritePath,
             cell.stairsSpritePath,
+            cell.corners,
             cell.spawn,
             cell.secondary,
           ),
@@ -104,6 +108,7 @@ export class EditorService {
     monster: HwMonster,
     floorTrapSpritePath: FloorTrapSpritePath | null = null,
     stairsSpritePath: StairsSpritePath | null = null,
+    corners: HwCorners,
     spawn: boolean,
     secondary: HwSecondary | null,
   ): HwPixiCell {
@@ -122,6 +127,12 @@ export class EditorService {
       ? this.createFloorTrapSprite(x, y, floorTrapSpritePath)
       : null;
     const stairsSprite = stairsSpritePath ? this.createStairsSprite(x, y, stairsSpritePath) : null;
+    const pixiCorners: HwPixiCorners = {
+      n: corners.n ? this.createCornerSprite(x, y, '/tiles/corners/corner_n.png') : null,
+      e: corners.e ? this.createCornerSprite(x, y, '/tiles/corners/corner_e.png') : null,
+      s: corners.s ? this.createCornerSprite(x, y, '/tiles/corners/corner_s.png') : null,
+      w: corners.w ? this.createCornerSprite(x, y, '/tiles/corners/corner_w.png') : null,
+    };
     const spawnSprite = spawn ? this.createSpawnSprite(x, y, '/tiles/spawns/spawn.png') : null;
 
     const cell: HwPixiCell = {
@@ -133,6 +144,7 @@ export class EditorService {
       monster: monster,
       floorTrapSpritePath: floorTrapSpritePath,
       stairsSpritePath: stairsSpritePath,
+      corners: corners,
       spawn: spawn,
       secondary: secondary,
       traversable: cellIsTraversable({
@@ -148,6 +160,7 @@ export class EditorService {
         monsterSprite: monsterSprite,
         floorTrapSprite: floorTrapSprite,
         stairsSprite: stairsSprite,
+        corners: pixiCorners,
         spawnSprite: spawnSprite,
       },
     };
@@ -223,6 +236,12 @@ export class EditorService {
     const stairsSprite = this.createSprite(x, y, stairsSpritePath);
     stairsSprite.eventMode = 'none';
     return stairsSprite;
+  }
+
+  private createCornerSprite(x: number, y: number, cornerSpritePath: CornerSpritePath): Sprite {
+    const cornerSprite = this.createSprite(x, y, cornerSpritePath);
+    cornerSprite.eventMode = 'none';
+    return cornerSprite;
   }
 
   private createSpawnSprite(x: number, y: number, spawnSpritePath: SpawnSpritePath): Sprite {
@@ -380,6 +399,29 @@ export class EditorService {
         );
       }
     }
+
+    const cornersAux = {
+      n: cellTransformData.cornerN,
+      e: cellTransformData.cornerE,
+      s: cellTransformData.cornerS,
+      w: cellTransformData.cornerW,
+    };
+    Directions.forEach((dir) => {
+      if (cell.corners[dir] !== cornersAux[dir]) {
+        if (cell.corners[dir]) {
+          this.destroySprite(cell.pixi.corners[dir]!);
+        }
+        cell.corners[dir] = cornersAux[dir];
+        if (cornersAux[dir]) {
+          cell.pixi.corners[dir] = this.createCornerSprite(
+            cell.x,
+            cell.y,
+            `/tiles/corners/corner_${dir}.png`,
+          );
+        }
+      }
+    });
+
     if (cell.spawn !== cellTransformData.spawn) {
       if (cell.spawn) {
         this.destroySprite(cell.pixi.spawnSprite!);
@@ -425,6 +467,11 @@ export class EditorService {
     if (cell.pixi.stairsSprite) {
       this.destroySprite(cell.pixi.stairsSprite);
     }
+    Directions.forEach((dir) => {
+      if (cell.pixi.corners[dir]) {
+        this.destroySprite(cell.pixi.corners[dir]);
+      }
+    });
     if (cell.pixi.spawnSprite) {
       this.destroySprite(cell.pixi.spawnSprite);
     }
