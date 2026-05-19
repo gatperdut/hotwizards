@@ -1,8 +1,8 @@
-import { HwCell } from '@hw/shared/editor';
+import { HwEditorCell } from '@hw/shared/editor';
 import { Sprite } from 'pixi.js';
-import { HwPixiCorners } from './pixi-corners.interface';
+import { HwfeCorners } from './corners.interface';
 
-export interface HwPixiCell extends HwCell {
+export interface HwfeEditorCell extends HwEditorCell {
   pixi: {
     baseSprite: Sprite;
     featureSprite: Sprite | null;
@@ -11,7 +11,7 @@ export interface HwPixiCell extends HwCell {
     monsterSprite: Sprite | null;
     floorTrapSprite: Sprite | null;
     stairsSprite: Sprite | null;
-    corners: HwPixiCorners;
+    corners: HwfeCorners;
     spawnSprite: Sprite | null;
   };
 }

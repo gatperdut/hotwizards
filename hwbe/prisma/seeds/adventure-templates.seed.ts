@@ -1,9 +1,9 @@
 import { PrismaClient } from '@hw/prismagen/client';
-import { HwCell } from '@hw/shared/editor';
+import { HwEditorCell } from '@hw/shared/editor';
 import { InputJsonValue } from '@prisma/client/runtime/client';
 
 export async function seedAdventureTemplates(prismaClient: PrismaClient): Promise<void> {
-  const sunkenTombCells: HwCell[] = [
+  const sunkenTombCells: HwEditorCell[] = [
     {
       x: 5,
       y: 2,
@@ -19,7 +19,6 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
         direction: 'n',
       },
       floorTrapSpritePath: null,
-      traversable: true,
       stairsSpritePath: '/tiles/stairs/stairs_s.png',
       corners: {
         n: false,
@@ -45,7 +44,6 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
         direction: 'n',
       },
       floorTrapSpritePath: null,
-      traversable: true,
       stairsSpritePath: null,
       corners: {
         n: false,
@@ -71,7 +69,6 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
         direction: 'n',
       },
       floorTrapSpritePath: null,
-      traversable: true,
       stairsSpritePath: null,
       corners: {
         n: false,
@@ -97,7 +94,6 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
         direction: 'n',
       },
       floorTrapSpritePath: null,
-      traversable: true,
       stairsSpritePath: null,
       corners: {
         n: false,
@@ -123,7 +119,6 @@ export async function seedAdventureTemplates(prismaClient: PrismaClient): Promis
         direction: 'n',
       },
       floorTrapSpritePath: null,
-      traversable: true,
       stairsSpritePath: null,
       corners: {
         n: false,

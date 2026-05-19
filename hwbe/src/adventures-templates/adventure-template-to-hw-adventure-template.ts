@@ -1,6 +1,6 @@
 import { Prisma } from '@hw/prismagen/client';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
-import { HwDungeon } from '@hw/shared/editor';
+import { HwEditorDungeon } from '@hw/shared/editor';
 
 export const AdventureTemplateHwRelations = {
   include: {},
@@ -17,6 +17,6 @@ export const adventureTemplateToHwAdventureTemplate = (
     id: adventureTemplate.id,
     name: adventureTemplate.name,
     info: adventureTemplate.info,
-    dungeon: adventureTemplate.dungeon as unknown as HwDungeon,
+    dungeon: adventureTemplate.dungeon as unknown as HwEditorDungeon,
   };
 };

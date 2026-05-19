@@ -31,6 +31,7 @@ import {
   StairsSpritePaths,
   WaterSpritePaths,
 } from '@hw/shared/sprites';
+import { FeatureSpriteTrappable } from '../../sprites/feature-sprites.const';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { CheckboxComponent } from '../../ui/checkbox/checkbox.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -40,10 +41,8 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 import { SelectComponent } from '../../ui/select/select.component';
-import { cellIsTraversable } from '../consts/cell-is-traversable.const';
 import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
-import { FeatureSpriteTrappable } from '../consts/sprites/feature-sprites.const';
-import { HwPixiCell } from '../interfaces/pixi-cell.interface';
+import { HwfeEditorCell } from '../interfaces/editor-cell.interface';
 import { EditorService } from '../services/editor.service';
 
 type CellTransformEditableData = {
@@ -67,17 +66,16 @@ export type CellTransformData = CellTransformEditableData &
   CellTransformExternalData;
 
 export type CellTransformDerivedData = {
-  traversable: boolean;
   monsterSpritePath: MonsterSpritePath | null;
 };
 
 export type CellTransformExternalData = {
-  madeSecondary: Pick<HwPixiCell, 'x' | 'y'>[];
-  unmadeSecondary: Pick<HwPixiCell, 'x' | 'y'>[];
+  madeSecondary: Pick<HwfeEditorCell, 'x' | 'y'>[];
+  unmadeSecondary: Pick<HwfeEditorCell, 'x' | 'y'>[];
 };
 
 export type CellEditorDialogData = {
-  cell: HwPixiCell;
+  cell: HwfeEditorCell;
 };
 
 export type CellEditorDialogResult = CellTransformData | undefined | null;
@@ -188,11 +186,6 @@ export class CellEditorDialogComponent {
 
   public result = computed<CellTransformData>(() => ({
     ...this.model(),
-    traversable: cellIsTraversable({
-      ...this.model(),
-      feature: { spritePath: this.model().featureSpritePath },
-      secondary: this.data.cell.secondary,
-    }),
     monsterSpritePath: monsterSpritePath(this.model().monsterType, this.model().monsterDirection),
     ...this.externalData(),
   }));

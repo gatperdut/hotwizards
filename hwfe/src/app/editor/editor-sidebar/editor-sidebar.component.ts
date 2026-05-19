@@ -100,7 +100,7 @@ export class EditorSidebarComponent {
               .subscribe();
           }
         },
-        disabled: !this.editorService.pixiDungeon(),
+        disabled: !this.editorService.hwfeDungeon(),
       },
       {
         icon: 'pencil',
