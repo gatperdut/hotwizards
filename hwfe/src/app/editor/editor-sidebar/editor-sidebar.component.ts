@@ -65,7 +65,7 @@ export class EditorSidebarComponent {
             });
           } else {
             const adventureTemplate = this.editorService.adventureTemplate();
-            const dungeon = this.editorService.dungeon();
+            const dungeon = this.editorService.hwDungeon();
 
             const dialog: LazyDialog<
               SaveAdventureTemplateDialogComponent,
@@ -100,7 +100,7 @@ export class EditorSidebarComponent {
               .subscribe();
           }
         },
-        disabled: !this.editorService.hwfeDungeon(),
+        disabled: !this.editorService.hwfeEditorDungeon(),
       },
       {
         icon: 'pencil',

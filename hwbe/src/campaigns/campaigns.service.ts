@@ -1,6 +1,8 @@
 import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
+import { HwCell, HwDungeon } from '@hw/shared/dungeon';
+import { HwEditorCell, HwEditorDungeon } from '@hw/shared/editor';
 import { Paginated } from '@hw/shared/pagination';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -182,7 +184,7 @@ export class CampaignsService {
         campaignId: campaign.id,
         templateId: adventureTemplate.id,
         // TODO transform HwEditorDungeon to HwDungeon
-        dungeon: {},
+        dungeon: this.editorDungeonToDungeon(adventureTemplate.dungeon) as object,
       },
       include: {
         template: true,
@@ -196,5 +198,23 @@ export class CampaignsService {
     );
 
     return adventure.id;
+  }
+
+  private editorDungeonToDungeon(editorDungeon: HwEditorDungeon): HwDungeon {
+    const response: HwDungeon = {
+      cells: editorDungeon.cells.map((editorCell) => this.editorCellToCell(editorCell)),
+    };
+
+    return response;
+  }
+
+  private editorCellToCell(editorCell: HwEditorCell): HwCell {
+    const response: HwCell = {
+      x: editorCell.x,
+      y: editorCell.y,
+      baseSpritePath: editorCell.baseSpritePath,
+    };
+
+    return response;
   }
 }

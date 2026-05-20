@@ -41,6 +41,7 @@ export class GridService {
     this.viewportService.viewport.addChild(this.grid);
   }
 
+  // TODO drop this at some point
   private drawCoordinates(): void {
     const style = new TextStyle({
       fontSize: 8,

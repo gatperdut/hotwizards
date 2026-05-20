@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
+import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { FederatedPointerEvent } from 'pixi.js';
 import { forkJoin, tap } from 'rxjs';
 import { screen2World } from '../map/consts/coords.const.';
@@ -33,7 +34,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
 
   private overflowService = inject(OverflowService);
   public editorService = inject(EditorService);
-  public viewportService = inject(ViewportService);
+  private viewportService = inject(ViewportService);
   private gridService = inject(GridService);
   private textureService = inject(TextureService);
   private activatedRoute = inject(ActivatedRoute);
@@ -56,11 +57,9 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
     forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
       .pipe(
         tap(() => {
-          const adventureTemplate = this.activatedRoute.snapshot.data['adventureTemplate'];
-          this.editorService.adventureTemplate.set(adventureTemplate);
-          this.editorService.hwfeDungeon.set(
-            this.editorService.dungeon2PixiDungeon(adventureTemplate.dungeon),
-          );
+          const adventureTemplate: HwAdventureTemplate =
+            this.activatedRoute.snapshot.data['adventureTemplate'];
+          this.editorService.setup(adventureTemplate);
         }),
         tap(() => {
           fromPixiEvent<FederatedPointerEvent>(this.viewportService.viewport, 'pointertap')

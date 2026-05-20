@@ -46,42 +46,46 @@ export class EditorService {
 
   public adventureTemplate = signal<HwAdventureTemplate>(null!);
 
-  public hwfeDungeon = signal<HwfeEditorDungeon>(null!);
+  public hwfeEditorDungeon = signal<HwfeEditorDungeon>(null!);
 
-  public dungeon = computed(() => this.hwfeDungeon2HwDungeon(this.hwfeDungeon()));
+  public hwDungeon = computed(() => this.hwfeDungeon2HwDungeon(this.hwfeEditorDungeon()));
 
   public errors = computed<string[]>(() => {
     const result: string[] = [];
 
-    if (this.hwfeDungeon()?.cells.filter((cell) => cell.spawn).length !== 4) {
+    if (this.hwfeEditorDungeon()?.cells.filter((cell) => cell.spawn).length !== 4) {
       result.push('There must be exactly 4 spawn cells.');
     }
 
-    if (this.hwfeDungeon()?.cells.filter((cell) => cell.stairsSpritePath).length !== 1) {
+    if (this.hwfeEditorDungeon()?.cells.filter((cell) => cell.stairsSpritePath).length !== 1) {
       result.push('There must be exactly 1 set of stairs.');
     }
 
     return result;
   });
 
-  public dungeon2PixiDungeon(dungeon: HwEditorDungeon): HwfeEditorDungeon {
+  public setup(adventureTemplate: HwAdventureTemplate): void {
+    this.adventureTemplate.set(adventureTemplate);
+    this.hwfeEditorDungeon.set(this.hwEditorDungeon2HwfeEditorDungeon(adventureTemplate.dungeon));
+  }
+
+  private hwEditorDungeon2HwfeEditorDungeon(dungeon: HwEditorDungeon): HwfeEditorDungeon {
     return {
       ...dungeon,
-      cells: dungeon.cells.map(
-        (cell): HwfeEditorCell =>
-          this.createHwfeEditorCell(
-            cell.x,
-            cell.y,
-            cell.baseSpritePath,
-            cell.feature,
-            cell.doorSpritePath,
-            cell.monster,
-            cell.floorTrapSpritePath,
-            cell.stairsSpritePath,
-            cell.corners,
-            cell.spawn,
-            cell.secondary,
-          ),
+      cells: dungeon.cells.map((cell) =>
+        this.createHwfeEditorCell(
+          cell.x,
+          cell.y,
+          cell.baseSpritePath,
+          cell.feature,
+          cell.doorSpritePath,
+          cell.monster,
+          cell.floorTrapSpritePath,
+          cell.stairsSpritePath,
+          cell.corners,
+          cell.spawn,
+          cell.secondary,
+        ),
       ),
     };
   }
@@ -278,22 +282,22 @@ export class EditorService {
   }
 
   public findCell(x: number, y: number): HwfeEditorCell | undefined {
-    return this.hwfeDungeon().cells.find((cell) => cell.x === x && cell.y === y);
+    return this.hwfeEditorDungeon().cells.find((cell) => cell.x === x && cell.y === y);
   }
 
   public addCell(cell: HwfeEditorCell): void {
-    this.hwfeDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
+    this.hwfeEditorDungeon.update((dungeon) => ({ ...dungeon, cells: [...dungeon.cells, cell] }));
   }
 
   private removeCell(cell: HwfeEditorCell): void {
-    this.hwfeDungeon.update((dungeon) => ({
+    this.hwfeEditorDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.filter((someCell) => someCell.x !== cell.x || someCell.y !== cell.y),
     }));
   }
 
   private updateCell(cell: HwfeEditorCell): void {
-    this.hwfeDungeon.update((dungeon) => ({
+    this.hwfeEditorDungeon.update((dungeon) => ({
       ...dungeon,
       cells: dungeon.cells.map((someCell) =>
         someCell.x === cell.x && someCell.y === cell.y ? cell : someCell,
