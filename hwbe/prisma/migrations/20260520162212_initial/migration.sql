@@ -92,6 +92,7 @@ CREATE TABLE "Adventure" (
     "templateId" INTEGER NOT NULL,
     "campaignId" INTEGER,
     "turn" INTEGER NOT NULL DEFAULT 0,
+    "dungeon" JSONB NOT NULL,
 
     CONSTRAINT "Adventure_pkey" PRIMARY KEY ("id")
 );

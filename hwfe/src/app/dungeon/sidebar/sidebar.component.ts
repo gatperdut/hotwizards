@@ -4,6 +4,7 @@ import { AdventuresApiService } from '@hw/hwfe/app/adventures/services/adventure
 import { AuthService } from '../../auth/services/auth.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 
+// TODO see what we do with this. Needs to mimic the editor's.
 @Component({
   selector: 'app-sidebar',
   imports: [],

@@ -8,7 +8,7 @@ import {
   OnDestroy,
   ViewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import {
@@ -24,6 +24,7 @@ import { CampaignsApiService } from '../campaigns/services/campaigns-api.service
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
+import { DungeonService } from './services/dungeon.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
@@ -32,7 +33,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
   templateUrl: './dungeon.component.html',
   styleUrl: './dungeon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [OverflowService, ViewportService, TextureService],
+  providers: [OverflowService, DungeonService, ViewportService, TextureService],
 })
 export class DungeonComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -44,9 +45,9 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   private toastService = inject(ToastService);
   private router = inject(Router);
   private overflowService = inject(OverflowService);
-  public viewportService = inject(ViewportService);
+  private dungeonService = inject(DungeonService);
+  private viewportService = inject(ViewportService);
   private textureService = inject(TextureService);
-  private activatedRoute = inject(ActivatedRoute);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
@@ -77,11 +78,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
       .pipe(
         tap(() => {
-          const adventureTemplate = this.activatedRoute.snapshot.data['adventure'];
-          // this.editorService.adventureTemplate.set(adventureTemplate);
-          // this.editorService.hwfeDungeon.set(
-          //   this.editorService.dungeon2PixiDungeon(adventureTemplate.dungeon),
-          // );
+          this.dungeonService.setup(this.campaignService.adventure()!);
         }),
         tap(() => {
           this.viewportService.viewport.setZoom(3);
