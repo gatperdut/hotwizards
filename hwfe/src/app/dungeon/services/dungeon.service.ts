@@ -1,7 +1,13 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
-import { BaseSpritePath, DoorSpritePath, FeatureSpritePath, SpritePath } from '@hw/shared/sprites';
+import {
+  BaseSpritePath,
+  DoorSpritePath,
+  FeatureSpritePath,
+  FloorTrapSpritePath,
+  SpritePath,
+} from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
@@ -77,6 +83,9 @@ export class DungeonService {
     const doorSprite = cell.doorSpritePath
       ? this.createDoorSprite(cell.x, cell.y, cell.doorSpritePath)
       : null;
+    const floorTrapSprite = cell.floorTrap.spritePath
+      ? this.createFloorTrapSprite(cell.x, cell.y, cell.floorTrap.spritePath)
+      : null;
 
     const hwfeCell: HwfeCell = {
       x: cell.x,
@@ -85,10 +94,12 @@ export class DungeonService {
       creatureId: null,
       feature: cell.feature,
       doorSpritePath: cell.doorSpritePath,
+      floorTrap: cell.floorTrap,
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
         doorSprite: doorSprite,
+        floorTrapSprite: floorTrapSprite,
       },
     };
 
@@ -138,5 +149,15 @@ export class DungeonService {
     const doorSprite = this.createSprite(x, y, doorSpritePath!);
     doorSprite.eventMode = 'none';
     return doorSprite;
+  }
+
+  private createFloorTrapSprite(
+    x: number,
+    y: number,
+    floorTrapSpritePath: FloorTrapSpritePath,
+  ): Sprite {
+    const floorTrapSprite = this.createSprite(x, y, floorTrapSpritePath!);
+    floorTrapSprite.eventMode = 'none';
+    return floorTrapSprite;
   }
 }
