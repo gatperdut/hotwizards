@@ -11,6 +11,7 @@ import {
   HeroMovementPoints,
   HwCell,
   HwDungeon,
+  HwFeature,
   HwHero,
   HwMonster,
   MonsterAttackDie,
@@ -20,7 +21,7 @@ import {
   MonsterMovementPoints,
   MonsterNames,
 } from '@hw/shared/dungeon';
-import { HwEditorCell, HwEditorDungeon } from '@hw/shared/editor';
+import { HwEditorCell, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
 import { Paginated } from '@hw/shared/pagination';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';
@@ -259,8 +260,9 @@ export class CampaignsService {
     const response: HwCell = {
       x: editorCell.x,
       y: editorCell.y,
-      baseSpritePath: editorCell.baseSpritePath,
       creatureId: null,
+      baseSpritePath: editorCell.baseSpritePath,
+      feature: this.editorFeatureToFeature(editorCell.feature),
     };
 
     return response;
@@ -320,6 +322,15 @@ export class CampaignsService {
         return monster;
       })
       .filter((cell) => !!cell);
+  }
+
+  private editorFeatureToFeature(editorFeature: HwEditorFeature): HwFeature {
+    return {
+      spritePath: editorFeature.spritePath,
+      trapped: editorFeature.trapped,
+      found: false,
+      sprung: false,
+    };
   }
 
   private generateMonsterId(idsTaken: number[]): number {

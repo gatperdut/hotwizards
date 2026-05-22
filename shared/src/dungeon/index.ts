@@ -20,3 +20,4 @@ export {
 export { MonsterType, MonsterTypes } from './creatures/monsters/monster-type.const.js';
 export { HwMonster } from './creatures/monsters/monster.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
+export { HwFeature } from './feature.interface.js';

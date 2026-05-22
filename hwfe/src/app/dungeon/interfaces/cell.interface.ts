@@ -4,5 +4,6 @@ import { Sprite } from 'pixi.js';
 export interface HwfeCell extends HwCell {
   pixi: {
     baseSprite: Sprite;
+    featureSprite: Sprite | null;
   };
 }
