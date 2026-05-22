@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
-import { HwDungeon, HwHero } from '@hw/shared/dungeon';
-import { BaseSpritePath, SpritePath } from '@hw/shared/sprites';
+import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
+import { BaseSpritePath, FeatureSpritePath, SpritePath } from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
@@ -41,38 +41,52 @@ export class DungeonService {
   public setup(adventure: HwAdventure): void {
     this.adventure.set(adventure);
     this.hwfeHeroesSetup();
+    this.hwfeMonstersSetup();
     this.hwfeDungeon.set(this.hwDungeon2HwfeDungeon(adventure.dungeon));
   }
 
   private hwfeHeroesSetup(): void {
-    const hwfeHeroes: HwfeHero[] = this.adventure().dungeon.heroes.map((hero) => {
-      return { ...hero, pixi: { sprite: this.createHeroSprite(hero) } };
-    });
-
+    const hwfeHeroes: HwfeHero[] = this.adventure().dungeon.heroes.map((hero) => ({
+      ...hero,
+      pixi: { sprite: this.createHeroSprite(hero) },
+    }));
     this.hwfeHeroes.set(hwfeHeroes);
+  }
+
+  private hwfeMonstersSetup(): void {
+    const hwfeMonsters: HwfeMonster[] = this.adventure().dungeon.monsters.map((monster) => ({
+      ...monster,
+      pixi: { sprite: this.createMonsterSprite(monster) },
+    }));
+    this.hwfeMonsters.set(hwfeMonsters);
   }
 
   private hwDungeon2HwfeDungeon(dungeon: HwDungeon): HwfeDungeon {
     return {
       ...dungeon,
-      cells: dungeon.cells.map((cell) => this.createHwfeCell(cell.x, cell.y, cell.baseSpritePath)),
+      cells: dungeon.cells.map((cell) => this.createHwfeCell(cell)),
     };
   }
 
-  public createHwfeCell(x: number, y: number, baseSpritePath: BaseSpritePath): HwfeCell {
-    const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
+  public createHwfeCell(cell: HwCell): HwfeCell {
+    const baseSprite = this.createBaseSprite(cell.x, cell.y, cell.baseSpritePath);
+    const featureSprite = cell.feature.spritePath
+      ? this.createFeatureSprite(cell.x, cell.y, cell.feature.spritePath)
+      : null;
 
-    const cell: HwfeCell = {
-      x: x,
-      y: y,
-      baseSpritePath: baseSpritePath,
+    const hwfeCell: HwfeCell = {
+      x: cell.x,
+      y: cell.y,
+      baseSpritePath: cell.baseSpritePath,
+      creatureId: null,
+      feature: cell.feature,
       pixi: {
         baseSprite: baseSprite,
+        featureSprite: featureSprite,
       },
-      creatureId: null,
     };
 
-    return cell;
+    return hwfeCell;
   }
 
   private createSprite(x: number, y: number, spritePath: SpritePath): Sprite {
@@ -98,5 +112,19 @@ export class DungeonService {
     heroSprite.zIndex += CreatureSpriteZIndex;
     heroSprite.eventMode = 'none';
     return heroSprite;
+  }
+
+  private createMonsterSprite(monster: HwMonster): Sprite {
+    const monsterSprite = this.createSprite(monster.x, monster.y, monster.spritePath);
+    monsterSprite.zIndex += CreatureSpriteZIndex;
+    monsterSprite.eventMode = 'none';
+    return monsterSprite;
+  }
+
+  private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
+    const featureSprite = this.createSprite(x, y, featureSpritePath!);
+    featureSprite.zIndex += CreatureSpriteZIndex;
+    featureSprite.eventMode = 'none';
+    return featureSprite;
   }
 }
