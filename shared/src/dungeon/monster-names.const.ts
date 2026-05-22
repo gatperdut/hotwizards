@@ -1,4 +1,4 @@
-import { MonsterType } from '../sprites/monster-sprites.const.js';
+import { MonsterType } from '../monsters/monster-type.const.js';
 
 const goblinNames = [
   'Snivvik',
@@ -49,7 +49,7 @@ const orcNames = [
   'Skoll',
   'Zurgath',
   'Rhaknor',
-  'Gruknash',
+  'Gruknash ',
   'Bolg',
   'Drakthar',
   'Urzog',
@@ -67,17 +67,17 @@ const orcNames = [
 ];
 
 export const MonsterNames: Record<MonsterType, string[]> = {
-  chaos_mage: [],
-  chaos_warrior: [],
-  fimir: [],
-  gargoyle: [],
+  chaos_mage: ['#PLACEHOLDER chaos_mage'],
+  chaos_warrior: ['#PLACEHOLDER chaos_warrior'],
+  fimir: ['#PLACEHOLDER fimir'],
+  gargoyle: ['#PLACEHOLDER gargoyle'],
   goblin_axe: goblinNames.slice(),
   goblin_dagger: goblinNames.slice(),
   goblin_sword: goblinNames.slice(),
-  mummy: [],
+  mummy: ['#PLACEHOLDER mummy'],
   orc_cleaver: orcNames.slice(),
   orc_mace: orcNames.slice(),
   orc_sword: orcNames.slice(),
-  skeleton: [],
-  zombie: [],
+  skeleton: ['#PLACEHOLDER skeleton'],
+  zombie: ['#PLACEHOLDER zombie'],
 };

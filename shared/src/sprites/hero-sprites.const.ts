@@ -1,3 +1,6 @@
+import { Gender, Klass } from '@hw/prismagen/browser';
+import { Direction } from '../directions/directions.const.js';
+
 export const HeroSpritePaths = [
   '/tiles/heroes/barbarian_male_n.png',
   '/tiles/heroes/barbarian_male_e.png',
@@ -34,3 +37,11 @@ export const HeroSpritePaths = [
 ] as const;
 
 export type HeroSpritePath = (typeof HeroSpritePaths)[number];
+
+export const heroSpritePath = (
+  klass: Klass,
+  gender: Gender,
+  direction: Direction | null,
+): HeroSpritePath | null => {
+  return `/tiles/heroes/${klass.toLowerCase()}_${gender.toLowerCase()}_${direction}.png` as HeroSpritePath;
+};

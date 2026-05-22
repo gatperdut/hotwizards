@@ -1,4 +1,5 @@
 import { Direction } from '../directions/directions.const.js';
+import { MonsterType } from '../monsters/monster-type.const.js';
 
 export const MonsterSpritePaths = [
   '/tiles/monsters/chaos_mage_n.png',
@@ -56,24 +57,6 @@ export const MonsterSpritePaths = [
 ] as const;
 
 export type MonsterSpritePath = (typeof MonsterSpritePaths)[number];
-
-export const MonsterTypes = [
-  'chaos_mage',
-  'chaos_warrior',
-  'fimir',
-  'gargoyle',
-  'goblin_axe',
-  'goblin_dagger',
-  'goblin_sword',
-  'mummy',
-  'orc_cleaver',
-  'orc_mace',
-  'orc_sword',
-  'skeleton',
-  'zombie',
-] as const;
-
-export type MonsterType = (typeof MonsterTypes)[number];
 
 export const monsterSpritePath = (
   monsterType: MonsterType | null,
