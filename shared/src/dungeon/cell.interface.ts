@@ -1,4 +1,5 @@
 import { BaseSpritePath } from '../sprites/base-sprites.const.js';
+import { DoorSpritePath } from '../sprites/door-sprites.const.js';
 import { HwFeature } from './feature.interface.js';
 
 export interface HwCell {
@@ -7,4 +8,5 @@ export interface HwCell {
   creatureId: number | null;
   baseSpritePath: BaseSpritePath;
   feature: HwFeature;
+  doorSpritePath: DoorSpritePath | null;
 }
