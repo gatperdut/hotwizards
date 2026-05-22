@@ -3,7 +3,7 @@ import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
 import { Directions } from '@hw/shared/directions';
-import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
+import { HwCell, HwDungeon, HwHero, HwMonster, MonsterNames } from '@hw/shared/dungeon';
 import { HwEditorCell, HwEditorDungeon } from '@hw/shared/editor';
 import {
   HeroAttackDie,
@@ -12,8 +12,15 @@ import {
   HeroMindPoints,
   HeroMovementPoints,
 } from '@hw/shared/heroes';
+import {
+  MonsterAttackDie,
+  MonsterBodyPoints,
+  MonsterDefendDie,
+  MonsterMindPoints,
+  MonsterMovementPoints,
+} from '@hw/shared/monsters';
 import { Paginated } from '@hw/shared/pagination';
-import { heroSpritePath } from '@hw/shared/sprites';
+import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InputJsonValue } from '@prisma/client/runtime/client';
@@ -215,18 +222,30 @@ export class CampaignsService {
   }
 
   private editorDungeonToDungeon(campaign: HwCampaign, editorDungeon: HwEditorDungeon): HwDungeon {
-    const heroes: HwHero[] = this.charactersToHeroes(
+    const cells = editorDungeon.cells.map((editorCell) => this.editorCellToCell(editorCell));
+
+    const heroes = this.charactersToHeroes(
       campaign.memberships.map((m) => m.character!),
-      editorDungeon.cells.filter((c) => c.spawn),
+      editorDungeon.cells
+        .filter((editorCell) => editorCell.spawn)
+        .map((editorCell) =>
+          cells.find((cell) => cell.x === editorCell.x && cell.y === editorCell.y),
+        )
+        .filter((cell) => !!cell),
     );
 
-    const monsters: HwMonster[] = this.cellsToMonsters(
+    const monsters = this.cellsToMonsters(
       editorDungeon.cells,
       heroes.map((h) => h.id),
     );
 
+    cells.forEach((cell) => {
+      cell.creatureId =
+        monsters.find((monster) => monster.x === cell.x && monster.y === cell.y)?.id || null;
+    });
+
     const response: HwDungeon = {
-      cells: editorDungeon.cells.map((editorCell) => this.editorCellToCell(editorCell)),
+      cells: cells,
       heroes: heroes,
       monsters: monsters,
     };
@@ -239,6 +258,7 @@ export class CampaignsService {
       x: editorCell.x,
       y: editorCell.y,
       baseSpritePath: editorCell.baseSpritePath,
+      creatureId: null,
     };
 
     return response;
@@ -248,6 +268,8 @@ export class CampaignsService {
     return characters.map((character, index) => {
       const direction = Directions[Math.floor(Math.random() * Directions.length)];
       const spawnCell = spawnCells[index];
+
+      spawnCell.creatureId = character.id;
 
       return {
         id: character.id,
@@ -266,7 +288,46 @@ export class CampaignsService {
     });
   }
 
-  private cellsToMonsters(cells: HwCell[], heroIds: number[]): HwMonster[] {
-    return [];
+  private cellsToMonsters(cells: HwEditorCell[], heroIds: number[]): HwMonster[] {
+    const idsTaken: number[] = [...heroIds];
+
+    return cells
+      .map((cell) => {
+        if (!cell.monster.type) {
+          return null;
+        }
+
+        const monster: HwMonster = {
+          id: this.generateMonsterId(idsTaken),
+          type: cell.monster.type,
+          name: MonsterNames[cell.monster.type][
+            Math.floor(Math.random() * MonsterNames[cell.monster.type].length)
+          ],
+          alignment: 'MONSTER',
+          attackDie: MonsterAttackDie[cell.monster.type],
+          defendDie: MonsterDefendDie[cell.monster.type],
+          movementPoints: MonsterMovementPoints[cell.monster.type],
+          bodyPoints: MonsterBodyPoints[cell.monster.type],
+          mindPoints: MonsterMindPoints[cell.monster.type],
+          spritePath: monsterSpritePath(cell.monster.type, cell.monster.direction),
+          direction: cell.monster.direction,
+          x: cell.x,
+          y: cell.y,
+        };
+
+        return monster;
+      })
+      .filter((cell) => !!cell);
+  }
+
+  private generateMonsterId(idsTaken: number[]): number {
+    let id = 1;
+    while (idsTaken.includes(id)) {
+      id++;
+    }
+
+    idsTaken.push(id);
+
+    return id;
   }
 }
