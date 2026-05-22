@@ -183,11 +183,17 @@ export class CellEditorDialogComponent {
     unmadeSecondary: [],
   });
 
-  public result = computed<CellTransformData>(() => ({
-    ...this.model(),
-    monsterSpritePath: monsterSpritePath(this.model().monsterType, this.model().monsterDirection),
-    ...this.externalData(),
-  }));
+  public result = computed<CellTransformData>(() => {
+    const monsterType = this.model().monsterType;
+
+    return {
+      ...this.model(),
+      monsterSpritePath: monsterType
+        ? monsterSpritePath(monsterType, this.model().monsterDirection)
+        : null,
+      ...this.externalData(),
+    };
+  });
 
   public model = signal<CellTransformEditableData>({
     baseSpritePath: this.data.cell.baseSpritePath,

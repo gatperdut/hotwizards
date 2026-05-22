@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
-import { HwDungeon } from '@hw/shared/dungeon';
+import { HwDungeon, HwHero } from '@hw/shared/dungeon';
 import { BaseSpritePath, SpritePath } from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
@@ -8,7 +8,6 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
-import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeDungeon } from '../interfaces/dungeon.interface';
@@ -40,7 +39,16 @@ export class DungeonService {
 
   public setup(adventure: HwAdventure): void {
     this.adventure.set(adventure);
+    this.hwfeHeroesSetup();
     this.hwfeDungeon.set(this.hwDungeon2HwfeDungeon(adventure.dungeon));
+  }
+
+  private hwfeHeroesSetup(): void {
+    const hwfeHeroes: HwfeHero[] = this.adventure().dungeon.heroes.map((hero) => {
+      return { ...hero, pixi: { sprite: this.createHeroSprite(hero) } };
+    });
+
+    this.hwfeHeroes.set(hwfeHeroes);
   }
 
   private hwDungeon2HwfeDungeon(dungeon: HwDungeon): HwfeDungeon {
@@ -80,9 +88,13 @@ export class DungeonService {
 
   private createBaseSprite(x: number, y: number, baseSpritePath: BaseSpritePath): Sprite {
     const baseSprite = this.createSprite(x, y, baseSpritePath);
-    baseSprite.eventMode = 'static';
-    baseSprite.cursor = 'pointer';
-    baseSprite.hitArea = BaseSpriteHitArea;
+    baseSprite.eventMode = 'none';
+    return baseSprite;
+  }
+
+  private createHeroSprite(hero: HwHero): Sprite {
+    const baseSprite = this.createSprite(hero.x, hero.y, hero.spritePath);
+    baseSprite.eventMode = 'none';
     return baseSprite;
   }
 }

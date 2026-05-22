@@ -89,6 +89,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   }
 
   // TODO should this be dealt with in campaign.service?
+  // Later thoughts: I think it makes sense here? To begin with, it shouldn't be dealt with in a service?
   private campaignsListen(): void {
     this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
       if (campaignId !== this.campaignService.campaign().id) {
