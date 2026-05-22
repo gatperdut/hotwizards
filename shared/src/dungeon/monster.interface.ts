@@ -1,14 +1,7 @@
-import { Direction } from '../directions/directions.const.js';
-import { MonsterType } from '../sprites/monster-sprites.const.js';
+import { MonsterType } from '../monsters/monster-type.const.js';
+import { HwCreature } from './creature.interface.js';
 
-export interface HwMonster {
-  name: string;
+export interface HwMonster extends HwCreature {
+  alignment: 'MONSTER';
   type: MonsterType | null;
-  spritePath: string | null;
-  direction: Direction;
-  movement: number;
-  attack: number;
-  defense: number;
-  body: number;
-  mind: number;
 }

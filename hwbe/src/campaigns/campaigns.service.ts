@@ -1,11 +1,22 @@
 import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { HwCell, HwDungeon } from '@hw/shared/dungeon';
+import { HwCharacter } from '@hw/shared/characters';
+import { Directions } from '@hw/shared/directions';
+import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
 import { HwEditorCell, HwEditorDungeon } from '@hw/shared/editor';
+import {
+  HeroAttackDie,
+  HeroBodyPoints,
+  HeroDefendDie,
+  HeroMindPoints,
+  HeroMovementPoints,
+} from '@hw/shared/heroes';
 import { Paginated } from '@hw/shared/pagination';
+import { heroSpritePath } from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
@@ -184,7 +195,10 @@ export class CampaignsService {
         campaignId: campaign.id,
         templateId: adventureTemplate.id,
         // TODO transform HwEditorDungeon to HwDungeon
-        dungeon: this.editorDungeonToDungeon(adventureTemplate.dungeon) as object,
+        dungeon: this.editorDungeonToDungeon(
+          campaign,
+          adventureTemplate.dungeon,
+        ) as unknown as InputJsonValue,
       },
       include: {
         template: true,
@@ -200,9 +214,21 @@ export class CampaignsService {
     return adventure.id;
   }
 
-  private editorDungeonToDungeon(editorDungeon: HwEditorDungeon): HwDungeon {
+  private editorDungeonToDungeon(campaign: HwCampaign, editorDungeon: HwEditorDungeon): HwDungeon {
+    const heroes: HwHero[] = this.charactersToHeroes(
+      campaign.memberships.map((m) => m.character!),
+      editorDungeon.cells.filter((c) => c.spawn),
+    );
+
+    const monsters: HwMonster[] = this.cellsToMonsters(
+      editorDungeon.cells,
+      heroes.map((h) => h.id),
+    );
+
     const response: HwDungeon = {
       cells: editorDungeon.cells.map((editorCell) => this.editorCellToCell(editorCell)),
+      heroes: heroes,
+      monsters: monsters,
     };
 
     return response;
@@ -216,5 +242,31 @@ export class CampaignsService {
     };
 
     return response;
+  }
+
+  private charactersToHeroes(characters: HwCharacter[], spawnCells: HwCell[]): HwHero[] {
+    return characters.map((character, index) => {
+      const direction = Directions[Math.floor(Math.random() * Directions.length)];
+      const spawnCell = spawnCells[index];
+
+      return {
+        id: character.id,
+        name: character.name,
+        alignment: 'HERO',
+        attackDie: HeroAttackDie[character.klass],
+        defendDie: HeroDefendDie[character.klass],
+        movementPoints: HeroMovementPoints[character.klass],
+        bodyPoints: HeroBodyPoints[character.klass],
+        mindPoints: HeroMindPoints[character.klass],
+        spritePath: heroSpritePath(character.klass, character.gender, direction),
+        direction: direction,
+        x: spawnCell.x,
+        y: spawnCell.y,
+      };
+    });
+  }
+
+  private cellsToMonsters(cells: HwCell[], heroIds: number[]): HwMonster[] {
+    return [];
   }
 }
