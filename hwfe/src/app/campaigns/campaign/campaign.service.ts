@@ -16,13 +16,4 @@ export class CampaignService {
   public activeMemberships = computed(() =>
     this.memberships().filter((m) => m.status === 'ACTIVE'),
   );
-
-  public adventure = computed(() => this.campaign().adventure);
-
-  public activePlayer = computed(() => {
-    const adventure = this.adventure();
-    return adventure
-      ? [this.campaign().master, ...this.memberships().map((m) => m.user)][adventure.turn]
-      : undefined;
-  });
 }

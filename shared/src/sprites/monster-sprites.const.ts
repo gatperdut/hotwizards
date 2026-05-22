@@ -1,5 +1,5 @@
 import { Direction } from '../directions/directions.const.js';
-import { MonsterType } from '../monsters/monster-type.const.js';
+import { MonsterType } from '../dungeon/creatures/monsters/monster-type.const.js';
 
 export const MonsterSpritePaths = [
   '/tiles/monsters/chaos_mage_n.png',

@@ -3,22 +3,24 @@ import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
 import { Directions } from '@hw/shared/directions';
-import { HwCell, HwDungeon, HwHero, HwMonster, MonsterNames } from '@hw/shared/dungeon';
-import { HwEditorCell, HwEditorDungeon } from '@hw/shared/editor';
 import {
   HeroAttackDie,
   HeroBodyPoints,
   HeroDefendDie,
   HeroMindPoints,
   HeroMovementPoints,
-} from '@hw/shared/heroes';
-import {
+  HwCell,
+  HwDungeon,
+  HwHero,
+  HwMonster,
   MonsterAttackDie,
   MonsterBodyPoints,
   MonsterDefendDie,
   MonsterMindPoints,
   MonsterMovementPoints,
-} from '@hw/shared/monsters';
+  MonsterNames,
+} from '@hw/shared/dungeon';
+import { HwEditorCell, HwEditorDungeon } from '@hw/shared/editor';
 import { Paginated } from '@hw/shared/pagination';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';

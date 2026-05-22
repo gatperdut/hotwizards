@@ -1,5 +1,5 @@
-import { Direction } from '../directions/directions.const.js';
-import { HwAlignment } from './alignment.const.js';
+import { Direction } from '../../directions/directions.const.js';
+import { HwAlignment } from '../alignment.const.js';
 
 export interface HwCreature {
   id: number;

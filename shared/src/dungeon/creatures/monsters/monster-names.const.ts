@@ -1,4 +1,4 @@
-import { MonsterType } from '../monsters/monster-type.const.js';
+import { MonsterType } from './monster-type.const.js';
 
 const goblinNames = [
   'Snivvik',

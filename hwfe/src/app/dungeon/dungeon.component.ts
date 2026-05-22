@@ -55,7 +55,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   constructor() {
     this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
     this.adventuresSocket = this.socketService.socket('adventures', this.destroyRef, {
-      adventureId: this.campaignService.adventure()!.id,
+      adventureId: this.campaignService.campaign().adventure!.id,
     });
 
     this.campaignsListen();
@@ -78,7 +78,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
       .pipe(
         tap(() => {
-          this.dungeonService.setup(this.campaignService.adventure()!);
+          this.dungeonService.setup(this.campaignService.campaign().adventure!);
         }),
         tap(() => {
           this.viewportService.viewport.setZoom(3);
@@ -88,6 +88,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       .subscribe();
   }
 
+  // TODO should this be dealt with in campaign.service?
   private campaignsListen(): void {
     this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
       if (campaignId !== this.campaignService.campaign().id) {

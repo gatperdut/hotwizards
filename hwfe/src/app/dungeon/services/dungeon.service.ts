@@ -1,8 +1,9 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwDungeon } from '@hw/shared/dungeon';
 import { BaseSpritePath, SpritePath } from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
+import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
@@ -11,15 +12,31 @@ import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeDungeon } from '../interfaces/dungeon.interface';
+import { HwfeHero } from '../interfaces/hero.interface';
+import { HwfeMonster } from '../interfaces/monster.interface';
 
 @Injectable()
 export class DungeonService {
   private textureService = inject(TextureService);
   private viewportService = inject(ViewportService);
+  private campaignService = inject(CampaignService);
 
   public adventure = signal<HwAdventure>(null!);
 
   public hwfeDungeon = signal<HwfeDungeon>(null!);
+  public hwfeHeroes = signal<HwfeHero[]>([]);
+  public hwfeMonsters = signal<HwfeMonster[]>([]);
+  public hwfeCreatures = computed(() => [...this.hwfeHeroes(), ...this.hwfeMonsters()]);
+
+  public activePlayer = computed(() => {
+    const adventure = this.adventure();
+    return adventure
+      ? [
+          this.campaignService.campaign().master,
+          ...this.campaignService.memberships().map((m) => m.user),
+        ][adventure.turn]
+      : undefined;
+  });
 
   public setup(adventure: HwAdventure): void {
     this.adventure.set(adventure);
@@ -43,6 +60,7 @@ export class DungeonService {
       pixi: {
         baseSprite: baseSprite,
       },
+      creatureId: null,
     };
 
     return cell;
