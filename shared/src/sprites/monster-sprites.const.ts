@@ -59,12 +59,8 @@ export const MonsterSpritePaths = [
 export type MonsterSpritePath = (typeof MonsterSpritePaths)[number];
 
 export const monsterSpritePath = (
-  monsterType: MonsterType | null,
-  direction: Direction | null,
-): MonsterSpritePath | null => {
-  if (!monsterType || !direction) {
-    return null;
-  }
-
+  monsterType: MonsterType,
+  direction: Direction,
+): MonsterSpritePath => {
   return `/tiles/monsters/${monsterType}_${direction}.png` as MonsterSpritePath;
 };

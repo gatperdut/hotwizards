@@ -41,7 +41,7 @@ export type HeroSpritePath = (typeof HeroSpritePaths)[number];
 export const heroSpritePath = (
   klass: Klass,
   gender: Gender,
-  direction: Direction | null,
-): HeroSpritePath | null => {
+  direction: Direction,
+): HeroSpritePath => {
   return `/tiles/heroes/${klass.toLowerCase()}_${gender.toLowerCase()}_${direction}.png` as HeroSpritePath;
 };
