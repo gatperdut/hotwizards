@@ -266,6 +266,7 @@ export class CampaignsService {
       feature: this.editorFeatureToFeature(editorCell.feature),
       doorSpritePath: editorCell.doorSpritePath,
       floorTrap: this.floorTrap(editorCell.floorTrapSpritePath),
+      stairsSpritePath: editorCell.stairsSpritePath,
     };
 
     return response;

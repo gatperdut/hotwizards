@@ -7,6 +7,7 @@ import {
   FeatureSpritePath,
   FloorTrapSpritePath,
   SpritePath,
+  StairsSpritePath,
 } from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
@@ -86,6 +87,9 @@ export class DungeonService {
     const floorTrapSprite = cell.floorTrap.spritePath
       ? this.createFloorTrapSprite(cell.x, cell.y, cell.floorTrap.spritePath)
       : null;
+    const stairsSprite = cell.stairsSpritePath
+      ? this.createStairsSprite(cell.x, cell.y, cell.stairsSpritePath)
+      : null;
 
     const hwfeCell: HwfeCell = {
       x: cell.x,
@@ -95,11 +99,13 @@ export class DungeonService {
       feature: cell.feature,
       doorSpritePath: cell.doorSpritePath,
       floorTrap: cell.floorTrap,
+      stairsSpritePath: cell.stairsSpritePath,
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
         doorSprite: doorSprite,
         floorTrapSprite: floorTrapSprite,
+        stairsSprite: stairsSprite,
       },
     };
 
@@ -159,5 +165,11 @@ export class DungeonService {
     const floorTrapSprite = this.createSprite(x, y, floorTrapSpritePath!);
     floorTrapSprite.eventMode = 'none';
     return floorTrapSprite;
+  }
+
+  private createStairsSprite(x: number, y: number, stairsSpritePath: StairsSpritePath): Sprite {
+    const stairsSprite = this.createSprite(x, y, stairsSpritePath!);
+    stairsSprite.eventMode = 'none';
+    return stairsSprite;
   }
 }
