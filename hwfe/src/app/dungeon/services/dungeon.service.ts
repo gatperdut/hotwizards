@@ -8,6 +8,7 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
+import { CreatureSpriteZIndex } from '../../sprites/creature-sprites.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeDungeon } from '../interfaces/dungeon.interface';
@@ -93,8 +94,9 @@ export class DungeonService {
   }
 
   private createHeroSprite(hero: HwHero): Sprite {
-    const baseSprite = this.createSprite(hero.x, hero.y, hero.spritePath);
-    baseSprite.eventMode = 'none';
-    return baseSprite;
+    const heroSprite = this.createSprite(hero.x, hero.y, hero.spritePath);
+    heroSprite.zIndex += CreatureSpriteZIndex;
+    heroSprite.eventMode = 'none';
+    return heroSprite;
   }
 }

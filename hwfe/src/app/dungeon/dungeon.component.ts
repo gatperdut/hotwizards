@@ -82,7 +82,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         }),
         tap(() => {
           this.viewportService.viewport.setZoom(3);
-          this.viewportService.center(14, 11);
+          this.viewportService.center(0, 0);
         }),
       )
       .subscribe();
