@@ -1,6 +1,6 @@
 import { HwCell } from './cell.interface.js';
-import { HwHero } from './hero.interface.js';
-import { HwMonster } from './monster.interface.js';
+import { HwHero } from './creatures/heroes/hero.interface.js';
+import { HwMonster } from './creatures/monsters/monster.interface.js';
 
 export interface HwDungeon {
   cells: HwCell[];

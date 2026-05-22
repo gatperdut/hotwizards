@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
 import { Direction, Directions } from '@hw/shared/directions';
-import { MonsterType, MonsterTypes } from '@hw/shared/monsters';
+import { MonsterType, MonsterTypes } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
   BaseSpritePaths,

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AdventuresApiService } from '@hw/hwfe/app/adventures/services/adventures-api.service';
 import { AuthService } from '../../auth/services/auth.service';
-import { CampaignService } from '../../campaigns/campaign/campaign.service';
+import { DungeonService } from '../services/dungeon.service';
 
 // TODO see what we do with this. Needs to mimic the editor's.
 @Component({
@@ -15,7 +15,7 @@ import { CampaignService } from '../../campaigns/campaign/campaign.service';
 export class SidebarComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
-  public campaignService = inject(CampaignService);
+  public dungeonService = inject(DungeonService);
   private adventuresApiService = inject(AdventuresApiService);
 
   public logout(): void {
@@ -31,12 +31,10 @@ export class SidebarComponent {
   }
 
   public endTurn(): void {
-    this.adventuresApiService.endTurn(this.campaignService.adventure()!.id).subscribe();
+    this.adventuresApiService.endTurn(this.dungeonService.adventure().id).subscribe();
   }
 
   public finish(): void {
-    this.adventuresApiService
-      .finishAdventure(this.campaignService.campaign().adventure!.id)
-      .subscribe();
+    this.adventuresApiService.finishAdventure(this.dungeonService.adventure().id).subscribe();
   }
 }

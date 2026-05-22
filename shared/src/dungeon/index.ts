@@ -1,7 +1,22 @@
 export { HwAlignment } from './alignment.const.js';
 export { HwCell } from './cell.interface.js';
-export { HwCreature } from './creature.interface.js';
+export { HwCreature } from './creatures/creature.interface.js';
+export {
+  HeroAttackDie,
+  HeroBodyPoints,
+  HeroDefendDie,
+  HeroMindPoints,
+  HeroMovementPoints,
+} from './creatures/heroes/hero-stats.const.js';
+export { HwHero } from './creatures/heroes/hero.interface.js';
+export { MonsterNames } from './creatures/monsters/monster-names.const.js';
+export {
+  MonsterAttackDie,
+  MonsterBodyPoints,
+  MonsterDefendDie,
+  MonsterMindPoints,
+  MonsterMovementPoints,
+} from './creatures/monsters/monster-stats.const.js';
+export { MonsterType, MonsterTypes } from './creatures/monsters/monster-type.const.js';
+export { HwMonster } from './creatures/monsters/monster.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
-export { HwHero } from './hero.interface.js';
-export { MonsterNames } from './monster-names.const.js';
-export { HwMonster } from './monster.interface.js';
