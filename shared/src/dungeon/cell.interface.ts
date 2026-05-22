@@ -4,4 +4,5 @@ export interface HwCell {
   x: number;
   y: number;
   baseSpritePath: BaseSpritePath;
+  creatureId: number | null;
 }
