@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
-import { BaseSpritePath, FeatureSpritePath, SpritePath } from '@hw/shared/sprites';
+import { BaseSpritePath, DoorSpritePath, FeatureSpritePath, SpritePath } from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
@@ -9,6 +9,7 @@ import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
 import { CreatureSpriteZIndex } from '../../sprites/creature-sprites.const';
+import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeDungeon } from '../interfaces/dungeon.interface';
@@ -73,6 +74,9 @@ export class DungeonService {
     const featureSprite = cell.feature.spritePath
       ? this.createFeatureSprite(cell.x, cell.y, cell.feature.spritePath)
       : null;
+    const doorSprite = cell.doorSpritePath
+      ? this.createDoorSprite(cell.x, cell.y, cell.doorSpritePath)
+      : null;
 
     const hwfeCell: HwfeCell = {
       x: cell.x,
@@ -80,9 +84,11 @@ export class DungeonService {
       baseSpritePath: cell.baseSpritePath,
       creatureId: null,
       feature: cell.feature,
+      doorSpritePath: cell.doorSpritePath,
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
+        doorSprite: doorSprite,
       },
     };
 
@@ -123,8 +129,14 @@ export class DungeonService {
 
   private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
     const featureSprite = this.createSprite(x, y, featureSpritePath!);
-    featureSprite.zIndex += CreatureSpriteZIndex;
+    featureSprite.zIndex += FeatureSpriteZIndex;
     featureSprite.eventMode = 'none';
     return featureSprite;
+  }
+
+  private createDoorSprite(x: number, y: number, doorSpritePath: DoorSpritePath): Sprite {
+    const doorSprite = this.createSprite(x, y, doorSpritePath!);
+    doorSprite.eventMode = 'none';
+    return doorSprite;
   }
 }

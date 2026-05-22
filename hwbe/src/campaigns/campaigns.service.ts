@@ -263,6 +263,7 @@ export class CampaignsService {
       creatureId: null,
       baseSpritePath: editorCell.baseSpritePath,
       feature: this.editorFeatureToFeature(editorCell.feature),
+      doorSpritePath: editorCell.doorSpritePath,
     };
 
     return response;
