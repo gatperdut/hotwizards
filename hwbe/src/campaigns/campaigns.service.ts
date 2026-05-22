@@ -12,6 +12,7 @@ import {
   HwCell,
   HwDungeon,
   HwFeature,
+  HwFloorTrap,
   HwHero,
   HwMonster,
   MonsterAttackDie,
@@ -23,7 +24,7 @@ import {
 } from '@hw/shared/dungeon';
 import { HwEditorCell, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
 import { Paginated } from '@hw/shared/pagination';
-import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import { FloorTrapSpritePath, heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InputJsonValue } from '@prisma/client/runtime/client';
@@ -264,6 +265,7 @@ export class CampaignsService {
       baseSpritePath: editorCell.baseSpritePath,
       feature: this.editorFeatureToFeature(editorCell.feature),
       doorSpritePath: editorCell.doorSpritePath,
+      floorTrap: this.floorTrap(editorCell.floorTrapSpritePath),
     };
 
     return response;
@@ -329,6 +331,14 @@ export class CampaignsService {
     return {
       spritePath: editorFeature.spritePath,
       trapped: editorFeature.trapped,
+      found: false,
+      sprung: false,
+    };
+  }
+
+  private floorTrap(floorTrapSpritePath: FloorTrapSpritePath | null): HwFloorTrap {
+    return {
+      spritePath: floorTrapSpritePath,
       found: false,
       sprung: false,
     };
