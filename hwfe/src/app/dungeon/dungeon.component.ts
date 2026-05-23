@@ -122,34 +122,31 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         .subscribe();
     });
 
-    this.adventuresSocket.on('downNextTurn', (campaignId, turn) => {
-      this.campaignsApiService
-        .get(campaignId)
-        .pipe(
-          tap((campaign) => {
-            this.campaignService.campaign.set(campaign);
+    this.adventuresSocket.on('downNextTurn', (turn) => {
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: { ...campaign.adventure!, turn: turn },
+      }));
+      this.dungeonService.adventure.set(this.campaignService.campaign().adventure!);
 
-            let message: string;
+      let message: string;
 
-            if (turn === 0) {
-              const master = this.campaignService.master();
+      if (turn === 0) {
+        const master = this.campaignService.master();
 
-              message = master.me
-                ? 'Your turn, Zargon'
-                : `Turn for Zargon (${this.campaignService.master().handle})`;
-            } else {
-              const membership = this.campaignService.memberships()[turn - 1];
+        message = master.me
+          ? 'Your turn, Zargon'
+          : `Turn for Zargon (${this.campaignService.master().handle})`;
+      } else {
+        const membership = this.campaignService.memberships()[turn - 1];
 
-              message = membership.me
-                ? `Your turn, ${membership.character!.name}`
-                : `Turn for ${membership.character!.name} (${membership.user.handle})`;
-            }
-            this.toastService.show({
-              message: message,
-            });
-          }),
-        )
-        .subscribe();
+        message = membership.me
+          ? `Your turn, ${membership.character!.name}`
+          : `Turn for ${membership.character!.name} (${membership.user.handle})`;
+      }
+      this.toastService.show({
+        message: message,
+      });
     });
   }
 }
