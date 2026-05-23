@@ -47,12 +47,12 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownNextTurn(campaign.id, adventure.id, turn);
 
-    const character = campaign.memberships[turn - 1].character!;
+    const character = turn === 0 ? null : campaign.memberships[turn - 1].character!;
 
     const name = turn === 0 ? 'Zargon' : character!.name;
 
     const icon =
-      turn === 0 ? '/portraits/zargon.png' : `${portrait(character.klass, character.gender)}`;
+      turn === 0 ? '/portraits/zargon.png' : `${portrait(character!.klass, character!.gender)}`;
 
     void this.pushService.notifyUser(user.id, {
       title: campaign.name,

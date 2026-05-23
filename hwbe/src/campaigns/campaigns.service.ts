@@ -23,6 +23,7 @@ import {
   MonsterNames,
 } from '@hw/shared/dungeon';
 import { HwEditorCell, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
+import { HwMembership } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
 import { FloorTrapSpritePath, heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';
@@ -229,7 +230,7 @@ export class CampaignsService {
     const cells = editorDungeon.cells.map((editorCell) => this.editorCellToCell(editorCell));
 
     const heroes = this.charactersToHeroes(
-      campaign.memberships.map((m) => m.character!),
+      campaign.memberships,
       editorDungeon.cells
         .filter((editorCell) => editorCell.spawn)
         .map((editorCell) =>
@@ -274,16 +275,23 @@ export class CampaignsService {
     return response;
   }
 
-  private charactersToHeroes(characters: HwCharacter[], spawnCells: HwCell[]): HwHero[] {
-    return characters.map((character, index) => {
+  private charactersToHeroes(memberships: HwMembership[], spawnCells: HwCell[]): HwHero[] {
+    return memberships.map((membership, index) => {
+      const character = membership.character as HwCharacter;
+      const user = membership.user;
+
       const direction = Directions[Math.floor(Math.random() * Directions.length)];
       const spawnCell = spawnCells[index];
 
-      spawnCell.creatureId = character.id;
+      spawnCell.creatureId = user.id;
 
       return {
-        id: character.id,
+        id: user.id,
+        membershipId: membership.id,
         name: character.name,
+        gender: character.gender,
+        klass: character.klass,
+        me: false,
         alignment: 'HERO',
         attackDie: HeroAttackDie[character.klass],
         defendDie: HeroDefendDie[character.klass],

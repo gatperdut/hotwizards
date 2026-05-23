@@ -1,0 +1,13 @@
+<app-sidebar [buttons]="buttons()"></app-sidebar>
+
+<div class="absolute top-1 left-18">
+  @let activePlayer = dungeonService.activePlayer();
+  @let activeHero = dungeonService.activeHero();
+  @if (activePlayer) {
+    <app-who
+      [user]="activePlayer"
+      [character]="activeHero"
+      [master]="activePlayer.id === campaignService.master().id"
+    ></app-who>
+  }
+</div>

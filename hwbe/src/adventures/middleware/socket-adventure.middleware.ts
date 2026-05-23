@@ -25,7 +25,7 @@ export function applySocketAdventureMiddleware(server: Server, prismaService: Pr
           return next(new Error('Unauthorized'));
         }
 
-        socket.adventure = adventureToHwAdventure(adventure);
+        socket.adventure = adventureToHwAdventure(adventure, user.id);
         next();
       })
       .catch(() => next(new Error('Unauthorized')));
