@@ -41,7 +41,7 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
       .emit('downFinishAdventure', campaignId, adventureTemplateName);
   }
 
-  public handleDownNextTurn(campaignId: number, adventureId: number, turn: number): void {
-    this.server.to(`adventure:${adventureId}`).emit('downNextTurn', campaignId, turn);
+  public handleDownNextTurn(adventureId: number, turn: number): void {
+    this.server.to(`adventure:${adventureId}`).emit('downNextTurn', turn);
   }
 }

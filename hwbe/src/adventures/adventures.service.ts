@@ -45,7 +45,7 @@ export class AdventuresService {
       },
     });
 
-    this.adventuresGateway.handleDownNextTurn(campaign.id, adventure.id, turn);
+    this.adventuresGateway.handleDownNextTurn(adventure.id, turn);
 
     const character = turn === 0 ? null : campaign.memberships[turn - 1].character!;
 
