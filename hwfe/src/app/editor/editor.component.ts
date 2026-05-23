@@ -19,15 +19,15 @@ import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
 import { EditorSidebarComponent } from './editor-sidebar/editor-sidebar.component';
+import { EditorGridService } from './services/editor-grid.service';
 import { EditorService } from './services/editor.service';
-import { GridService } from './services/grid.service';
 
 @Component({
   selector: 'app-editor',
   imports: [EditorSidebarComponent],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
-  providers: [OverflowService, EditorService, ViewportService, GridService, TextureService],
+  providers: [OverflowService, EditorService, ViewportService, EditorGridService, TextureService],
 })
 export class EditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -35,7 +35,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   private overflowService = inject(OverflowService);
   public editorService = inject(EditorService);
   private viewportService = inject(ViewportService);
-  private gridService = inject(GridService);
+  private gridService = inject(EditorGridService);
   private textureService = inject(TextureService);
   private activatedRoute = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);

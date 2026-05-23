@@ -24,12 +24,12 @@ import { CampaignsApiService } from '../campaigns/services/campaigns-api.service
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
+import { DungeonSidebarComponent } from './dungeon-sidebar/dungeon-sidebar.component';
 import { DungeonService } from './services/dungeon.service';
-import { SidebarComponent } from './sidebar/sidebar.component';
 
 @Component({
   selector: 'app-dungeon',
-  imports: [SidebarComponent],
+  imports: [DungeonSidebarComponent],
   templateUrl: './dungeon.component.html',
   styleUrl: './dungeon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

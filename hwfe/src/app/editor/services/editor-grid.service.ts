@@ -6,7 +6,7 @@ import { ViewportService } from '../../map/services/viewport.service';
 import { CellHalfH, CellHalfW } from '../../sprites/cell-size.const';
 
 @Injectable()
-export class GridService {
+export class EditorGridService {
   private viewportService = inject(ViewportService);
 
   public grid = new Graphics();

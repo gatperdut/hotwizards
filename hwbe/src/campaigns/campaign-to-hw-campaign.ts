@@ -41,6 +41,6 @@ export const campaignToHwCampaign = (
       membershipToHwMembership(membership, userId),
     ),
     ruleset: rulesetToHwRuleset(ruleset),
-    adventure: campaign.adventure ? adventureToHwAdventure(campaign.adventure) : undefined,
+    adventure: campaign.adventure ? adventureToHwAdventure(campaign.adventure, userId) : undefined,
   };
 };

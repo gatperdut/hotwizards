@@ -1,0 +1,12 @@
+<nav class="fixed h-dvh flex flex-col gap-1 p-2.5 z-20">
+  @for (button of buttons(); track $index) {
+    <app-sidebar-button
+      [icon]="button.icon"
+      [callback]="button.callback"
+      [actions]="button.actions ?? []"
+      [color]="button.color || 'primary'"
+      [disabled]="button.disabled || false"
+      [autoClose]="button.autoClose || false"
+    />
+  }
+</nav>

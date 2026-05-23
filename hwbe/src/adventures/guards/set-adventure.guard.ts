@@ -32,7 +32,7 @@ export class SetAdventureGuard implements CanActivate {
       throw new NotFoundException('Adventure not found');
     }
 
-    request.adventure = adventureToHwAdventure(adventure);
+    request.adventure = adventureToHwAdventure(adventure, user.id);
 
     return true;
   }

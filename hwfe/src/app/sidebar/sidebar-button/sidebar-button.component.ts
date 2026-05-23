@@ -12,7 +12,6 @@ export interface SidebarButtonAction {
   imports: [ButtonComponent],
   templateUrl: './sidebar-button.component.html',
   styleUrl: './sidebar-button.component.css',
-  providers: [],
 })
 export class SidebarButtonComponent {
   private readonly elementRef = inject(ElementRef);
@@ -22,6 +21,7 @@ export class SidebarButtonComponent {
   public actions = input<SidebarButtonAction[]>([]);
   public color = input<'primary' | 'secondary' | 'warning'>('primary');
   public disabled = input(false);
+  public autoClose = input(true);
 
   public id = `app-sidebar-button-${Math.random().toString(36).substring(2, 9)}`;
   public expanded = false;
@@ -37,7 +37,9 @@ export class SidebarButtonComponent {
 
   public onAction(action: SidebarButtonAction): void {
     action.callback();
-    this.expanded = false;
+    if (this.autoClose()) {
+      this.expanded = false;
+    }
   }
 
   @HostListener('document:click', ['$event'])

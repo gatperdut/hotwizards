@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
-import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
+import { Direction } from '@hw/shared/directions';
+import { HwCell, HwCreature, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
   CornerSpritePath,
@@ -32,7 +33,6 @@ export class DungeonService {
   private campaignService = inject(CampaignService);
 
   public adventure = signal<HwAdventure>(null!);
-
   public hwfeDungeon = signal<HwfeDungeon>(null!);
   public hwfeHeroes = signal<HwfeHero[]>([]);
   public hwfeMonsters = signal<HwfeMonster[]>([]);
@@ -46,6 +46,16 @@ export class DungeonService {
           ...this.campaignService.memberships().map((m) => m.user),
         ][adventure.turn]
       : undefined;
+  });
+
+  public activeHero = computed(() => {
+    const activePlayer = this.activePlayer();
+
+    if (!activePlayer) {
+      return undefined;
+    }
+
+    return this.hwfeHeroes().find((hero) => hero.id === activePlayer.id);
   });
 
   public setup(adventure: HwAdventure): void {
@@ -196,5 +206,10 @@ export class DungeonService {
     const cornersSprite = this.createSprite(x, y, cornerSpritePath!);
     cornersSprite.eventMode = 'none';
     return cornersSprite;
+  }
+
+  public canWalk(creature: HwCreature, direction: Direction): boolean {
+    // TODO
+    return false;
   }
 }

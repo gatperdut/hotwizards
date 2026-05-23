@@ -11,13 +11,24 @@ export const AdventureHwRelations = {
 
 type AdventureWithHwRelations = Prisma.AdventureGetPayload<typeof AdventureHwRelations>;
 
-export const adventureToHwAdventure = (adventure: AdventureWithHwRelations): HwAdventure => {
+export const adventureToHwAdventure = (
+  adventure: AdventureWithHwRelations,
+  userId: number,
+): HwAdventure => {
+  const dungeon = adventure.dungeon as unknown as HwDungeon;
+
   return {
     id: adventure.id,
     campaignId: adventure.campaignId as number,
     templateId: adventure.templateId,
     template: adventureTemplateToHwAdventureTemplate(adventure.template),
     turn: adventure.turn,
-    dungeon: adventure.dungeon as unknown as HwDungeon,
+    dungeon: {
+      ...dungeon,
+      heroes: dungeon.heroes.map((hero) => ({
+        ...hero,
+        me: hero.id === userId,
+      })),
+    },
   };
 };
