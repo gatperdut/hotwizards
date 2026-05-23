@@ -4,6 +4,7 @@ import { StairsSpritePath } from '../sprites/stairs-sprites.const.js';
 import { HwCorners } from './corners.interface.js';
 import { HwFeature } from './feature.interface.js';
 import { HwFloorTrap } from './floor-trap.interface.js';
+import { HwSecondary } from './secondary.interface.js';
 
 export interface HwCell {
   x: number;
@@ -15,4 +16,5 @@ export interface HwCell {
   floorTrap: HwFloorTrap;
   stairsSpritePath: StairsSpritePath | null;
   corners: HwCorners;
+  secondary: HwSecondary | null;
 }

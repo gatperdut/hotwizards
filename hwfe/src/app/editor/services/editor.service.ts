@@ -6,8 +6,8 @@ import {
   HwEditorDungeon,
   HwEditorFeature,
   HwEditorMonster,
+  HwEditorSecondary,
 } from '@hw/shared/editor';
-import { HwSecondary } from '@hw/shared/map';
 import {
   BaseSpritePath,
   CornerSpritePath,
@@ -119,7 +119,7 @@ export class EditorService {
     stairsSpritePath: StairsSpritePath | null = null,
     corners: HwEditorCorners,
     spawn: boolean,
-    secondary: HwSecondary | null,
+    secondary: HwEditorSecondary | null,
   ): HwfeEditorCell {
     const baseSprite = this.createBaseSprite(x, y, baseSpritePath);
     const featureSprite = feature.spritePath

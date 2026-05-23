@@ -268,6 +268,7 @@ export class CampaignsService {
       floorTrap: this.floorTrap(editorCell.floorTrapSpritePath),
       stairsSpritePath: editorCell.stairsSpritePath,
       corners: { ...editorCell.corners },
+      secondary: editorCell.secondary ? { ...editorCell.secondary } : null,
     };
 
     return response;
