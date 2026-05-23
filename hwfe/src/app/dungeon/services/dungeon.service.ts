@@ -3,6 +3,7 @@ import { HwAdventure } from '@hw/shared/adventures';
 import { HwCell, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
+  CornerSpritePath,
   DoorSpritePath,
   FeatureSpritePath,
   FloorTrapSpritePath,
@@ -19,6 +20,7 @@ import { CreatureSpriteZIndex } from '../../sprites/creature-sprites.const';
 import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
+import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeDungeon } from '../interfaces/dungeon.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
 import { HwfeMonster } from '../interfaces/monster.interface';
@@ -90,6 +92,20 @@ export class DungeonService {
     const stairsSprite = cell.stairsSpritePath
       ? this.createStairsSprite(cell.x, cell.y, cell.stairsSpritePath)
       : null;
+    const pixiCorners: HwfeCorners = {
+      n: cell.corners.n
+        ? this.createCornerSprite(cell.x, cell.y, '/tiles/corners/corner_n.png')
+        : null,
+      e: cell.corners.e
+        ? this.createCornerSprite(cell.x, cell.y, '/tiles/corners/corner_e.png')
+        : null,
+      s: cell.corners.s
+        ? this.createCornerSprite(cell.x, cell.y, '/tiles/corners/corner_s.png')
+        : null,
+      w: cell.corners.w
+        ? this.createCornerSprite(cell.x, cell.y, '/tiles/corners/corner_w.png')
+        : null,
+    };
 
     const hwfeCell: HwfeCell = {
       x: cell.x,
@@ -100,12 +116,14 @@ export class DungeonService {
       doorSpritePath: cell.doorSpritePath,
       floorTrap: cell.floorTrap,
       stairsSpritePath: cell.stairsSpritePath,
+      corners: { ...cell.corners },
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
         doorSprite: doorSprite,
         floorTrapSprite: floorTrapSprite,
         stairsSprite: stairsSprite,
+        corners: pixiCorners,
       },
     };
 
@@ -171,5 +189,11 @@ export class DungeonService {
     const stairsSprite = this.createSprite(x, y, stairsSpritePath!);
     stairsSprite.eventMode = 'none';
     return stairsSprite;
+  }
+
+  private createCornerSprite(x: number, y: number, cornerSpritePath: CornerSpritePath): Sprite {
+    const cornersSprite = this.createSprite(x, y, cornerSpritePath!);
+    cornersSprite.eventMode = 'none';
+    return cornersSprite;
   }
 }

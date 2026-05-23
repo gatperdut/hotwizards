@@ -1,6 +1,6 @@
 import { HwEditorCell } from '@hw/shared/editor';
 import { Sprite } from 'pixi.js';
-import { HwfeCorners } from './corners.interface';
+import { HwfeEditorCorners } from './editor-corners.interface';
 
 export interface HwfeEditorCell extends HwEditorCell {
   pixi: {
@@ -11,7 +11,7 @@ export interface HwfeEditorCell extends HwEditorCell {
     monsterSprite: Sprite | null;
     floorTrapSprite: Sprite | null;
     stairsSprite: Sprite | null;
-    corners: HwfeCorners;
+    corners: HwfeEditorCorners;
     spawnSprite: Sprite | null;
   };
 }

@@ -1,8 +1,13 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { Directions } from '@hw/shared/directions';
-import { HwEditorDungeon, HwEditorFeature, HwEditorMonster } from '@hw/shared/editor';
-import { HwCorners, HwSecondary } from '@hw/shared/map';
+import {
+  HwEditorCorners,
+  HwEditorDungeon,
+  HwEditorFeature,
+  HwEditorMonster,
+} from '@hw/shared/editor';
+import { HwSecondary } from '@hw/shared/map';
 import {
   BaseSpritePath,
   CornerSpritePath,
@@ -33,8 +38,8 @@ import {
   CellEditorDialogResult,
   CellTransformData,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
-import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeEditorCell } from '../interfaces/editor-cell.interface';
+import { HwfeEditorCorners } from '../interfaces/editor-corners.interface';
 import { HwfeEditorDungeon } from '../interfaces/editor-dungeon.interface';
 
 @Injectable()
@@ -112,7 +117,7 @@ export class EditorService {
     monster: HwEditorMonster,
     floorTrapSpritePath: FloorTrapSpritePath | null = null,
     stairsSpritePath: StairsSpritePath | null = null,
-    corners: HwCorners,
+    corners: HwEditorCorners,
     spawn: boolean,
     secondary: HwSecondary | null,
   ): HwfeEditorCell {
@@ -131,7 +136,7 @@ export class EditorService {
       ? this.createFloorTrapSprite(x, y, floorTrapSpritePath)
       : null;
     const stairsSprite = stairsSpritePath ? this.createStairsSprite(x, y, stairsSpritePath) : null;
-    const pixiCorners: HwfeCorners = {
+    const pixiCorners: HwfeEditorCorners = {
       n: corners.n ? this.createCornerSprite(x, y, '/tiles/corners/corner_n.png') : null,
       e: corners.e ? this.createCornerSprite(x, y, '/tiles/corners/corner_e.png') : null,
       s: corners.s ? this.createCornerSprite(x, y, '/tiles/corners/corner_s.png') : null,

@@ -1,5 +1,6 @@
 export { HwAlignment } from './alignment.const.js';
 export { HwCell } from './cell.interface.js';
+export { HwCorners } from './corners.interface.js';
 export { HwCreature } from './creatures/creature.interface.js';
 export {
   HeroAttackDie,
