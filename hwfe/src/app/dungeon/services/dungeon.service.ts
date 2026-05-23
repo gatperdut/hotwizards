@@ -117,6 +117,7 @@ export class DungeonService {
       floorTrap: cell.floorTrap,
       stairsSpritePath: cell.stairsSpritePath,
       corners: { ...cell.corners },
+      secondary: cell.secondary ? { ...cell.secondary } : null,
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,

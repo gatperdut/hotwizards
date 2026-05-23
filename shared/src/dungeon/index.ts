@@ -23,5 +23,6 @@ export { HwMonster } from './creatures/monsters/monster.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
 export { HwFeature } from './feature.interface.js';
 export { HwFloorTrap } from './floor-trap.interface.js';
+export { HwSecondary } from './secondary.interface.js';
 export { HwTrapStatus } from './trap-status.interface.js';
 export { HwTrapped } from './trapped.interface.js';
