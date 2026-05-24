@@ -82,7 +82,7 @@ export class TownComponent {
       this.refresh();
     });
 
-    this.campaignsSocket.on('downStartAdventure', (campaignId, adventureTemplateName) => {
+    this.campaignsSocket.on('downStartAdventure', (campaignId) => {
       if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
@@ -94,7 +94,7 @@ export class TownComponent {
             this.campaignService.campaign.set(campaign);
 
             this.toastService.show({
-              message: `The adventure has started: ${adventureTemplateName}`,
+              message: `The adventure has started: ${campaign.adventure!.template.name}`,
             });
             void this.router.navigate([
               'home',

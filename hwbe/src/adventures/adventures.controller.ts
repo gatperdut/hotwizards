@@ -17,11 +17,8 @@ export class AdventuresController {
 
   @Delete(':adventureId')
   @UseGuards(SetAdventureGuard, SetAdventureCampaignGuard, CampaignMasterGuard)
-  public finishAdventure(
-    @CurrentCampaign() campaign: HwCampaign,
-    @CurrentAdventure() adventure: HwAdventure,
-  ): Promise<number> {
-    return this.adventuresService.finishAdventure(campaign, adventure);
+  public finishAdventure(@CurrentAdventure() adventure: HwAdventure): Promise<number> {
+    return this.adventuresService.finishAdventure(adventure);
   }
 
   @Post(':adventureId/end-turn')

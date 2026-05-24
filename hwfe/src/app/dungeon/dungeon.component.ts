@@ -105,9 +105,12 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   }
 
   private adventuresListen(): void {
-    this.adventuresSocket.on('downFinishAdventure', (campaignId, adventureTemplateName) => {
+    this.adventuresSocket.on('downFinishAdventure', () => {
+      const campaignId = this.campaignService.campaign().id;
+      const adventureTemplateName = this.campaignService.campaign().adventure!.template.name;
+
       this.campaignsApiService
-        .get(campaignId)
+        .get(this.campaignService.campaign().id)
         .pipe(
           tap((campaign) => {
             this.campaignService.campaign.set(campaign);
