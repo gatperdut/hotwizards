@@ -1,14 +1,19 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import { HwCell, HwCreature, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
+import {
+  cellIsTraversable,
+  HwCell,
+  HwCreature,
+  HwDungeon,
+  HwHero,
+  HwMonster,
+} from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
   CornerSpritePath,
   DoorSpritePath,
   FeatureSpritePath,
-  FloorSpritePath,
-  FloorSpritePaths,
   FloorTrapSpritePath,
   SpritePath,
   StairsSpritePath,
@@ -226,17 +231,6 @@ export class DungeonService {
       creature.y + DirectionOffsets[direction].y,
     );
 
-    if (!cell) {
-      return false;
-    }
-
-    return (
-      FloorSpritePaths.includes(cell.baseSpritePath as FloorSpritePath) &&
-      !cell.creatureId &&
-      !cell.stairsSpritePath &&
-      !cell.feature.spritePath &&
-      !cell.secondary &&
-      (!cell.door || cell.door.open)
-    );
+    return !!cell && cellIsTraversable(cell);
   }
 }

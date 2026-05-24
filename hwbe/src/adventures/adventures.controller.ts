@@ -40,7 +40,6 @@ export class AdventuresController {
     return this.adventuresService.nextTurn(user, campaign, adventure);
   }
 
-  // TODO return type
   @Post(':adventureId/move-hero')
   @UseGuards(
     SetAdventureGuard,
@@ -49,16 +48,14 @@ export class AdventuresController {
     SetAdventureHeroGuard,
   )
   public moveHero(
-    @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentAdventure() adventure: HwAdventure,
     @CurrentHero() hero: HwHero,
     @Body() body: HwAdventureMoveHeroDto,
-  ) {
-    return this.adventuresService.moveCreature(user, campaign, adventure, hero, body.direction);
+  ): Promise<void> {
+    return this.adventuresService.moveCreature(campaign, adventure, hero, body.direction);
   }
 
-  // TODO return type
   @Post(':adventureId/move-monster')
   @UseGuards(
     SetAdventureGuard,
@@ -67,12 +64,11 @@ export class AdventuresController {
     SetAdventureMonsterGuard,
   )
   public moveMonster(
-    @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentAdventure() adventure: HwAdventure,
     @CurrentMonster() monster: HwMonster,
     @Body() body: HwAdventureMoveMonsterDto,
-  ) {
-    return this.adventuresService.moveCreature(user, campaign, adventure, monster, body.direction);
+  ): Promise<void> {
+    return this.adventuresService.moveCreature(campaign, adventure, monster, body.direction);
   }
 }

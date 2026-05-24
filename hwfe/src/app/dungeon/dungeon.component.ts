@@ -19,6 +19,7 @@ import {
 } from '@hw/shared/sockets';
 import { forkJoin, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
+import { HwDungeon } from '../../../../shared/dist/shared/src/dungeon/dungeon.interface';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
 import { OverflowService } from '../map/services/overflow.service';
@@ -150,6 +151,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.toastService.show({
         message: message,
       });
+    });
+
+    this.adventuresSocket.on('downUpdate', (dungeon: HwDungeon) => {
+      console.log(dungeon);
     });
   }
 }
