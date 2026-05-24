@@ -11,6 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import { HwDungeon } from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
   AdventuresUpstream,
@@ -19,7 +20,6 @@ import {
 } from '@hw/shared/sockets';
 import { forkJoin, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
-import { HwDungeon } from '../../../../shared/dist/shared/src/dungeon/dungeon.interface';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
 import { OverflowService } from '../map/services/overflow.service';

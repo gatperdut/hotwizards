@@ -11,6 +11,7 @@ export interface HwCreature {
   spritePath: CreatureSpritePath;
   direction: Direction;
   movementPoints: number;
+  maxMovementPoints: number;
   attackDie: number;
   defendDie: number;
   bodyPoints: number;
