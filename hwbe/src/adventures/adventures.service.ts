@@ -1,11 +1,13 @@
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { portrait } from '@hw/shared/characters';
-import { Direction } from '@hw/shared/directions';
-import { HwCreature } from '@hw/shared/dungeon';
+import { Direction, DirectionOffsets } from '@hw/shared/directions';
+import { cellIsTraversable, HwCell, HwCreature } from '@hw/shared/dungeon';
+import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { AdventuresGateway } from './adventures.gateway.js';
@@ -62,14 +64,89 @@ export class AdventuresService {
     return turn;
   }
 
-  // TODO return type
+  private sameCell(cell1: HwCell, cell2: HwCell): boolean {
+    return cell1.x === cell2.x && cell1.y === cell2.y;
+  }
+
+  private cellAt(adventure: HwAdventure, x: number, y: number): HwCell | undefined {
+    return adventure.dungeon.cells.find((cell) => cell.x === x && cell.y === y);
+  }
+
   public async moveCreature(
-    user: HwUser,
     campaign: HwCampaign,
     adventure: HwAdventure,
     creature: HwCreature,
     direction: Direction,
-  ) {
-    // TODO
+  ): Promise<void> {
+    const currentCell = this.cellAt(adventure, creature.x, creature.y)!;
+
+    const targetCell = this.cellAt(
+      adventure,
+      creature.x + DirectionOffsets[direction].x,
+      creature.y + DirectionOffsets[direction].y,
+    );
+
+    if (!targetCell || !cellIsTraversable(targetCell)) {
+      throw new UnprocessableEntityException('The cell cannot be walked into');
+    }
+
+    adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
+      if (this.sameCell(currentCell, cell)) {
+        return {
+          ...currentCell,
+          creatureId: null,
+        };
+      }
+
+      if (this.sameCell(targetCell, cell)) {
+        return {
+          ...targetCell,
+          creatureId: creature.id,
+        };
+      }
+
+      return cell;
+    });
+
+    if (creature.alignment === 'HERO') {
+      adventure.dungeon.heroes = adventure.dungeon.heroes.map((hero) => {
+        if (hero.id === creature.id) {
+          return {
+            ...hero,
+            spritePath: heroSpritePath(hero.klass, hero.gender, direction),
+            x: targetCell.x,
+            y: targetCell.y,
+            direction: direction,
+            movementPoints: hero.movementPoints - 1,
+          };
+        }
+
+        return hero;
+      });
+    } else {
+      adventure.dungeon.monsters = adventure.dungeon.monsters.map((monster) => {
+        if (monster.id === creature.id) {
+          return {
+            ...monster,
+            spritePath: monsterSpritePath(monster.type!, direction),
+            x: targetCell.x,
+            y: targetCell.y,
+            direction: direction,
+            movementPoints: monster.movementPoints - 1,
+          };
+        }
+
+        return monster;
+      });
+    }
+
+    await this.prismaService.campaign.update({
+      where: { id: campaign.id },
+      data: {
+        adventure: { update: { dungeon: adventure.dungeon as unknown as InputJsonValue } },
+      },
+    });
+
+    this.adventuresGateway.handleDownUpdate(adventure.id, adventure.dungeon);
   }
 }

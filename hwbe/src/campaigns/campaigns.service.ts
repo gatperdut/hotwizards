@@ -32,7 +32,7 @@ import {
   heroSpritePath,
   monsterSpritePath,
 } from '@hw/shared/sprites';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -205,7 +205,7 @@ export class CampaignsService {
     const pendingMemberships = campaign.memberships.filter((m) => m.status === 'PENDING');
 
     if (pendingMemberships.length) {
-      throw new ConflictException('There are pending memberships');
+      throw new UnprocessableEntityException('There are pending memberships');
     }
 
     const adventure = await this.prismaService.adventure.create({

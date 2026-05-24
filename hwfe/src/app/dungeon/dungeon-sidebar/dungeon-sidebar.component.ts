@@ -55,28 +55,28 @@ export class DungeonSidebarComponent {
             icon: 'arrow-up-left',
             disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 'n') : true,
             callback: (): void => {
-              console.log('north');
+              this.adventuresApiService.moveHero(adventure.id, 'n').subscribe();
             },
           },
           {
             icon: 'arrow-up-right',
             disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 'e') : true,
             callback: (): void => {
-              console.log('east');
+              this.adventuresApiService.moveHero(adventure.id, 'e').subscribe();
             },
           },
           {
             icon: 'arrow-down-right',
             disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 's') : true,
             callback: (): void => {
-              console.log('south');
+              this.adventuresApiService.moveHero(adventure.id, 's').subscribe();
             },
           },
           {
             icon: 'arrow-down-left',
             disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 'w') : true,
             callback: (): void => {
-              console.log('south');
+              this.adventuresApiService.moveHero(adventure.id, 'w').subscribe();
             },
           },
         ],

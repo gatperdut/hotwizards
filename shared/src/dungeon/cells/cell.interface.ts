@@ -1,5 +1,5 @@
-import { BaseSpritePath } from '../sprites/base-sprites.const.js';
-import { StairsSpritePath } from '../sprites/stairs-sprites.const.js';
+import { BaseSpritePath } from '../../sprites/base-sprites.const.js';
+import { StairsSpritePath } from '../../sprites/stairs-sprites.const.js';
 import { HwCorners } from './corners.interface.js';
 import { HwDoor } from './door.interface.js';
 import { HwFeature } from './feature.interface.js';

@@ -1,6 +1,6 @@
 import { Direction } from '../../directions/directions.const.js';
 import { CreatureSpritePath } from '../../sprites/creature-sprites.const.js';
-import { HwAlignment } from '../alignment.const.js';
+import { HwAlignment } from '../creatures/alignment.const.js';
 
 export interface HwCreature {
   id: number;
