@@ -26,7 +26,10 @@
 }
 
 @if (activePlayer) {
-  <div class="absolute bottom-1 left-18 hw-border border-secondary p-1.5">
+  <div
+    class="absolute bottom-1 left-18 hw-border p-1.5"
+    [class]="activePlayer.me ? 'border-primary' : 'border-secondary'"
+  >
     @if (activePlayer.me) {
       <span class="typ-body text-primary!">Your turn</span>
     } @else {

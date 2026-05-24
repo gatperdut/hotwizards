@@ -31,14 +31,8 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     await socket.join(`adventure:${socket.adventure.id}`);
   }
 
-  public handleDownFinishAdventure(
-    campaignId: number,
-    adventureId: number,
-    adventureTemplateName: string,
-  ): void {
-    this.server
-      .to(`adventure:${adventureId}`)
-      .emit('downFinishAdventure', campaignId, adventureTemplateName);
+  public handleDownFinishAdventure(adventureId: number): void {
+    this.server.to(`adventure:${adventureId}`).emit('downFinishAdventure');
   }
 
   public handleDownNextTurn(adventureId: number, turn: number): void {

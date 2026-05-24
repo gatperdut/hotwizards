@@ -17,16 +17,12 @@ export class AdventuresService {
     private configService: ConfigService,
   ) {}
 
-  public async finishAdventure(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
+  public async finishAdventure(adventure: HwAdventure): Promise<number> {
     await this.prismaService.adventure.delete({
       where: { id: adventure.id },
     });
 
-    this.adventuresGateway.handleDownFinishAdventure(
-      campaign.id,
-      adventure.id,
-      adventure.template.name,
-    );
+    this.adventuresGateway.handleDownFinishAdventure(adventure.id);
 
     return adventure.id;
   }

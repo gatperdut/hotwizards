@@ -223,11 +223,10 @@ export class CampaignsService {
       },
     });
 
-    this.campaignsGateway.handleDownStartAdventure(
-      campaign.id,
-      [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)],
-      adventure.template.name,
-    );
+    this.campaignsGateway.handleDownStartAdventure(campaign.id, [
+      campaign.master.id,
+      ...campaign.memberships.map((m) => m.user.id),
+    ]);
 
     return adventure.id;
   }
