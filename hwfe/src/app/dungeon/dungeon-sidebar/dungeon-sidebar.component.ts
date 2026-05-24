@@ -1,5 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { HwAdventure } from '@hw/shared/adventures';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
@@ -81,37 +82,40 @@ export class DungeonSidebarComponent {
           },
         ],
       },
-      master.me
-        ? {
-            icon: 'stop',
-            callback: (): void => {
-              const dialog: LazyDialog<
-                ConfirmationDialogComponent,
-                ConfirmationDialogData,
-                ConfirmationDialogResult
-              > = {
-                importFn: () =>
-                  import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
-                    (m) => m.ConfirmationDialogComponent,
-                  ),
-              };
-
-              from(
-                this.dialogService.open(dialog, {
-                  title: 'Finish the adventure',
-                  question: 'Are you sure you want to finish the adventure?',
-                  color: 'warning',
-                }),
-              )
-                .pipe(
-                  switchMap((dialogRef) => dialogRef.afterClosed$),
-                  filter((confirmed) => !!confirmed),
-                  switchMap(() => this.adventuresApiService.finishAdventure(adventure.id)),
-                )
-                .subscribe();
-            },
-          }
-        : null,
+      master ? this.stopButton(adventure) : null,
     ].filter((button) => !!button);
   });
+
+  private stopButton(adventure: HwAdventure): SidebarButton {
+    return {
+      icon: 'stop',
+      color: 'warning',
+      callback: (): void => {
+        const dialog: LazyDialog<
+          ConfirmationDialogComponent,
+          ConfirmationDialogData,
+          ConfirmationDialogResult
+        > = {
+          importFn: () =>
+            import('../../shared/confirmation-dialog/confirmation-dialog.component').then(
+              (m) => m.ConfirmationDialogComponent,
+            ),
+        };
+
+        from(
+          this.dialogService.open(dialog, {
+            title: 'Finish the adventure',
+            question: 'Are you sure you want to finish the adventure?',
+            color: 'warning',
+          }),
+        )
+          .pipe(
+            switchMap((dialogRef) => dialogRef.afterClosed$),
+            filter((confirmed) => !!confirmed),
+            switchMap(() => this.adventuresApiService.finishAdventure(adventure.id)),
+          )
+          .subscribe();
+      },
+    };
+  }
 }
