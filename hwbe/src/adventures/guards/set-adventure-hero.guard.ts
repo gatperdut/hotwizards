@@ -1,16 +1,19 @@
-import { HwRequest } from '@hw/hwbe/auth/types/request.type.js';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
-export class AdventureProperTurnGuard implements CanActivate {
+export class SetAdventureHeroGuard implements CanActivate {
   public canActivate(executionContext: ExecutionContext): boolean {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const user = request.user;
-    const campaign = request.campaign;
     const adventure = request.adventure;
 
-    const userIds = [campaign.master.id, ...campaign.memberships.map((m) => m.userId)];
+    const hero = adventure.dungeon.heroes.find((hero) => hero.id === user.id);
 
-    return userIds[adventure.turn] === user.id;
+    if (hero) {
+      request.hero = hero;
+    }
+
+    return !!hero;
   }
 }

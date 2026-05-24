@@ -1,6 +1,8 @@
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { portrait } from '@hw/shared/characters';
+import { Direction } from '@hw/shared/directions';
+import { HwCreature } from '@hw/shared/dungeon';
 import { HwUser } from '@hw/shared/users';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -58,5 +60,16 @@ export class AdventuresService {
     });
 
     return turn;
+  }
+
+  // TODO return type
+  public async moveCreature(
+    user: HwUser,
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+    creature: HwCreature,
+    direction: Direction,
+  ) {
+    // TODO
   }
 }
