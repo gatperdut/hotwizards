@@ -1,14 +1,23 @@
-import { HwAdventure } from '@hw/shared/adventures';
+import {
+  HwAdventure,
+  HwAdventureMoveHeroDto,
+  HwAdventureMoveMonsterDto,
+} from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
+import { HwHero, HwMonster } from '@hw/shared/dungeon';
 import { HwUser } from '@hw/shared/users';
-import { Controller, Delete, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
 import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
 import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { AdventuresService } from './adventures.service.js';
 import { CurrentAdventure } from './decorators/current-adventure.decorator.js';
+import { CurrentHero } from './decorators/current-hero.decorator.js';
+import { CurrentMonster } from './decorators/current-monster.decorator.js';
 import { AdventureProperTurnGuard } from './guards/adventure-proper-turn.guard.js';
 import { SetAdventureCampaignGuard } from './guards/set-adventure-campaign.guard.js';
+import { SetAdventureHeroGuard } from './guards/set-adventure-hero.guard.js';
+import { SetAdventureMonsterGuard } from './guards/set-adventure-monster.guard.js';
 import { SetAdventureGuard } from './guards/set-adventure.guard.js';
 
 @Controller('adventures')
@@ -29,5 +38,41 @@ export class AdventuresController {
     @CurrentAdventure() adventure: HwAdventure,
   ): Promise<number> {
     return this.adventuresService.nextTurn(user, campaign, adventure);
+  }
+
+  // TODO return type
+  @Post(':adventureId/move-hero')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+  )
+  public moveHero(
+    @CurrentUser() user: HwUser,
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentAdventure() adventure: HwAdventure,
+    @CurrentHero() hero: HwHero,
+    @Body() body: HwAdventureMoveHeroDto,
+  ) {
+    return this.adventuresService.moveCreature(user, campaign, adventure, hero, body.direction);
+  }
+
+  // TODO return type
+  @Post(':adventureId/move-monster')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureMonsterGuard,
+  )
+  public moveMonster(
+    @CurrentUser() user: HwUser,
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentAdventure() adventure: HwAdventure,
+    @CurrentMonster() monster: HwMonster,
+    @Body() body: HwAdventureMoveMonsterDto,
+  ) {
+    return this.adventuresService.moveCreature(user, campaign, adventure, monster, body.direction);
   }
 }
