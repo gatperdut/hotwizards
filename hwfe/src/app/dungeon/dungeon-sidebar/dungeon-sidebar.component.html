@@ -1,6 +1,10 @@
 <app-sidebar [buttons]="buttons()"></app-sidebar>
 
+@let activePlayer = dungeonService.activePlayer();
+@let activeHero = dungeonService.activeHero();
 @let myHero = dungeonService.myHero();
+@let master = campaignService.master();
+
 @if (myHero) {
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
     <div class="flex flex-row gap-2 items-center">
@@ -15,14 +19,25 @@
   </div>
 }
 
-@let activePlayer = dungeonService.activePlayer();
-@let activeHero = dungeonService.activeHero();
+@if (master.me) {
+  <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
+    <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
+  </div>
+}
+
 @if (activePlayer) {
   <div class="absolute bottom-1 left-18 hw-border border-secondary p-1.5">
-    <app-who
-      [user]="activePlayer"
-      [character]="activeHero"
-      [master]="activePlayer.id === campaignService.master().id"
-    ></app-who>
+    @if (activePlayer.me) {
+      <span class="typ-body text-primary!">Your turn</span>
+    } @else {
+      <div class="flex flex-col gap-1">
+        <span class="typ-body">Turn for</span>
+        <app-who
+          [user]="activePlayer"
+          [character]="activeHero"
+          [master]="activePlayer.id === campaignService.master().id"
+        ></app-who>
+      </div>
+    }
   </div>
 }
