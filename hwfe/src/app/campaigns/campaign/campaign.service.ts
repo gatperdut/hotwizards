@@ -9,6 +9,10 @@ export class CampaignService {
 
   public memberships = computed(() => this.campaign().memberships);
 
+  public myMembership = computed(() => this.memberships().find((m) => m.me));
+
+  public me = computed(() => (this.master().me ? this.master() : this.myMembership()!.user));
+
   public pendingMemberships = computed(() =>
     this.memberships().filter((m) => m.status === 'PENDING'),
   );

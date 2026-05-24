@@ -28,8 +28,8 @@ export class DungeonSidebarComponent {
 
   public buttons = computed<SidebarButton[]>(() => {
     const adventure = this.dungeonService.adventure();
-    const activeHero = this.dungeonService.activeHero();
     const activePlayer = this.dungeonService.activePlayer();
+    const activeHero = this.dungeonService.activeHero();
     const master = this.campaignService.master();
 
     return [
@@ -49,29 +49,32 @@ export class DungeonSidebarComponent {
       {
         icon: 'arrows-pointing-out',
         autoClose: false,
-        disabled: !activePlayer?.me,
+        disabled: !activeHero?.me,
         actions: [
           {
             icon: 'arrow-up-left',
-            disabled: activeHero ? !this.dungeonService.canWalk(activeHero, 'n') : true,
+            disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 'n') : true,
             callback: (): void => {
               console.log('north');
             },
           },
           {
             icon: 'arrow-up-right',
+            disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 'e') : true,
             callback: (): void => {
               console.log('east');
             },
           },
           {
             icon: 'arrow-down-right',
+            disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 's') : true,
             callback: (): void => {
               console.log('south');
             },
           },
           {
             icon: 'arrow-down-left',
+            disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, 'w') : true,
             callback: (): void => {
               console.log('south');
             },

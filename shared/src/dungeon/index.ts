@@ -20,6 +20,7 @@ export {
 } from './creatures/monsters/monster-stats.const.js';
 export { MonsterType, MonsterTypes } from './creatures/monsters/monster-type.const.js';
 export { HwMonster } from './creatures/monsters/monster.interface.js';
+export { HwDoor } from './door.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
 export { HwFeature } from './feature.interface.js';
 export { HwFloorTrap } from './floor-trap.interface.js';
