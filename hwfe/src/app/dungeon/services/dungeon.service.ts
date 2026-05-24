@@ -1,17 +1,20 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HwAdventure } from '@hw/shared/adventures';
-import { Direction } from '@hw/shared/directions';
+import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import { HwCell, HwCreature, HwDungeon, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
   CornerSpritePath,
   DoorSpritePath,
   FeatureSpritePath,
+  FloorSpritePath,
+  FloorSpritePaths,
   FloorTrapSpritePath,
   SpritePath,
   StairsSpritePath,
 } from '@hw/shared/sprites';
 import { Sprite } from 'pixi.js';
+import { AuthService } from '../../auth/services/auth.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
@@ -31,6 +34,7 @@ export class DungeonService {
   private textureService = inject(TextureService);
   private viewportService = inject(ViewportService);
   private campaignService = inject(CampaignService);
+  private authService = inject(AuthService);
 
   public adventure = signal<HwAdventure>(null!);
   public hwfeDungeon = signal<HwfeDungeon>(null!);
@@ -56,6 +60,10 @@ export class DungeonService {
     }
 
     return this.hwfeHeroes().find((hero) => hero.id === activePlayer.id);
+  });
+
+  public myHero = computed(() => {
+    return this.hwfeHeroes().find((hero) => hero.id === this.authService.userId());
   });
 
   public setup(adventure: HwAdventure): void {
@@ -93,8 +101,8 @@ export class DungeonService {
     const featureSprite = cell.feature.spritePath
       ? this.createFeatureSprite(cell.x, cell.y, cell.feature.spritePath)
       : null;
-    const doorSprite = cell.doorSpritePath
-      ? this.createDoorSprite(cell.x, cell.y, cell.doorSpritePath)
+    const doorSprite = cell.door?.spritePath
+      ? this.createDoorSprite(cell.x, cell.y, cell.door.spritePath)
       : null;
     const floorTrapSprite = cell.floorTrap.spritePath
       ? this.createFloorTrapSprite(cell.x, cell.y, cell.floorTrap.spritePath)
@@ -123,7 +131,7 @@ export class DungeonService {
       baseSpritePath: cell.baseSpritePath,
       creatureId: null,
       feature: cell.feature,
-      doorSpritePath: cell.doorSpritePath,
+      door: cell.door,
       floorTrap: cell.floorTrap,
       stairsSpritePath: cell.stairsSpritePath,
       corners: { ...cell.corners },
@@ -208,8 +216,27 @@ export class DungeonService {
     return cornersSprite;
   }
 
+  private findCell(x: number, y: number): HwfeCell | undefined {
+    return this.hwfeDungeon().cells.find((cell) => cell.x === x && cell.y === y);
+  }
+
   public canWalk(creature: HwCreature, direction: Direction): boolean {
-    // TODO
-    return false;
+    const cell = this.findCell(
+      creature.x + DirectionOffsets[direction].x,
+      creature.y + DirectionOffsets[direction].y,
+    );
+
+    if (!cell) {
+      return false;
+    }
+
+    return (
+      FloorSpritePaths.includes(cell.baseSpritePath as FloorSpritePath) &&
+      !cell.creatureId &&
+      !cell.stairsSpritePath &&
+      !cell.feature.spritePath &&
+      !cell.secondary &&
+      (!cell.door || cell.door.open)
+    );
   }
 }

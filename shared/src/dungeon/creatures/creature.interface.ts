@@ -14,5 +14,7 @@ export interface HwCreature {
   attackDie: number;
   defendDie: number;
   bodyPoints: number;
+  maxBodyPoints: number;
   mindPoints: number;
+  maxMindPoints: number;
 }

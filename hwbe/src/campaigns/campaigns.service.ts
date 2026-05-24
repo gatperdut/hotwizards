@@ -10,6 +10,7 @@ import {
   HeroMindPoints,
   HeroMovementPoints,
   HwCell,
+  HwDoor,
   HwDungeon,
   HwFeature,
   HwFloorTrap,
@@ -25,7 +26,12 @@ import {
 import { HwEditorCell, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
 import { HwMembership } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
-import { FloorTrapSpritePath, heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import {
+  DoorSpritePath,
+  FloorTrapSpritePath,
+  heroSpritePath,
+  monsterSpritePath,
+} from '@hw/shared/sprites';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InputJsonValue } from '@prisma/client/runtime/client';
@@ -265,7 +271,7 @@ export class CampaignsService {
       creatureId: null,
       baseSpritePath: editorCell.baseSpritePath,
       feature: this.editorFeatureToFeature(editorCell.feature),
-      doorSpritePath: editorCell.doorSpritePath,
+      door: editorCell.doorSpritePath ? this.editorDoorToDoor(editorCell.doorSpritePath) : null,
       floorTrap: this.floorTrap(editorCell.floorTrapSpritePath),
       stairsSpritePath: editorCell.stairsSpritePath,
       corners: { ...editorCell.corners },
@@ -297,7 +303,9 @@ export class CampaignsService {
         defendDie: HeroDefendDie[character.klass],
         movementPoints: HeroMovementPoints[character.klass],
         bodyPoints: HeroBodyPoints[character.klass],
+        maxBodyPoints: HeroBodyPoints[character.klass],
         mindPoints: HeroMindPoints[character.klass],
+        maxMindPoints: HeroMindPoints[character.klass],
         spritePath: heroSpritePath(character.klass, character.gender, direction),
         direction: direction,
         x: spawnCell.x,
@@ -326,7 +334,9 @@ export class CampaignsService {
           defendDie: MonsterDefendDie[cell.monster.type],
           movementPoints: MonsterMovementPoints[cell.monster.type],
           bodyPoints: MonsterBodyPoints[cell.monster.type],
+          maxBodyPoints: MonsterBodyPoints[cell.monster.type],
           mindPoints: MonsterMindPoints[cell.monster.type],
+          maxMindPoints: MonsterMindPoints[cell.monster.type],
           spritePath: monsterSpritePath(cell.monster.type, cell.monster.direction),
           direction: cell.monster.direction,
           x: cell.x,
@@ -344,6 +354,16 @@ export class CampaignsService {
       trapped: editorFeature.trapped,
       found: false,
       sprung: false,
+    };
+  }
+
+  private editorDoorToDoor(doorSpritePath: DoorSpritePath | null): HwDoor {
+    return {
+      spritePath: doorSpritePath,
+      trapped: false,
+      found: false,
+      sprung: false,
+      open: false,
     };
   }
 

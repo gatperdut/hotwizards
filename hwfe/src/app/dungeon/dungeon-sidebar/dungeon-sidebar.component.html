@@ -1,13 +1,28 @@
 <app-sidebar [buttons]="buttons()"></app-sidebar>
 
-<div class="absolute top-1 left-18">
-  @let activePlayer = dungeonService.activePlayer();
-  @let activeHero = dungeonService.activeHero();
-  @if (activePlayer) {
+@let myHero = dungeonService.myHero();
+@if (myHero) {
+  <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
+    <div class="flex flex-row gap-2 items-center">
+      <app-who [user]="campaignService.me()" [character]="myHero" [master]="false"></app-who>
+      <span class="text-h1 text-primary"
+        >BP {{ myHero.bodyPoints }}/{{ myHero.maxBodyPoints }}</span
+      >
+      <span class="text-h1 text-secondary"
+        >MP {{ myHero.mindPoints }}/{{ myHero.maxMindPoints }}</span
+      >
+    </div>
+  </div>
+}
+
+@let activePlayer = dungeonService.activePlayer();
+@let activeHero = dungeonService.activeHero();
+@if (activePlayer) {
+  <div class="absolute bottom-1 left-18 hw-border border-secondary p-1.5">
     <app-who
       [user]="activePlayer"
       [character]="activeHero"
       [master]="activePlayer.id === campaignService.master().id"
     ></app-who>
-  }
-</div>
+  </div>
+}
