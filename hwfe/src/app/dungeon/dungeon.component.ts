@@ -11,7 +11,6 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { HwDungeon } from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
   AdventuresUpstream,
@@ -153,8 +152,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       });
     });
 
-    this.adventuresSocket.on('downUpdate', (dungeon: HwDungeon) => {
-      console.log(dungeon);
+    this.adventuresSocket.on('downUpdate', (data) => {
+      console.log(data);
     });
   }
 }

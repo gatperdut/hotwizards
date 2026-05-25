@@ -1,3 +1,4 @@
+import { HwDungeonTransformData } from '@hw/shared/dungeon';
 import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
@@ -6,7 +7,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { HwDungeon } from '../../../shared/dist/shared/src/dungeon/dungeon.interface.js';
 import { AuthService } from '../auth/auth.service.js';
 import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -40,7 +40,7 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     this.server.to(`adventure:${adventureId}`).emit('downNextTurn', turn);
   }
 
-  public handleDownUpdate(adventureId: number, dungeon: HwDungeon): void {
-    this.server.to(`adventure:${adventureId}`).emit('downUpdate', dungeon);
+  public handleDownUpdate(adventureId: number, data: HwDungeonTransformData): void {
+    this.server.to(`adventure:${adventureId}`).emit('downUpdate', data);
   }
 }

@@ -2,7 +2,7 @@ import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { portrait } from '@hw/shared/characters';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import { cellIsTraversable, HwCell, HwCreature } from '@hw/shared/dungeon';
+import { cellIsTraversable, HwCell, HwCreature, HwDungeonTransformData } from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
@@ -147,6 +147,11 @@ export class AdventuresService {
       },
     });
 
-    this.adventuresGateway.handleDownUpdate(adventure.id, adventure.dungeon);
+    const data: HwDungeonTransformData = {
+      modifiedCells: [currentCell, targetCell],
+      modifiedCreatures: [creature],
+    };
+
+    this.adventuresGateway.handleDownUpdate(adventure.id, data);
   }
 }
