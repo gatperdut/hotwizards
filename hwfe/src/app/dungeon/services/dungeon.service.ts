@@ -76,18 +76,27 @@ export class DungeonService {
     this.hwfeHeroes.set(hwfeHeroes);
   }
 
-  public hwfeHeroesUpdate(updatedHeroes: HwHero[]): void {
+  public hwfeHeroesUpdate(): void {
     this.hwfeHeroes.update((heroes) =>
       heroes.map((hero) => {
-        const updatedHero = updatedHeroes.find((h) => h.id === hero.id)!;
+        const updatedHero = this.campaignService
+          .campaign()
+          .adventure!.dungeon.heroes.find((h) => h.id === hero.id)!;
 
-        this.viewportService.destroySprite(hero.pixi.sprite);
+        let sprite: Sprite;
+
+        if (hero.spritePath !== updatedHero.spritePath) {
+          this.viewportService.destroySprite(hero.pixi.sprite);
+          sprite = this.createHeroSprite(updatedHero);
+        } else {
+          sprite = hero.pixi.sprite;
+        }
 
         return {
           ...updatedHero,
           me: hero.me,
           pixi: {
-            sprite: this.createHeroSprite(updatedHero),
+            sprite: sprite,
           },
         };
       }),
@@ -104,8 +113,30 @@ export class DungeonService {
     this.hwfeMonsters.set(hwfeMonsters);
   }
 
-  public hwfeMonstersUpdate(updatedMonsters: HwMonster[]): void {
-    // TODO
+  public hwfeMonstersUpdate(): void {
+    this.hwfeMonsters.update((monsters) =>
+      monsters.map((monster) => {
+        const updatedMonster = this.campaignService
+          .campaign()
+          .adventure!.dungeon.monsters.find((m) => m.id === monster.id)!;
+
+        let sprite: Sprite;
+
+        if (monster.spritePath !== updatedMonster.spritePath) {
+          this.viewportService.destroySprite(monster.pixi.sprite);
+          sprite = this.createMonsterSprite(updatedMonster);
+        } else {
+          sprite = monster.pixi.sprite;
+        }
+
+        return {
+          ...updatedMonster,
+          pixi: {
+            sprite: sprite,
+          },
+        };
+      }),
+    );
   }
 
   private hwfeCellsSet(): void {
@@ -115,10 +146,12 @@ export class DungeonService {
     this.hwfeCells.set(hwfeCells);
   }
 
-  public hwfeCellsUpdate(updatedCells: HwCell[]): void {
+  public hwfeCellsUpdate(): void {
     this.hwfeCells.update((cells) =>
       cells.map((cell) => {
-        const updatedCell = updatedCells.find((c) => c.x === cell.x && c.y === cell.y)!;
+        const updatedCell = this.campaignService
+          .campaign()
+          .adventure!.dungeon.cells.find((c) => c.x === cell.x && c.y === cell.y)!;
 
         return {
           ...cell,

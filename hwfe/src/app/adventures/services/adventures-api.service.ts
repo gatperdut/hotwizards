@@ -20,8 +20,12 @@ export class AdventuresApiService {
       .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be finished'));
   }
 
-  public endTurn(adventureId: number): Observable<number> {
-    return this.httpClient.post<number>(`/api/adventures/${adventureId}/end-turn`, null);
+  public endTurnMaster(adventureId: number): Observable<number> {
+    return this.httpClient.post<number>(`/api/adventures/${adventureId}/end-turn/master`, null);
+  }
+
+  public endTurnHero(adventureId: number): Observable<number> {
+    return this.httpClient.post<number>(`/api/adventures/${adventureId}/end-turn/hero`, null);
   }
 
   public moveHero(adventureId: number, direction: Direction): Observable<void> {

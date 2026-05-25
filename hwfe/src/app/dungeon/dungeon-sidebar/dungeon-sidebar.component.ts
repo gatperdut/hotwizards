@@ -38,7 +38,7 @@ export class DungeonSidebarComponent {
 
     return [
       this.backButton(),
-      this.endTurnButton(activePlayer),
+      this.endTurnButton(master, activePlayer),
       this.moveButton(adventure, activeHero),
       master.me ? this.stopButton(adventure) : null,
     ].filter((button) => !!button);
@@ -53,14 +53,15 @@ export class DungeonSidebarComponent {
     };
   }
 
-  private endTurnButton(activePlayer: HwUser | undefined): SidebarButton {
+  private endTurnButton(master: HwUser, activePlayer: HwUser | undefined): SidebarButton {
     return {
       icon: 'forward',
       disabled: !activePlayer?.me,
       callback: (): void => {
-        this.adventuresApiService
-          .endTurn(this.campaignService.campaign().adventure!.id)
-          .subscribe();
+        (master.me
+          ? this.adventuresApiService.endTurnMaster(this.campaignService.campaign().adventure!.id)
+          : this.adventuresApiService.endTurnHero(this.campaignService.campaign().adventure!.id)
+        ).subscribe();
       },
     };
   }

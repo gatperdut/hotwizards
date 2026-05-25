@@ -36,8 +36,8 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     this.server.to(`adventure:${adventureId}`).emit('downFinishAdventure');
   }
 
-  public handleDownNextTurn(adventureId: number, turn: number): void {
-    this.server.to(`adventure:${adventureId}`).emit('downNextTurn', turn);
+  public handleDownNextTurn(adventureId: number, data: HwDungeonTransformData): void {
+    this.server.to(`adventure:${adventureId}`).emit('downNextTurn', data);
   }
 
   public handleDownUpdate(adventureId: number, data: HwDungeonTransformData): void {

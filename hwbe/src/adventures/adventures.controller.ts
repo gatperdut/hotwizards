@@ -30,14 +30,24 @@ export class AdventuresController {
     return this.adventuresService.finishAdventure(adventure);
   }
 
-  @Post(':adventureId/end-turn')
+  @Post(':adventureId/end-turn/master')
   @UseGuards(SetAdventureGuard, SetAdventureCampaignGuard, AdventureProperTurnGuard)
-  public endTurn(
+  public endTurnMaster(
     @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentAdventure() adventure: HwAdventure,
   ): Promise<number> {
-    return this.adventuresService.nextTurn(user, campaign, adventure);
+    return this.adventuresService.endTurnMaster(user, campaign, adventure);
+  }
+
+  @Post(':adventureId/end-turn/hero')
+  @UseGuards(SetAdventureGuard, SetAdventureCampaignGuard, AdventureProperTurnGuard)
+  public endTurnHero(
+    @CurrentUser() user: HwUser,
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentAdventure() adventure: HwAdventure,
+  ): Promise<number> {
+    return this.adventuresService.endTurnHero(user, campaign, adventure);
   }
 
   @Post(':adventureId/move-hero')
