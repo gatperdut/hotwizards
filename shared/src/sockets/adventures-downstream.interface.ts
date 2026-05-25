@@ -2,6 +2,6 @@ import { HwDungeonTransformData } from '../dungeon/dungeon-transform-data.interf
 
 export interface AdventuresDownstream {
   downFinishAdventure: () => void;
-  downNextTurn: (turn: number) => void;
+  downNextTurn: (data: HwDungeonTransformData) => void;
   downUpdate: (data: HwDungeonTransformData) => void;
 }

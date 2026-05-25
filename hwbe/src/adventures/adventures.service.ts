@@ -31,22 +31,7 @@ export class AdventuresService {
     return adventure.id;
   }
 
-  public async nextTurn(
-    user: HwUser,
-    campaign: HwCampaign,
-    adventure: HwAdventure,
-  ): Promise<number> {
-    const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
-
-    await this.prismaService.adventure.update({
-      where: { id: adventure.id },
-      data: {
-        turn: turn,
-      },
-    });
-
-    this.adventuresGateway.handleDownNextTurn(adventure.id, turn);
-
+  private endTurnPush(user: HwUser, campaign: HwCampaign, turn: number): void {
     const character = turn === 0 ? null : campaign.memberships[turn - 1].character!;
 
     const name = turn === 0 ? 'Zargon' : character!.name;
@@ -59,6 +44,71 @@ export class AdventuresService {
       body: `${name}, it's your turn`,
       icon: icon,
       url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}`,
+    });
+  }
+
+  public async endTurnMaster(
+    user: HwUser,
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+  ): Promise<number> {
+    const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
+
+    const updatedMonsters = adventure.dungeon.monsters.map((m) => ({
+      ...m,
+      movementPoints: m.maxMovementPoints,
+    }));
+
+    await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        turn: turn,
+        dungeon: {
+          ...adventure.dungeon,
+          monsters: updatedMonsters,
+        } as unknown as InputJsonValue,
+      },
+    });
+
+    this.endTurnPush(user, campaign, turn);
+
+    this.adventuresGateway.handleDownNextTurn(adventure.id, {
+      turn: turn,
+      modifiedCells: [],
+      modifiedCreatures: updatedMonsters,
+    });
+
+    return turn;
+  }
+
+  public async endTurnHero(
+    user: HwUser,
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+  ): Promise<number> {
+    const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
+
+    const hero = adventure.dungeon.heroes.find((h) => h.id === user.id)!;
+
+    const updatedHero = { ...hero, movementPoints: hero.maxMovementPoints };
+
+    await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        turn: turn,
+        dungeon: {
+          ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) => (h.id === user.id ? updatedHero : h)),
+        } as unknown as InputJsonValue,
+      },
+    });
+
+    this.endTurnPush(user, campaign, turn);
+
+    this.adventuresGateway.handleDownNextTurn(adventure.id, {
+      turn: turn,
+      modifiedCells: [],
+      modifiedCreatures: [updatedHero],
     });
 
     return turn;
@@ -152,6 +202,7 @@ export class AdventuresService {
     });
 
     const data: HwDungeonTransformData = {
+      turn: adventure.turn,
       modifiedCells: adventure.dungeon.cells.filter(
         (c) =>
           (c.x === currentCell.x && c.y === currentCell.y) ||

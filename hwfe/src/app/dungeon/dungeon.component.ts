@@ -126,22 +126,51 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         .subscribe();
     });
 
-    this.adventuresSocket.on('downNextTurn', (turn) => {
+    this.adventuresSocket.on('downNextTurn', (data) => {
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
-        adventure: { ...campaign.adventure!, turn: turn },
+        adventure: {
+          ...campaign.adventure!,
+          turn: data.turn,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((hero) => {
+              const updatedHero = data.modifiedCreatures.find((c) => c.id === hero.id)!;
+              if (!updatedHero) {
+                return hero;
+              }
+              return {
+                ...hero,
+                movementPoints: updatedHero.movementPoints,
+              };
+            }),
+            monsters: campaign.adventure!.dungeon.monsters.map((monster) => {
+              const updatedMonster = data.modifiedCreatures.find((c) => c.id === monster.id)!;
+              if (!updatedMonster) {
+                return monster;
+              }
+              return {
+                ...monster,
+                movementPoints: updatedMonster.movementPoints,
+              };
+            }),
+          },
+        },
       }));
+
+      this.dungeonService.hwfeHeroesUpdate();
+      this.dungeonService.hwfeMonstersUpdate();
 
       let message: string;
 
-      if (turn === 0) {
+      if (data.turn === 0) {
         const master = this.campaignService.master();
 
         message = master.me
           ? 'Your turn, Zargon'
           : `Turn for Zargon (${this.campaignService.master().handle})`;
       } else {
-        const membership = this.campaignService.memberships()[turn - 1];
+        const membership = this.campaignService.memberships()[data.turn - 1];
 
         message = membership.me
           ? `Your turn, ${membership.character!.name}`
@@ -197,9 +226,9 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         adventure: { ...campaign.adventure!, dungeon: dungeon },
       }));
 
-      this.dungeonService.hwfeCellsUpdate(dungeon.cells);
-      this.dungeonService.hwfeHeroesUpdate(dungeon.heroes);
-      this.dungeonService.hwfeMonstersUpdate(dungeon.monsters);
+      this.dungeonService.hwfeCellsUpdate();
+      this.dungeonService.hwfeHeroesUpdate();
+      this.dungeonService.hwfeMonstersUpdate();
     });
   }
 }
