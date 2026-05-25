@@ -1,22 +1,34 @@
 <app-sidebar [buttons]="buttons()"></app-sidebar>
 
 @let activePlayer = dungeonService.activePlayer();
+@let master = campaignService.master();
+@let activePlayerIsMaster = activePlayer?.id === master.id;
 @let activeHero = dungeonService.activeHero();
 @let myHero = dungeonService.myHero();
-@let master = campaignService.master();
+@let selectedMonster = dungeonService.selectedMonster();
 
 @if (myHero) {
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
     <div class="flex flex-row gap-3 items-center">
       <app-who [user]="campaignService.me()" [character]="myHero" [master]="false"></app-who>
-      <ng-container *ngTemplateOutlet="heroStatsOutlet; context: { hero: myHero }"></ng-container>
+      <ng-container
+        *ngTemplateOutlet="creatureStatsOutlet; context: { creature: myHero }"
+      ></ng-container>
     </div>
   </div>
 }
 
 @if (master.me) {
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
-    <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
+    <div class="flex flex-row gap-3 items-center">
+      <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
+      @if (selectedMonster) {
+        <app-who-monster [master]="true" [monster]="selectedMonster"></app-who-monster>
+        <ng-container
+          *ngTemplateOutlet="creatureStatsOutlet; context: { creature: selectedMonster }"
+        ></ng-container>
+      }
+    </div>
   </div>
 }
 
@@ -34,23 +46,35 @@
           <app-who
             [user]="activePlayer"
             [character]="activeHero"
-            [master]="activePlayer.id === campaignService.master().id"
+            [master]="activePlayerIsMaster"
           ></app-who>
-          <ng-container
-            *ngTemplateOutlet="heroStatsOutlet; context: { hero: activeHero }"
-          ></ng-container>
+          @if (activePlayerIsMaster) {
+            @if (selectedMonster) {
+              <ng-container
+                *ngTemplateOutlet="creatureStatsOutlet; context: { creature: selectedMonster }"
+              ></ng-container>
+            }
+          } @else {
+            <ng-container
+              *ngTemplateOutlet="creatureStatsOutlet; context: { creature: activeHero }"
+            ></ng-container>
+          }
         </div>
       </div>
     }
   </div>
 }
 
-<ng-template #heroStatsOutlet let-hero="hero">
-  @if (hero) {
-    <span class="text-h1 text-primary">BP {{ hero.bodyPoints }}/{{ hero.maxBodyPoints }}</span>
-    <span class="text-h1 text-secondary">MP {{ hero.mindPoints }}/{{ hero.maxMindPoints }}</span>
+<ng-template #creatureStatsOutlet let-creature="creature">
+  @if (creature) {
+    <span class="text-h1 text-primary"
+      >BP {{ creature.bodyPoints }}/{{ creature.maxBodyPoints }}</span
+    >
+    <span class="text-h1 text-secondary"
+      >MP {{ creature.mindPoints }}/{{ creature.maxMindPoints }}</span
+    >
     <span class="text-h1 text-off-medium"
-      >MP {{ hero.movementPoints }}/{{ hero.maxMovementPoints }}</span
+      >MP {{ creature.movementPoints }}/{{ creature.maxMovementPoints }}</span
     >
   }
 </ng-template>

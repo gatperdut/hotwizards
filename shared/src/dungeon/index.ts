@@ -18,6 +18,7 @@ export {
 } from './creatures/heroes/hero-stats.const.js';
 export { HwHero } from './creatures/heroes/hero.interface.js';
 export { MonsterNames } from './creatures/monsters/monster-names.const.js';
+export { monsterPortrait } from './creatures/monsters/monster-portrait.const.js';
 export {
   MonsterAttackDie,
   MonsterBodyPoints,

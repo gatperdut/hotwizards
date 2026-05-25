@@ -7,6 +7,7 @@ import { HwUser } from '@hw/shared/users';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
+import { WhoMonsterComponent } from '../../shared/app-who-monster/who-monster.component';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
@@ -20,7 +21,7 @@ import { DungeonService } from '../services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon-sidebar',
-  imports: [SidebarComponent, WhoComponent, NgTemplateOutlet],
+  imports: [SidebarComponent, WhoComponent, WhoMonsterComponent, NgTemplateOutlet],
   templateUrl: './dungeon-sidebar.component.html',
   styleUrl: './dungeon-sidebar.component.css',
 })

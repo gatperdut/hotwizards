@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { HwCharacter, portrait } from '@hw/shared/characters';
+import { HwCharacter, characterPortrait } from '@hw/shared/characters';
 import { HwUser } from '@hw/shared/users';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { OnlineMarkComponent } from '../../users/online-mark/online-mark.component';
 
+// TODO rename to who-character
 @Component({
   selector: 'app-who',
   imports: [OnlineMarkComponent],
@@ -29,7 +30,7 @@ export class WhoComponent {
       return '/portraits/pending.gif';
     }
 
-    return portrait(character.klass, character.gender);
+    return characterPortrait(character.klass, character.gender);
   });
 
   public klass = computed(() => {
