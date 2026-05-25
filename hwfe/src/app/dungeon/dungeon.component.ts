@@ -11,6 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import { HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
   AdventuresUpstream,
@@ -78,7 +79,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
       .pipe(
         tap(() => {
-          this.dungeonService.setup(this.campaignService.campaign().adventure!);
+          this.dungeonService.setup();
         }),
         tap(() => {
           this.viewportService.viewport.setZoom(3);
@@ -130,7 +131,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         ...campaign,
         adventure: { ...campaign.adventure!, turn: turn },
       }));
-      this.dungeonService.adventure.set(this.campaignService.campaign().adventure!);
 
       let message: string;
 
@@ -153,7 +153,53 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.adventuresSocket.on('downUpdate', (data) => {
-      console.log(data);
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
+      dungeon.heroes = dungeon.heroes.map((hero) => {
+        const updatedHero = data.modifiedCreatures.find((c) => c.id === hero.id) as
+          | HwHero
+          | undefined;
+
+        if (!updatedHero) {
+          return hero;
+        }
+
+        return {
+          ...updatedHero,
+          me: hero.me,
+        };
+      });
+
+      dungeon.monsters = dungeon.monsters.map((monster) => {
+        const updatedMonster = data.modifiedCreatures.find((c) => c.id === monster.id) as
+          | HwMonster
+          | undefined;
+
+        if (!updatedMonster) {
+          return monster;
+        }
+
+        return updatedMonster;
+      });
+
+      dungeon.cells = dungeon.cells.map((cell) => {
+        const updatedCell = data.modifiedCells.find((c) => c.x === cell.x && c.y === cell.y)!;
+
+        if (updatedCell) {
+          return updatedCell;
+        }
+
+        return cell;
+      });
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: { ...campaign.adventure!, dungeon: dungeon },
+      }));
+
+      this.dungeonService.hwfeCellsUpdate(dungeon.cells);
+      this.dungeonService.hwfeHeroesUpdate(dungeon.heroes);
+      this.dungeonService.hwfeMonstersUpdate(dungeon.monsters);
     });
   }
 }

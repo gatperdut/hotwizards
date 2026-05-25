@@ -28,7 +28,7 @@ export class DungeonSidebarComponent {
   private dialogService = inject(DialogService);
 
   public buttons = computed<SidebarButton[]>(() => {
-    const adventure = this.dungeonService.adventure();
+    const adventure = this.campaignService.campaign().adventure!;
     const activePlayer = this.dungeonService.activePlayer();
     const activeHero = this.dungeonService.activeHero();
     const master = this.campaignService.master();
@@ -44,7 +44,9 @@ export class DungeonSidebarComponent {
         icon: 'forward',
         disabled: !activePlayer?.me,
         callback: (): void => {
-          this.adventuresApiService.endTurn(adventure.id).subscribe();
+          this.adventuresApiService
+            .endTurn(this.campaignService.campaign().adventure!.id)
+            .subscribe();
         },
       },
       {
