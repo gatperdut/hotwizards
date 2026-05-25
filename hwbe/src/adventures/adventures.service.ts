@@ -78,6 +78,10 @@ export class AdventuresService {
     creature: HwCreature,
     direction: Direction,
   ): Promise<void> {
+    if (creature.movementPoints < 1) {
+      throw new UnprocessableEntityException('No movement points left');
+    }
+
     const currentCell = this.cellAt(adventure, creature.x, creature.y)!;
 
     const targetCell = this.cellAt(

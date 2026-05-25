@@ -255,11 +255,14 @@ export class DungeonService {
   }
 
   public canWalk(creature: HwCreature, direction: Direction): boolean {
+    if (creature.movementPoints < 1) {
+      return false;
+    }
+
     const cell = this.findCell(
       creature.x + DirectionOffsets[direction].x,
       creature.y + DirectionOffsets[direction].y,
     );
-
     return !!cell && cellIsTraversable(cell);
   }
 }
