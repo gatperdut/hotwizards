@@ -1,7 +1,7 @@
 import { DestroyRef, DOCUMENT, ElementRef, inject, Injectable } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Viewport } from 'pixi-viewport';
-import { Application, FederatedPointerEvent } from 'pixi.js';
+import { Application, FederatedPointerEvent, Sprite } from 'pixi.js';
 import { debounceTime, from, fromEvent, Observable, tap } from 'rxjs';
 import { world2Screen } from '../consts/coords.const.';
 import { DungeonHeight, DungeonWidth } from '../consts/dungeon-size.const';
@@ -70,6 +70,11 @@ export class ViewportService {
           });
       }),
     );
+  }
+
+  public destroySprite(sprite: Sprite): void {
+    this.viewport.removeChild(sprite);
+    sprite.destroy();
   }
 
   public center(x = DungeonWidth / 2, y = DungeonHeight / 2): void {

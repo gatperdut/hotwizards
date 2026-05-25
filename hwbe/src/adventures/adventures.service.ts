@@ -148,8 +148,16 @@ export class AdventuresService {
     });
 
     const data: HwDungeonTransformData = {
-      modifiedCells: [currentCell, targetCell],
-      modifiedCreatures: [creature],
+      modifiedCells: adventure.dungeon.cells.filter(
+        (c) =>
+          (c.x === currentCell.x && c.y === currentCell.y) ||
+          (c.x === targetCell.x && c.y === targetCell.y),
+      ),
+      modifiedCreatures: [
+        [...adventure.dungeon.heroes, ...adventure.dungeon.monsters].find(
+          (c) => c.id === creature.id,
+        )!,
+      ],
     };
 
     this.adventuresGateway.handleDownUpdate(adventure.id, data);

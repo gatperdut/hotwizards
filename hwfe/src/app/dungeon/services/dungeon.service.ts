@@ -1,14 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { HwAdventure } from '@hw/shared/adventures';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import {
-  cellIsTraversable,
-  HwCell,
-  HwCreature,
-  HwDungeon,
-  HwHero,
-  HwMonster,
-} from '@hw/shared/dungeon';
+import { cellIsTraversable, HwCell, HwCreature, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
   CornerSpritePath,
@@ -30,7 +22,6 @@ import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
-import { HwfeDungeon } from '../interfaces/dungeon.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
 import { HwfeMonster } from '../interfaces/monster.interface';
 
@@ -41,14 +32,12 @@ export class DungeonService {
   private campaignService = inject(CampaignService);
   private authService = inject(AuthService);
 
-  public adventure = signal<HwAdventure>(null!);
-  public hwfeDungeon = signal<HwfeDungeon>(null!);
+  private hwfeCells = signal<HwfeCell[]>([]);
   public hwfeHeroes = signal<HwfeHero[]>([]);
   public hwfeMonsters = signal<HwfeMonster[]>([]);
-  public hwfeCreatures = computed(() => [...this.hwfeHeroes(), ...this.hwfeMonsters()]);
 
   public activePlayer = computed(() => {
-    const adventure = this.adventure();
+    const adventure = this.campaignService.campaign().adventure;
     return adventure
       ? [
           this.campaignService.campaign().master,
@@ -71,34 +60,72 @@ export class DungeonService {
     return this.hwfeHeroes().find((hero) => hero.id === this.authService.userId());
   });
 
-  public setup(adventure: HwAdventure): void {
-    this.adventure.set(adventure);
-    this.hwfeHeroesSetup();
-    this.hwfeMonstersSetup();
-    this.hwfeDungeon.set(this.hwDungeon2HwfeDungeon(adventure.dungeon));
+  public setup(): void {
+    this.hwfeCellsSet();
+    this.hwfeHeroesSet();
+    this.hwfeMonstersSet();
   }
 
-  private hwfeHeroesSetup(): void {
-    const hwfeHeroes: HwfeHero[] = this.adventure().dungeon.heroes.map((hero) => ({
-      ...hero,
-      pixi: { sprite: this.createHeroSprite(hero) },
-    }));
+  private hwfeHeroesSet(): void {
+    const hwfeHeroes: HwfeHero[] = this.campaignService
+      .campaign()
+      .adventure!.dungeon.heroes.map((hero) => ({
+        ...hero,
+        pixi: { sprite: this.createHeroSprite(hero) },
+      }));
     this.hwfeHeroes.set(hwfeHeroes);
   }
 
-  private hwfeMonstersSetup(): void {
-    const hwfeMonsters: HwfeMonster[] = this.adventure().dungeon.monsters.map((monster) => ({
-      ...monster,
-      pixi: { sprite: this.createMonsterSprite(monster) },
-    }));
+  public hwfeHeroesUpdate(updatedHeroes: HwHero[]): void {
+    this.hwfeHeroes.update((heroes) =>
+      heroes.map((hero) => {
+        const updatedHero = updatedHeroes.find((h) => h.id === hero.id)!;
+
+        this.viewportService.destroySprite(hero.pixi.sprite);
+
+        return {
+          ...updatedHero,
+          me: hero.me,
+          pixi: {
+            sprite: this.createHeroSprite(updatedHero),
+          },
+        };
+      }),
+    );
+  }
+
+  private hwfeMonstersSet(): void {
+    const hwfeMonsters: HwfeMonster[] = this.campaignService
+      .campaign()
+      .adventure!.dungeon.monsters.map((monster) => ({
+        ...monster,
+        pixi: { sprite: this.createMonsterSprite(monster) },
+      }));
     this.hwfeMonsters.set(hwfeMonsters);
   }
 
-  private hwDungeon2HwfeDungeon(dungeon: HwDungeon): HwfeDungeon {
-    return {
-      ...dungeon,
-      cells: dungeon.cells.map((cell) => this.createHwfeCell(cell)),
-    };
+  public hwfeMonstersUpdate(updatedMonsters: HwMonster[]): void {
+    // TODO
+  }
+
+  private hwfeCellsSet(): void {
+    const hwfeCells = this.campaignService
+      .campaign()
+      .adventure!.dungeon.cells.map((cell) => this.createHwfeCell(cell));
+    this.hwfeCells.set(hwfeCells);
+  }
+
+  public hwfeCellsUpdate(updatedCells: HwCell[]): void {
+    this.hwfeCells.update((cells) =>
+      cells.map((cell) => {
+        const updatedCell = updatedCells.find((c) => c.x === cell.x && c.y === cell.y)!;
+
+        return {
+          ...cell,
+          creatureId: updatedCell.creatureId,
+        };
+      }),
+    );
   }
 
   public createHwfeCell(cell: HwCell): HwfeCell {
@@ -221,8 +248,10 @@ export class DungeonService {
     return cornersSprite;
   }
 
-  private findCell(x: number, y: number): HwfeCell | undefined {
-    return this.hwfeDungeon().cells.find((cell) => cell.x === x && cell.y === y);
+  private findCell(x: number, y: number): HwCell | undefined {
+    return this.campaignService
+      .campaign()
+      .adventure!.dungeon.cells.find((cell) => cell.x === x && cell.y === y);
   }
 
   public canWalk(creature: HwCreature, direction: Direction): boolean {
