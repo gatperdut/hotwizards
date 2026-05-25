@@ -9,15 +9,7 @@
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
     <div class="flex flex-row gap-3 items-center">
       <app-who [user]="campaignService.me()" [character]="myHero" [master]="false"></app-who>
-      <span class="text-h1 text-primary"
-        >BP {{ myHero.bodyPoints }}/{{ myHero.maxBodyPoints }}</span
-      >
-      <span class="text-h1 text-secondary"
-        >MP {{ myHero.mindPoints }}/{{ myHero.maxMindPoints }}</span
-      >
-      <span class="text-h1 text-off-medium"
-        >MP {{ myHero.movementPoints }}/{{ myHero.maxMovementPoints }}</span
-      >
+      <ng-container *ngTemplateOutlet="heroStatsOutlet; context: { hero: myHero }"></ng-container>
     </div>
   </div>
 }
@@ -38,13 +30,27 @@
     } @else {
       <div class="flex flex-col gap-1">
         <span class="typ-body">Turn for</span>
-        <!-- TODO show bp, mp, movp -->
-        <app-who
-          [user]="activePlayer"
-          [character]="activeHero"
-          [master]="activePlayer.id === campaignService.master().id"
-        ></app-who>
+        <div class="flex flex-row gap-3 items-center">
+          <app-who
+            [user]="activePlayer"
+            [character]="activeHero"
+            [master]="activePlayer.id === campaignService.master().id"
+          ></app-who>
+          <ng-container
+            *ngTemplateOutlet="heroStatsOutlet; context: { hero: activeHero }"
+          ></ng-container>
+        </div>
       </div>
     }
   </div>
 }
+
+<ng-template #heroStatsOutlet let-hero="hero">
+  @if (hero) {
+    <span class="text-h1 text-primary">BP {{ hero.bodyPoints }}/{{ hero.maxBodyPoints }}</span>
+    <span class="text-h1 text-secondary">MP {{ hero.mindPoints }}/{{ hero.maxMindPoints }}</span>
+    <span class="text-h1 text-off-medium"
+      >MP {{ hero.movementPoints }}/{{ hero.maxMovementPoints }}</span
+    >
+  }
+</ng-template>

@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HwAdventure } from '@hw/shared/adventures';
@@ -19,7 +20,7 @@ import { DungeonService } from '../services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon-sidebar',
-  imports: [SidebarComponent, WhoComponent],
+  imports: [SidebarComponent, WhoComponent, NgTemplateOutlet],
   templateUrl: './dungeon-sidebar.component.html',
   styleUrl: './dungeon-sidebar.component.css',
 })

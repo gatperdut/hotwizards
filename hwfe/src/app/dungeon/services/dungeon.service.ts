@@ -36,6 +36,15 @@ export class DungeonService {
   public hwfeHeroes = signal<HwfeHero[]>([]);
   public hwfeMonsters = signal<HwfeMonster[]>([]);
 
+  public selectedCell = signal<HwfeCell | null>(null);
+  public selectedMonster = computed(() => {
+    const selectedCell = this.selectedCell();
+    if (!selectedCell) {
+      return null;
+    }
+    return this.hwfeMonsters().find((m) => m.x === selectedCell.x && m.y === selectedCell.y);
+  });
+
   public activePlayer = computed(() => {
     const adventure = this.campaignService.campaign().adventure;
     return adventure
@@ -210,6 +219,36 @@ export class DungeonService {
         corners: pixiCorners,
       },
     };
+
+    if (this.campaignService.master().me) {
+      baseSprite.eventMode = 'static';
+      baseSprite.cursor = 'pointer';
+      baseSprite.on('pointertap', (event) => {
+        if (this.viewportService.dragging) {
+          return;
+        }
+        event.stopPropagation();
+
+        const prevSelectedMonster = this.selectedMonster();
+        if (prevSelectedMonster) {
+          prevSelectedMonster.pixi.sprite.tint = 0xffffff;
+        }
+
+        const activePlayer = this.activePlayer();
+        if (!activePlayer?.me) {
+          return;
+        }
+
+        this.selectedCell.set(hwfeCell);
+
+        const selectedMonster = this.selectedMonster();
+        if (selectedMonster) {
+          selectedMonster.pixi.sprite.tint = 0xff0000;
+        }
+
+        console.log(hwfeCell);
+      });
+    }
 
     return hwfeCell;
   }
