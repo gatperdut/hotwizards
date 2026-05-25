@@ -1,0 +1,16 @@
+<div class="flex flex-row gap-hw-small items-center">
+  <div
+    class="size-10 rounded-full bg-cover bg-center"
+    [style.background-image]="`url(${image()})`"
+  ></div>
+
+  <div class="flex flex-col justify-center min-w-0 grow">
+    <div class="typ-small truncate opacity-70">
+      {{ monster().type }}
+    </div>
+    <div class="typ-body font-bold truncate" [class]="{ 'text-primary!': master }">Zargon</div>
+    <div class="typ-small truncate opacity-70">
+      {{ monster().name }}
+    </div>
+  </div>
+</div>

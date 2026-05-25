@@ -10,7 +10,7 @@ import {
   SpritePath,
   StairsSpritePath,
 } from '@hw/shared/sprites';
-import { Sprite } from 'pixi.js';
+import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { AuthService } from '../../auth/services/auth.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
@@ -223,31 +223,7 @@ export class DungeonService {
     if (this.campaignService.master().me) {
       baseSprite.eventMode = 'static';
       baseSprite.cursor = 'pointer';
-      baseSprite.on('pointertap', (event) => {
-        if (this.viewportService.dragging) {
-          return;
-        }
-        event.stopPropagation();
-
-        const prevSelectedMonster = this.selectedMonster();
-        if (prevSelectedMonster) {
-          prevSelectedMonster.pixi.sprite.tint = 0xffffff;
-        }
-
-        const activePlayer = this.activePlayer();
-        if (!activePlayer?.me) {
-          return;
-        }
-
-        this.selectedCell.set(hwfeCell);
-
-        const selectedMonster = this.selectedMonster();
-        if (selectedMonster) {
-          selectedMonster.pixi.sprite.tint = 0xff0000;
-        }
-
-        console.log(hwfeCell);
-      });
+      baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, hwfeCell));
     }
 
     return hwfeCell;
@@ -336,5 +312,29 @@ export class DungeonService {
       creature.y + DirectionOffsets[direction].y,
     );
     return !!cell && cellIsTraversable(cell);
+  }
+
+  private baseSpriteTap(event: FederatedPointerEvent, hwfeCell: HwfeCell): void {
+    if (this.viewportService.dragging) {
+      return;
+    }
+    event.stopPropagation();
+
+    const prevSelectedMonster = this.selectedMonster();
+    if (prevSelectedMonster) {
+      prevSelectedMonster.pixi.sprite.tint = 0xffffff;
+    }
+
+    const activePlayer = this.activePlayer();
+    if (!activePlayer?.me) {
+      return;
+    }
+
+    this.selectedCell.set(hwfeCell);
+
+    const selectedMonster = this.selectedMonster();
+    if (selectedMonster) {
+      selectedMonster.pixi.sprite.tint = 0xff0000;
+    }
   }
 }

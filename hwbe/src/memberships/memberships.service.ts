@@ -1,6 +1,6 @@
 import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { portrait } from '@hw/shared/characters';
+import { characterPortrait } from '@hw/shared/characters';
 import { HwMembership } from '@hw/shared/memberships';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -115,7 +115,7 @@ export class MembershipsService {
     void this.pushService.notifyUser(campaign.masterId, {
       title: 'Invitation accepted',
       body: `${membership.user.handle} has accepted the invitation to ${campaign.name}`,
-      icon: portrait(character.klass, character.gender),
+      icon: characterPortrait(character.klass, character.gender),
       url: `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}`,
     });
 
@@ -155,7 +155,7 @@ export class MembershipsService {
         : `${campaign.master.handle} has kicked you out of the campaign ${campaign.name}`,
       icon: self
         ? membership.character
-          ? `${portrait(membership.character.klass, membership.character.gender)}`
+          ? `${characterPortrait(membership.character.klass, membership.character.gender)}`
           : '/portraits/pending.gif'
         : '/portraits/zargon.png',
       url: self

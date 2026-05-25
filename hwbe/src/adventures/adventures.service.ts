@@ -1,6 +1,6 @@
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { portrait } from '@hw/shared/characters';
+import { characterPortrait } from '@hw/shared/characters';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import { cellIsTraversable, HwCell, HwCreature, HwDungeonTransformData } from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
@@ -37,7 +37,9 @@ export class AdventuresService {
     const name = turn === 0 ? 'Zargon' : character!.name;
 
     const icon =
-      turn === 0 ? '/portraits/zargon.png' : `${portrait(character!.klass, character!.gender)}`;
+      turn === 0
+        ? '/portraits/zargon.png'
+        : `${characterPortrait(character!.klass, character!.gender)}`;
 
     void this.pushService.notifyUser(user.id, {
       title: campaign.name,
