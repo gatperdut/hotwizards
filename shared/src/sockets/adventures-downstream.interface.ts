@@ -4,5 +4,5 @@ export interface AdventuresDownstream {
   downFinishAdventure: () => void;
   downNextTurn: (data: HwDungeonTransformData) => void;
   downUpdate: (data: HwDungeonTransformData) => void;
-  downSelectedMonster: (id: number | undefined) => void;
+  downSelectMonster: (id: number | null) => void;
 }

@@ -50,6 +50,7 @@
           ></app-who>
           @if (activePlayerIsMaster) {
             @if (selectedMonster) {
+              <app-who-monster [master]="false" [monster]="selectedMonster"></app-who-monster>
               <ng-container
                 *ngTemplateOutlet="creatureStatsOutlet; context: { creature: selectedMonster }"
               ></ng-container>

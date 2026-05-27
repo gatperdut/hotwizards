@@ -1,4 +1,4 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
 import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
@@ -10,10 +10,12 @@ export class SetAdventureMonsterGuard implements CanActivate {
 
     const monster = adventure.dungeon.monsters.find((monster) => monster.id === monsterId);
 
-    if (monster) {
-      request.monster = monster;
+    if (!monster) {
+      throw new NotFoundException('Monster not found');
     }
 
-    return !!monster;
+    request.monster = monster;
+
+    return true;
   }
 }

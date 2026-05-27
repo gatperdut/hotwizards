@@ -1,11 +1,14 @@
-import { userToHwUser } from '@hw/hwbe/users/user-to-hw-user.js';
-import { CanActivate, ExecutionContext, Injectable, NotFoundException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { CampaignHwRelations } from '../../campaigns/campaign-to-hw-campaign.js';
+import {
+  CampaignHwRelations,
+  campaignToHwCampaign,
+} from '../../campaigns/campaign-to-hw-campaign.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 
 @Injectable()
-export class SetAdventureMasterWsGuard implements CanActivate {
+export class SetAdventureCampaignWsGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {}
 
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
@@ -16,15 +19,16 @@ export class SetAdventureMasterWsGuard implements CanActivate {
     const campaign = await this.prismaService.campaign.findFirst({
       where: {
         id: adventure.campaignId,
+        OR: [{ masterId: user.id }, { memberships: { some: { userId: user.id } } }],
       },
       ...CampaignHwRelations,
     });
 
-    if (campaign!.masterId !== user.id) {
-      throw new NotFoundException('You are not the master of campaign');
+    if (!campaign) {
+      throw new WsException('Campaign not found');
     }
 
-    request.master = userToHwUser(campaign!.master, user.id);
+    request.campaign = campaignToHwCampaign(campaign, user.id);
 
     return true;
   }

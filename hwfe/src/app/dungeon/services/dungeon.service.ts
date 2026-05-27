@@ -330,13 +330,13 @@ export class DungeonService {
       return;
     }
 
-    this.adventuresSocket.emit(
-      'upSelectMonster',
-      this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id,
-    );
+    this.adventuresSocket.emit('upSelectMonster', {
+      monsterId:
+        this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id ?? null,
+    });
   }
 
-  public selectMonster(id: number | undefined): void {
+  public selectMonster(id: number | null): void {
     const prevMonster = this.selectedMonster();
     if (prevMonster) {
       prevMonster.pixi.sprite.tint = 0xffffff;
