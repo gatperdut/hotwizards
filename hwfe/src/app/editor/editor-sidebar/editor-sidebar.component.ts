@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { filter, from, switchMap, tap } from 'rxjs';
@@ -27,18 +27,28 @@ export class EditorSidebarComponent {
   private editorService = inject(EditorService);
   private dialogService = inject(DialogService);
 
-  public buttons = signal<SidebarButton[]>([
-    {
+  public buttons = computed<SidebarButton[]>(() => {
+    return [this.backButton(), this.walkButton()];
+  });
+
+  private backButton(): SidebarButton {
+    return {
       icon: 'arrow-uturn-left',
       callback: (): void => {
         void this.router.navigate(['home', 'campaigns']);
       },
-    },
-    {
+    };
+  }
+
+  private walkButton(): SidebarButton {
+    const errors = this.editorService.errors();
+    const hwfeEditorDungeon = this.editorService.hwfeEditorDungeon();
+    return {
       icon: 'arrow-down-tray',
-      color: this.editorService.errors().length ? 'warning' : 'primary',
+      color: errors.length ? 'warning' : 'primary',
+      disabled: !hwfeEditorDungeon,
       callback: (): void => {
-        if (this.editorService.errors().length) {
+        if (errors.length) {
           const dialog: LazyDialog<InfoDialogComponent, InfoDialogData, InfoDialogResult> = {
             importFn: () =>
               import('../../shared/info-dialog/info-dialog.component').then(
@@ -48,7 +58,7 @@ export class EditorSidebarComponent {
 
           void this.dialogService.open(dialog, {
             title: 'There are errors in the dungeon',
-            info: this.editorService.errors().join('\n'),
+            info: errors.join('\n'),
           });
         } else {
           const adventureTemplate = this.editorService.adventureTemplate();
@@ -87,24 +97,6 @@ export class EditorSidebarComponent {
             .subscribe();
         }
       },
-      disabled: !this.editorService.hwfeEditorDungeon(),
-    },
-    {
-      icon: 'pencil',
-      actions: [
-        {
-          icon: 'arrow-uturn-left',
-          callback: (): void => {
-            console.log('second btn');
-          },
-        },
-        {
-          icon: 'arrow-uturn-left',
-          callback: (): void => {
-            console.log('second btn');
-          },
-        },
-      ],
-    },
-  ]);
+    };
+  }
 }
