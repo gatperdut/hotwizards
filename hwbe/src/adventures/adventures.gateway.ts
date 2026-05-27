@@ -1,6 +1,5 @@
 import { HwDungeonTransformData } from '@hw/shared/dungeon';
 import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared/sockets';
-import { HwUser } from '@hw/shared/users';
 import { UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -16,8 +15,9 @@ import { AuthService } from '../auth/auth.service.js';
 import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { applySocketAdventureMiddleware } from './middleware/socket-adventure.middleware.js';
-import { CurrentMasterWs } from './ws-decorators/current-master.ws-decorator.js';
-import { SetAdventureMasterWsGuard } from './ws-guards/set-adventure-master.ws-guard.js';
+import { AdventureCampaignMasterWsGuard } from './ws-guards/adventure-campaign-master.ws-guard.js';
+import { AdventureProperTurnWsGuard } from './ws-guards/adventure-proper-turn.ws-guard.js';
+import { SetAdventureCampaignWsGuard } from './ws-guards/set-adventure-campaign.ws-guard.js';
 
 type AdventuresSocket = Socket<AdventuresUpstream, AdventuresDownstream>;
 
@@ -35,15 +35,17 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     applySocketAdventureMiddleware(server, this.prismaService);
   }
 
-  @UseGuards(SetAdventureMasterWsGuard)
+  @UseGuards(
+    SetAdventureCampaignWsGuard,
+    AdventureCampaignMasterWsGuard,
+    AdventureProperTurnWsGuard,
+  )
   @SubscribeMessage<keyof AdventuresUpstream>('upSelectMonster')
   public async handleUpOnline(
-    @MessageBody() data: AdventuresUpstream['upSelectMonster'],
     @ConnectedSocket() socket: AdventuresSocket,
-    @CurrentMasterWs() master: HwUser,
+    @MessageBody() data: Parameters<AdventuresUpstream['upSelectMonster']>[0],
   ): Promise<void> {
-    console.log(data);
-    console.log(master);
+    this.server.to(`adventure:${socket.adventure.id}`).emit('downSelectMonster', data.monsterId);
   }
 
   public async handleConnection(socket: AdventuresSocket): Promise<void> {

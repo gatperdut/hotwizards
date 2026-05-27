@@ -1,5 +1,10 @@
 import { HwRequest } from '@hw/hwbe/auth/types/request.type.js';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 
 @Injectable()
 export class AdventureProperTurnGuard implements CanActivate {
@@ -11,6 +16,10 @@ export class AdventureProperTurnGuard implements CanActivate {
 
     const userIds = [campaign.master.id, ...campaign.memberships.map((m) => m.userId)];
 
-    return userIds[adventure.turn] === user.id;
+    if (userIds[adventure.turn] !== user.id) {
+      throw new UnprocessableEntityException('You are not on your turn');
+    }
+
+    return true;
   }
 }

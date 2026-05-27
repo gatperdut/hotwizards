@@ -162,6 +162,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           ? 'Your turn, Zargon'
           : `Turn for Zargon (${this.campaignService.master().handle})`;
       } else {
+        this.dungeonService.selectMonster(null);
+
         const membership = this.campaignService.memberships()[data.turn - 1];
 
         message = membership.me
@@ -223,7 +225,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeMonstersUpdate();
     });
 
-    this.dungeonService.adventuresSocket.on('downSelectedMonster', (id) => {
+    this.dungeonService.adventuresSocket.on('downSelectMonster', (id) => {
       this.dungeonService.selectMonster(id);
     });
   }
