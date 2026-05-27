@@ -1,9 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { HwAdventure } from '@hw/shared/adventures';
 import { DirectionIcons, Directions } from '@hw/shared/directions';
-import { HwUser } from '@hw/shared/users';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
@@ -16,7 +14,6 @@ import {
 import { WhoComponent } from '../../shared/who/who.component';
 import { SidebarButton, SidebarComponent } from '../../sidebar/sidebar.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
-import { HwfeHero } from '../interfaces/hero.interface';
 import { DungeonService } from '../services/dungeon.service';
 
 @Component({
@@ -33,17 +30,9 @@ export class DungeonSidebarComponent {
   private dialogService = inject(DialogService);
 
   public buttons = computed<SidebarButton[]>(() => {
-    const adventure = this.campaignService.campaign().adventure!;
-    const activePlayer = this.dungeonService.activePlayer();
-    const activeHero = this.dungeonService.activeHero();
-    const master = this.campaignService.master();
-
-    return [
-      this.backButton(),
-      this.endTurnButton(master, activePlayer),
-      this.moveButton(adventure, activeHero),
-      master.me ? this.stopButton(adventure) : null,
-    ].filter((button) => !!button);
+    return [this.backButton(), this.endTurnButton(), this.moveButton(), this.stopButton()].filter(
+      (button) => !!button,
+    );
   });
 
   private backButton(): SidebarButton {
@@ -55,7 +44,10 @@ export class DungeonSidebarComponent {
     };
   }
 
-  private endTurnButton(master: HwUser, activePlayer: HwUser | undefined): SidebarButton {
+  private endTurnButton(): SidebarButton {
+    const master = this.campaignService.master();
+    const activePlayer = this.dungeonService.activePlayer();
+
     return {
       icon: 'forward',
       disabled: !activePlayer?.me,
@@ -68,7 +60,10 @@ export class DungeonSidebarComponent {
     };
   }
 
-  private moveButton(adventure: HwAdventure, activeHero: HwfeHero | undefined): SidebarButton {
+  private moveButton(): SidebarButton {
+    const adventure = this.campaignService.campaign().adventure!;
+    const activeHero = this.dungeonService.activeHero();
+
     return {
       icon: 'arrows-pointing-out',
       autoClose: false,
@@ -85,7 +80,14 @@ export class DungeonSidebarComponent {
     };
   }
 
-  private stopButton(adventure: HwAdventure): SidebarButton {
+  private stopButton(): SidebarButton | null {
+    const master = this.campaignService.master();
+    const adventure = this.campaignService.campaign().adventure!;
+
+    if (!master.me) {
+      return null;
+    }
+
     return {
       icon: 'stop',
       color: 'warning',
