@@ -11,8 +11,8 @@
   },
   "scripts": {
     "start": "nest start --watch",
-    "start:prod": "node dist/hwbe/src/main.js",
     "start:debug": "nest start --watch --debug",
+    "start:prod": "node dist/hwbe/src/main.js",
     "build": "nest build",
     "prisma:gen": "npx prisma generate",
     "prisma:migrate:dev": "npx prisma migrate dev",
@@ -55,5 +55,8 @@
     "ts-loader": "^9.5.2",
     "tsx": "^4.21.0",
     "tsconfig-paths": "^4.2.0"
+  },
+  "exports": {
+    "./*": "./dist/hwbe/src/*"
   }
 }

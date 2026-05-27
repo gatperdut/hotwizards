@@ -12,14 +12,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwHero, HwMonster } from '@hw/shared/dungeon';
-import {
-  AdventuresDownstream,
-  AdventuresUpstream,
-  CampaignsDownstream,
-  CampaignsUpstream,
-} from '@hw/shared/sockets';
 import { forkJoin, tap } from 'rxjs';
-import { Socket } from 'socket.io-client';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
 import { OverflowService } from '../map/services/overflow.service';
@@ -50,14 +43,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   private viewportService = inject(ViewportService);
   private textureService = inject(TextureService);
 
-  private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
-  private adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
-
   constructor() {
-    this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
-    this.adventuresSocket = this.socketService.socket('adventures', this.destroyRef, {
-      adventureId: this.campaignService.campaign().adventure!.id,
-    });
+    this.dungeonService.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
+    this.dungeonService.adventuresSocket = this.socketService.socket(
+      'adventures',
+      this.destroyRef,
+      {
+        adventureId: this.campaignService.campaign().adventure!.id,
+      },
+    );
 
     this.campaignsListen();
     this.adventuresListen();
@@ -89,10 +83,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       .subscribe();
   }
 
-  // TODO should this be dealt with in campaign.service?
-  // Later thoughts: I think it makes sense here? To begin with, it shouldn't be dealt with in a service?
   private campaignsListen(): void {
-    this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
+    this.dungeonService.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
       if (campaignId !== this.campaignService.campaign().id) {
         return;
       }
@@ -106,7 +98,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   }
 
   private adventuresListen(): void {
-    this.adventuresSocket.on('downFinishAdventure', () => {
+    this.dungeonService.adventuresSocket.on('downFinishAdventure', () => {
       const campaignId = this.campaignService.campaign().id;
       const adventureTemplateName = this.campaignService.campaign().adventure!.template.name;
 
@@ -126,7 +118,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         .subscribe();
     });
 
-    this.adventuresSocket.on('downNextTurn', (data) => {
+    this.dungeonService.adventuresSocket.on('downNextTurn', (data) => {
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
@@ -181,7 +173,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       });
     });
 
-    this.adventuresSocket.on('downUpdate', (data) => {
+    this.dungeonService.adventuresSocket.on('downUpdate', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
 
       dungeon.heroes = dungeon.heroes.map((hero) => {
@@ -229,6 +221,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.hwfeMonstersUpdate();
+    });
+
+    this.dungeonService.adventuresSocket.on('downSelectedMonster', (id) => {
+      this.dungeonService.selectMonster(id);
     });
   }
 }

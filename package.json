@@ -12,6 +12,7 @@
   "workspaces": ["hwbe", "hwfe", "shared", "prismagen"],
   "scripts": {
     "hwbe:start": "npm run start -w @hw/hwbe",
+    "hwbe:start:debug": "npm run start:debug -w @hw/hwbe",
     "hwbe:build": "npm run build -w @hw/hwbe",
     "hwbe:clean": "npm run clean -w @hw/hwbe",
     "hwbe:prisma:gen": "npm run prisma:gen -w @hw/hwbe",
