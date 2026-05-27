@@ -18,26 +18,26 @@ export class AuthenticatedComponent {
   private destroyRef = inject(DestroyRef);
   private presenceService = inject(PresenceService);
 
-  private socket!: Socket<PresenceDownstream, PresenceUpstream>;
+  private presenceSocket!: Socket<PresenceDownstream, PresenceUpstream>;
 
   constructor() {
-    this.socket = this.socketService.socket('presence', this.destroyRef);
+    this.presenceSocket = this.socketService.socket('presence', this.destroyRef);
 
     this.listen();
 
-    this.socket.emit('upOnline');
+    this.presenceSocket.emit('upOnline');
   }
 
   private listen(): void {
-    this.socket.on('downOnline', (user) => {
+    this.presenceSocket.on('downOnline', (user) => {
       this.presenceService.online.update((map) => new Map(map).set(user.id, user));
     });
 
-    this.socket.on('downOnlineList', (users) => {
+    this.presenceSocket.on('downOnlineList', (users) => {
       this.presenceService.online.set(new Map(users.map((u) => [u.id, u])));
     });
 
-    this.socket.on('downOffline', (user) => {
+    this.presenceSocket.on('downOffline', (user) => {
       this.presenceService.online.update((map) => {
         const next = new Map(map);
         next.delete(user.id);

@@ -5,5 +5,6 @@ declare module 'socket.io' {
   interface Socket {
     user: HwUser;
     adventure: HwAdventure;
+    master: HwUser;
   }
 }

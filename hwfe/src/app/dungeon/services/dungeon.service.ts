@@ -2,6 +2,12 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import { cellIsTraversable, HwCell, HwCreature, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
+  AdventuresDownstream,
+  AdventuresUpstream,
+  CampaignsDownstream,
+  CampaignsUpstream,
+} from '@hw/shared/sockets';
+import {
   BaseSpritePath,
   CornerSpritePath,
   DoorSpritePath,
@@ -11,6 +17,7 @@ import {
   StairsSpritePath,
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
+import { Socket } from 'socket.io-client';
 import { AuthService } from '../../auth/services/auth.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
@@ -19,6 +26,7 @@ import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
 import { CreatureSpriteZIndex } from '../../sprites/creature-sprites.const';
 import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
+import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
@@ -32,18 +40,14 @@ export class DungeonService {
   private campaignService = inject(CampaignService);
   private authService = inject(AuthService);
 
+  public campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
+
   private hwfeCells = signal<HwfeCell[]>([]);
   public hwfeHeroes = signal<HwfeHero[]>([]);
   public hwfeMonsters = signal<HwfeMonster[]>([]);
 
-  public selectedCell = signal<HwfeCell | null>(null);
-  public selectedMonster = computed(() => {
-    const selectedCell = this.selectedCell();
-    if (!selectedCell) {
-      return null;
-    }
-    return this.hwfeMonsters().find((m) => m.x === selectedCell.x && m.y === selectedCell.y);
-  });
+  public selectedMonster = signal<HwfeMonster | null>(null);
 
   public activePlayer = computed(() => {
     const adventure = this.campaignService.campaign().adventure;
@@ -244,6 +248,7 @@ export class DungeonService {
   private createBaseSprite(x: number, y: number, baseSpritePath: BaseSpritePath): Sprite {
     const baseSprite = this.createSprite(x, y, baseSpritePath);
     baseSprite.eventMode = 'none';
+    baseSprite.hitArea = BaseSpriteHitArea;
     return baseSprite;
   }
 
@@ -320,21 +325,27 @@ export class DungeonService {
     }
     event.stopPropagation();
 
-    const prevSelectedMonster = this.selectedMonster();
-    if (prevSelectedMonster) {
-      prevSelectedMonster.pixi.sprite.tint = 0xffffff;
-    }
-
     const activePlayer = this.activePlayer();
     if (!activePlayer?.me) {
       return;
     }
 
-    this.selectedCell.set(hwfeCell);
+    this.adventuresSocket.emit(
+      'upSelectMonster',
+      this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id,
+    );
+  }
 
-    const selectedMonster = this.selectedMonster();
-    if (selectedMonster) {
-      selectedMonster.pixi.sprite.tint = 0xff0000;
+  public selectMonster(id: number | undefined): void {
+    const prevMonster = this.selectedMonster();
+    if (prevMonster) {
+      prevMonster.pixi.sprite.tint = 0xffffff;
+    }
+
+    const monster = this.hwfeMonsters().find((m) => m.id === id) ?? null;
+    this.selectedMonster.set(monster);
+    if (monster) {
+      monster.pixi.sprite.tint = 0xff0000;
     }
   }
 }

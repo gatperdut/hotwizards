@@ -1,1 +1,3 @@
-export interface AdventuresUpstream {}
+export interface AdventuresUpstream {
+  upSelectMonster: (monsterId: number | undefined) => void;
+}
