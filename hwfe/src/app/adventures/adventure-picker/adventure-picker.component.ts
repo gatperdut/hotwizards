@@ -71,6 +71,5 @@ export class AdventurePickerComponent {
 
   public info(adventureTemplate: HwAdventureTemplate): void {
     // TODO
-    console.log(`Info for ${adventureTemplate.name}`);
   }
 }

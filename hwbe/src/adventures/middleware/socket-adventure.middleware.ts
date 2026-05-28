@@ -1,7 +1,7 @@
 // auth/socket-auth.middleware.ts
 import { Server } from 'socket.io';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { AdventureHwRelations, adventureToHwAdventure } from '../adventure-to-hw-adventure.js';
+import { AdventureHwRelations } from '../adventure-to-hw-adventure.js';
 
 export function applySocketAdventureMiddleware(server: Server, prismaService: PrismaService): void {
   server.use((socket, next): void => {
@@ -25,7 +25,7 @@ export function applySocketAdventureMiddleware(server: Server, prismaService: Pr
           return next(new Error('Unauthorized'));
         }
 
-        socket.adventure = adventureToHwAdventure(adventure, user.id);
+        socket.adventureId = adventureId;
         next();
       })
       .catch(() => next(new Error('Unauthorized')));
