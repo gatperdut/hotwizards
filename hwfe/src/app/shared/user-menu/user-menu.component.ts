@@ -20,7 +20,7 @@ export class UserMenuComponent {
   private authService = inject(AuthService);
 
   public items: AppMenuItem[] = [
-    { label: 'Push notifications', icon: 'user', callback: () => this.pushNotifications() },
+    { label: 'Push notifications', icon: 'megaphone', callback: () => this.pushNotifications() },
     {
       label: 'Logout',
       icon: 'arrow-left-start-on-rectangle',
