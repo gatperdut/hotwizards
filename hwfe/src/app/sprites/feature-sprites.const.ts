@@ -110,5 +110,3 @@ export const FeatureSpriteTrappable: Record<FeatureSpritePath, boolean> = {
   '/tiles/features/water_shrine.png': false,
   '/tiles/features/well.png': false,
 } as const;
-
-export const FeatureSpriteZIndex = 5;

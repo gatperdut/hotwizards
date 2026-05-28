@@ -3,6 +3,7 @@ import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DirectionIcons, Directions } from '@hw/shared/directions';
 import { filter, from, switchMap } from 'rxjs';
+import { HwCreature } from '../../../../../shared/dist/shared/src/dungeon/creatures/creature.interface';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { WhoMonsterComponent } from '../../shared/app-who-monster/who-monster.component';
@@ -12,6 +13,7 @@ import {
   ConfirmationDialogResult,
 } from '../../shared/confirmation-dialog/confirmation-dialog.component';
 import { WhoComponent } from '../../shared/who/who.component';
+import { SidebarButtonAction } from '../../sidebar/sidebar-button/sidebar-button.component';
 import { SidebarButton, SidebarComponent } from '../../sidebar/sidebar.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import { DungeonService } from '../services/dungeon.service';
@@ -62,21 +64,40 @@ export class DungeonSidebarComponent {
 
   private moveButton(): SidebarButton {
     const adventure = this.campaignService.campaign().adventure!;
+    const master = this.campaignService.master();
+    const activePlayer = this.dungeonService.activePlayer();
     const activeHero = this.dungeonService.activeHero();
+
+    const actions: SidebarButtonAction[] = [];
+
+    let creature: HwCreature | null = null;
+
+    if (activeHero?.me) {
+      creature = activeHero;
+    } else if (activePlayer?.me && master.me) {
+      creature = this.dungeonService.selectedMonster();
+    }
+
+    if (creature) {
+      actions.push(
+        ...Directions.map((dir) => ({
+          icon: DirectionIcons[dir],
+          disabled: !this.dungeonService.canWalk(creature, dir),
+          callback: (): void => {
+            (creature.alignment === 'HERO'
+              ? this.adventuresApiService.moveHero(adventure.id, dir)
+              : this.adventuresApiService.moveMonster(adventure.id, creature.id, dir)
+            ).subscribe();
+          },
+        })),
+      );
+    }
 
     return {
       icon: 'arrows-pointing-out',
       autoClose: false,
-      disabled:
-        !activeHero?.me ||
-        !Directions.filter((dir) => this.dungeonService.canWalk(activeHero, dir)).length,
-      actions: Directions.map((dir) => ({
-        icon: DirectionIcons[dir],
-        disabled: activeHero?.me ? !this.dungeonService.canWalk(activeHero, dir) : true,
-        callback: (): void => {
-          this.adventuresApiService.moveHero(adventure.id, dir).subscribe();
-        },
-      })),
+      disabled: !creature,
+      actions: actions,
     };
   }
 

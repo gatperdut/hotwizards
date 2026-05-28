@@ -15,5 +15,3 @@ export const FloorTrapSpriteOffsets: Record<FloorTrapSpritePath, SpriteOffset> =
   '/tiles/traps/spikes_3.png': { x: 0, y: -25 },
   '/tiles/traps/boulder.png': { x: 0, y: -30 },
 } as const;
-
-export const FloorTrapSpriteZIndex = 5;
