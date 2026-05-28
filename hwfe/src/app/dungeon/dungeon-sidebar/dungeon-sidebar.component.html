@@ -43,11 +43,13 @@
       <div class="flex flex-col gap-1">
         <span class="typ-body">Turn for</span>
         <div class="flex flex-row gap-3 items-center">
-          <app-who
-            [user]="activePlayer"
-            [character]="activeHero"
-            [master]="activePlayerIsMaster"
-          ></app-who>
+          @if (activeHero) {
+            <app-who
+              [user]="activePlayer"
+              [character]="activeHero"
+              [master]="activePlayerIsMaster"
+            ></app-who>
+          }
           @if (activePlayerIsMaster) {
             @if (selectedMonster) {
               <app-who-monster [master]="false" [monster]="selectedMonster"></app-who-monster>

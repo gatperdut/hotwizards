@@ -24,10 +24,8 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
-import { CreatureSpriteZIndex } from '../../sprites/creature-sprites.const';
-import { FeatureSpriteZIndex } from '../../sprites/feature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
-import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
+import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
@@ -104,6 +102,8 @@ export class DungeonService {
         } else {
           sprite = hero.pixi.sprite;
         }
+
+        this.moveSprite(sprite, updatedHero.spritePath, updatedHero.x, updatedHero.y);
 
         return {
           ...updatedHero,
@@ -233,13 +233,18 @@ export class DungeonService {
     return hwfeCell;
   }
 
-  private createSprite(x: number, y: number, spritePath: SpritePath): Sprite {
-    const sprite = new Sprite(this.textureService.textures[spritePath]);
-    sprite.zIndex = groundZIndex(x, y, DungeonWidth);
+  public moveSprite(sprite: Sprite, spritePath: SpritePath, x: number, y: number): void {
     sprite.position.copyFrom(world2Ground(x, y));
-    sprite.setSize(SpriteSizes[spritePath].x, SpriteSizes[spritePath].y);
     sprite.position.x += SpriteOffsets[spritePath].x;
     sprite.position.y += SpriteOffsets[spritePath].y;
+    sprite.zIndex = groundZIndex(x, y, DungeonWidth);
+    sprite.zIndex += spriteZIndex(spritePath);
+  }
+
+  private createSprite(x: number, y: number, spritePath: SpritePath): Sprite {
+    const sprite = new Sprite(this.textureService.textures[spritePath]);
+    sprite.setSize(SpriteSizes[spritePath].x, SpriteSizes[spritePath].y);
+    this.moveSprite(sprite, spritePath, x, y);
     sprite.anchor.set(0.5, 0.5);
     this.viewportService.viewport.addChild(sprite);
     return sprite;
@@ -254,21 +259,18 @@ export class DungeonService {
 
   private createHeroSprite(hero: HwHero): Sprite {
     const heroSprite = this.createSprite(hero.x, hero.y, hero.spritePath);
-    heroSprite.zIndex += CreatureSpriteZIndex;
     heroSprite.eventMode = 'none';
     return heroSprite;
   }
 
   private createMonsterSprite(monster: HwMonster): Sprite {
     const monsterSprite = this.createSprite(monster.x, monster.y, monster.spritePath);
-    monsterSprite.zIndex += CreatureSpriteZIndex;
     monsterSprite.eventMode = 'none';
     return monsterSprite;
   }
 
   private createFeatureSprite(x: number, y: number, featureSpritePath: FeatureSpritePath): Sprite {
     const featureSprite = this.createSprite(x, y, featureSpritePath!);
-    featureSprite.zIndex += FeatureSpriteZIndex;
     featureSprite.eventMode = 'none';
     return featureSprite;
   }

@@ -11,5 +11,3 @@ export const CreatureSpriteOffsets: Record<CreatureSpritePath, SpriteOffset> = {
   ...HeroSpriteOffsets,
   ...MonsterSpriteOffsets,
 } as const;
-
-export const CreatureSpriteZIndex = 5;

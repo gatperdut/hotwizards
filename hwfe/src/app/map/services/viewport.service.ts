@@ -23,6 +23,8 @@ export class ViewportService {
         canvas: canvasRef.nativeElement,
         resizeTo: this.window,
         backgroundAlpha: 0,
+        preference: 'webgl',
+        powerPreference: 'high-performance',
       }),
     ).pipe(
       tap(() => {
