@@ -55,8 +55,5 @@
     "ts-loader": "^9.5.2",
     "tsx": "^4.21.0",
     "tsconfig-paths": "^4.2.0"
-  },
-  "exports": {
-    "./*": "./dist/hwbe/src/*"
   }
 }
