@@ -46,6 +46,7 @@ export class DungeonService {
   public hwfeMonsters = signal<HwfeMonster[]>([]);
 
   public selectedMonster = signal<HwfeMonster | null>(null);
+  public viewedMonster = signal<HwfeMonster | null>(null);
 
   public activePlayer = computed(() => {
     const adventure = this.campaignService.campaign().adventure;
@@ -231,11 +232,9 @@ export class DungeonService {
       },
     };
 
-    if (this.campaignService.master().me) {
-      baseSprite.eventMode = 'static';
-      baseSprite.cursor = 'pointer';
-      baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, hwfeCell));
-    }
+    baseSprite.eventMode = 'static';
+    baseSprite.cursor = 'pointer';
+    baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, hwfeCell));
 
     return hwfeCell;
   }
@@ -336,26 +335,42 @@ export class DungeonService {
     event.stopPropagation();
 
     const activePlayer = this.activePlayer();
-    if (!activePlayer?.me) {
-      return;
-    }
 
-    this.adventuresSocket.emit('upSelectMonster', {
-      monsterId:
-        this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id ?? null,
-    });
+    const monsterId =
+      this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id ?? null;
+
+    if (!this.campaignService.master().me || !activePlayer?.me) {
+      this.viewMonster(monsterId);
+    } else {
+      this.adventuresSocket.emit('upSelectMonster', {
+        monsterId: monsterId ?? null,
+      });
+    }
   }
 
-  public selectMonster(id: number | null): void {
+  public selectMonster(monsterId: number | null): void {
     const prevMonster = this.selectedMonster();
     if (prevMonster) {
       prevMonster.pixi.sprite.tint = 0xffffff;
     }
 
-    const monster = this.hwfeMonsters().find((m) => m.id === id) ?? null;
+    const monster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
     this.selectedMonster.set(monster);
     if (monster) {
       monster.pixi.sprite.tint = 0xff0000;
+    }
+  }
+
+  public viewMonster(monsterId: number | null): void {
+    const prevMonster = this.viewedMonster();
+    if (prevMonster) {
+      prevMonster.pixi.sprite.tint = 0xffffff;
+    }
+
+    const monster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
+    this.viewedMonster.set(monster);
+    if (monster) {
+      monster.pixi.sprite.tint = 0x00ff00;
     }
   }
 }

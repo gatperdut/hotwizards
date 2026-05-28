@@ -34,14 +34,14 @@
 
 @if (activePlayer) {
   <div
-    class="absolute bottom-1 left-18 hw-border p-1.5"
+    class="absolute bottom-1 left-2.5 hw-border p-1.5"
     [class]="activePlayer.me ? 'border-primary' : 'border-secondary'"
   >
     @if (activePlayer.me) {
       <span class="typ-body text-primary!">Your turn</span>
     } @else {
       <div class="flex flex-col gap-1">
-        <span class="typ-body">Turn for</span>
+        <span class="typ-small">Turn for</span>
         <div class="flex flex-row gap-3 items-center">
           @if (activeHero) {
             <app-who
@@ -51,6 +51,7 @@
             ></app-who>
           }
           @if (activePlayerIsMaster) {
+            <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
             @if (selectedMonster) {
               <app-who-monster [master]="false" [monster]="selectedMonster"></app-who-monster>
               <ng-container
@@ -70,14 +71,21 @@
 
 <ng-template #creatureStatsOutlet let-creature="creature">
   @if (creature) {
-    <span class="text-h1 text-primary"
-      >BP {{ creature.bodyPoints }}/{{ creature.maxBodyPoints }}</span
-    >
-    <span class="text-h1 text-secondary"
-      >MP {{ creature.mindPoints }}/{{ creature.maxMindPoints }}</span
-    >
-    <span class="text-h1 text-off-medium"
-      >MP {{ creature.movementPoints }}/{{ creature.maxMovementPoints }}</span
-    >
+    <div class="flex flex-col text-body leading-4.5">
+      <div class="flex flex-row justify-between gap-1">
+        <span class="text-primary">BP</span>
+        <span class="text-primary">{{ creature.bodyPoints }}/{{ creature.maxBodyPoints }}</span>
+      </div>
+      <div class="flex flex-row justify-between gap-1">
+        <span class="text-secondary">MP</span>
+        <span class="text-secondary">{{ creature.mindPoints }}/{{ creature.maxMindPoints }}</span>
+      </div>
+      <div class="flex flex-row justify-between gap-1">
+        <span class="text-off-medium">MP</span>
+        <span class="text-off-medium"
+          >{{ creature.movementPoints }}/{{ creature.maxMovementPoints }}</span
+        >
+      </div>
+    </div>
   }
 </ng-template>
