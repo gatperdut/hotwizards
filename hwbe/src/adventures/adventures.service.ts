@@ -166,33 +166,33 @@ export class AdventuresService {
 
     if (creature.alignment === 'HERO') {
       adventure.dungeon.heroes = adventure.dungeon.heroes.map((hero) => {
-        if (hero.id === creature.id) {
-          return {
-            ...hero,
-            spritePath: heroSpritePath(hero.klass, hero.gender, direction),
-            x: targetCell.x,
-            y: targetCell.y,
-            direction: direction,
-            movementPoints: hero.movementPoints - 1,
-          };
+        if (hero.id !== creature.id) {
+          return hero;
         }
 
-        return hero;
+        return {
+          ...hero,
+          spritePath: heroSpritePath(hero.klass, hero.gender, direction),
+          x: targetCell.x,
+          y: targetCell.y,
+          direction: direction,
+          movementPoints: hero.movementPoints - 1,
+        };
       });
     } else {
       adventure.dungeon.monsters = adventure.dungeon.monsters.map((monster) => {
-        if (monster.id === creature.id) {
-          return {
-            ...monster,
-            spritePath: monsterSpritePath(monster.type!, direction),
-            x: targetCell.x,
-            y: targetCell.y,
-            direction: direction,
-            movementPoints: monster.movementPoints - 1,
-          };
+        if (monster.id !== creature.id) {
+          return monster;
         }
 
-        return monster;
+        return {
+          ...monster,
+          spritePath: monsterSpritePath(monster.type!, direction),
+          x: targetCell.x,
+          y: targetCell.y,
+          direction: direction,
+          movementPoints: monster.movementPoints - 1,
+        };
       });
     }
 
