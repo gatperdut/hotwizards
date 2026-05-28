@@ -18,6 +18,7 @@ import { applySocketAdventureMiddleware } from './middleware/socket-adventure.mi
 import { AdventureCampaignMasterWsGuard } from './ws-guards/adventure-campaign-master.ws-guard.js';
 import { AdventureProperTurnWsGuard } from './ws-guards/adventure-proper-turn.ws-guard.js';
 import { SetAdventureCampaignWsGuard } from './ws-guards/set-adventure-campaign.ws-guard.js';
+import { SetAdventureWsGuard } from './ws-guards/set-adventure.ws-guard.js';
 
 type AdventuresSocket = Socket<AdventuresUpstream, AdventuresDownstream>;
 
@@ -36,20 +37,21 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   @UseGuards(
+    SetAdventureWsGuard,
     SetAdventureCampaignWsGuard,
     AdventureCampaignMasterWsGuard,
     AdventureProperTurnWsGuard,
   )
   @SubscribeMessage<keyof AdventuresUpstream>('upSelectMonster')
-  public async handleUpOnline(
+  public async handleUpSelectMonster(
     @ConnectedSocket() socket: AdventuresSocket,
     @MessageBody() data: Parameters<AdventuresUpstream['upSelectMonster']>[0],
   ): Promise<void> {
-    this.server.to(`adventure:${socket.adventure.id}`).emit('downSelectMonster', data.monsterId);
+    this.server.to(`adventure:${socket.adventureId}`).emit('downSelectMonster', data.monsterId);
   }
 
   public async handleConnection(socket: AdventuresSocket): Promise<void> {
-    await socket.join(`adventure:${socket.adventure.id}`);
+    await socket.join(`adventure:${socket.adventureId}`);
   }
 
   public handleDownFinishAdventure(adventureId: number): void {

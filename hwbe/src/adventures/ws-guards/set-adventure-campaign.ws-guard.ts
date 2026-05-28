@@ -12,9 +12,9 @@ export class SetAdventureCampaignWsGuard implements CanActivate {
   constructor(private prismaService: PrismaService) {}
 
   public async canActivate(executionContext: ExecutionContext): Promise<boolean> {
-    const request = executionContext.switchToWs().getClient<Socket>();
-    const user = request.user;
-    const adventure = request.adventure;
+    const client = executionContext.switchToWs().getClient<Socket>();
+    const user = client.user;
+    const adventure = client.adventure;
 
     const campaign = await this.prismaService.campaign.findFirst({
       where: {
@@ -28,7 +28,7 @@ export class SetAdventureCampaignWsGuard implements CanActivate {
       throw new WsException('Campaign not found');
     }
 
-    request.campaign = campaignToHwCampaign(campaign, user.id);
+    client.campaign = campaignToHwCampaign(campaign, user.id);
 
     return true;
   }

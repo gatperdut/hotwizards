@@ -325,6 +325,7 @@ export class DungeonService {
     if (this.viewportService.dragging) {
       return;
     }
+
     event.stopPropagation();
 
     const activePlayer = this.activePlayer();
