@@ -142,6 +142,8 @@ export class DungeonService {
           sprite = monster.pixi.sprite;
         }
 
+        this.moveSprite(sprite, updatedMonster.spritePath, updatedMonster.x, updatedMonster.y);
+
         return {
           ...updatedMonster,
           pixi: {
@@ -150,6 +152,11 @@ export class DungeonService {
         };
       }),
     );
+
+    const selectedMonster = this.selectedMonster();
+    if (selectedMonster) {
+      this.selectMonster(selectedMonster.id);
+    }
   }
 
   private hwfeCellsSet(): void {

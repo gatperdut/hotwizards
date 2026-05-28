@@ -96,7 +96,7 @@ export class DungeonSidebarComponent {
     return {
       icon: 'arrows-pointing-out',
       autoClose: false,
-      disabled: !creature,
+      disabled: !creature || actions.every((a) => a.disabled),
       actions: actions,
     };
   }
