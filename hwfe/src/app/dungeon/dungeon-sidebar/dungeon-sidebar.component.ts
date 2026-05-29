@@ -2,8 +2,8 @@ import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DirectionIcons, Directions } from '@hw/shared/directions';
+import { HwCreature } from '@hw/shared/dungeon';
 import { filter, from, switchMap } from 'rxjs';
-import { HwCreature } from '../../../../../shared/dist/shared/src/dungeon/creatures/creature.interface';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import {

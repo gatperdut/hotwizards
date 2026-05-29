@@ -13,12 +13,18 @@ import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { FederatedPointerEvent } from 'pixi.js';
 import { forkJoin, tap } from 'rxjs';
 import { screen2World } from '../map/consts/coords.const.';
-import { DungeonHeight, DungeonWidth } from '../map/consts/dungeon-size.const';
+import {
+  DungeonHalfHeight,
+  DungeonHalfWidth,
+  DungeonHeight,
+  DungeonWidth,
+} from '../map/consts/dungeon-size.const';
 import { fromPixiEvent } from '../map/consts/from-pixi-event.const';
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
 import { EditorSidebarComponent } from './editor-sidebar/editor-sidebar.component';
+import { HwfeEditorCell } from './interfaces/editor-cell.interface';
 import { EditorGridService } from './services/editor-grid.service';
 import { EditorService } from './services/editor.service';
 
@@ -72,7 +78,13 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         tap(() => {
           this.gridService.draw();
           this.viewportService.viewport.setZoom(3);
-          this.viewportService.center(14, 21);
+
+          const firstCell: HwfeEditorCell | undefined =
+            this.editorService.hwfeEditorDungeon().cells[0];
+          this.viewportService.center(
+            firstCell?.x ?? DungeonHalfWidth,
+            firstCell?.y ?? DungeonHalfHeight,
+          );
         }),
       )
       .subscribe();
