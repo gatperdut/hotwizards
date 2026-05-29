@@ -15,6 +15,7 @@ import { HwHero, HwMonster } from '@hw/shared/dungeon';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
+import { DungeonHalfHeight, DungeonHalfWidth } from '../map/consts/dungeon-size.const';
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
@@ -77,7 +78,12 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         }),
         tap(() => {
           this.viewportService.viewport.setZoom(3);
-          this.viewportService.center(28, 18);
+
+          const creature = this.dungeonService.activeHero();
+          this.viewportService.center(
+            creature?.x ?? DungeonHalfWidth,
+            creature?.y ?? DungeonHalfHeight,
+          );
         }),
       )
       .subscribe();
