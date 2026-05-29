@@ -1,0 +1,9 @@
+export const RedSpriteTint = 0xed8080;
+export const BlueSpriteTint = 0x93c5e8;
+export const YellowSpriteTint = 0xf5c97a;
+export const GreenSpriteTint = 0x90d4a3;
+export const PurpleSpriteTint = 0xc9b8f0;
+export const OrangeSpriteTint = 0xf5a050;
+export const WhiteSpriteTint = 0xffffff;
+export const BrightRedSpriteTint = 0xd94f4f;
+export const BrightGreenSpriteTint = 0x3db36a;

@@ -1,4 +1,5 @@
 import { FloorTrapSpritePath, SpriteOffset } from '@hw/shared/sprites';
+import { BrightRedSpriteTint } from './sprite-tints.const';
 
 export const FloorTrapSpriteSizes: Record<FloorTrapSpritePath, SpriteOffset> = {
   '/tiles/traps/pit.png': { x: 44, y: 44 },
@@ -15,3 +16,5 @@ export const FloorTrapSpriteOffsets: Record<FloorTrapSpritePath, SpriteOffset> =
   '/tiles/traps/spikes_3.png': { x: 0, y: -25 },
   '/tiles/traps/boulder.png': { x: 0, y: -30 },
 } as const;
+
+export const FloorTrapSpriteTint = BrightRedSpriteTint;

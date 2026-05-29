@@ -28,6 +28,7 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
+import { FeatureTrapSpriteTint } from '../../sprites/feature-trap-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { SpriteOffsets, SpriteSizes } from '../../sprites/sprites.const';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
@@ -206,7 +207,7 @@ export class EditorService {
   ): Sprite {
     const featureTrapSprite = this.createSprite(x, y, featureTrapSpritePath);
     featureTrapSprite.eventMode = 'none';
-    featureTrapSprite.tint = 0xbbbbbb;
+    featureTrapSprite.tint = FeatureTrapSpriteTint;
     return featureTrapSprite;
   }
 

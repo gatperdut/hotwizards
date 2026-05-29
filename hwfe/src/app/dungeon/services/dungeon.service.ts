@@ -24,7 +24,10 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
+import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
+import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
+import { MonsterSelectedTint, MonsterViewedTint } from '../../sprites/monster-sprites.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
@@ -178,7 +181,7 @@ export class DungeonService {
 
     const selectedMonster = this.selectedMonster();
     if (selectedMonster) {
-      this.selectMonster(selectedMonster.id);
+      this.selectMonster(selectedMonster.id, false);
     }
   }
 
@@ -239,12 +242,24 @@ export class DungeonService {
     return hwfeCell;
   }
 
-  public moveSprite(sprite: Sprite, spritePath: SpritePath, x: number, y: number): void {
+  private tintHeroSprites(): void {
+    const hwfeHeroes = this.hwfeHeroes();
+    if (!hwfeHeroes.length) {
+      return;
+    }
+    hwfeHeroes.forEach((hero) => {
+      hero.pixi.sprite.tint = HeroSpriteTints[this.hwfeHeroes().findIndex((h) => h.id === hero.id)];
+    });
+  }
+
+  private moveSprite(sprite: Sprite, spritePath: SpritePath, x: number, y: number): void {
     sprite.position.copyFrom(world2Ground(x, y));
     sprite.position.x += SpriteOffsets[spritePath].x;
     sprite.position.y += SpriteOffsets[spritePath].y;
     sprite.zIndex = groundZIndex(x, y, DungeonWidth);
     sprite.zIndex += spriteZIndex(spritePath);
+
+    this.tintHeroSprites();
   }
 
   private createSprite(x: number, y: number, spritePath: SpritePath): Sprite {
@@ -351,7 +366,7 @@ export class DungeonService {
     }
   }
 
-  public selectMonster(monsterId: number | null): void {
+  public selectMonster(monsterId: number | null, manual: boolean): void {
     const viewedMonster = this.viewedMonster();
     if (viewedMonster?.id === monsterId) {
       this.viewMonster(null);
@@ -359,26 +374,36 @@ export class DungeonService {
 
     const prevSelectedMonster = this.selectedMonster();
     if (prevSelectedMonster) {
-      prevSelectedMonster.pixi.sprite.tint = 0xffffff;
+      prevSelectedMonster.pixi.sprite.tint = CreatureUnselectTint;
+
+      if (manual && prevSelectedMonster.id === monsterId) {
+        this.selectedMonster.set(null);
+        return;
+      }
     }
 
     const selectedMonster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
     this.selectedMonster.set(selectedMonster);
     if (selectedMonster) {
-      selectedMonster.pixi.sprite.tint = 0xff0000;
+      selectedMonster.pixi.sprite.tint = MonsterSelectedTint;
     }
   }
 
   public viewMonster(monsterId: number | null): void {
     const prevViewedMonster = this.viewedMonster();
     if (prevViewedMonster) {
-      prevViewedMonster.pixi.sprite.tint = 0xffffff;
+      prevViewedMonster.pixi.sprite.tint = CreatureUnselectTint;
+
+      if (prevViewedMonster.id === monsterId) {
+        this.viewedMonster.set(null);
+        return;
+      }
     }
 
     const viewedMonster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
     this.viewedMonster.set(viewedMonster);
     if (viewedMonster) {
-      viewedMonster.pixi.sprite.tint = 0x00ff00;
+      viewedMonster.pixi.sprite.tint = MonsterViewedTint;
     }
   }
 }
