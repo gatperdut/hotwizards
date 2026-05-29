@@ -33,11 +33,10 @@ export class AdventuresController {
   @Post(':adventureId/end-turn/master')
   @UseGuards(SetAdventureGuard, SetAdventureCampaignGuard, AdventureProperTurnGuard)
   public endTurnMaster(
-    @CurrentUser() user: HwUser,
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentAdventure() adventure: HwAdventure,
   ): Promise<number> {
-    return this.adventuresService.endTurnMaster(user, campaign, adventure);
+    return this.adventuresService.endTurnMaster(campaign, adventure);
   }
 
   @Post(':adventureId/end-turn/hero')
