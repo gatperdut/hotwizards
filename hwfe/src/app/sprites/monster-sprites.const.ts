@@ -1,4 +1,5 @@
 import { MonsterSpritePath, SpriteOffset } from '@hw/shared/sprites';
+import { OrangeSpriteTint, PurpleSpriteTint } from './sprite-tints.const';
 
 export const MonsterSpriteSizes: Record<MonsterSpritePath, SpriteOffset> = {
   '/tiles/monsters/chaos_mage_n.png': { x: 64, y: 128 },
@@ -109,3 +110,6 @@ export const MonsterSpriteOffsets: Record<MonsterSpritePath, SpriteOffset> = {
   '/tiles/monsters/zombie_s.png': { x: 9, y: -42 },
   '/tiles/monsters/zombie_w.png': { x: 7, y: -36 },
 } as const;
+
+export const MonsterSelectedTint = OrangeSpriteTint;
+export const MonsterViewedTint = PurpleSpriteTint;

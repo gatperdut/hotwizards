@@ -1,6 +1,7 @@
 import { CreatureSpritePath, SpriteOffset } from '@hw/shared/sprites';
 import { HeroSpriteOffsets, HeroSpriteSizes } from './hero-sprites.const';
 import { MonsterSpriteOffsets, MonsterSpriteSizes } from './monster-sprites.const';
+import { WhiteSpriteTint } from './sprite-tints.const';
 
 export const CreatureSpriteSizes: Record<CreatureSpritePath, SpriteOffset> = {
   ...HeroSpriteSizes,
@@ -11,3 +12,5 @@ export const CreatureSpriteOffsets: Record<CreatureSpritePath, SpriteOffset> = {
   ...HeroSpriteOffsets,
   ...MonsterSpriteOffsets,
 } as const;
+
+export const CreatureUnselectTint = WhiteSpriteTint;

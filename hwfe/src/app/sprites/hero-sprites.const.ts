@@ -1,4 +1,10 @@
 import { HeroSpritePath, SpriteOffset } from '@hw/shared/sprites';
+import {
+  BlueSpriteTint,
+  GreenSpriteTint,
+  RedSpriteTint,
+  YellowSpriteTint,
+} from './sprite-tints.const';
 
 export const HeroSpriteSizes: Record<HeroSpritePath, SpriteOffset> = {
   '/tiles/heroes/barbarian_male_n.png': { x: 60, y: 120 },
@@ -69,3 +75,10 @@ export const HeroSpriteOffsets: Record<HeroSpritePath, SpriteOffset> = {
   '/tiles/heroes/wizard_female_s.png': { x: -1, y: -33 },
   '/tiles/heroes/wizard_female_w.png': { x: 3, y: -30 },
 } as const;
+
+export const HeroSpriteTints: number[] = [
+  RedSpriteTint,
+  BlueSpriteTint,
+  YellowSpriteTint,
+  GreenSpriteTint,
+];
