@@ -79,10 +79,13 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         tap(() => {
           this.viewportService.viewport.setZoom(3);
 
-          const creature = this.dungeonService.activeHero();
+          const creature =
+            this.dungeonService.activeHero() ||
+            this.dungeonService.myHero() ||
+            this.dungeonService.hwfeMonsters()[0];
           this.viewportService.center(
             creature?.x ?? DungeonHalfWidth,
-            creature?.y ?? DungeonHalfHeight,
+            creature?.y ?? DungeonHalfHeight - 5,
           );
         }),
       )
@@ -175,6 +178,9 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         message = membership.me
           ? `Your turn, ${membership.character!.name}`
           : `Turn for ${membership.character!.name} (${membership.user.handle})`;
+
+        const myHero = this.dungeonService.myHero();
+        this.viewportService.center(myHero!.x, myHero!.y);
       }
       this.toastService.show({
         message: message,

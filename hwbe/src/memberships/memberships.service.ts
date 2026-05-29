@@ -156,7 +156,7 @@ export class MembershipsService {
       icon: self
         ? membership.character
           ? `${characterPortrait(membership.character.klass, membership.character.gender)}`
-          : '/portraits/pending.gif'
+          : '/portraits/characters/pending.gif'
         : '/portraits/zargon.png',
       url: self
         ? `${this.configService.get('HWBE_CORS_ORIGIN')}/home/campaigns/${campaign.id}`
