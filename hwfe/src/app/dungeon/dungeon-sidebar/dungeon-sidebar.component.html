@@ -6,6 +6,7 @@
 @let activeHero = dungeonService.activeHero();
 @let myHero = dungeonService.myHero();
 @let selectedMonster = dungeonService.selectedMonster();
+@let viewedMonster = dungeonService.viewedMonster();
 
 @if (myHero) {
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
@@ -21,13 +22,25 @@
 @if (master.me) {
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
     <div class="flex flex-row gap-3 items-center">
-      <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
       @if (selectedMonster) {
         <app-who-monster [master]="true" [monster]="selectedMonster"></app-who-monster>
         <ng-container
           *ngTemplateOutlet="creatureStatsOutlet; context: { creature: selectedMonster }"
         ></ng-container>
+      } @else {
+        <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
       }
+    </div>
+  </div>
+}
+
+@if (viewedMonster) {
+  <div class="absolute top-21 left-18 hw-border border-off-medium p-1.5">
+    <div class="flex flex-row gap-3 items-center">
+      <app-who-monster [master]="false" [monster]="viewedMonster"></app-who-monster>
+      <ng-container
+        *ngTemplateOutlet="creatureStatsOutlet; context: { creature: viewedMonster }"
+      ></ng-container>
     </div>
   </div>
 }
