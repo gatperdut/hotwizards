@@ -339,7 +339,10 @@ export class DungeonService {
     const monsterId =
       this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id ?? null;
 
-    if (!this.campaignService.master().me || !activePlayer?.me) {
+    if (
+      (!this.campaignService.master().me || !activePlayer?.me) &&
+      this.selectedMonster()?.id !== monsterId
+    ) {
       this.viewMonster(monsterId);
     } else {
       this.adventuresSocket.emit('upSelectMonster', {
@@ -349,28 +352,33 @@ export class DungeonService {
   }
 
   public selectMonster(monsterId: number | null): void {
-    const prevMonster = this.selectedMonster();
-    if (prevMonster) {
-      prevMonster.pixi.sprite.tint = 0xffffff;
+    const viewedMonster = this.viewedMonster();
+    if (viewedMonster?.id === monsterId) {
+      this.viewMonster(null);
     }
 
-    const monster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
-    this.selectedMonster.set(monster);
-    if (monster) {
-      monster.pixi.sprite.tint = 0xff0000;
+    const prevSelectedMonster = this.selectedMonster();
+    if (prevSelectedMonster) {
+      prevSelectedMonster.pixi.sprite.tint = 0xffffff;
+    }
+
+    const selectedMonster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
+    this.selectedMonster.set(selectedMonster);
+    if (selectedMonster) {
+      selectedMonster.pixi.sprite.tint = 0xff0000;
     }
   }
 
   public viewMonster(monsterId: number | null): void {
-    const prevMonster = this.viewedMonster();
-    if (prevMonster) {
-      prevMonster.pixi.sprite.tint = 0xffffff;
+    const prevViewedMonster = this.viewedMonster();
+    if (prevViewedMonster) {
+      prevViewedMonster.pixi.sprite.tint = 0xffffff;
     }
 
-    const monster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
-    this.viewedMonster.set(monster);
-    if (monster) {
-      monster.pixi.sprite.tint = 0x00ff00;
+    const viewedMonster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
+    this.viewedMonster.set(viewedMonster);
+    if (viewedMonster) {
+      viewedMonster.pixi.sprite.tint = 0x00ff00;
     }
   }
 }
