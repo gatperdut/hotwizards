@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Container, Graphics, Text, TextStyle } from 'pixi.js';
-import { world2Screen } from '../../map/consts/coords.const.';
+import { Container, Graphics } from 'pixi.js';
 import { DungeonHeight, DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { ViewportService } from '../../map/services/viewport.service';
 import { CellHalfH, CellHalfW } from '../../sprites/cell-size.const';
@@ -14,7 +13,6 @@ export class EditorGridService {
 
   public draw(): void {
     this.drawGrid();
-    this.drawCoordinates();
   }
 
   private drawGrid(): void {
@@ -39,26 +37,6 @@ export class EditorGridService {
 
     this.grid.stroke();
     this.viewportService.viewport.addChild(this.grid);
-  }
-
-  // TODO drop this at some point
-  private drawCoordinates(): void {
-    const style = new TextStyle({
-      fontSize: 8,
-      fill: 0x444444,
-    });
-
-    for (let y = 0; y < DungeonHeight; y++) {
-      for (let x = 0; x < DungeonWidth; x++) {
-        const label = new Text({ text: `${x},${y}`, style });
-        label.zIndex = -1;
-        label.anchor.set(0.5, 0.5);
-        label.position.copyFrom(world2Screen(x, y));
-        this.coordinates.addChild(label);
-      }
-    }
-
-    this.viewportService.viewport.addChild(this.coordinates);
   }
 
   public shutdown(): void {

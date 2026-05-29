@@ -50,9 +50,6 @@ export class AdventureTemplatesService {
       data: { name: name, info: info, dungeon: dungeon },
     });
 
-    // TODO deal with ws
-    // this.adventureTemplatesGateway.handleDownUpdateAdventureTemplate(adventureTemplate.id);
-
     return adventureTemplate.id;
   }
 
@@ -66,9 +63,6 @@ export class AdventureTemplatesService {
       where: { id: adventureTemplate.id },
       data: { name: name, info: info, dungeon: dungeon },
     });
-
-    // TODO deal with ws?
-    // this.adventureTemplatesGateway.handleDownUpdateAdventureTemplate(adventureTemplate.id);
 
     return adventureTemplate.id;
   }

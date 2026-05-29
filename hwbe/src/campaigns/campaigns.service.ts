@@ -212,7 +212,6 @@ export class CampaignsService {
       data: {
         campaignId: campaign.id,
         templateId: adventureTemplate.id,
-        // TODO transform HwEditorDungeon to HwDungeon
         dungeon: this.editorDungeonToDungeon(
           campaign,
           adventureTemplate.dungeon,
