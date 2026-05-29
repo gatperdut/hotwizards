@@ -4,7 +4,7 @@ import {
   InfoDialogData,
   InfoDialogResult,
 } from '@hw/hwfe/app/shared/info-dialog/info-dialog.component';
-import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
+import { WhoCharacterComponent } from '@hw/hwfe/app/shared/who-character/who-character.component';
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwMembership } from '@hw/shared/memberships';
@@ -15,7 +15,7 @@ import { CampaignsListActionsService } from '../services/campaigns-list-actions.
 
 @Component({
   selector: 'app-campaigns-list-entry',
-  imports: [CardComponent, WhoComponent],
+  imports: [CardComponent, WhoCharacterComponent],
   templateUrl: './campaigns-list-entry.component.html',
   styleUrl: './campaigns-list-entry.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -6,7 +6,7 @@ import {
   ConfirmationDialogResult,
 } from '@hw/hwfe/app/shared/confirmation-dialog/confirmation-dialog.component';
 import { UserMenuComponent } from '@hw/hwfe/app/shared/user-menu/user-menu.component';
-import { WhoComponent } from '@hw/hwfe/app/shared/who/who.component';
+import { WhoCharacterComponent } from '@hw/hwfe/app/shared/who-character/who-character.component';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { DialogService, LazyDialog } from '@hw/hwfe/app/ui/dialog/services/dialog.service';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
@@ -34,7 +34,7 @@ import { TownMembershipComponent } from './town-membership/town-membership.compo
   imports: [
     ButtonComponent,
     TownMembershipComponent,
-    WhoComponent,
+    WhoCharacterComponent,
     AdventurePickerComponent,
     UserMenuComponent,
   ],
