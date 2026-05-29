@@ -31,9 +31,9 @@ export class AdventuresService {
     return adventure.id;
   }
 
-  private endTurnPush(user: HwUser, campaign: HwCampaign, turn: number): void {
+  private endTurnPush(campaign: HwCampaign, turn: number): void {
     const character = turn === 0 ? null : campaign.memberships[turn - 1].character!;
-
+    const user = turn === 0 ? campaign.master : campaign.memberships[turn - 1].user;
     const name = turn === 0 ? 'Zargon' : character!.name;
 
     const icon =
@@ -49,11 +49,7 @@ export class AdventuresService {
     });
   }
 
-  public async endTurnMaster(
-    user: HwUser,
-    campaign: HwCampaign,
-    adventure: HwAdventure,
-  ): Promise<number> {
+  public async endTurnMaster(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
 
     const updatedMonsters = adventure.dungeon.monsters.map((m) => ({
@@ -72,7 +68,7 @@ export class AdventuresService {
       },
     });
 
-    this.endTurnPush(user, campaign, turn);
+    this.endTurnPush(campaign, turn);
 
     this.adventuresGateway.handleDownNextTurn(adventure.id, {
       turn: turn,
@@ -105,7 +101,7 @@ export class AdventuresService {
       },
     });
 
-    this.endTurnPush(user, campaign, turn);
+    this.endTurnPush(campaign, turn);
 
     this.adventuresGateway.handleDownNextTurn(adventure.id, {
       turn: turn,
