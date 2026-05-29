@@ -8,8 +8,6 @@ export abstract class SocketService {
   protected destroyRef = inject(DestroyRef);
 
   public socket(namespace: string, destroyRef: DestroyRef, payload?: any): Socket {
-    // TODO
-    // const socket = io(`${environment.hwbeUrl}/${namespace}`, {
     const socket = io(`${window.location.origin}/${namespace}`, {
       auth: (cb) => cb({ token: `Bearer ${this.authTokenService.get()}`, ...(payload || {}) }),
       autoConnect: true,
