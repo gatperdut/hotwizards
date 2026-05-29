@@ -4,15 +4,14 @@ import { HwUser } from '@hw/shared/users';
 import { KlassesService } from '../../characters/services/klasses.service';
 import { OnlineMarkComponent } from '../../users/online-mark/online-mark.component';
 
-// TODO rename to who-character
 @Component({
-  selector: 'app-who',
+  selector: 'app-who-character',
   imports: [OnlineMarkComponent],
-  templateUrl: './who.component.html',
-  styleUrl: './who.component.css',
+  templateUrl: './who-character.component.html',
+  styleUrl: './who-character.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WhoComponent {
+export class WhoCharacterComponent {
   private klassesService = inject(KlassesService);
 
   public master = input(false);

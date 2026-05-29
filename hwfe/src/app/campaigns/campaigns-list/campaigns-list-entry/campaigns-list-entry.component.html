@@ -6,19 +6,19 @@
     </div>
   </div>
   <div appCardBody class="flex flex-col gap-hw-average">
-    <app-who [master]="true" [user]="campaign().master"></app-who>
+    <app-who-character [master]="true" [user]="campaign().master"></app-who-character>
     <div class="flex flex-col xl:flex-row gap-hw-average">
       @if (activeMemberships().length) {
         <div class="flex flex-col gap-hw-small grow">
           <span class="typ-body whitespace-nowrap">Active members</span>
           <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
             @for (membership of activeMemberships(); track membership.id) {
-              <app-who
+              <app-who-character
                 [user]="membership.user"
                 [character]="membership.character"
                 (click)="clickMembership(membership)"
                 [class]="{ 'cursor-pointer': meMaster() }"
-              ></app-who>
+              ></app-who-character>
             }
           </div>
         </div>
@@ -30,11 +30,11 @@
 
           <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
             @for (membership of pendingMemberships(); track membership.id) {
-              <app-who
+              <app-who-character
                 [user]="membership.user"
                 (click)="clickMembership(membership)"
                 [class]="{ 'cursor-pointer': meMaster() }"
-              ></app-who>
+              ></app-who-character>
             }
           </div>
         </div>

@@ -6,13 +6,13 @@ import { filter, from, switchMap } from 'rxjs';
 import { HwCreature } from '../../../../../shared/dist/shared/src/dungeon/creatures/creature.interface';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
-import { WhoMonsterComponent } from '../../shared/app-who-monster/who-monster.component';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
   ConfirmationDialogResult,
 } from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { WhoComponent } from '../../shared/who/who.component';
+import { WhoCharacterComponent } from '../../shared/who-character/who-character.component';
+import { WhoMonsterComponent } from '../../shared/who-monster/who-monster.component';
 import { SidebarButtonAction } from '../../sidebar/sidebar-button/sidebar-button.component';
 import { SidebarButton, SidebarComponent } from '../../sidebar/sidebar.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
@@ -20,7 +20,7 @@ import { DungeonService } from '../services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon-sidebar',
-  imports: [SidebarComponent, WhoComponent, WhoMonsterComponent, NgTemplateOutlet],
+  imports: [SidebarComponent, WhoCharacterComponent, WhoMonsterComponent, NgTemplateOutlet],
   templateUrl: './dungeon-sidebar.component.html',
   styleUrl: './dungeon-sidebar.component.css',
 })

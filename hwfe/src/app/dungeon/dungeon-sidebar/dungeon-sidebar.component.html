@@ -11,7 +11,11 @@
 @if (myHero) {
   <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
     <div class="flex flex-row gap-3 items-center">
-      <app-who [user]="campaignService.me()" [character]="myHero" [master]="false"></app-who>
+      <app-who-character
+        [user]="campaignService.me()"
+        [character]="myHero"
+        [master]="false"
+      ></app-who-character>
       <ng-container
         *ngTemplateOutlet="creatureStatsOutlet; context: { creature: myHero }"
       ></ng-container>
@@ -28,7 +32,10 @@
           *ngTemplateOutlet="creatureStatsOutlet; context: { creature: selectedMonster }"
         ></ng-container>
       } @else {
-        <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
+        <app-who-character
+          [master]="true"
+          [user]="campaignService.campaign().master"
+        ></app-who-character>
       }
     </div>
   </div>
@@ -57,11 +64,11 @@
         <span class="typ-small">Turn for</span>
         <div class="flex flex-row gap-3 items-center">
           @if (activeHero) {
-            <app-who
+            <app-who-character
               [user]="activePlayer"
               [character]="activeHero"
               [master]="activePlayerIsMaster"
-            ></app-who>
+            ></app-who-character>
           }
           @if (activePlayerIsMaster) {
             @if (selectedMonster) {
@@ -70,7 +77,10 @@
                 *ngTemplateOutlet="creatureStatsOutlet; context: { creature: selectedMonster }"
               ></ng-container>
             } @else {
-              <app-who [master]="true" [user]="campaignService.campaign().master"></app-who>
+              <app-who-character
+                [master]="true"
+                [user]="campaignService.campaign().master"
+              ></app-who-character>
             }
           } @else {
             <ng-container
