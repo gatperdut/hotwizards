@@ -1,6 +1,5 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { AuthTokenService } from '@hw/hwfe/app/auth/services/auth-token.service';
-import { environment } from '@hw/hwfe/environments/environment';
 import { io, Socket } from 'socket.io-client';
 
 @Injectable({ providedIn: 'root' })
@@ -9,7 +8,9 @@ export abstract class SocketService {
   protected destroyRef = inject(DestroyRef);
 
   public socket(namespace: string, destroyRef: DestroyRef, payload?: any): Socket {
-    const socket = io(`${environment.hwbeUrl}/${namespace}`, {
+    // TODO
+    // const socket = io(`${environment.hwbeUrl}/${namespace}`, {
+    const socket = io(`${window.location.origin}/${namespace}`, {
       auth: (cb) => cb({ token: `Bearer ${this.authTokenService.get()}`, ...(payload || {}) }),
       autoConnect: true,
     });
