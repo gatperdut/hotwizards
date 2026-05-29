@@ -72,7 +72,7 @@ export class DungeonService {
   });
 
   public myHero = computed(() => {
-    return this.hwfeHeroes().find((hero) => hero.id === this.authService.userId());
+    return this.hwfeHeroes().find((hero) => hero.me);
   });
 
   public setup(): void {

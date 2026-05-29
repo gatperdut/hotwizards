@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Viewport } from 'pixi-viewport';
 import { Application, FederatedPointerEvent, Sprite } from 'pixi.js';
 import { debounceTime, from, fromEvent, Observable, tap } from 'rxjs';
+import { CellHalfH, CellHalfW } from '../../sprites/cell-size.const';
 import { world2Screen } from '../consts/coords.const.';
 import { DungeonHeight, DungeonWidth } from '../consts/dungeon-size.const';
 import { fromPixiEvent } from '../consts/from-pixi-event.const';
@@ -81,7 +82,7 @@ export class ViewportService {
 
   public center(x = DungeonWidth / 2, y = DungeonHeight / 2): void {
     const centerPoint = world2Screen(x, y);
-    this.viewport.moveCenter(centerPoint.x, centerPoint.y);
+    this.viewport.moveCenter(centerPoint.x + CellHalfW, centerPoint.y - CellHalfH);
   }
 
   private startDrag(): void {

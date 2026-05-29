@@ -26,7 +26,7 @@ export class WhoCharacterComponent {
     const character = this.character();
 
     if (!character) {
-      return '/portraits/pending.gif';
+      return '/portraits/characters/pending.gif';
     }
 
     return characterPortrait(character.klass, character.gender);
