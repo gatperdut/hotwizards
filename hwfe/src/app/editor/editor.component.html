@@ -1,3 +1,7 @@
+@if (loading()) {
+  <app-canvas-loading></app-canvas-loading>
+}
+
 <app-editor-sidebar></app-editor-sidebar>
 <div class="overflow-hidden">
   <canvas class="overflow-hidden" #canvas></canvas>

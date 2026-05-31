@@ -49,7 +49,7 @@ export class AdventureTemplatePickerDialogComponent {
 
   public adventurePickerActions: AdventurePickerAction[] = [
     {
-      label: 'delete',
+      label: 'Delete',
       color: 'warning',
       action: (adventureTemplate: HwAdventureTemplate): void => {
         // TODO implement adventure template delete

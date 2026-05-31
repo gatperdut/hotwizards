@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { environment } from '@hw/hwfe/environments/environment';
 import {
   PushDialogComponent,
   PushDialogData,
@@ -20,7 +21,12 @@ export class UserMenuComponent {
   private authService = inject(AuthService);
 
   public items: AppMenuItem[] = [
-    { label: 'Push notifications', icon: 'megaphone', callback: () => this.pushNotifications() },
+    {
+      label: 'Push notifications',
+      icon: 'megaphone',
+      callback: () => this.pushNotifications(),
+      disabled: !environment.production,
+    },
     {
       label: 'Logout',
       icon: 'arrow-left-start-on-rectangle',

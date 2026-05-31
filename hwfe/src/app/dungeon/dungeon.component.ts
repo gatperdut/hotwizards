@@ -6,6 +6,7 @@ import {
   ElementRef,
   inject,
   OnDestroy,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -15,6 +16,7 @@ import { HwHero, HwMonster } from '@hw/shared/dungeon';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
+import { CanvasLoadingComponent } from '../map/canvas-loading/canvas-loading.component';
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
@@ -23,7 +25,7 @@ import { DungeonService } from './services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon',
-  imports: [DungeonSidebarComponent],
+  imports: [CanvasLoadingComponent, DungeonSidebarComponent],
   templateUrl: './dungeon.component.html',
   styleUrl: './dungeon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +44,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   private dungeonService = inject(DungeonService);
   private viewportService = inject(ViewportService);
   private textureService = inject(TextureService);
+
+  public loading = signal(true);
 
   constructor() {
     this.dungeonService.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
@@ -73,13 +77,13 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     forkJoin([this.textureService.setup(), this.viewportService.setup(this.canvasRef)])
       .pipe(
         tap(() => {
+          this.loading.set(false);
+
           this.dungeonService.setup();
-        }),
-        tap(() => {
+
           if (this.campaignService.campaign().master.me) {
-            const activeHero = this.dungeonService.activeHero();
-            if (activeHero) {
-              this.viewportService.center(activeHero.x, activeHero.y);
+            if (this.campaignService.campaign().adventure!.turn > 0) {
+              this.centerActiveHero();
             } else {
               this.centerRandomHero();
             }

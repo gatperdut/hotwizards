@@ -5,6 +5,7 @@ import {
   ElementRef,
   inject,
   OnDestroy,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { FederatedPointerEvent } from 'pixi.js';
 import { forkJoin, tap } from 'rxjs';
+import { CanvasLoadingComponent } from '../map/canvas-loading/canvas-loading.component';
 import { screen2World } from '../map/consts/coords.const.';
 import {
   DungeonHalfHeight,
@@ -24,13 +26,12 @@ import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
 import { EditorSidebarComponent } from './editor-sidebar/editor-sidebar.component';
-import { HwfeEditorCell } from './interfaces/editor-cell.interface';
 import { EditorGridService } from './services/editor-grid.service';
 import { EditorService } from './services/editor.service';
 
 @Component({
   selector: 'app-editor',
-  imports: [EditorSidebarComponent],
+  imports: [CanvasLoadingComponent, EditorSidebarComponent],
   templateUrl: './editor.component.html',
   styleUrl: './editor.component.css',
   providers: [OverflowService, EditorService, ViewportService, EditorGridService, TextureService],
@@ -45,6 +46,8 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
   private textureService = inject(TextureService);
   private activatedRoute = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+
+  public loading = signal(true);
 
   public ngAfterViewInit(): void {
     void this.init();
@@ -77,17 +80,44 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         }),
         tap(() => {
           this.gridService.draw();
-          this.viewportService.viewport.setZoom(3);
 
-          const firstCell: HwfeEditorCell | undefined =
-            this.editorService.hwfeEditorDungeon().cells[0];
-          this.viewportService.center(
-            firstCell?.x ?? DungeonHalfWidth,
-            firstCell?.y ?? DungeonHalfHeight,
-          );
+          this.centerMiddle();
+
+          this.loading.set(false);
         }),
       )
       .subscribe();
+  }
+
+  private centerMiddle(): void {
+    const cells = this.editorService.hwfeEditorDungeon().cells;
+
+    if (!cells.length) {
+      this.viewportService.center(DungeonHalfWidth, DungeonHalfHeight);
+      return;
+    }
+
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+
+    cells.forEach((cell) => {
+      if (cell.x < minX) {
+        minX = cell.x;
+      }
+      if (cell.x > maxX) {
+        maxX = cell.x;
+      }
+      if (cell.y < minY) {
+        minY = cell.y;
+      }
+      if (cell.y > maxY) {
+        maxY = cell.y;
+      }
+    });
+
+    this.viewportService.center(Math.round((maxX - minX) / 2), Math.floor((maxY - minY) / 2));
   }
 
   private tapEmptyCell(event: FederatedPointerEvent): void {
