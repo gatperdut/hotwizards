@@ -14,7 +14,7 @@ import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { PaginatorComponent } from '@hw/hwfe/app/ui/paginator/paginator.component';
 import { HwAdventureTemplate, HwAdventureTemplateSearchDto } from '@hw/shared/adventure-templates';
 import { map, tap } from 'rxjs';
-import { AdventurePickerFilterComponent } from './adventure-picker-filter/adventure-picker-filter.component';
+import { AdventurePickerFilterComponent } from './adventure-template-picker-filter/adventure-template-picker-filter.component';
 
 export type AdventurePickerAction = {
   label: string;
@@ -24,13 +24,13 @@ export type AdventurePickerAction = {
 };
 
 @Component({
-  selector: 'app-adventure-picker',
+  selector: 'app-adventure-template-picker',
   imports: [PaginatorComponent, AdventurePickerFilterComponent, ButtonComponent],
-  templateUrl: './adventure-picker.component.html',
-  styleUrl: './adventure-picker.component.css',
+  templateUrl: './adventure-template-picker.component.html',
+  styleUrl: './adventure-template-picker.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdventurePickerComponent {
+export class AdventureTemplatePickerComponent {
   private adventureTemplatesApiService = inject(AdventureTemplatesApiService);
 
   public actions = input<AdventurePickerAction[]>([]);

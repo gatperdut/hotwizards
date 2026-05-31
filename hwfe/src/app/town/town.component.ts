@@ -23,8 +23,8 @@ import { catchError, EMPTY, filter, from, of, switchMap, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import {
   AdventurePickerAction,
-  AdventurePickerComponent,
-} from '../adventures/adventure-picker/adventure-picker.component';
+  AdventureTemplatePickerComponent,
+} from '../adventure-templates/adventure-template-picker/adventure-template-picker.component';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
 import { TownMembershipComponent } from './town-membership/town-membership.component';
@@ -35,7 +35,7 @@ import { TownMembershipComponent } from './town-membership/town-membership.compo
     ButtonComponent,
     TownMembershipComponent,
     WhoCharacterComponent,
-    AdventurePickerComponent,
+    AdventureTemplatePickerComponent,
     UserMenuComponent,
   ],
   templateUrl: './town.component.html',

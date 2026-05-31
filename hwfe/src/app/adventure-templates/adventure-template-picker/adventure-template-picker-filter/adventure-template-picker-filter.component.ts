@@ -4,10 +4,10 @@ import { InputTextComponent } from '@hw/hwfe/app/ui/input-text/input-text.compon
 import { HwAdventureTemplateSearchDto } from '@hw/shared/adventure-templates';
 
 @Component({
-  selector: 'app-adventure-picker-filter',
+  selector: 'app-adventure-template-picker-filter',
   imports: [InputTextComponent],
-  templateUrl: './adventure-picker-filter.component.html',
-  styleUrl: './adventure-picker-filter.component.css',
+  templateUrl: './adventure-template-picker-filter.component.html',
+  styleUrl: './adventure-template-picker-filter.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdventurePickerFilterComponent {
