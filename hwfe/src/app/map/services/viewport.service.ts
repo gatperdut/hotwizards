@@ -81,6 +81,7 @@ export class ViewportService {
   }
 
   public center(x = DungeonWidth / 2, y = DungeonHeight / 2): void {
+    this.viewport.setZoom(3);
     const centerPoint = world2Screen(x, y);
     this.viewport.moveCenter(centerPoint.x + CellHalfW, centerPoint.y - CellHalfH);
   }

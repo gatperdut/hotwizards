@@ -15,7 +15,6 @@ import { HwHero, HwMonster } from '@hw/shared/dungeon';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
-import { DungeonHalfHeight, DungeonHalfWidth } from '../map/consts/dungeon-size.const';
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
@@ -77,19 +76,35 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           this.dungeonService.setup();
         }),
         tap(() => {
-          this.viewportService.viewport.setZoom(3);
-
-          const creature =
-            this.dungeonService.activeHero() ||
-            this.dungeonService.myHero() ||
-            this.dungeonService.hwfeMonsters()[0];
-          this.viewportService.center(
-            creature?.x ?? DungeonHalfWidth,
-            creature?.y ?? DungeonHalfHeight - 5,
-          );
+          if (this.campaignService.campaign().master.me) {
+            const activeHero = this.dungeonService.activeHero();
+            if (activeHero) {
+              this.viewportService.center(activeHero.x, activeHero.y);
+            } else {
+              this.centerRandomHero();
+            }
+          } else {
+            this.centerMyHero();
+          }
         }),
       )
       .subscribe();
+  }
+
+  private centerRandomHero(): void {
+    const heroes = this.dungeonService.hwfeHeroes();
+    const hero = heroes[Math.floor(Math.random() * heroes.length)];
+    this.viewportService.center(hero.x, hero.y);
+  }
+
+  private centerMyHero(): void {
+    const hero = this.dungeonService.myHero();
+    this.viewportService.center(hero!.x, hero!.y);
+  }
+
+  private centerActiveHero(): void {
+    const hero = this.dungeonService.activeHero();
+    this.viewportService.center(hero!.x, hero!.y);
   }
 
   private campaignsListen(): void {
@@ -179,8 +194,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           ? `Your turn, ${membership.character!.name}`
           : `Turn for ${membership.character!.name} (${membership.user.handle})`;
 
-        const myHero = this.dungeonService.myHero();
-        this.viewportService.center(myHero!.x, myHero!.y);
+        this.centerActiveHero();
       }
       this.toastService.show({
         message: message,
