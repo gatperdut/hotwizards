@@ -233,6 +233,7 @@ export class DungeonService {
         stairsSprite: stairsSprite,
         corners: pixiCorners,
       },
+      visibility: cell.visibility,
     };
 
     baseSprite.eventMode = 'static';

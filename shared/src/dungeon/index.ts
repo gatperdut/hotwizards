@@ -28,5 +28,7 @@ export {
 } from './creatures/monsters/monster-stats.const.js';
 export { MonsterType, MonsterTypes } from './creatures/monsters/monster-type.const.js';
 export { HwMonster } from './creatures/monsters/monster.interface.js';
-export { HwDungeonTransformData } from './dungeon-transform-data.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
+export { HwTransformEndTurnHero } from './transform/transform-end-turn-hero.interface.js';
+export { HwTransformEndTurnMaster } from './transform/transform-end-turn-master.interface.js';
+export { HwTransformMoveCreature } from './transform/transform-move-creature.interface.js';

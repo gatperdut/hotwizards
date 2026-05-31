@@ -36,7 +36,7 @@ import {
   CellEditorDialogComponent,
   CellEditorDialogData,
   CellEditorDialogResult,
-  CellTransformData,
+  CellTransform,
 } from '../cell-editor-dialog/cell-editor-dialog.component';
 import { HwfeEditorCell } from '../interfaces/editor-cell.interface';
 import { HwfeEditorCorners } from '../interfaces/editor-corners.interface';
@@ -303,104 +303,96 @@ export class EditorService {
     }));
   }
 
-  private transformCell(cell: HwfeEditorCell, cellTransformData: CellTransformData): void {
-    if (cell.baseSpritePath !== cellTransformData.baseSpritePath) {
-      cell.baseSpritePath = cellTransformData.baseSpritePath;
+  private transformCell(cell: HwfeEditorCell, cellTransform: CellTransform): void {
+    if (cell.baseSpritePath !== cellTransform.baseSpritePath) {
+      cell.baseSpritePath = cellTransform.baseSpritePath;
       this.viewportService.destroySprite(cell.pixi.baseSprite);
-      cell.pixi.baseSprite = this.createBaseSprite(
-        cell.x,
-        cell.y,
-        cellTransformData.baseSpritePath,
-      );
+      cell.pixi.baseSprite = this.createBaseSprite(cell.x, cell.y, cellTransform.baseSpritePath);
       cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
     }
-    if (cell.feature.spritePath !== cellTransformData.featureSpritePath) {
+    if (cell.feature.spritePath !== cellTransform.featureSpritePath) {
       if (cell.feature.spritePath) {
         this.viewportService.destroySprite(cell.pixi.featureSprite!);
       }
-      cell.feature.spritePath = cellTransformData.featureSpritePath;
-      if (cellTransformData.featureSpritePath) {
+      cell.feature.spritePath = cellTransform.featureSpritePath;
+      if (cellTransform.featureSpritePath) {
         cell.pixi.featureSprite = this.createFeatureSprite(
           cell.x,
           cell.y,
-          cellTransformData.featureSpritePath,
+          cellTransform.featureSpritePath,
         );
       }
     }
     if (cell.pixi.featureTrapSprite) {
       this.viewportService.destroySprite(cell.pixi.featureTrapSprite);
     }
-    cell.feature.trapped = cellTransformData.featureTrapped;
-    if (cell.feature.spritePath && cellTransformData.featureTrapped) {
+    cell.feature.trapped = cellTransform.featureTrapped;
+    if (cell.feature.spritePath && cellTransform.featureTrapped) {
       cell.pixi.featureTrapSprite = this.createFeatureTrapSprite(
         cell.x,
         cell.y,
         '/tiles/feature-traps/feature-trap.png',
       );
     }
-    if (cell.doorSpritePath !== cellTransformData.doorSpritePath) {
+    if (cell.doorSpritePath !== cellTransform.doorSpritePath) {
       if (cell.doorSpritePath) {
         this.viewportService.destroySprite(cell.pixi.doorSprite!);
       }
-      cell.doorSpritePath = cellTransformData.doorSpritePath;
-      if (cellTransformData.doorSpritePath) {
-        cell.pixi.doorSprite = this.createDoorSprite(
-          cell.x,
-          cell.y,
-          cellTransformData.doorSpritePath,
-        );
+      cell.doorSpritePath = cellTransform.doorSpritePath;
+      if (cellTransform.doorSpritePath) {
+        cell.pixi.doorSprite = this.createDoorSprite(cell.x, cell.y, cellTransform.doorSpritePath);
       }
     }
     if (
-      cell.monster.type !== cellTransformData.monsterType ||
-      cell.monster.direction !== cellTransformData.monsterDirection
+      cell.monster.type !== cellTransform.monsterType ||
+      cell.monster.direction !== cellTransform.monsterDirection
     ) {
       if (cell.monster.type) {
         this.viewportService.destroySprite(cell.pixi.monsterSprite!);
       }
-      cell.monster.type = cellTransformData.monsterType;
-      cell.monster.spritePath = cellTransformData.monsterSpritePath;
-      cell.monster.direction = cellTransformData.monsterDirection;
-      if (cellTransformData.monsterType) {
+      cell.monster.type = cellTransform.monsterType;
+      cell.monster.spritePath = cellTransform.monsterSpritePath;
+      cell.monster.direction = cellTransform.monsterDirection;
+      if (cellTransform.monsterType) {
         cell.pixi.monsterSprite = this.createMonsterSprite(
           cell.x,
           cell.y,
-          cellTransformData.monsterSpritePath!,
+          cellTransform.monsterSpritePath!,
         );
       }
     }
-    if (cell.floorTrapSpritePath !== cellTransformData.floorTrapSpritePath) {
+    if (cell.floorTrapSpritePath !== cellTransform.floorTrapSpritePath) {
       if (cell.floorTrapSpritePath) {
         this.viewportService.destroySprite(cell.pixi.floorTrapSprite!);
       }
-      cell.floorTrapSpritePath = cellTransformData.floorTrapSpritePath;
-      if (cellTransformData.floorTrapSpritePath) {
+      cell.floorTrapSpritePath = cellTransform.floorTrapSpritePath;
+      if (cellTransform.floorTrapSpritePath) {
         cell.pixi.floorTrapSprite = this.createFloorTrapSprite(
           cell.x,
           cell.y,
-          cellTransformData.floorTrapSpritePath,
+          cellTransform.floorTrapSpritePath,
         );
       }
     }
-    if (cell.stairsSpritePath !== cellTransformData.stairsSpritePath) {
+    if (cell.stairsSpritePath !== cellTransform.stairsSpritePath) {
       if (cell.stairsSpritePath) {
         this.viewportService.destroySprite(cell.pixi.stairsSprite!);
       }
-      cell.stairsSpritePath = cellTransformData.stairsSpritePath;
-      if (cellTransformData.stairsSpritePath) {
+      cell.stairsSpritePath = cellTransform.stairsSpritePath;
+      if (cellTransform.stairsSpritePath) {
         cell.pixi.stairsSprite = this.createStairsSprite(
           cell.x,
           cell.y,
-          cellTransformData.stairsSpritePath,
+          cellTransform.stairsSpritePath,
         );
       }
     }
 
     const cornersAux = {
-      n: cellTransformData.cornerN,
-      e: cellTransformData.cornerE,
-      s: cellTransformData.cornerS,
-      w: cellTransformData.cornerW,
+      n: cellTransform.cornerN,
+      e: cellTransform.cornerE,
+      s: cellTransform.cornerS,
+      w: cellTransform.cornerW,
     };
     Directions.forEach((dir) => {
       if (cell.corners[dir] !== cornersAux[dir]) {
@@ -418,20 +410,20 @@ export class EditorService {
       }
     });
 
-    if (cell.spawn !== cellTransformData.spawn) {
+    if (cell.spawn !== cellTransform.spawn) {
       if (cell.spawn) {
         this.viewportService.destroySprite(cell.pixi.spawnSprite!);
       }
-      cell.spawn = cellTransformData.spawn;
-      if (cellTransformData.spawn) {
+      cell.spawn = cellTransform.spawn;
+      if (cellTransform.spawn) {
         cell.pixi.spawnSprite = this.createSpawnSprite(cell.x, cell.y, '/tiles/spawns/spawn.png');
       }
     }
 
-    cellTransformData.unmadeSecondary.forEach((affectedCell) => {
+    cellTransform.unmadeSecondary.forEach((affectedCell) => {
       this.findCell(affectedCell.x, affectedCell.y)!.secondary = null;
     });
-    cellTransformData.madeSecondary.forEach((affectedCell) => {
+    cellTransform.madeSecondary.forEach((affectedCell) => {
       this.findCell(affectedCell.x, affectedCell.y)!.secondary = { x: cell.x, y: cell.y };
     });
     this.updateCell(cell);
