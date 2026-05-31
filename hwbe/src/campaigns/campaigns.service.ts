@@ -274,6 +274,7 @@ export class CampaignsService {
       stairsSpritePath: editorCell.stairsSpritePath,
       corners: { ...editorCell.corners },
       secondary: editorCell.secondary ? { ...editorCell.secondary } : null,
+      visibility: 0,
     };
 
     return response;

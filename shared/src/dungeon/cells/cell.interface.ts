@@ -17,4 +17,5 @@ export interface HwCell {
   stairsSpritePath: StairsSpritePath | null;
   corners: HwCorners;
   secondary: HwSecondary | null;
+  visibility: number;
 }

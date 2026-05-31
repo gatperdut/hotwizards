@@ -125,6 +125,31 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  private endTurnToast(turn: number): void {
+    let message: string;
+
+    if (turn === 0) {
+      const master = this.campaignService.master();
+
+      message = master.me
+        ? 'Your turn, Zargon'
+        : `Turn for Zargon (${this.campaignService.master().handle})`;
+    } else {
+      this.dungeonService.selectMonster(null, false);
+
+      const membership = this.campaignService.memberships()[turn - 1];
+
+      message = membership.me
+        ? `Your turn, ${membership.character!.name}`
+        : `Turn for ${membership.character!.name} (${membership.user.handle})`;
+
+      this.centerActiveHero();
+    }
+    this.toastService.show({
+      message: message,
+    });
+  }
+
   private adventuresListen(): void {
     this.dungeonService.adventuresSocket.on('downFinishAdventure', () => {
       const campaignId = this.campaignService.campaign().id;
@@ -146,26 +171,16 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         .subscribe();
     });
 
-    this.dungeonService.adventuresSocket.on('downNextTurn', (data) => {
+    this.dungeonService.adventuresSocket.on('downEndTurnMaster', (data) => {
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          turn: data.turn,
+          turn: 1,
           dungeon: {
             ...campaign.adventure!.dungeon,
-            heroes: campaign.adventure!.dungeon.heroes.map((hero) => {
-              const updatedHero = data.modifiedCreatures.find((c) => c.id === hero.id)!;
-              if (!updatedHero) {
-                return hero;
-              }
-              return {
-                ...hero,
-                movementPoints: updatedHero.movementPoints,
-              };
-            }),
             monsters: campaign.adventure!.dungeon.monsters.map((monster) => {
-              const updatedMonster = data.modifiedCreatures.find((c) => c.id === monster.id)!;
+              const updatedMonster = data.updatedMonsters.find((m) => m.id === monster.id)!;
               if (!updatedMonster) {
                 return monster;
               }
@@ -178,40 +193,47 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         },
       }));
 
-      this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.hwfeMonstersUpdate();
 
-      let message: string;
-
-      if (data.turn === 0) {
-        const master = this.campaignService.master();
-
-        message = master.me
-          ? 'Your turn, Zargon'
-          : `Turn for Zargon (${this.campaignService.master().handle})`;
-      } else {
-        this.dungeonService.selectMonster(null, false);
-
-        const membership = this.campaignService.memberships()[data.turn - 1];
-
-        message = membership.me
-          ? `Your turn, ${membership.character!.name}`
-          : `Turn for ${membership.character!.name} (${membership.user.handle})`;
-
-        this.centerActiveHero();
-      }
-      this.toastService.show({
-        message: message,
-      });
+      this.endTurnToast(1);
     });
 
-    this.dungeonService.adventuresSocket.on('downUpdate', (data) => {
+    this.dungeonService.adventuresSocket.on('downEndTurnHero', (data) => {
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          turn: data.turn,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((hero) => {
+              if (data.updatedHero.id !== hero.id) {
+                return hero;
+              }
+
+              return {
+                ...hero,
+                movementPoints: data.updatedHero.movementPoints,
+              };
+            }),
+          },
+        },
+      }));
+
+      this.dungeonService.hwfeHeroesUpdate();
+
+      this.endTurnToast(data.turn);
+    });
+
+    this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
 
+      const creature = [...dungeon.heroes, ...dungeon.monsters].find(
+        (c) => c.id === data.creatureId,
+      );
+
       dungeon.heroes = dungeon.heroes.map((hero) => {
-        const updatedHero = data.modifiedCreatures.find((c) => c.id === hero.id) as
-          | HwHero
-          | undefined;
+        const updatedHero = data.creaturesMoved.find((c) => c.id === hero.id) as HwHero | undefined;
 
         if (!updatedHero) {
           return hero;
@@ -224,7 +246,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       });
 
       dungeon.monsters = dungeon.monsters.map((monster) => {
-        const updatedMonster = data.modifiedCreatures.find((c) => c.id === monster.id) as
+        const updatedMonster = data.creaturesMoved.find((c) => c.id === monster.id) as
           | HwMonster
           | undefined;
 
@@ -236,7 +258,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       });
 
       dungeon.cells = dungeon.cells.map((cell) => {
-        const updatedCell = data.modifiedCells.find((c) => c.x === cell.x && c.y === cell.y)!;
+        const updatedCell = data.cellsLeft.find((c) => c.x === cell.x && c.y === cell.y)!;
 
         if (updatedCell) {
           return updatedCell;

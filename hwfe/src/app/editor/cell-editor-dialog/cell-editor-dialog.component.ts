@@ -44,7 +44,7 @@ import { spritePathDisplayFn } from '../consts/sprite-path-display-fn.const';
 import { HwfeEditorCell } from '../interfaces/editor-cell.interface';
 import { EditorService } from '../services/editor.service';
 
-type CellTransformEditableData = {
+type CellTransformEditable = {
   baseSpritePath: BaseSpritePath;
   featureSpritePath: FeatureSpritePath | null;
   featureTrapped: boolean;
@@ -60,7 +60,7 @@ type CellTransformEditableData = {
   spawn: boolean;
 };
 
-export type CellTransformData = CellTransformEditableData &
+export type CellTransform = CellTransformEditable &
   CellTransformDerivedData &
   CellTransformExternalData;
 
@@ -77,7 +77,7 @@ export type CellEditorDialogData = {
   cell: HwfeEditorCell;
 };
 
-export type CellEditorDialogResult = CellTransformData | undefined | null;
+export type CellEditorDialogResult = CellTransform | undefined | null;
 
 @Component({
   selector: 'app-cell-editor-dialog',
@@ -183,7 +183,7 @@ export class CellEditorDialogComponent {
     unmadeSecondary: [],
   });
 
-  public result = computed<CellTransformData>(() => {
+  public result = computed<CellTransform>(() => {
     const monsterType = this.model().monsterType;
 
     return {
@@ -195,7 +195,7 @@ export class CellEditorDialogComponent {
     };
   });
 
-  public model = signal<CellTransformEditableData>({
+  public model = signal<CellTransformEditable>({
     baseSpritePath: this.data.cell.baseSpritePath,
     featureSpritePath: this.data.cell.feature.spritePath as FeatureSpritePath,
     featureTrapped: this.data.cell.feature.trapped,
