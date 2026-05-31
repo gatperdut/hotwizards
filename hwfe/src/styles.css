@@ -101,29 +101,6 @@ body {
          text-warning;
 }
 
-.typ-button {
-  @apply text-lg
-         font-semibold
-         text-off-dark
-         focus:text-primary
-         hover:not-disabled:text-primary
-         not-hover:not-disabled:text-off-dark
-         disabled:text-off-medium;
-
-  &.secondary {
-    @apply text-off-light
-           focus:text-secondary
-           hover:not-disabled:text-secondary
-           not-hover:not-disabled:text-off-light;
-  }
-
-  &.warning {
-    @apply focus:text-warning
-           hover:not-disabled:text-warning
-           not-hover:not-disabled:text-off-light;
-  }
-}
-
 .typ-link {
   @apply text-body
          text-off-light
