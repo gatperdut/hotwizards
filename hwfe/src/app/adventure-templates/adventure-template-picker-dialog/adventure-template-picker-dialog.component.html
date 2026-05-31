@@ -1,10 +1,12 @@
 <app-dialog sizeClass="max-w-4xl">
   <ng-template appDialogTitle>
-    <div class="typ-h2">Edit adventure</div>
+    <div class="typ-h2">Edit adventure template</div>
   </ng-template>
 
   <ng-template appDialogContent>
-    <app-adventure-picker [actions]="adventurePickerActions"></app-adventure-picker>
+    <app-adventure-template-picker
+      [actions]="adventurePickerActions"
+    ></app-adventure-template-picker>
   </ng-template>
 
   <ng-template appDialogActions>

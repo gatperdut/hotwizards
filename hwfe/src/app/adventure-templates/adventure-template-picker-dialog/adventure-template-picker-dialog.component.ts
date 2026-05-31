@@ -2,10 +2,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { filter, from, switchMap, tap } from 'rxjs';
-import {
-  AdventurePickerAction,
-  AdventurePickerComponent,
-} from '../../adventures/adventure-picker/adventure-picker.component';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -17,6 +13,10 @@ import {
   DialogService,
   LazyDialog,
 } from '../../ui/dialog/services/dialog.service';
+import {
+  AdventurePickerAction,
+  AdventureTemplatePickerComponent,
+} from '../adventure-template-picker/adventure-template-picker.component';
 import {
   SaveAdventureTemplateDialogComponent,
   SaveAdventureTemplateDialogData,
@@ -35,7 +35,7 @@ export type EditorSelectDialogResult = void;
     DialogContentDirective,
     DialogActionsDirective,
     ButtonComponent,
-    AdventurePickerComponent,
+    AdventureTemplatePickerComponent,
   ],
   templateUrl: './adventure-template-picker-dialog.component.html',
   styleUrl: './adventure-template-picker-dialog.component.css',

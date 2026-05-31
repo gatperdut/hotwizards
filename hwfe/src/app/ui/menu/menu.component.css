@@ -1,5 +1,8 @@
 .anchored {
   top: anchor(bottom);
   left: anchor(left);
-  position-try-fallbacks: flip-block;
+  position-try-fallbacks:
+    flip-block,
+    flip-inline,
+    flip-block flip-inline;
 }

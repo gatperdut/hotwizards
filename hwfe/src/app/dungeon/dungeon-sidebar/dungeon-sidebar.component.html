@@ -9,7 +9,7 @@
 @let viewedMonster = dungeonService.viewedMonster();
 
 @if (myHero) {
-  <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
+  <div class="absolute top-1 left-18 hw-border border-primary p-1.5 bg-background/75">
     <div class="flex flex-row gap-3 items-center">
       <app-who-character
         [user]="campaignService.me()"
@@ -24,7 +24,7 @@
 }
 
 @if (master.me) {
-  <div class="absolute top-1 left-18 hw-border border-primary p-1.5">
+  <div class="absolute top-1 left-18 hw-border border-primary p-1.5 bg-background/75">
     <div class="flex flex-row gap-3 items-center">
       @if (selectedMonster) {
         <app-who-monster [master]="true" [monster]="selectedMonster"></app-who-monster>
@@ -42,7 +42,7 @@
 }
 
 @if (viewedMonster) {
-  <div class="absolute top-21 left-18 hw-border border-off-medium p-1.5">
+  <div class="absolute top-21 left-18 hw-border border-off-medium p-1.5 bg-background/75">
     <div class="flex flex-row gap-3 items-center">
       <app-who-monster [master]="false" [monster]="viewedMonster"></app-who-monster>
       <ng-container
@@ -54,7 +54,7 @@
 
 @if (activePlayer) {
   <div
-    class="absolute bottom-1 left-2.5 hw-border p-1.5"
+    class="absolute bottom-1 left-2.5 hw-border p-1.5 bg-background/75"
     [class]="activePlayer.me ? 'border-primary' : 'border-secondary'"
   >
     @if (activePlayer.me) {

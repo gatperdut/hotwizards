@@ -9,6 +9,7 @@ import { dungeonGuard } from './campaigns/campaign/guards/dungeon.guard.js';
 import { townGuard } from './campaigns/campaign/guards/town.guard.js';
 import { OfflineGuard } from './health/offline.guard.js';
 import { OnlineGuard } from './health/online.guard.js';
+import { AdminGuard } from './shared/admin.guard.js';
 
 export const routes: Routes = [
   {
@@ -90,15 +91,14 @@ export const routes: Routes = [
                 loadComponent: () =>
                   import('./editor/editor.component').then((m) => m.EditorComponent),
                 resolve: { adventureTemplate: adventureTemplateResolver },
-                // TODO
-                // canActivate: [AdminGuard],
+                canActivate: [AdminGuard],
               },
               {
                 path: 'editor/:adventureTemplateId',
                 loadComponent: () =>
                   import('./editor/editor.component').then((m) => m.EditorComponent),
                 resolve: { adventureTemplate: adventureTemplateResolver },
-                // canActivate: [AdminGuard],
+                canActivate: [AdminGuard],
               },
             ],
           },
