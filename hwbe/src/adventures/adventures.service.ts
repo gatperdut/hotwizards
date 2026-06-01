@@ -2,7 +2,14 @@ import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import { cellAt, cellIsTraversable, cellLosUpdate, HwCreature, sameCell } from '@hw/shared/dungeon';
+import {
+  cellAt,
+  cellIsTraversable,
+  cellLosUpdate,
+  HwHero,
+  HwMonster,
+  sameCell,
+} from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
@@ -107,22 +114,22 @@ export class AdventuresService {
     return turn;
   }
 
-  public async moveCreature(
+  public async moveHero(
     campaign: HwCampaign,
     adventure: HwAdventure,
-    creature: HwCreature,
+    hero: HwHero,
     direction: Direction,
   ): Promise<void> {
-    if (creature.movementPoints < 1) {
+    if (hero.movementPoints < 1) {
       throw new UnprocessableEntityException('No movement points left');
     }
 
-    const currentCell = cellAt(adventure.dungeon.cells, creature.x, creature.y)!;
+    const currentCell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
 
     const targetCell = cellAt(
       adventure.dungeon.cells,
-      creature.x + DirectionOffsets[direction].x,
-      creature.y + DirectionOffsets[direction].y,
+      hero.x + DirectionOffsets[direction].x,
+      hero.y + DirectionOffsets[direction].y,
     );
 
     if (!targetCell || !cellIsTraversable(targetCell)) {
@@ -140,44 +147,31 @@ export class AdventuresService {
       if (sameCell(targetCell, cell)) {
         return {
           ...targetCell,
-          creatureId: creature.id,
+          creatureId: hero.id,
         };
       }
 
       return cell;
     });
 
-    if (creature.alignment === 'HERO') {
-      adventure.dungeon.heroes = adventure.dungeon.heroes.map((hero) => {
-        if (hero.id !== creature.id) {
-          return hero;
-        }
+    adventure.dungeon.heroes = adventure.dungeon.heroes.map((hero) => {
+      if (hero.id !== hero.id) {
+        return hero;
+      }
 
-        return {
-          ...hero,
-          spritePath: heroSpritePath(hero.klass, hero.gender, direction),
-          x: targetCell.x,
-          y: targetCell.y,
-          direction: direction,
-          movementPoints: hero.movementPoints - 1,
-        };
-      });
-    } else {
-      adventure.dungeon.monsters = adventure.dungeon.monsters.map((monster) => {
-        if (monster.id !== creature.id) {
-          return monster;
-        }
+      return {
+        ...hero,
+        spritePath: heroSpritePath(hero.klass, hero.gender, direction),
+        x: targetCell.x,
+        y: targetCell.y,
+        direction: direction,
+        movementPoints: hero.movementPoints - 1,
+      };
+    });
 
-        return {
-          ...monster,
-          spritePath: monsterSpritePath(monster.type!, direction),
-          x: targetCell.x,
-          y: targetCell.y,
-          direction: direction,
-          movementPoints: monster.movementPoints - 1,
-        };
-      });
-    }
+    const update = cellLosUpdate(adventure.dungeon.cells, [
+      cellAt(adventure.dungeon.cells, targetCell.x, targetCell.y)!,
+    ]);
 
     await this.prismaService.campaign.update({
       where: { id: campaign.id },
@@ -186,23 +180,80 @@ export class AdventuresService {
       },
     });
 
-    if (creature.alignment === 'HERO') {
-      const update = cellLosUpdate(adventure.dungeon.cells, [
-        cellAt(adventure.dungeon.cells, targetCell.x, targetCell.y)!,
-      ]);
+    this.adventuresGateway.handleDownMoveHero(adventure.id, {
+      heroId: hero.id,
+      dir: direction,
+      cell: { x: targetCell.x, y: targetCell.y },
+      ...update,
+    });
+  }
 
-      this.adventuresGateway.handleDownMoveHero(adventure.id, {
-        heroId: creature.id,
-        dir: direction,
-        cell: { x: targetCell.x, y: targetCell.y },
-        ...update,
-      });
-    } else {
-      this.adventuresGateway.handleDownMoveMonster(adventure.id, {
-        monsterId: creature.id,
-        dir: direction,
-        cell: { x: targetCell.x, y: targetCell.y },
-      });
+  public async moveMonster(
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+    monster: HwMonster,
+    direction: Direction,
+  ): Promise<void> {
+    if (monster.movementPoints < 1) {
+      throw new UnprocessableEntityException('No movement points left');
     }
+
+    const currentCell = cellAt(adventure.dungeon.cells, monster.x, monster.y)!;
+
+    const targetCell = cellAt(
+      adventure.dungeon.cells,
+      monster.x + DirectionOffsets[direction].x,
+      monster.y + DirectionOffsets[direction].y,
+    );
+
+    if (!targetCell || !cellIsTraversable(targetCell)) {
+      throw new UnprocessableEntityException('The cell cannot be walked into');
+    }
+
+    adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
+      if (sameCell(currentCell, cell)) {
+        return {
+          ...currentCell,
+          creatureId: null,
+        };
+      }
+
+      if (sameCell(targetCell, cell)) {
+        return {
+          ...targetCell,
+          creatureId: monster.id,
+        };
+      }
+
+      return cell;
+    });
+
+    adventure.dungeon.monsters = adventure.dungeon.monsters.map((m) => {
+      if (m.id !== monster.id) {
+        return m;
+      }
+
+      return {
+        ...m,
+        spritePath: monsterSpritePath(m.type!, direction),
+        x: targetCell.x,
+        y: targetCell.y,
+        direction: direction,
+        movementPoints: m.movementPoints - 1,
+      };
+    });
+
+    await this.prismaService.campaign.update({
+      where: { id: campaign.id },
+      data: {
+        adventure: { update: { dungeon: adventure.dungeon as unknown as InputJsonValue } },
+      },
+    });
+
+    this.adventuresGateway.handleDownMoveMonster(adventure.id, {
+      monsterId: monster.id,
+      dir: direction,
+      cell: { x: targetCell.x, y: targetCell.y },
+    });
   }
 }

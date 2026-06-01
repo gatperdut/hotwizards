@@ -62,7 +62,7 @@ export class AdventuresController {
     @CurrentHero() hero: HwHero,
     @Body() body: HwAdventureMoveHeroDto,
   ): Promise<void> {
-    return this.adventuresService.moveCreature(campaign, adventure, hero, body.direction);
+    return this.adventuresService.moveHero(campaign, adventure, hero, body.direction);
   }
 
   @Post(':adventureId/move-monster')
@@ -78,6 +78,6 @@ export class AdventuresController {
     @CurrentMonster() monster: HwMonster,
     @Body() body: HwAdventureMoveMonsterDto,
   ): Promise<void> {
-    return this.adventuresService.moveCreature(campaign, adventure, monster, body.direction);
+    return this.adventuresService.moveMonster(campaign, adventure, monster, body.direction);
   }
 }
