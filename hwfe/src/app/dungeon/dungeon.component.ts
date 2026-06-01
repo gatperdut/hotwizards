@@ -12,6 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import { cellAt, sameCell } from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
@@ -221,11 +222,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
-      console.log('downMoveHero', data);
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.creatureId)!;
-      const leftCell = dungeon.cells.find((c) => c.x === hero.x && c.y === hero.y)!;
-      const enteredCell = dungeon.cells.find((c) => c.x === data.cell.x && c.y === data.cell.y)!;
+      const leftCell = cellAt(dungeon.cells, hero.x, hero.y)!;
+      const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
@@ -241,15 +241,16 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
                     direction: data.dir,
                     x: data.cell.x,
                     y: data.cell.y,
+                    movementPoints: h.movementPoints - 1,
                   }
                 : h,
             ),
             cells: dungeon.cells.map((c) => {
-              if (c.x === leftCell.x && c.y === leftCell.y) {
+              if (sameCell(c, leftCell)) {
                 return { ...c, creatureId: null };
               }
 
-              if (c.x === enteredCell.x && c.y === enteredCell.y) {
+              if (sameCell(c, enteredCell)) {
                 return { ...c, creatureId: data.creatureId };
               }
 
@@ -264,11 +265,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
-      console.log('downMoveMonster', data);
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const monster = dungeon.monsters.find((m) => m.id === data.creatureId)!;
-      const leftCell = dungeon.cells.find((c) => c.x === monster.x && c.y === monster.y)!;
-      const enteredCell = dungeon.cells.find((c) => c.x === data.cell.x && c.y === data.cell.y)!;
+      const leftCell = cellAt(dungeon.cells, monster.x, monster.y)!;
+      const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
@@ -284,15 +284,16 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
                     direction: data.dir,
                     x: data.cell.x,
                     y: data.cell.y,
+                    movementPoints: m.movementPoints - 1,
                   }
                 : m,
             ),
             cells: dungeon.cells.map((c) => {
-              if (c.x === leftCell.x && c.y === leftCell.y) {
+              if (sameCell(c, leftCell)) {
                 return { ...c, creatureId: null };
               }
 
-              if (c.x === enteredCell.x && c.y === enteredCell.y) {
+              if (sameCell(c, enteredCell)) {
                 return { ...c, creatureId: data.creatureId };
               }
 

@@ -4,6 +4,8 @@ import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
 import { Directions } from '@hw/shared/directions';
 import {
+  cellAt,
+  creatureAt,
   HeroAttackDie,
   HeroBodyPoints,
   HeroDefendDie,
@@ -237,9 +239,7 @@ export class CampaignsService {
       campaign.memberships,
       editorDungeon.cells
         .filter((editorCell) => editorCell.spawn)
-        .map((editorCell) =>
-          cells.find((cell) => cell.x === editorCell.x && cell.y === editorCell.y),
-        )
+        .map((editorCell) => cellAt(cells, editorCell.x, editorCell.y))
         .filter((cell) => !!cell),
     );
 
@@ -249,8 +249,7 @@ export class CampaignsService {
     );
 
     cells.forEach((cell) => {
-      cell.creatureId =
-        monsters.find((monster) => monster.x === cell.x && monster.y === cell.y)?.id || null;
+      cell.creatureId = creatureAt(monsters, cell.x, cell.y)?.id || null;
     });
 
     const response: HwDungeon = {

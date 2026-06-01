@@ -1,5 +1,5 @@
-import { FloorSpritePath, FloorSpritePaths } from '../sprites/floor-sprites.const.js';
-import { HwCell } from './cells/cell.interface.js';
+import { FloorSpritePath, FloorSpritePaths } from '../../sprites/floor-sprites.const.js';
+import { HwCell } from './cell.interface.js';
 
 export const cellIsTraversable = (cell: HwCell): boolean => {
   return (

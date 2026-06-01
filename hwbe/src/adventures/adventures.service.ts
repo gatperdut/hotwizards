@@ -2,7 +2,13 @@ import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import { cellIsTraversable, HwCell, HwCreature, HwTransformMoveCreature } from '@hw/shared/dungeon';
+import {
+  cellIsTraversable,
+  HwCell,
+  HwCreature,
+  HwTransformMoveCreature,
+  sameCell,
+} from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
@@ -107,10 +113,6 @@ export class AdventuresService {
     return turn;
   }
 
-  private sameCell(cell1: HwCell, cell2: HwCell): boolean {
-    return cell1.x === cell2.x && cell1.y === cell2.y;
-  }
-
   private cellAt(adventure: HwAdventure, x: number, y: number): HwCell | undefined {
     return adventure.dungeon.cells.find((cell) => cell.x === x && cell.y === y);
   }
@@ -138,14 +140,14 @@ export class AdventuresService {
     }
 
     adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
-      if (this.sameCell(currentCell, cell)) {
+      if (sameCell(currentCell, cell)) {
         return {
           ...currentCell,
           creatureId: null,
         };
       }
 
-      if (this.sameCell(targetCell, cell)) {
+      if (sameCell(targetCell, cell)) {
         return {
           ...targetCell,
           creatureId: creature.id,

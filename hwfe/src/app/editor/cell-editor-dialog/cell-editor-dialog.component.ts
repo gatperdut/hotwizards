@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
 import { Direction, Directions } from '@hw/shared/directions';
-import { MonsterType, MonsterTypes } from '@hw/shared/dungeon';
+import { MonsterType, MonsterTypes, sameCell } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
   BaseSpritePaths,
@@ -294,11 +294,7 @@ export class CellEditorDialogComponent {
             if (cell.spawn) {
               return this.error(`Cell at ${coords} is a spawn cell`);
             }
-            if (
-              cell.secondary &&
-              cell.secondary.x !== this.data.cell.x &&
-              cell.secondary.y !== this.data.cell.y
-            ) {
+            if (cell.secondary && !sameCell(cell.secondary, this.data.cell)) {
               return this.error(`Cell at ${coords} is secondary`);
             }
 

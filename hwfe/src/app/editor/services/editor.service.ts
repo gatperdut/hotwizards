@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { Directions } from '@hw/shared/directions';
+import { sameCell } from '@hw/shared/dungeon';
 import {
   HwEditorCorners,
   HwEditorDungeon,
@@ -297,9 +298,7 @@ export class EditorService {
   private updateCell(cell: HwfeEditorCell): void {
     this.hwfeEditorDungeon.update((dungeon) => ({
       ...dungeon,
-      cells: dungeon.cells.map((someCell) =>
-        someCell.x === cell.x && someCell.y === cell.y ? cell : someCell,
-      ),
+      cells: dungeon.cells.map((someCell) => (sameCell(someCell, cell) ? cell : someCell)),
     }));
   }
 

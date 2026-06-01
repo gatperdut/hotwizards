@@ -1,6 +1,14 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import { cellIsTraversable, HwCell, HwCreature, HwHero, HwMonster } from '@hw/shared/dungeon';
+import {
+  cellAt,
+  cellIsTraversable,
+  creatureAt,
+  HwCell,
+  HwCreature,
+  HwHero,
+  HwMonster,
+} from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
   AdventuresUpstream,
@@ -111,9 +119,11 @@ export class DungeonService {
   public hwfeCellsUpdate(): void {
     this.hwfeCells.update((cells) =>
       cells.map((cell) => {
-        const updatedCell = this.campaignService
-          .campaign()
-          .adventure!.dungeon.cells.find((c) => c.x === cell.x && c.y === cell.y)!;
+        const updatedCell = cellAt(
+          this.campaignService.campaign().adventure!.dungeon.cells,
+          cell.x,
+          cell.y,
+        )!;
 
         return {
           ...cell,
@@ -343,8 +353,7 @@ export class DungeonService {
 
     const activePlayer = this.activePlayer();
 
-    const monsterId =
-      this.hwfeMonsters().find((m) => m.x === hwfeCell.x && m.y === hwfeCell.y)?.id ?? null;
+    const monsterId = creatureAt(this.hwfeMonsters(), hwfeCell.x, hwfeCell.y)?.id ?? null;
 
     if (
       (!this.campaignService.master().me || !activePlayer?.me) &&
