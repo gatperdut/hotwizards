@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+:root {
+  --safe-top: env(safe-area-inset-top);
+}
+
 @font-face {
   font-family: 'Asimovian';
   font-style: normal;

@@ -70,9 +70,7 @@ export class AdventuresService {
 
     this.endTurnPush(campaign, turn);
 
-    this.adventuresGateway.handleDownEndTurnMaster(adventure.id, {
-      updatedMonsters: updatedMonsters.map((m) => ({ id: m.id, movementPoints: m.movementPoints })),
-    });
+    this.adventuresGateway.handleDownEndTurnMaster(adventure.id, {});
 
     return turn;
   }
@@ -102,8 +100,8 @@ export class AdventuresService {
     this.endTurnPush(campaign, turn);
 
     this.adventuresGateway.handleDownEndTurnHero(adventure.id, {
+      heroId: updatedHero.id,
       turn: turn,
-      updatedHero: { id: updatedHero.id, movementPoints: updatedHero.movementPoints },
     });
 
     return turn;
@@ -198,6 +196,7 @@ export class AdventuresService {
 
     const data: HwTransformMoveCreature = {
       creatureId: creature.id,
+      dir: direction,
       cell: { x: targetCell.x, y: targetCell.y },
     };
 

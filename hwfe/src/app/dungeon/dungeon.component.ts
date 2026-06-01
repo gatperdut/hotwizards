@@ -12,7 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { HwHero, HwMonster } from '@hw/shared/dungeon';
+import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
@@ -172,6 +172,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downEndTurnMaster', (data) => {
+      console.log('downEndTurnMaster', data);
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
@@ -180,14 +181,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           dungeon: {
             ...campaign.adventure!.dungeon,
             monsters: campaign.adventure!.dungeon.monsters.map((monster) => {
-              const updatedMonster = data.updatedMonsters.find((m) => m.id === monster.id)!;
-              if (!updatedMonster) {
-                return monster;
-              }
-              return {
-                ...monster,
-                movementPoints: updatedMonster.movementPoints,
-              };
+              return { ...monster, movementPoints: monster.maxMovementPoints };
             }),
           },
         },
@@ -199,6 +193,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downEndTurnHero', (data) => {
+      console.log('downEndTurnHero', data);
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
@@ -207,13 +202,13 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           dungeon: {
             ...campaign.adventure!.dungeon,
             heroes: campaign.adventure!.dungeon.heroes.map((hero) => {
-              if (data.updatedHero.id !== hero.id) {
+              if (data.heroId !== hero.id) {
                 return hero;
               }
 
               return {
                 ...hero,
-                movementPoints: data.updatedHero.movementPoints,
+                movementPoints: hero.maxMovementPoints,
               };
             }),
           },
@@ -226,58 +221,93 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
+      console.log('downMoveHero', data);
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-
-      const creature = [...dungeon.heroes, ...dungeon.monsters].find(
-        (c) => c.id === data.creatureId,
-      );
-
-      dungeon.heroes = dungeon.heroes.map((hero) => {
-        const updatedHero = data.creaturesMoved.find((c) => c.id === hero.id) as HwHero | undefined;
-
-        if (!updatedHero) {
-          return hero;
-        }
-
-        return {
-          ...updatedHero,
-          me: hero.me,
-        };
-      });
-
-      dungeon.monsters = dungeon.monsters.map((monster) => {
-        const updatedMonster = data.creaturesMoved.find((c) => c.id === monster.id) as
-          | HwMonster
-          | undefined;
-
-        if (!updatedMonster) {
-          return monster;
-        }
-
-        return updatedMonster;
-      });
-
-      dungeon.cells = dungeon.cells.map((cell) => {
-        const updatedCell = data.cellsLeft.find((c) => c.x === cell.x && c.y === cell.y)!;
-
-        if (updatedCell) {
-          return updatedCell;
-        }
-
-        return cell;
-      });
+      const hero = dungeon.heroes.find((h) => h.id === data.creatureId)!;
+      const leftCell = dungeon.cells.find((c) => c.x === hero.x && c.y === hero.y)!;
+      const enteredCell = dungeon.cells.find((c) => c.x === data.cell.x && c.y === data.cell.y)!;
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
-        adventure: { ...campaign.adventure!, dungeon: dungeon },
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...dungeon,
+            heroes: dungeon.heroes.map((h) =>
+              h.id === hero.id
+                ? {
+                    ...h,
+                    spritePath: heroSpritePath(h.klass, h.gender, data.dir),
+                    direction: data.dir,
+                    x: data.cell.x,
+                    y: data.cell.y,
+                  }
+                : h,
+            ),
+            cells: dungeon.cells.map((c) => {
+              if (c.x === leftCell.x && c.y === leftCell.y) {
+                return { ...c, creatureId: null };
+              }
+
+              if (c.x === enteredCell.x && c.y === enteredCell.y) {
+                return { ...c, creatureId: data.creatureId };
+              }
+
+              return c;
+            }),
+          },
+        },
       }));
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
+    });
+
+    this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
+      console.log('downMoveMonster', data);
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      const monster = dungeon.monsters.find((m) => m.id === data.creatureId)!;
+      const leftCell = dungeon.cells.find((c) => c.x === monster.x && c.y === monster.y)!;
+      const enteredCell = dungeon.cells.find((c) => c.x === data.cell.x && c.y === data.cell.y)!;
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...dungeon,
+            monsters: dungeon.monsters.map((m) =>
+              m.id === data.creatureId
+                ? {
+                    ...m,
+                    spritePath: monsterSpritePath(m.type!, data.dir),
+                    direction: data.dir,
+                    x: data.cell.x,
+                    y: data.cell.y,
+                  }
+                : m,
+            ),
+            cells: dungeon.cells.map((c) => {
+              if (c.x === leftCell.x && c.y === leftCell.y) {
+                return { ...c, creatureId: null };
+              }
+
+              if (c.x === enteredCell.x && c.y === enteredCell.y) {
+                return { ...c, creatureId: data.creatureId };
+              }
+
+              return c;
+            }),
+          },
+        },
+      }));
+
+      this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeMonstersUpdate();
     });
 
     this.dungeonService.adventuresSocket.on('downSelectMonster', (id) => {
+      console.log('downSelectMonster', id);
       this.dungeonService.selectMonster(id, true);
     });
   }

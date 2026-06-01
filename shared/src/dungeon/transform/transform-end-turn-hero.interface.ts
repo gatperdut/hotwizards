@@ -1,6 +1,4 @@
-import { HwHero } from '../creatures/heroes/hero.interface.js';
-
 export interface HwTransformEndTurnHero {
+  heroId: number;
   turn: number;
-  updatedHero: Partial<HwHero> & Pick<HwHero, 'id'>;
 }

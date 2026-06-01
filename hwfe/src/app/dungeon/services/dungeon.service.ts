@@ -91,9 +91,9 @@ export class DungeonService {
   private hwfeHeroesSet(): void {
     const hwfeHeroes: HwfeHero[] = this.campaignService
       .campaign()
-      .adventure!.dungeon.heroes.map((hero) => ({
+      .adventure!.dungeon.heroes.map((hero, index) => ({
         ...hero,
-        pixi: { sprite: this.createHeroSprite(hero) },
+        pixi: { sprite: this.createHeroSprite(hero, index) },
       }));
     this.hwfeHeroes.set(hwfeHeroes);
   }
@@ -125,19 +125,21 @@ export class DungeonService {
 
   public hwfeHeroesUpdate(): void {
     this.hwfeHeroes.update((heroes) =>
-      heroes.map((hero) => {
+      heroes.map((hero, index) => {
         const updatedHero = this.campaignService
           .campaign()
           .adventure!.dungeon.heroes.find((h) => h.id === hero.id)!;
 
         let sprite: Sprite;
 
-        if (hero.spritePath !== updatedHero.spritePath) {
+        if (hero.direction !== updatedHero.direction) {
           this.viewportService.destroySprite(hero.pixi.sprite);
-          sprite = this.createHeroSprite(updatedHero);
+          sprite = this.createHeroSprite(updatedHero, index);
         } else {
           sprite = hero.pixi.sprite;
         }
+
+        sprite.tint = HeroSpriteTints[index];
 
         this.moveSprite(sprite, updatedHero.spritePath, updatedHero.x, updatedHero.y);
 
@@ -243,24 +245,12 @@ export class DungeonService {
     return hwfeCell;
   }
 
-  private tintHeroSprites(): void {
-    const hwfeHeroes = this.hwfeHeroes();
-    if (!hwfeHeroes.length) {
-      return;
-    }
-    hwfeHeroes.forEach((hero) => {
-      hero.pixi.sprite.tint = HeroSpriteTints[this.hwfeHeroes().findIndex((h) => h.id === hero.id)];
-    });
-  }
-
   private moveSprite(sprite: Sprite, spritePath: SpritePath, x: number, y: number): void {
     sprite.position.copyFrom(world2Ground(x, y));
     sprite.position.x += SpriteOffsets[spritePath].x;
     sprite.position.y += SpriteOffsets[spritePath].y;
     sprite.zIndex = groundZIndex(x, y, DungeonWidth);
     sprite.zIndex += spriteZIndex(spritePath);
-
-    this.tintHeroSprites();
   }
 
   private createSprite(x: number, y: number, spritePath: SpritePath): Sprite {
@@ -279,9 +269,10 @@ export class DungeonService {
     return baseSprite;
   }
 
-  private createHeroSprite(hero: HwHero): Sprite {
+  private createHeroSprite(hero: HwHero, index: number): Sprite {
     const heroSprite = this.createSprite(hero.x, hero.y, hero.spritePath);
     heroSprite.eventMode = 'none';
+    heroSprite.tint = HeroSpriteTints[index];
     return heroSprite;
   }
 
