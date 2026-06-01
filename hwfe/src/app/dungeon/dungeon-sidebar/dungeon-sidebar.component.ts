@@ -6,6 +6,7 @@ import { HwCreature } from '@hw/shared/dungeon';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
+import { ViewportService } from '../../map/services/viewport.service';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
@@ -30,11 +31,16 @@ export class DungeonSidebarComponent {
   public dungeonService = inject(DungeonService);
   public campaignService = inject(CampaignService);
   private dialogService = inject(DialogService);
+  private viewportService = inject(ViewportService);
 
   public buttons = computed<SidebarButton[]>(() => {
-    return [this.backButton(), this.endTurnButton(), this.moveButton(), this.stopButton()].filter(
-      (button) => !!button,
-    );
+    return [
+      this.backButton(),
+      this.endTurnButton(),
+      this.centerButton(),
+      this.moveButton(),
+      this.stopButton(),
+    ].filter((button) => !!button);
   });
 
   private backButton(): SidebarButton {
@@ -58,6 +64,25 @@ export class DungeonSidebarComponent {
           ? this.adventuresApiService.endTurnMaster(this.campaignService.campaign().adventure!.id)
           : this.adventuresApiService.endTurnHero(this.campaignService.campaign().adventure!.id)
         ).subscribe();
+      },
+    };
+  }
+
+  private centerButton(): SidebarButton {
+    const master = this.campaignService.master();
+    const activePlayer = this.dungeonService.activePlayer();
+    const activeHero = this.dungeonService.activeHero();
+    const myHero = this.dungeonService.myHero();
+
+    return {
+      icon: 'map-pin',
+      disabled: master.me && activePlayer?.me,
+      callback: (): void => {
+        if (master.me) {
+          this.viewportService.center(activeHero!.x, activeHero!.y);
+        } else {
+          this.viewportService.center(myHero!.x, myHero!.y);
+        }
       },
     };
   }
