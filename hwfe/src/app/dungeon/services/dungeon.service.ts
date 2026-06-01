@@ -52,7 +52,7 @@ export class DungeonService {
   public campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
 
-  private hwfeCells = signal<HwfeCell[]>([]);
+  public hwfeCells = signal<HwfeCell[]>([]);
   public hwfeHeroes = signal<HwfeHero[]>([]);
   public hwfeMonsters = signal<HwfeMonster[]>([]);
 
@@ -130,12 +130,13 @@ export class DungeonService {
         return {
           ...cell,
           creatureId: updatedCell.creatureId,
+          visibility: updatedCell.visibility,
         };
       }),
     );
   }
 
-  private updateVisibility(): void {
+  public updateVisibility(): void {
     this.hwfeCells().forEach((cell) => {
       switch (cell.visibility) {
         case 0:
@@ -282,7 +283,7 @@ export class DungeonService {
     }
   }
 
-  public createHwfeCell(cell: HwCell): HwfeCell {
+  private createHwfeCell(cell: HwCell): HwfeCell {
     const baseSprite = this.createBaseSprite(cell.x, cell.y, cell.baseSpritePath);
     const featureSprite = cell.feature.spritePath
       ? this.createFeatureSprite(cell.x, cell.y, cell.feature.spritePath)

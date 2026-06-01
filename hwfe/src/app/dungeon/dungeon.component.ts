@@ -12,7 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { cellAt, sameCell } from '@hw/shared/dungeon';
+import { cellAt, cellLosUpdate, sameCell } from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
@@ -173,7 +173,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downEndTurnMaster', (data) => {
-      console.log('downEndTurnMaster', data);
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
@@ -194,7 +193,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downEndTurnHero', (data) => {
-      console.log('downEndTurnHero', data);
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
@@ -227,29 +225,35 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const leftCell = cellAt(dungeon.cells, hero.x, hero.y)!;
       const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
-      const foggedAndUnfogged = [...(data.fogged || []), ...(data.unfogged || [])];
+      const cells = dungeon.cells.map((c) => {
+        if (sameCell(c, leftCell)) {
+          return { ...c, creatureId: null };
+        }
 
-      const cells = dungeon.cells
-        .map((c) => {
-          if (sameCell(c, leftCell)) {
-            return { ...c, creatureId: null };
-          }
+        if (sameCell(c, enteredCell)) {
+          return { ...c, creatureId: data.heroId };
+        }
 
-          if (sameCell(c, enteredCell)) {
-            return { ...c, creatureId: data.heroId };
-          }
+        return c;
+      });
 
-          return c;
-        })
-        .map((c) => {
-          const visCell = cellAt(foggedAndUnfogged, c.x, c.y);
+      const heroes = dungeon.heroes.map((h) =>
+        h.id === hero.id
+          ? {
+              ...h,
+              spritePath: heroSpritePath(h.klass, h.gender, data.dir),
+              direction: data.dir,
+              x: data.cell.x,
+              y: data.cell.y,
+              movementPoints: h.movementPoints - 1,
+            }
+          : h,
+      );
 
-          if (!visCell) {
-            return c;
-          }
-
-          return { ...c, visibility: visCell.visibility };
-        });
+      cellLosUpdate(
+        cells,
+        heroes.map((h) => cellAt(cells, h.x, h.y)!),
+      );
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
@@ -257,28 +261,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           ...campaign.adventure!,
           dungeon: {
             ...dungeon,
-            heroes: dungeon.heroes.map((h) =>
-              h.id === hero.id
-                ? {
-                    ...h,
-                    spritePath: heroSpritePath(h.klass, h.gender, data.dir),
-                    direction: data.dir,
-                    x: data.cell.x,
-                    y: data.cell.y,
-                    movementPoints: h.movementPoints - 1,
-                  }
-                : h,
-            ),
-            cells: [
-              ...cells,
-              ...(data.revealed || []).map((c) => this.dungeonService.createHwfeCell(c)),
-            ],
+            heroes: heroes,
+            cells: cells,
           },
         },
       }));
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
+      this.dungeonService.updateVisibility();
     });
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {

@@ -1,8 +1,7 @@
 import { Direction } from '../../directions/directions.const.js';
 import { SpriteOffset } from '../../sprites/sprite-offset.const.js';
-import { CellLosUpdate } from '../cells/cell-los-update.const.js';
 
-export interface HwTransformMoveHero extends Partial<CellLosUpdate> {
+export interface HwTransformMoveHero {
   heroId: number;
   dir: Direction;
   cell: SpriteOffset;

@@ -215,6 +215,7 @@ export class CampaignsService {
       data: {
         campaignId: campaign.id,
         templateId: adventureTemplate.id,
+        turn: 1,
         dungeon: this.editorDungeonToDungeon(
           campaign,
           adventureTemplate.dungeon,

@@ -1,7 +1,7 @@
 export { cellAt } from './cells/cell-at.const.js';
 export { cellIsAt } from './cells/cell-is-at.const.js';
 export { cellIsTraversable } from './cells/cell-is-traversable.const.js';
-export { cellLosUpdate, CellLosUpdate } from './cells/cell-los-update.const.js';
+export { cellLosUpdate } from './cells/cell-los-update.const.js';
 export { cellLos } from './cells/cell-los.const.js';
 export { HwCell } from './cells/cell.interface.js';
 export { HwCorners } from './cells/corners.interface.js';

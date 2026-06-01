@@ -169,9 +169,10 @@ export class AdventuresService {
       };
     });
 
-    const update = cellLosUpdate(adventure.dungeon.cells, [
-      cellAt(adventure.dungeon.cells, targetCell.x, targetCell.y)!,
-    ]);
+    cellLosUpdate(
+      adventure.dungeon.cells,
+      adventure.dungeon.heroes.map((h) => cellAt(adventure.dungeon.cells, h.x, h.y)!),
+    );
 
     await this.prismaService.campaign.update({
       where: { id: campaign.id },
@@ -184,7 +185,6 @@ export class AdventuresService {
       heroId: hero.id,
       dir: direction,
       cell: { x: targetCell.x, y: targetCell.y },
-      ...update,
     });
   }
 
