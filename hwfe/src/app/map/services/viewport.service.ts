@@ -38,9 +38,8 @@ export class ViewportService {
         });
 
         this.viewport.sortableChildren = true;
-
         this.app.stage.addChild(this.viewport);
-        this.viewport.drag().pinch().wheel();
+        this.viewport.drag().pinch({ axis: 'all' }).wheel();
 
         fromPixiEvent<FederatedPointerEvent>(this.viewport, 'drag-start')
           .pipe(takeUntilDestroyed(this.destroyRef))
