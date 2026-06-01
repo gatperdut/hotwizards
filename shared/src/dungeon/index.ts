@@ -1,7 +1,7 @@
 export { cellAt } from './cells/cell-at.const.js';
 export { cellIsAt } from './cells/cell-is-at.const.js';
 export { cellIsTraversable } from './cells/cell-is-traversable.const.js';
-export { cellLosUpdate } from './cells/cell-los-update.const.js';
+export { cellLosUpdate, CellLosUpdate } from './cells/cell-los-update.const.js';
 export { cellLos } from './cells/cell-los.const.js';
 export { HwCell } from './cells/cell.interface.js';
 export { HwCorners } from './cells/corners.interface.js';
@@ -38,4 +38,5 @@ export { HwMonster } from './creatures/monsters/monster.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
 export { HwTransformEndTurnHero } from './transform/transform-end-turn-hero.interface.js';
 export { HwTransformEndTurnMaster } from './transform/transform-end-turn-master.interface.js';
-export { HwTransformMoveCreature } from './transform/transform-move-creature.interface.js';
+export { HwTransformMoveHero } from './transform/transform-move-hero.interface.js';
+export { HwTransformMoveMonster } from './transform/transform-move-monster.interface.js';

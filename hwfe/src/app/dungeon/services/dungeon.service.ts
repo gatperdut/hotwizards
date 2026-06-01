@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Direction, DirectionOffsets } from '@hw/shared/directions';
+import { Direction, DirectionOffsets, Directions } from '@hw/shared/directions';
 import {
   cellAt,
   cellIsTraversable,
@@ -26,16 +26,17 @@ import {
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { Socket } from 'socket.io-client';
-import { AuthService } from '../../auth/services/auth.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
+import { BaseSpriteFogTint } from '../../sprites/base-sprites.const';
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
 import { MonsterSelectedTint, MonsterViewedTint } from '../../sprites/monster-sprites.const';
+import { WhiteSpriteTint } from '../../sprites/sprite-tints.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
@@ -47,7 +48,6 @@ export class DungeonService {
   private textureService = inject(TextureService);
   private viewportService = inject(ViewportService);
   private campaignService = inject(CampaignService);
-  private authService = inject(AuthService);
 
   public campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
@@ -87,6 +87,8 @@ export class DungeonService {
     this.hwfeCellsSet();
     this.hwfeHeroesSet();
     this.hwfeMonstersSet();
+
+    this.updateVisibility();
   }
 
   private hwfeCellsSet(): void {
@@ -131,6 +133,89 @@ export class DungeonService {
         };
       }),
     );
+  }
+
+  private updateVisibility(): void {
+    this.hwfeCells().forEach((cell) => {
+      switch (cell.visibility) {
+        case 0:
+          cell.pixi.baseSprite.visible = false;
+          Directions.forEach((dir) => {
+            if (cell.pixi.corners[dir]) {
+              cell.pixi.corners[dir].visible = false;
+            }
+          });
+          if (cell.pixi.doorSprite) {
+            cell.pixi.doorSprite.visible = false;
+          }
+          if (cell.pixi.featureSprite) {
+            cell.pixi.featureSprite.visible = false;
+          }
+          if (cell.pixi.floorTrapSprite) {
+            cell.pixi.floorTrapSprite.visible = false;
+          }
+          if (cell.pixi.stairsSprite) {
+            cell.pixi.stairsSprite.visible = false;
+          }
+          break;
+
+        case 1:
+          cell.pixi.baseSprite.visible = true;
+          cell.pixi.baseSprite.tint = BaseSpriteFogTint;
+          Directions.forEach((dir) => {
+            if (cell.pixi.corners[dir]) {
+              cell.pixi.corners[dir].visible = true;
+            }
+          });
+          if (cell.pixi.doorSprite) {
+            cell.pixi.doorSprite.visible = true;
+          }
+          if (cell.pixi.featureSprite) {
+            cell.pixi.featureSprite.visible = true;
+          }
+          if (cell.pixi.floorTrapSprite) {
+            cell.pixi.floorTrapSprite.visible = true;
+          }
+          if (cell.pixi.stairsSprite) {
+            cell.pixi.stairsSprite.visible = true;
+          }
+          break;
+
+        case 2:
+          cell.pixi.baseSprite.visible = true;
+          cell.pixi.baseSprite.tint = WhiteSpriteTint;
+          Directions.forEach((dir) => {
+            if (cell.pixi.corners[dir]) {
+              cell.pixi.corners[dir].visible = true;
+            }
+          });
+          if (cell.pixi.doorSprite) {
+            cell.pixi.doorSprite.visible = true;
+          }
+          if (cell.pixi.featureSprite) {
+            cell.pixi.featureSprite.visible = true;
+          }
+          if (cell.pixi.floorTrapSprite) {
+            cell.pixi.floorTrapSprite.visible = true;
+          }
+          if (cell.pixi.stairsSprite) {
+            cell.pixi.stairsSprite.visible = true;
+          }
+          break;
+      }
+    });
+
+    this.hwfeMonsters().forEach((monster) => {
+      switch (cellAt(this.hwfeCells(), monster.x, monster.y)!.visibility) {
+        case 0:
+        case 1:
+          monster.pixi.sprite.visible = false;
+          break;
+        case 2:
+          monster.pixi.sprite.visible = true;
+          break;
+      }
+    });
   }
 
   public hwfeHeroesUpdate(): void {
@@ -225,10 +310,6 @@ export class DungeonService {
         ? this.createCornerSprite(cell.x, cell.y, '/tiles/corners/corner_w.png')
         : null,
     };
-
-    if (cell.visibility < 2) {
-      baseSprite.visible = false;
-    }
 
     const hwfeCell: HwfeCell = {
       x: cell.x,

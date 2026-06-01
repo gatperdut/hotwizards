@@ -1,4 +1,5 @@
 import { BaseSpritePath, SpriteOffset } from '@hw/shared/sprites';
+import { GreySpriteTint } from './sprite-tints.const';
 
 export const BaseSpriteSizes: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/floors/floor_01.png': { x: 64, y: 64 },
@@ -55,3 +56,5 @@ export const BaseSpriteOffsets: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/waters/water_12.png': { x: 0, y: 0 },
   '/tiles/waters/water_13.png': { x: 0, y: 0 },
 } as const;
+
+export const BaseSpriteFogTint = GreySpriteTint;

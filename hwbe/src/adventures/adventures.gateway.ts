@@ -1,7 +1,8 @@
 import {
   HwTransformEndTurnHero,
   HwTransformEndTurnMaster,
-  HwTransformMoveCreature,
+  HwTransformMoveHero,
+  HwTransformMoveMonster,
 } from '@hw/shared/dungeon';
 import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared/sockets';
 import { UseGuards } from '@nestjs/common';
@@ -70,11 +71,11 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     this.server.to(`adventure:${adventureId}`).emit('downEndTurnHero', data);
   }
 
-  public handleDownMoveHero(adventureId: number, data: HwTransformMoveCreature): void {
+  public handleDownMoveHero(adventureId: number, data: HwTransformMoveHero): void {
     this.server.to(`adventure:${adventureId}`).emit('downMoveHero', data);
   }
 
-  public handleDownMoveMonster(adventureId: number, data: HwTransformMoveCreature): void {
+  public handleDownMoveMonster(adventureId: number, data: HwTransformMoveMonster): void {
     this.server.to(`adventure:${adventureId}`).emit('downMoveMonster', data);
   }
 }

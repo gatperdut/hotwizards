@@ -223,9 +223,33 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-      const hero = dungeon.heroes.find((h) => h.id === data.creatureId)!;
+      const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
       const leftCell = cellAt(dungeon.cells, hero.x, hero.y)!;
       const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
+
+      const foggedAndUnfogged = [...(data.fogged || []), ...(data.unfogged || [])];
+
+      const cells = dungeon.cells
+        .map((c) => {
+          if (sameCell(c, leftCell)) {
+            return { ...c, creatureId: null };
+          }
+
+          if (sameCell(c, enteredCell)) {
+            return { ...c, creatureId: data.heroId };
+          }
+
+          return c;
+        })
+        .map((c) => {
+          const visCell = cellAt(foggedAndUnfogged, c.x, c.y);
+
+          if (!visCell) {
+            return c;
+          }
+
+          return { ...c, visibility: visCell.visibility };
+        });
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
@@ -245,17 +269,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
                   }
                 : h,
             ),
-            cells: dungeon.cells.map((c) => {
-              if (sameCell(c, leftCell)) {
-                return { ...c, creatureId: null };
-              }
-
-              if (sameCell(c, enteredCell)) {
-                return { ...c, creatureId: data.creatureId };
-              }
-
-              return c;
-            }),
+            cells: [
+              ...cells,
+              ...(data.revealed || []).map((c) => this.dungeonService.createHwfeCell(c)),
+            ],
           },
         },
       }));
@@ -266,7 +283,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-      const monster = dungeon.monsters.find((m) => m.id === data.creatureId)!;
+      const monster = dungeon.monsters.find((m) => m.id === data.monsterId)!;
       const leftCell = cellAt(dungeon.cells, monster.x, monster.y)!;
       const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
@@ -277,7 +294,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           dungeon: {
             ...dungeon,
             monsters: dungeon.monsters.map((m) =>
-              m.id === data.creatureId
+              m.id === data.monsterId
                 ? {
                     ...m,
                     spritePath: monsterSpritePath(m.type!, data.dir),
@@ -294,7 +311,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
               }
 
               if (sameCell(c, enteredCell)) {
-                return { ...c, creatureId: data.creatureId };
+                return { ...c, creatureId: data.monsterId };
               }
 
               return c;

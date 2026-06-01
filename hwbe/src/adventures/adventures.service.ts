@@ -2,13 +2,7 @@ import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
-import {
-  cellIsTraversable,
-  HwCell,
-  HwCreature,
-  HwTransformMoveCreature,
-  sameCell,
-} from '@hw/shared/dungeon';
+import { cellAt, cellIsTraversable, cellLosUpdate, HwCreature, sameCell } from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
@@ -113,10 +107,6 @@ export class AdventuresService {
     return turn;
   }
 
-  private cellAt(adventure: HwAdventure, x: number, y: number): HwCell | undefined {
-    return adventure.dungeon.cells.find((cell) => cell.x === x && cell.y === y);
-  }
-
   public async moveCreature(
     campaign: HwCampaign,
     adventure: HwAdventure,
@@ -127,10 +117,10 @@ export class AdventuresService {
       throw new UnprocessableEntityException('No movement points left');
     }
 
-    const currentCell = this.cellAt(adventure, creature.x, creature.y)!;
+    const currentCell = cellAt(adventure.dungeon.cells, creature.x, creature.y)!;
 
-    const targetCell = this.cellAt(
-      adventure,
+    const targetCell = cellAt(
+      adventure.dungeon.cells,
       creature.x + DirectionOffsets[direction].x,
       creature.y + DirectionOffsets[direction].y,
     );
@@ -196,16 +186,23 @@ export class AdventuresService {
       },
     });
 
-    const data: HwTransformMoveCreature = {
-      creatureId: creature.id,
-      dir: direction,
-      cell: { x: targetCell.x, y: targetCell.y },
-    };
-
     if (creature.alignment === 'HERO') {
-      this.adventuresGateway.handleDownMoveHero(adventure.id, data);
+      const update = cellLosUpdate(adventure.dungeon.cells, [
+        cellAt(adventure.dungeon.cells, targetCell.x, targetCell.y)!,
+      ]);
+
+      this.adventuresGateway.handleDownMoveHero(adventure.id, {
+        heroId: creature.id,
+        dir: direction,
+        cell: { x: targetCell.x, y: targetCell.y },
+        ...update,
+      });
     } else {
-      this.adventuresGateway.handleDownMoveMonster(adventure.id, data);
+      this.adventuresGateway.handleDownMoveMonster(adventure.id, {
+        monsterId: creature.id,
+        dir: direction,
+        cell: { x: targetCell.x, y: targetCell.y },
+      });
     }
   }
 }
