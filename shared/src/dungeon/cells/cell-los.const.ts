@@ -15,9 +15,26 @@ export const cellLos = (cells: HwCell[], origin: HwCell, dest: HwCell): boolean 
   let y = origin.y;
   let err = dx - dy;
 
+  const e2start = 2 * err;
+  if (e2start > 0) {
+    x += sx;
+    err -= dy;
+  } else if (e2start < 0) {
+    y += sy;
+    err += dx;
+  } else {
+    x += sx;
+    y += sy;
+    err += dx - dy;
+  }
+
   while (true) {
     if (x === dest.x && y === dest.y) {
       return true;
+    }
+
+    if (!cellAt(cells, x, y)) {
+      return false;
     }
 
     const e2 = 2 * err;
@@ -25,7 +42,7 @@ export const cellLos = (cells: HwCell[], origin: HwCell, dest: HwCell): boolean 
     if (e2 === 0) {
       const cell1 = cellAt(cells, x + sx, y);
       const cell2 = cellAt(cells, x, y + sy);
-      if (!cell1 && !cell2) {
+      if (!cell1 || !cell2) {
         return false;
       }
 
@@ -39,12 +56,6 @@ export const cellLos = (cells: HwCell[], origin: HwCell, dest: HwCell): boolean 
       } else {
         y += sy;
         err += dx;
-      }
-
-      if (x !== dest.x || y !== dest.y) {
-        if (!cellAt(cells, x, y)) {
-          return false;
-        }
       }
     }
   }

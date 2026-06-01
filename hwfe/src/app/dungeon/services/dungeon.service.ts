@@ -226,6 +226,10 @@ export class DungeonService {
         : null,
     };
 
+    if (cell.visibility < 2) {
+      baseSprite.visible = false;
+    }
+
     const hwfeCell: HwfeCell = {
       x: cell.x,
       y: cell.y,

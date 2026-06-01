@@ -5,6 +5,7 @@ import { HwCharacter } from '@hw/shared/characters';
 import { Directions } from '@hw/shared/directions';
 import {
   cellAt,
+  cellLosUpdate,
   creatureAt,
   HeroAttackDie,
   HeroBodyPoints,
@@ -241,6 +242,11 @@ export class CampaignsService {
         .filter((editorCell) => editorCell.spawn)
         .map((editorCell) => cellAt(cells, editorCell.x, editorCell.y))
         .filter((cell) => !!cell),
+    );
+
+    cellLosUpdate(
+      cells,
+      heroes.map((h) => cellAt(cells, h.x, h.y)!),
     );
 
     const monsters = this.cellsToMonsters(
