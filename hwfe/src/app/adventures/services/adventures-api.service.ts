@@ -44,4 +44,10 @@ export class AdventuresApiService {
       direction: direction,
     });
   }
+
+  public openDoor(adventureId: number, direction: Direction): Observable<void> {
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/open-door`, {
+      direction: direction,
+    });
+  }
 }

@@ -338,5 +338,9 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downSelectMonster', (id) => {
       this.dungeonService.selectMonster(id, true);
     });
+
+    this.dungeonService.adventuresSocket.on('downOpenDoor', (data) => {
+      console.log(data);
+    });
   }
 }

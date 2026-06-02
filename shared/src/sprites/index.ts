@@ -13,10 +13,12 @@ export { CreatureSpritePath, CreatureSpritePaths } from './creature-sprites.cons
 export {
   ClosedDoorSpritePath,
   ClosedDoorSpritePaths,
+  ClosedToOpenDoorSpritePaths,
   DoorSpritePath,
   DoorSpritePaths,
   OpenDoorSpritePath,
   OpenDoorSpritePaths,
+  OpenToClosedDoorSpritePaths,
 } from './door-sprites.const.js';
 export {
   FeatureSpritePath,

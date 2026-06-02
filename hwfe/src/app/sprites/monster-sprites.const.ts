@@ -76,7 +76,7 @@ export const MonsterSpriteOffsets: Record<MonsterSpritePath, SpriteOffset> = {
   '/tiles/monsters/goblin_axe_n.png': { x: 2, y: -43 },
   '/tiles/monsters/goblin_axe_e.png': { x: -1, y: -43 },
   '/tiles/monsters/goblin_axe_s.png': { x: -1, y: -43 },
-  '/tiles/monsters/goblin_axe_w.png': { x: 0, y: -44 },
+  '/tiles/monsters/goblin_axe_w.png': { x: 2, y: -46 },
   '/tiles/monsters/goblin_dagger_n.png': { x: 3, y: -42 },
   '/tiles/monsters/goblin_dagger_e.png': { x: -2, y: -42 },
   '/tiles/monsters/goblin_dagger_s.png': { x: -1, y: -43 },

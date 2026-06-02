@@ -154,7 +154,10 @@ export class DungeonService {
 
       const sprites = this.cellService.sprites(cell);
 
-      if (cell.visibility === 0 && adjacentCells(cells, cell).some((c) => c.visibility > 0)) {
+      if (
+        cell.visibility === 0 &&
+        adjacentCells(cells, cell).some((c) => c.visibility > 0 && (!c.door || c.door.open))
+      ) {
         sprites.forEach((s) => {
           s.visible = master.me;
         });
@@ -418,23 +421,30 @@ export class DungeonService {
     return cornersSprite;
   }
 
-  // TODO drop this, use cellAt
-  private findCell(x: number, y: number): HwCell | undefined {
-    return this.campaignService
-      .campaign()
-      .adventure!.dungeon.cells.find((cell) => cell.x === x && cell.y === y);
-  }
-
   public canWalk(creature: HwCreature, direction: Direction): boolean {
     if (creature.movementPoints < 1) {
       return false;
     }
 
-    const cell = this.findCell(
+    const cell = cellAt(
+      this.hwfeCells(),
       creature.x + DirectionOffsets[direction].x,
       creature.y + DirectionOffsets[direction].y,
     );
     return !!cell && cellIsTraversable(cell);
+  }
+
+  public canOpenDoor(hero: HwHero, direction: Direction): boolean {
+    if (hero.movementPoints < 1) {
+      return false;
+    }
+
+    const cell = cellAt(
+      this.hwfeCells(),
+      hero.x + DirectionOffsets[direction].x,
+      hero.y + DirectionOffsets[direction].y,
+    );
+    return !!cell && !!cell.door && !cell.door.open;
   }
 
   private baseSpriteTap(event: FederatedPointerEvent, x: number, y: number): void {

@@ -10,7 +10,12 @@ import {
   HwMonster,
   sameCell,
 } from '@hw/shared/dungeon';
-import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import {
+  ClosedDoorSpritePath,
+  ClosedToOpenDoorSpritePaths,
+  heroSpritePath,
+  monsterSpritePath,
+} from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -254,6 +259,72 @@ export class AdventuresService {
       monsterId: monster.id,
       dir: direction,
       cell: { x: targetCell.x, y: targetCell.y },
+    });
+  }
+
+  public async openDoor(
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+    hero: HwHero,
+    direction: Direction,
+  ): Promise<void> {
+    if (hero.movementPoints < 2) {
+      throw new UnprocessableEntityException('No movement points left');
+    }
+
+    const targetCell = cellAt(
+      adventure.dungeon.cells,
+      hero.x + DirectionOffsets[direction].x,
+      hero.y + DirectionOffsets[direction].y,
+    );
+
+    if (!targetCell || !targetCell.door || targetCell.door.open) {
+      throw new UnprocessableEntityException('There is no door to open');
+    }
+
+    adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
+      if (sameCell(targetCell, cell)) {
+        return {
+          ...targetCell,
+          door: {
+            ...targetCell.door!,
+            spritePath:
+              ClosedToOpenDoorSpritePaths[targetCell.door!.spritePath as ClosedDoorSpritePath],
+            open: true,
+          },
+        };
+      }
+
+      return cell;
+    });
+
+    adventure.dungeon.heroes = adventure.dungeon.heroes.map((h) => {
+      if (hero.id !== h.id) {
+        return h;
+      }
+
+      return {
+        ...h,
+        direction: direction,
+        movementPoints: h.movementPoints - 1,
+      };
+    });
+
+    cellsUpdateLos(
+      adventure.dungeon.cells,
+      adventure.dungeon.heroes.map((h) => cellAt(adventure.dungeon.cells, h.x, h.y)!),
+    );
+
+    await this.prismaService.campaign.update({
+      where: { id: campaign.id },
+      data: {
+        adventure: { update: { dungeon: adventure.dungeon as unknown as InputJsonValue } },
+      },
+    });
+
+    this.adventuresGateway.handleDownOpenDoor(adventure.id, {
+      heroId: hero.id,
+      dir: direction,
     });
   }
 }

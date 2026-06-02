@@ -2,6 +2,7 @@ import {
   HwAdventure,
   HwAdventureMoveHeroDto,
   HwAdventureMoveMonsterDto,
+  HwAdventureOpenDoorDto,
 } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwHero, HwMonster } from '@hw/shared/dungeon';
@@ -79,5 +80,21 @@ export class AdventuresController {
     @Body() body: HwAdventureMoveMonsterDto,
   ): Promise<void> {
     return this.adventuresService.moveMonster(campaign, adventure, monster, body.direction);
+  }
+
+  @Post(':adventureId/open-door')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+  )
+  public openDoor(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentAdventure() adventure: HwAdventure,
+    @CurrentHero() hero: HwHero,
+    @Body() body: HwAdventureOpenDoorDto,
+  ): Promise<void> {
+    return this.adventuresService.openDoor(campaign, adventure, hero, body.direction);
   }
 }

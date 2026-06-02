@@ -21,6 +21,9 @@ export const cellsHaveLos = <T extends HwCell>(cells: T[], origin: T, dest: T): 
   const tDeltaX = 2 * ady;
   const tDeltaY = 2 * adx;
 
+  const blockedByDoor = (cell: T, cx: number, cy: number): boolean =>
+    cell.door !== null && !cell.door.open && !(cx === dest.x && cy === dest.y);
+
   while (true) {
     if (tMaxX < tMaxY) {
       x += sx;
@@ -29,7 +32,12 @@ export const cellsHaveLos = <T extends HwCell>(cells: T[], origin: T, dest: T): 
       y += sy;
       tMaxY += tDeltaY;
     } else {
-      if (!cellAt(cells, x + sx, y) || !cellAt(cells, x, y + sy)) {
+      const nx = cellAt(cells, x + sx, y);
+      const ny = cellAt(cells, x, y + sy);
+      if (!nx || !ny) {
+        return false;
+      }
+      if (blockedByDoor(nx, x + sx, y) || blockedByDoor(ny, x, y + sy)) {
         return false;
       }
       x += sx;
@@ -41,7 +49,12 @@ export const cellsHaveLos = <T extends HwCell>(cells: T[], origin: T, dest: T): 
     if (x === dest.x && y === dest.y) {
       return true;
     }
-    if (!cellAt(cells, x, y)) {
+
+    const cell = cellAt(cells, x, y);
+    if (!cell) {
+      return false;
+    }
+    if (blockedByDoor(cell, x, y)) {
       return false;
     }
   }

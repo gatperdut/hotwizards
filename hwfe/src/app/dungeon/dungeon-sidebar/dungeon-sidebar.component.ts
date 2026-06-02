@@ -37,8 +37,9 @@ export class DungeonSidebarComponent {
     return [
       this.backButton(),
       this.endTurnButton(),
-      this.centerButton(),
       this.moveButton(),
+      this.openDoorButton(),
+      this.centerButton(),
       this.stopButton(),
     ].filter((button) => !!button);
   });
@@ -64,25 +65,6 @@ export class DungeonSidebarComponent {
           ? this.adventuresApiService.endTurnMaster(this.campaignService.campaign().adventure!.id)
           : this.adventuresApiService.endTurnHero(this.campaignService.campaign().adventure!.id)
         ).subscribe();
-      },
-    };
-  }
-
-  private centerButton(): SidebarButton {
-    const master = this.campaignService.master();
-    const activePlayer = this.dungeonService.activePlayer();
-    const activeHero = this.dungeonService.activeHero();
-    const myHero = this.dungeonService.myHero();
-
-    return {
-      icon: 'map-pin',
-      disabled: master.me && activePlayer?.me,
-      callback: (): void => {
-        if (master.me) {
-          this.viewportService.center(activeHero!.x, activeHero!.y);
-        } else {
-          this.viewportService.center(myHero!.x, myHero!.y);
-        }
       },
     };
   }
@@ -123,6 +105,55 @@ export class DungeonSidebarComponent {
       autoClose: false,
       disabled: !creature || actions.every((a) => a.disabled),
       actions: actions,
+    };
+  }
+
+  private openDoorButton(): SidebarButton | null {
+    if (this.campaignService.master().me) {
+      return null;
+    }
+
+    const adventure = this.campaignService.campaign().adventure!;
+    const activeHero = this.dungeonService.activeHero();
+
+    const actions: SidebarButtonAction[] = [];
+
+    if (activeHero) {
+      actions.push(
+        ...Directions.map((dir) => ({
+          icon: DirectionIcons[dir],
+          disabled: !this.dungeonService.canOpenDoor(activeHero, dir),
+          callback: (): void => {
+            this.adventuresApiService.openDoor(adventure.id, dir).subscribe();
+          },
+        })),
+      );
+    }
+
+    return {
+      icon: 'open-door',
+      autoClose: false,
+      disabled: !activeHero || actions.every((a) => a.disabled),
+      actions: actions,
+    };
+  }
+
+  private centerButton(): SidebarButton {
+    const master = this.campaignService.master();
+    const activePlayer = this.dungeonService.activePlayer();
+    const activeHero = this.dungeonService.activeHero();
+    const myHero = this.dungeonService.myHero();
+
+    return {
+      icon: 'map-pin',
+      disabled: master.me && activePlayer?.me,
+      callback: (): void => {
+        if (master.me) {
+          this.viewportService.center(activeHero!.x, activeHero!.y);
+        } else {
+          this.viewportService.center(myHero!.x, myHero!.y);
+        }
+      },
     };
   }
 

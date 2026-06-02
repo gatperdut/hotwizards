@@ -43,3 +43,4 @@ export { HwTransformEndTurnHero } from './transform/transform-end-turn-hero.inte
 export { HwTransformEndTurnMaster } from './transform/transform-end-turn-master.interface.js';
 export { HwTransformMoveHero } from './transform/transform-move-hero.interface.js';
 export { HwTransformMoveMonster } from './transform/transform-move-monster.interface.js';
+export { HwTransformOpenDoor } from './transform/transform-open-door.interface.js';
