@@ -4,8 +4,8 @@ import { sameCell } from '../position/same-cell.const.js';
 import { secondaryCells } from '../position/secondary-cells.const.js';
 import { cellsHaveLos } from './cells-have-los.const.js';
 
-export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
-  const fromFeature: HwCell[] = [];
+export const cellsUpdateLos = <T extends HwCell>(cells: T[], origins: T[]): void => {
+  const fromFeature: T[] = [];
 
   cells.forEach((cell) => {
     if (!fromFeature.find((c) => sameCell(c, cell)) && cell.visibility === 2) {
@@ -22,7 +22,7 @@ export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
           return;
         }
 
-        let featureCell: HwCell | undefined;
+        let featureCell: T | undefined;
 
         if (cell.secondary) {
           featureCell = cellAt(cells, cell.secondary.x, cell.secondary.y);

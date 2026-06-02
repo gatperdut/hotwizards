@@ -1,8 +1,8 @@
 import { HwCell } from '../cell.interface.js';
 import { cellsHaveLos } from './cells-have-los.const.js';
 
-export const losFrom = (cells: HwCell[], origins: HwCell[]): HwCell[] => {
-  const result: HwCell[] = [];
+export const losFrom = <T extends HwCell>(cells: T[], origins: T[]): T[] => {
+  const result: T[] = [];
 
   cells.forEach((cell) => {
     origins.forEach((origin) => {

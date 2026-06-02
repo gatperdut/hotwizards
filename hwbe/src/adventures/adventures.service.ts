@@ -154,18 +154,18 @@ export class AdventuresService {
       return cell;
     });
 
-    adventure.dungeon.heroes = adventure.dungeon.heroes.map((hero) => {
-      if (hero.id !== hero.id) {
-        return hero;
+    adventure.dungeon.heroes = adventure.dungeon.heroes.map((h) => {
+      if (hero.id !== h.id) {
+        return h;
       }
 
       return {
-        ...hero,
-        spritePath: heroSpritePath(hero.klass, hero.gender, direction),
+        ...h,
+        spritePath: heroSpritePath(h.klass, h.gender, direction),
         x: targetCell.x,
         y: targetCell.y,
         direction: direction,
-        movementPoints: hero.movementPoints - 1,
+        movementPoints: h.movementPoints - 1,
       };
     });
 

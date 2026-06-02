@@ -36,6 +36,7 @@ import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
 import {
   BaseSpriteFoggedTint,
+  BaseSpritePersonalVisibleTint,
   BaseSpriteSharedVisibleTint,
 } from '../../sprites/base-sprites.const';
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
@@ -196,7 +197,9 @@ export class DungeonService {
     });
 
     if (myHero) {
-      losFrom(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {});
+      losFrom<HwfeCell>(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {
+        cell.pixi.baseSprite.tint = BaseSpritePersonalVisibleTint;
+      });
     }
 
     this.hwfeMonsters().forEach((monster) => {
