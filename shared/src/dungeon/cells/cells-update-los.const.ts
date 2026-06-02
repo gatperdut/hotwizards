@@ -4,14 +4,10 @@ import { HwCell } from './cell.interface.js';
 import { sameCell } from './same-cell.const.js';
 
 export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
-  const skip: HwCell[] = [];
+  const fromFeature: HwCell[] = [];
 
   cells.forEach((cell) => {
-    if (skip.find((c) => sameCell(c, cell))) {
-      return;
-    }
-
-    if (cell.visibility === 2) {
+    if (!fromFeature.find((c) => sameCell(c, cell)) && cell.visibility === 2) {
       cell.visibility = 1;
     }
   });
@@ -20,6 +16,10 @@ export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
     origins.forEach((origin) => {
       if (cellLos(cells, origin, cell)) {
         cell.visibility = 2;
+
+        if (fromFeature.find((c) => sameCell(c, cell))) {
+          return;
+        }
 
         let featureCell: HwCell | undefined;
 
@@ -37,8 +37,10 @@ export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
           featureCell,
           ...cells.filter((c) => c.secondary && sameCell(featureCell, c.secondary)),
         ].forEach((c) => {
-          c.visibility = 2;
-          skip.push(c);
+          if (!sameCell(c, cell)) {
+            c.visibility = 1;
+          }
+          fromFeature.push(c);
         });
       }
     });

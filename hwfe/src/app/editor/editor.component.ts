@@ -116,8 +116,10 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         maxY = cell.y;
       }
     });
-
-    this.viewportService.center(Math.round((maxX - minX) / 2), Math.floor((maxY - minY) / 2));
+    this.viewportService.center(
+      minX + Math.round((maxX - minX) / 2),
+      minY + Math.floor((maxY - minY) / 2),
+    );
   }
 
   private tapEmptyCell(event: FederatedPointerEvent): void {
