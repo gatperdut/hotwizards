@@ -289,39 +289,43 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const leftCell = cellAt(dungeon.cells, monster.x, monster.y)!;
       const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
+      const cells = dungeon.cells.map((c) => {
+        if (sameCell(c, leftCell)) {
+          return { ...c, creatureId: null };
+        }
+
+        if (sameCell(c, enteredCell)) {
+          return { ...c, creatureId: data.monsterId };
+        }
+
+        return c;
+      });
+
+      const monsters = dungeon.monsters.map((m) => {
+        if (m.id !== data.monsterId) {
+          return m;
+        }
+
+        this.dungeonService.selectMonster(m.id, false);
+
+        return {
+          ...m,
+          spritePath: monsterSpritePath(m.type!, data.dir),
+          direction: data.dir,
+          x: data.cell.x,
+          y: data.cell.y,
+          movementPoints: m.movementPoints - 1,
+        };
+      });
+
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
           dungeon: {
             ...dungeon,
-            monsters: dungeon.monsters.map((m) => {
-              if (m.id !== data.monsterId) {
-                return m;
-              }
-
-              this.dungeonService.selectMonster(m.id, false);
-
-              return {
-                ...m,
-                spritePath: monsterSpritePath(m.type!, data.dir),
-                direction: data.dir,
-                x: data.cell.x,
-                y: data.cell.y,
-                movementPoints: m.movementPoints - 1,
-              };
-            }),
-            cells: dungeon.cells.map((c) => {
-              if (sameCell(c, leftCell)) {
-                return { ...c, creatureId: null };
-              }
-
-              if (sameCell(c, enteredCell)) {
-                return { ...c, creatureId: data.monsterId };
-              }
-
-              return c;
-            }),
+            monsters: monsters,
+            cells: cells,
           },
         },
       }));
