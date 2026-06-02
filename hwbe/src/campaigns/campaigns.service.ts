@@ -5,7 +5,7 @@ import { HwCharacter } from '@hw/shared/characters';
 import { Directions } from '@hw/shared/directions';
 import {
   cellAt,
-  cellLosUpdate,
+  cellsUpdateLos,
   creatureAt,
   HeroAttackDie,
   HeroBodyPoints,
@@ -245,7 +245,7 @@ export class CampaignsService {
         .filter((cell) => !!cell),
     );
 
-    cellLosUpdate(
+    cellsUpdateLos(
       cells,
       heroes.map((h) => cellAt(cells, h.x, h.y)!),
     );

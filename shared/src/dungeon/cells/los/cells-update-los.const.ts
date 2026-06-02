@@ -2,7 +2,7 @@ import { HwCell } from '../cell.interface.js';
 import { cellAt } from '../position/cell-at.const.js';
 import { sameCell } from '../position/same-cell.const.js';
 import { secondaryCells } from '../position/secondary-cells.const.js';
-import { cellLos } from './cell-los.const.js';
+import { cellsHaveLos } from './cells-have-los.const.js';
 
 export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
   const fromFeature: HwCell[] = [];
@@ -15,7 +15,7 @@ export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
 
   cells.forEach((cell) => {
     origins.forEach((origin) => {
-      if (cellLos(cells, origin, cell)) {
+      if (cellsHaveLos(cells, origin, cell)) {
         cell.visibility = 2;
 
         if (fromFeature.find((c) => sameCell(c, cell))) {

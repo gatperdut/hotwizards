@@ -1,7 +1,7 @@
 import { HwCell } from '../cell.interface.js';
 import { cellAt } from '../position/cell-at.const.js';
 
-export const cellLos = (cells: HwCell[], origin: HwCell, dest: HwCell): boolean => {
+export const cellsHaveLos = (cells: HwCell[], origin: HwCell, dest: HwCell): boolean => {
   if (origin.x === dest.x && origin.y === dest.y) {
     return true;
   }

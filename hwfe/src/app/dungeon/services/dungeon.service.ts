@@ -9,6 +9,7 @@ import {
   HwCreature,
   HwHero,
   HwMonster,
+  losFrom,
   secondaryCells,
 } from '@hw/shared/dungeon';
 import {
@@ -33,12 +34,14 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
-import { BaseSpriteFogTint } from '../../sprites/base-sprites.const';
+import {
+  BaseSpriteFoggedTint,
+  BaseSpriteSharedVisibleTint,
+} from '../../sprites/base-sprites.const';
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
 import { MonsterSelectedTint, MonsterViewedTint } from '../../sprites/monster-sprites.const';
-import { WhiteSpriteTint } from '../../sprites/sprite-tints.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
@@ -142,6 +145,7 @@ export class DungeonService {
 
   public updateVisibility(): void {
     const cells = this.hwfeCells();
+    const myHero = this.myHero();
 
     cells.forEach((cell) => {
       cell.pixi.baseSprite.alpha = 1.0;
@@ -165,14 +169,14 @@ export class DungeonService {
           case 1:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint = BaseSpriteFogTint;
+              s.tint = BaseSpriteFoggedTint;
             });
             break;
 
           case 2:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint = WhiteSpriteTint;
+              s.tint = BaseSpriteSharedVisibleTint;
             });
             break;
         }
@@ -188,8 +192,12 @@ export class DungeonService {
       if (!secCells.length || secCells.every((c) => c.visibility === 2)) {
         return;
       }
-      cell.pixi.featureSprite!.tint = BaseSpriteFogTint;
+      cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint;
     });
+
+    if (myHero) {
+      losFrom(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {});
+    }
 
     this.hwfeMonsters().forEach((monster) => {
       switch (cellAt(cells, monster.x, monster.y)!.visibility) {

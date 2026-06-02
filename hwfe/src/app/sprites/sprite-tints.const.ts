@@ -7,4 +7,5 @@ export const OrangeSpriteTint = 0xf5a050;
 export const WhiteSpriteTint = 0xffffff;
 export const BrightRedSpriteTint = 0xd94f4f;
 export const BrightGreenSpriteTint = 0x3db36a;
-export const GreySpriteTint = 0x888888;
+export const LightGreySpriteTint = 0xaaaaaa;
+export const GreySpriteTint = 0x666666;

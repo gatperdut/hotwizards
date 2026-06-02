@@ -12,7 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { cellAt, cellLosUpdate, sameCell } from '@hw/shared/dungeon';
+import { cellAt, cellsUpdateLos, sameCell } from '@hw/shared/dungeon';
 import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
@@ -251,7 +251,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           : h,
       );
 
-      cellLosUpdate(
+      cellsUpdateLos(
         cells,
         heroes.map((h) => cellAt(cells, h.x, h.y)!),
       );

@@ -5,7 +5,7 @@ import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import {
   cellAt,
   cellIsTraversable,
-  cellLosUpdate,
+  cellsUpdateLos,
   HwHero,
   HwMonster,
   sameCell,
@@ -169,7 +169,7 @@ export class AdventuresService {
       };
     });
 
-    cellLosUpdate(
+    cellsUpdateLos(
       adventure.dungeon.cells,
       adventure.dungeon.heroes.map((h) => cellAt(adventure.dungeon.cells, h.x, h.y)!),
     );
