@@ -1,7 +1,8 @@
-import { cellAt } from './cell-at.const.js';
+import { HwCell } from '../cell.interface.js';
+import { cellAt } from '../position/cell-at.const.js';
+import { sameCell } from '../position/same-cell.const.js';
+import { secondaryCells } from '../position/secondary-cells.const.js';
 import { cellLos } from './cell-los.const.js';
-import { HwCell } from './cell.interface.js';
-import { sameCell } from './same-cell.const.js';
 
 export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
   const fromFeature: HwCell[] = [];
@@ -33,10 +34,7 @@ export const cellsUpdateLos = (cells: HwCell[], origins: HwCell[]): void => {
           return;
         }
 
-        [
-          featureCell,
-          ...cells.filter((c) => c.secondary && sameCell(featureCell, c.secondary)),
-        ].forEach((c) => {
+        [featureCell, ...secondaryCells(cells, featureCell)].forEach((c) => {
           if (!sameCell(c, cell)) {
             c.visibility = 1;
           }

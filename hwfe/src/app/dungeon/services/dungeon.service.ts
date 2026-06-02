@@ -9,6 +9,7 @@ import {
   HwCreature,
   HwHero,
   HwMonster,
+  secondaryCells,
 } from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
@@ -176,6 +177,18 @@ export class DungeonService {
             break;
         }
       }
+    });
+
+    cells.forEach((cell) => {
+      if (!cell.feature.spritePath) {
+        return;
+      }
+
+      const secCells = secondaryCells(cells, cell);
+      if (!secCells.length || secCells.every((c) => c.visibility === 2)) {
+        return;
+      }
+      cell.pixi.featureSprite!.tint = BaseSpriteFogTint;
     });
 
     this.hwfeMonsters().forEach((monster) => {

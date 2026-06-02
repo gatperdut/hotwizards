@@ -1,4 +1,4 @@
-import { HwCell } from './cell.interface.js';
+import { HwCell } from '../cell.interface.js';
 
 export const sameCell = (
   cell1: Pick<HwCell, 'x' | 'y'>,
