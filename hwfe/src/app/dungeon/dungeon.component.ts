@@ -22,6 +22,7 @@ import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
 import { DungeonSidebarComponent } from './dungeon-sidebar/dungeon-sidebar.component';
+import { CellService } from './services/cell.service';
 import { DungeonService } from './services/dungeon.service';
 
 @Component({
@@ -30,7 +31,7 @@ import { DungeonService } from './services/dungeon.service';
   templateUrl: './dungeon.component.html',
   styleUrl: './dungeon.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [OverflowService, DungeonService, ViewportService, TextureService],
+  providers: [OverflowService, DungeonService, CellService, ViewportService, TextureService],
 })
 export class DungeonComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas') private canvasRef!: ElementRef<HTMLCanvasElement>;

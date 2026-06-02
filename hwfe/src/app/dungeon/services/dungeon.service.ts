@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Direction, DirectionOffsets, Directions } from '@hw/shared/directions';
+import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import {
+  adjacentCells,
   cellAt,
   cellIsTraversable,
   creatureAt,
@@ -42,12 +43,14 @@ import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
 import { HwfeMonster } from '../interfaces/monster.interface';
+import { CellService } from './cell.service';
 
 @Injectable()
 export class DungeonService {
   private textureService = inject(TextureService);
   private viewportService = inject(ViewportService);
   private campaignService = inject(CampaignService);
+  private cellService = inject(CellService);
 
   public campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
@@ -137,77 +140,46 @@ export class DungeonService {
   }
 
   public updateVisibility(): void {
-    this.hwfeCells().forEach((cell) => {
-      switch (cell.visibility) {
-        case 0:
-          cell.pixi.baseSprite.visible = false;
-          Directions.forEach((dir) => {
-            if (cell.pixi.corners[dir]) {
-              cell.pixi.corners[dir].visible = false;
-            }
-          });
-          if (cell.pixi.doorSprite) {
-            cell.pixi.doorSprite.visible = false;
-          }
-          if (cell.pixi.featureSprite) {
-            cell.pixi.featureSprite.visible = false;
-          }
-          if (cell.pixi.floorTrapSprite) {
-            cell.pixi.floorTrapSprite.visible = false;
-          }
-          if (cell.pixi.stairsSprite) {
-            cell.pixi.stairsSprite.visible = false;
-          }
-          break;
+    const cells = this.hwfeCells();
 
-        case 1:
-          cell.pixi.baseSprite.visible = true;
-          cell.pixi.baseSprite.tint = BaseSpriteFogTint;
-          Directions.forEach((dir) => {
-            if (cell.pixi.corners[dir]) {
-              cell.pixi.corners[dir].visible = true;
-            }
-          });
-          if (cell.pixi.doorSprite) {
-            cell.pixi.doorSprite.visible = true;
-          }
-          if (cell.pixi.featureSprite) {
-            cell.pixi.featureSprite.visible = true;
-          }
-          if (cell.pixi.floorTrapSprite) {
-            cell.pixi.floorTrapSprite.visible = true;
-          }
-          if (cell.pixi.stairsSprite) {
-            cell.pixi.stairsSprite.visible = true;
-          }
-          break;
+    cells.forEach((cell) => {
+      cell.pixi.baseSprite.alpha = 1.0;
 
-        case 2:
-          cell.pixi.baseSprite.visible = true;
-          cell.pixi.baseSprite.tint = WhiteSpriteTint;
-          Directions.forEach((dir) => {
-            if (cell.pixi.corners[dir]) {
-              cell.pixi.corners[dir].visible = true;
-            }
-          });
-          if (cell.pixi.doorSprite) {
-            cell.pixi.doorSprite.visible = true;
-          }
-          if (cell.pixi.featureSprite) {
-            cell.pixi.featureSprite.visible = true;
-          }
-          if (cell.pixi.floorTrapSprite) {
-            cell.pixi.floorTrapSprite.visible = true;
-          }
-          if (cell.pixi.stairsSprite) {
-            cell.pixi.stairsSprite.visible = true;
-          }
-          break;
+      const sprites = this.cellService.sprites(cell);
+
+      if (cell.visibility === 0 && adjacentCells(cells, cell).some((c) => c.visibility > 0)) {
+        sprites.forEach((s) => {
+          s.visible = false;
+        });
+        cell.pixi.baseSprite.visible = true;
+        cell.pixi.baseSprite.alpha = 0.1;
+      } else {
+        switch (cell.visibility) {
+          case 0:
+            sprites.forEach((s) => {
+              s.visible = false;
+            });
+            break;
+
+          case 1:
+            sprites.forEach((s) => {
+              s.visible = true;
+              s.tint = BaseSpriteFogTint;
+            });
+            break;
+
+          case 2:
+            sprites.forEach((s) => {
+              s.visible = true;
+              s.tint = WhiteSpriteTint;
+            });
+            break;
+        }
       }
     });
 
     this.hwfeMonsters().forEach((monster) => {
-      switch (cellAt(this.hwfeCells(), monster.x, monster.y)!.visibility) {
+      switch (cellAt(cells, monster.x, monster.y)!.visibility) {
         case 0:
         case 1:
           monster.pixi.sprite.visible = false;
