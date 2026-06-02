@@ -146,6 +146,7 @@ export class DungeonService {
 
   public updateVisibility(): void {
     const cells = this.hwfeCells();
+    const master = this.campaignService.master();
     const myHero = this.myHero();
 
     cells.forEach((cell) => {
@@ -155,15 +156,21 @@ export class DungeonService {
 
       if (cell.visibility === 0 && adjacentCells(cells, cell).some((c) => c.visibility > 0)) {
         sprites.forEach((s) => {
-          s.visible = false;
+          s.visible = master.me;
         });
         cell.pixi.baseSprite.visible = true;
-        cell.pixi.baseSprite.alpha = 0.1;
+        cell.pixi.baseSprite.alpha = master.me ? 1.0 : 0.1;
+        if (master.me) {
+          cell.pixi.baseSprite.tint = BaseSpriteFoggedTint;
+        }
       } else {
         switch (cell.visibility) {
           case 0:
             sprites.forEach((s) => {
-              s.visible = false;
+              s.visible = master.me;
+              if (master.me) {
+                s.tint = BaseSpriteFoggedTint;
+              }
             });
             break;
 
@@ -177,7 +184,7 @@ export class DungeonService {
           case 2:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint = BaseSpriteSharedVisibleTint;
+              s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
             });
             break;
         }
@@ -198,7 +205,10 @@ export class DungeonService {
 
     if (myHero) {
       losFrom<HwfeCell>(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {
-        cell.pixi.baseSprite.tint = BaseSpritePersonalVisibleTint;
+        const sprites = this.cellService.sprites(cell);
+        sprites.forEach((s) => {
+          s.tint = BaseSpritePersonalVisibleTint;
+        });
       });
     }
 
@@ -206,7 +216,7 @@ export class DungeonService {
       switch (cellAt(cells, monster.x, monster.y)!.visibility) {
         case 0:
         case 1:
-          monster.pixi.sprite.visible = false;
+          monster.pixi.sprite.visible = master.me;
           break;
         case 2:
           monster.pixi.sprite.visible = true;
