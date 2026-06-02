@@ -342,7 +342,7 @@ export class DungeonService {
 
     baseSprite.eventMode = 'static';
     baseSprite.cursor = 'pointer';
-    baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, hwfeCell));
+    baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, hwfeCell.x, hwfeCell.y));
 
     return hwfeCell;
   }
@@ -418,6 +418,7 @@ export class DungeonService {
     return cornersSprite;
   }
 
+  // TODO drop this, use cellAt
   private findCell(x: number, y: number): HwCell | undefined {
     return this.campaignService
       .campaign()
@@ -436,21 +437,23 @@ export class DungeonService {
     return !!cell && cellIsTraversable(cell);
   }
 
-  private baseSpriteTap(event: FederatedPointerEvent, hwfeCell: HwfeCell): void {
+  private baseSpriteTap(event: FederatedPointerEvent, x: number, y: number): void {
     if (this.viewportService.dragging) {
       return;
     }
-
     event.stopPropagation();
 
     const activePlayer = this.activePlayer();
+    const master = this.campaignService.master();
+    const hwfeCell = cellAt(this.hwfeCells(), x, y)!;
+
+    if (hwfeCell.visibility < 2 && !master.me) {
+      this.viewMonster(null);
+      return;
+    }
 
     const monsterId = creatureAt(this.hwfeMonsters(), hwfeCell.x, hwfeCell.y)?.id ?? null;
-
-    if (
-      (!this.campaignService.master().me || !activePlayer?.me) &&
-      this.selectedMonster()?.id !== monsterId
-    ) {
+    if ((!master.me || !activePlayer?.me) && this.selectedMonster()?.id !== monsterId) {
       this.viewMonster(monsterId);
     } else {
       this.adventuresSocket.emit('upSelectMonster', {

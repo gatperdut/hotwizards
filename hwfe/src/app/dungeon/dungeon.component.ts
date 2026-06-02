@@ -222,6 +222,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      const master = this.campaignService.campaign().master;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
       const leftCell = cellAt(dungeon.cells, hero.x, hero.y)!;
       const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
@@ -271,6 +272,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.updateVisibility();
+
+      const viewedMonster = this.dungeonService.viewedMonster();
+      if (!master.me && viewedMonster) {
+        if (
+          cellAt(this.dungeonService.hwfeCells(), viewedMonster.x, viewedMonster.y)!.visibility < 2
+        ) {
+          this.dungeonService.viewMonster(null);
+        }
+      }
     });
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
@@ -285,18 +295,22 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           ...campaign.adventure!,
           dungeon: {
             ...dungeon,
-            monsters: dungeon.monsters.map((m) =>
-              m.id === data.monsterId
-                ? {
-                    ...m,
-                    spritePath: monsterSpritePath(m.type!, data.dir),
-                    direction: data.dir,
-                    x: data.cell.x,
-                    y: data.cell.y,
-                    movementPoints: m.movementPoints - 1,
-                  }
-                : m,
-            ),
+            monsters: dungeon.monsters.map((m) => {
+              if (m.id !== data.monsterId) {
+                return m;
+              }
+
+              this.dungeonService.selectMonster(m.id, false);
+
+              return {
+                ...m,
+                spritePath: monsterSpritePath(m.type!, data.dir),
+                direction: data.dir,
+                x: data.cell.x,
+                y: data.cell.y,
+                movementPoints: m.movementPoints - 1,
+              };
+            }),
             cells: dungeon.cells.map((c) => {
               if (sameCell(c, leftCell)) {
                 return { ...c, creatureId: null };
@@ -314,10 +328,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeMonstersUpdate();
+      this.dungeonService.updateVisibility();
     });
 
     this.dungeonService.adventuresSocket.on('downSelectMonster', (id) => {
-      console.log('downSelectMonster', id);
       this.dungeonService.selectMonster(id, true);
     });
   }
