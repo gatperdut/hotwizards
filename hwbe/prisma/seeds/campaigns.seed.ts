@@ -23,7 +23,12 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
       shield: null,
       twohanded: null,
     },
-    backpack: [],
+    backpack: [
+      {
+        id: crypto.randomUUID(),
+        name: 'toolkit',
+      },
+    ],
   };
 
   const arnoInventory: HwInventory = {
