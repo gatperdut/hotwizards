@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink, UrlTree } from '@angular/router';
+import { HwfeColor } from '../../shared/color.const';
 
 @Component({
   selector: 'app-link',
@@ -11,7 +12,7 @@ import { RouterLink, UrlTree } from '@angular/router';
 export class LinkComponent {
   public label = input.required<string>();
 
-  public color = input<'primary' | 'secondary'>('primary');
+  public color = input<HwfeColor>('primary');
 
   public to = input.required<string | string[] | UrlTree | undefined>();
 }

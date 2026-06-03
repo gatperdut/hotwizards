@@ -6,7 +6,7 @@
         <div
           class="size-10 rounded-full bg-cover bg-center cursor-pointer"
           [style.background-image]="`url(/items/${item.name}.png)`"
-          (click)="viewItem(item)"
+          (click)="viewItem(item, 'gear')"
         ></div>
       } @else {
         <div
@@ -22,7 +22,10 @@
     >
       <div class="typ-body">Backpack</div>
       @for (item of inventory().backpack; track item.id) {
-        <div class="flex flex-row gap-2 items-center cursor-pointer" (click)="viewItem(item)">
+        <div
+          class="flex flex-row gap-2 items-center cursor-pointer"
+          (click)="viewItem(item, 'backpack')"
+        >
           <div
             class="size-10 shrink-0 rounded-full bg-cover bg-center"
             [style.background-image]="`url(/items/${item.name}.png)`"

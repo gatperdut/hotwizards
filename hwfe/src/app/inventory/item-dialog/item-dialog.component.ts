@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { HwItem } from '@hw/shared/inventory';
+import { HwfeColor } from '../../shared/color.const';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
 import { DialogComponent } from '../../ui/dialog/dialog.component';
@@ -11,7 +12,7 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 export type ItemDialogAction = {
   label: string;
   callback: () => void;
-  color?: 'primary' | 'secondary' | 'warning';
+  color: HwfeColor;
   disabled?: boolean;
 };
 

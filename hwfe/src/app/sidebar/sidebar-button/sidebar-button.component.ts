@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, inject, input } from '@angular/core';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
+import { HwfeColor } from '../../shared/color.const';
 
 export interface SidebarButtonAction {
   icon: string;
@@ -19,7 +20,7 @@ export class SidebarButtonComponent {
   public icon = input.required<string>();
   public callback = input<() => void>();
   public actions = input<SidebarButtonAction[]>([]);
-  public color = input<'primary' | 'secondary' | 'warning'>('primary');
+  public color = input<HwfeColor>('primary');
   public disabled = input(false);
   public autoClose = input(true);
 

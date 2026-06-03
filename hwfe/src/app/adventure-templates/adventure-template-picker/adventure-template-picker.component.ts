@@ -14,12 +14,13 @@ import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { PaginatorComponent } from '@hw/hwfe/app/ui/paginator/paginator.component';
 import { HwAdventureTemplate, HwAdventureTemplateSearchDto } from '@hw/shared/adventure-templates';
 import { map, tap } from 'rxjs';
+import { HwfeColor } from '../../shared/color.const';
 import { AdventurePickerFilterComponent } from './adventure-template-picker-filter/adventure-template-picker-filter.component';
 
 export type AdventurePickerAction = {
   label: string;
   action: (adventureTemplate: HwAdventureTemplate) => void;
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
   disabled?: () => boolean;
 };
 

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { HwfeColor } from '../../shared/color.const';
 import { IconComponent } from '../icon/icon.component';
 
 @Component({
@@ -13,7 +14,7 @@ export class ButtonComponent {
   public appearance = input<'filled' | 'outlined'>('filled');
   public label = input<string | undefined>(undefined);
   public icon = input<string | undefined>(undefined);
-  public color = input<'primary' | 'secondary' | 'warning'>('primary');
+  public color = input<HwfeColor>('primary');
   public disabled = input<boolean>(false);
   public buttonClasses = input<string>('');
 

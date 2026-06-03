@@ -1,16 +1,17 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { HwfeColor } from '../../shared/color.const';
 import { ButtonComponent } from '../button/button.component';
 
 export type AppCardAction = {
   label: string;
   action: () => void;
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
 };
 
 export type AppCardMiniAction = {
   icon: string;
   action: () => void;
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
 };
 
 @Component({
@@ -21,9 +22,9 @@ export type AppCardMiniAction = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardComponent {
-  public color = input<'primary' | 'secondary' | 'warning'>('primary');
+  public color = input<HwfeColor>('primary');
 
-  public separatorColor = input<'primary' | 'secondary' | 'warning'>('secondary');
+  public separatorColor = input<HwfeColor>('secondary');
 
   public actions = input<AppCardAction[]>([]);
 

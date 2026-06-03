@@ -1,9 +1,10 @@
 import { Injectable, signal } from '@angular/core';
+import { HwfeColor } from '@hw/hwfe/app/shared/color.const';
 
 interface ToastActionCreate {
   label: string;
   callback: () => void;
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
 }
 
 type ToastAction = Required<ToastActionCreate>;
@@ -11,7 +12,7 @@ type ToastAction = Required<ToastActionCreate>;
 interface ToastCreate {
   message: string;
   duration?: number;
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
   actions?: ToastActionCreate[];
 }
 

@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
-import { HwInventory, HwItem, HwSlot, HwSlots } from '@hw/shared/inventory';
+import { HwInventory, HwItem, HwItemSlots, HwSlot, HwSlots } from '@hw/shared/inventory';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import { InventoryCanFn } from '../consts/inventory-can-fn.const';
+import { ItemSource } from '../consts/item-source.const';
 import {
   ItemDialogAction,
   ItemDialogComponent,
   ItemDialogData,
   ItemDialogResult,
 } from '../item-dialog/item-dialog.component';
-
-export type InventoryCanFn = () => boolean;
 
 @Component({
   selector: 'app-inventory-manager',
@@ -28,22 +28,37 @@ export class InventoryManagerComponent {
 
   public slots = HwSlots.slice();
 
-  public viewItem(item: HwItem): void {
+  public viewItem(item: HwItem, source: ItemSource): void {
     const dialog: LazyDialog<ItemDialogComponent, ItemDialogData, ItemDialogResult> = {
       importFn: () =>
         import('../item-dialog/item-dialog.component').then((m) => m.ItemDialogComponent),
     };
 
-    const actions: ItemDialogAction[] = [
-      {
-        label: 'Equip',
-        color: 'primary' as const,
-        disabled: !this.canEquip(),
-        callback: (): void => {
-          console.log('equip');
-        },
-      },
-    ].filter((a) => !!a);
+    const equipAction: ItemDialogAction | null =
+      source === 'backpack' && !!HwItemSlots[item.name]
+        ? {
+            label: 'Equip',
+            color: 'primary',
+            disabled: !this.canEquip(),
+            callback: (): void => {
+              console.log('equip');
+            },
+          }
+        : null;
+
+    const unequipAction: ItemDialogAction | null =
+      source === 'gear'
+        ? {
+            label: 'Unequip',
+            color: 'secondary',
+            disabled: !this.canUnequip(),
+            callback: (): void => {
+              console.log('unequip');
+            },
+          }
+        : null;
+
+    const actions: ItemDialogAction[] = [equipAction, unequipAction].filter((a) => !!a);
 
     void this.dialogService.open(dialog, { item: item, actions: actions });
   }

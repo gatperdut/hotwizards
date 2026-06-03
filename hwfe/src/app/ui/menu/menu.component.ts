@@ -7,6 +7,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { HwfeColor } from '../../shared/color.const';
 import { ButtonComponent } from '../button/button.component';
 
 export interface AppMenuItem {
@@ -14,7 +15,7 @@ export interface AppMenuItem {
   callback?: () => void;
   icon?: string;
   disabled?: boolean;
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
 }
 
 @Component({

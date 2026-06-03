@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { HwfeColor } from '../shared/color.const';
 import {
   SidebarButtonAction,
   SidebarButtonComponent,
@@ -8,7 +9,7 @@ export type SidebarButton = {
   icon: string;
   callback?: () => void;
   actions?: SidebarButtonAction[];
-  color?: 'primary' | 'secondary' | 'warning';
+  color?: HwfeColor;
   disabled?: boolean;
   autoClose?: boolean;
 };
