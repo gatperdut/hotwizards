@@ -26,7 +26,7 @@
 
       @if (pendingMemberships().length) {
         <div class="flex flex-col gap-hw-small grow">
-          <span class="typ-body whitespace-nowrap">Active members</span>
+          <span class="typ-body whitespace-nowrap">Pending members</span>
 
           <div class="flex flex-row flex-wrap gap-x-hw-average gap-y-hw-small">
             @for (membership of pendingMemberships(); track membership.id) {
