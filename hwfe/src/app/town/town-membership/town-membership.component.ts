@@ -8,10 +8,11 @@ import {
 } from '@hw/hwfe/app/ui/card/card.component';
 import { HwCharacter } from '@hw/shared/characters';
 import { HwMembership } from '@hw/shared/memberships';
+import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
 
 @Component({
   selector: 'app-town-membership',
-  imports: [CardComponent, WhoCharacterComponent],
+  imports: [CardComponent, WhoCharacterComponent, InventoryManagerComponent],
   templateUrl: './town-membership.component.html',
   styleUrl: './town-membership.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +23,8 @@ export class TownMembershipComponent {
   public membership = input.required<HwMembership>();
 
   public character = computed(() => this.membership().character as HwCharacter);
+
+  public inventory = computed(() => this.character().inventory);
 
   public actions = computed(() => {
     const result: AppCardAction[] = [];

@@ -5,12 +5,12 @@ export const HwWeaponSlots = ['onehanded', 'twohanded'] as const;
 export type HwWeaponSlot = (typeof HwWeaponSlots)[number];
 
 export const HwSlots = [
-  'head',
-  'body',
-  'arms',
-  'feet',
-  'cloak',
   ...HwWeaponSlots,
   ...HwShieldSlots,
+  'arms',
+  'body',
+  'cloak',
+  'feet',
+  'head',
 ] as const;
 export type HwSlot = (typeof HwSlots)[number];

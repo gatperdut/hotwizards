@@ -1,0 +1,8 @@
+<div class="flex flex-col gap-3">
+  @for (slot of slots; track slot) {
+    <div
+      class="size-10 rounded-full bg-cover bg-center"
+      [style.background-image]="`url(/slots/${slot}.png)`"
+    ></div>
+  }
+</div>
