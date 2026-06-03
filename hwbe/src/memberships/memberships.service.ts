@@ -1,9 +1,11 @@
 import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
+import { heroStartingInventory } from '@hw/shared/dungeon';
 import { HwMembership } from '@hw/shared/memberships';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InputJsonObject } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { MembershipsGateway } from './memberships.gateway.js';
@@ -90,6 +92,7 @@ export class MembershipsService {
           klass: klass,
           gender: gender,
           membershipId: membership.id,
+          inventory: heroStartingInventory(klass) as unknown as InputJsonObject,
         },
       });
     });

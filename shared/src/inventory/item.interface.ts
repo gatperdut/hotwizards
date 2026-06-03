@@ -1,5 +1,5 @@
-import { ItemTemplate } from './item-template.interface.js';
+import { HwItemTemplate } from './item-template.interface.js';
 
-export interface Item extends ItemTemplate {
-  id: number;
+export interface HwItem extends HwItemTemplate {
+  id: string;
 }

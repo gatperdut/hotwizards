@@ -1,4 +1,4 @@
-import { Item } from './item.interface.js';
-import { Slot } from './slots.const.js';
+import { HwItem } from './item.interface.js';
+import { HwSlot } from './slots.const.js';
 
-export interface Gear extends Record<Slot, Item | null> {}
+export interface HwGear extends Record<HwSlot, HwItem | null> {}

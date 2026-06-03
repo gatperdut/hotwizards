@@ -1,4 +1,4 @@
-export const ItemNames = [
+export const HwItemNames = [
   'dagger',
   'shortsword',
   'broadsword',
@@ -8,4 +8,4 @@ export const ItemNames = [
   'healing_potion',
   'toolkit',
 ] as const;
-export type ItemName = (typeof ItemNames)[number];
+export type HwItemName = (typeof HwItemNames)[number];

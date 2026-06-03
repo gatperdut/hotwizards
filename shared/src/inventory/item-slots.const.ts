@@ -1,7 +1,7 @@
-import { ItemName } from './item-name.interface.js';
-import { Slot } from './slots.const.js';
+import { HwItemName } from './item-name.interface.js';
+import { HwSlot } from './slots.const.js';
 
-export const ItemSlots: Record<ItemName, Slot | null> = {
+export const HwItemSlots: Record<HwItemName, HwSlot | null> = {
   dagger: 'onehanded',
   shortsword: 'onehanded',
   broadsword: 'onehanded',

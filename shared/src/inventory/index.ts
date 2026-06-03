@@ -1,8 +1,16 @@
-export { Backpack } from './backpack.interface.js';
-export { Gear } from './gear.interface.js';
-export { Inventory } from './inventory.interface.js';
-export { ItemName, ItemNames } from './item-name.interface.js';
-export { ItemSlots } from './item-slots.const.js';
-export { ItemTemplate } from './item-template.interface.js';
-export { Item } from './item.interface.js';
-export { ShieldSlot, ShieldSlots, Slot, Slots, WeaponSlot, WeaponSlots } from './slots.const.js';
+export { HwBackpack } from './backpack.interface.js';
+export { HwGear } from './gear.interface.js';
+export { inventoryItems } from './inventory-items.const.js';
+export { HwInventory } from './inventory.interface.js';
+export { HwItemName, HwItemNames } from './item-name.interface.js';
+export { HwItemSlots } from './item-slots.const.js';
+export { HwItemTemplate } from './item-template.interface.js';
+export { HwItem } from './item.interface.js';
+export {
+  HwShieldSlot,
+  HwShieldSlots,
+  HwSlot,
+  HwSlots,
+  HwWeaponSlot,
+  HwWeaponSlots,
+} from './slots.const.js';

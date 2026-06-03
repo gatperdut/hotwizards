@@ -25,6 +25,7 @@ import {
   MonsterMindPoints,
   MonsterMovementPoints,
   MonsterNames,
+  monsterStartingInventory,
 } from '@hw/shared/dungeon';
 import { HwEditorCell, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
 import { HwMembership } from '@hw/shared/memberships';
@@ -316,6 +317,7 @@ export class CampaignsService {
         direction: direction,
         x: spawnCell.x,
         y: spawnCell.y,
+        inventory: { ...character.inventory },
       };
     });
   }
@@ -348,6 +350,7 @@ export class CampaignsService {
           direction: cell.monster.direction,
           x: cell.x,
           y: cell.y,
+          inventory: monsterStartingInventory(cell.monster.type),
         };
 
         return monster;

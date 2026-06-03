@@ -104,6 +104,8 @@ model Character {
 
   membershipId Int        @unique
   membership   Membership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+
+  inventory Json
 }
 
 model AdventureTemplate {

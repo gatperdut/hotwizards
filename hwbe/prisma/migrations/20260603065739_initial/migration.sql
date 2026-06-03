@@ -72,6 +72,7 @@ CREATE TABLE "Character" (
     "klass" "Klass" NOT NULL,
     "gender" "Gender" NOT NULL,
     "membershipId" INTEGER NOT NULL,
+    "inventory" JSONB NOT NULL,
 
     CONSTRAINT "Character_pkey" PRIMARY KEY ("id")
 );

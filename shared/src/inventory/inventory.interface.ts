@@ -1,7 +1,7 @@
-import { Backpack } from './backpack.interface.js';
-import { Gear } from './gear.interface.js';
+import { HwBackpack } from './backpack.interface.js';
+import { HwGear } from './gear.interface.js';
 
-export interface Inventory {
-  gear: Gear;
-  backpack: Backpack;
+export interface HwInventory {
+  gear: HwGear;
+  backpack: HwBackpack;
 }

@@ -1,3 +1,3 @@
-import { Item } from './item.interface.js';
+import { HwItem } from './item.interface.js';
 
-export interface Backpack extends Array<Item> {}
+export interface HwBackpack extends Array<HwItem> {}

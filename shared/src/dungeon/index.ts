@@ -19,6 +19,7 @@ export { HwAlignment } from './creatures/alignment.const.js';
 export { creatureAt } from './creatures/creature-at.const.js';
 export { creatureIsAt } from './creatures/creature-is-at.const.js';
 export { HwCreature } from './creatures/creature.interface.js';
+export { heroStartingInventory } from './creatures/heroes/hero-starting-inventory.const.js';
 export {
   HeroAttackDie,
   HeroBodyPoints,
@@ -29,6 +30,7 @@ export {
 export { HwHero } from './creatures/heroes/hero.interface.js';
 export { MonsterNames } from './creatures/monsters/monster-names.const.js';
 export { monsterPortrait } from './creatures/monsters/monster-portrait.const.js';
+export { monsterStartingInventory } from './creatures/monsters/monster-starting-inventory.const.js';
 export {
   MonsterAttackDie,
   MonsterBodyPoints,

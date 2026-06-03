@@ -1,16 +1,16 @@
-export const ShieldSlots = ['shield'] as const;
-export type ShieldSlot = (typeof ShieldSlots)[number];
+export const HwShieldSlots = ['shield'] as const;
+export type HwShieldSlot = (typeof HwShieldSlots)[number];
 
-export const WeaponSlots = ['onehanded', 'twohanded'] as const;
-export type WeaponSlot = (typeof WeaponSlots)[number];
+export const HwWeaponSlots = ['onehanded', 'twohanded'] as const;
+export type HwWeaponSlot = (typeof HwWeaponSlots)[number];
 
-export const Slots = [
+export const HwSlots = [
   'head',
   'body',
   'arms',
   'feet',
   'cloak',
-  ...WeaponSlots,
-  ...ShieldSlots,
+  ...HwWeaponSlots,
+  ...HwShieldSlots,
 ] as const;
-export type Slot = (typeof Slots)[number];
+export type HwSlot = (typeof HwSlots)[number];

@@ -1,4 +1,5 @@
 import { Direction } from '../../directions/directions.const.js';
+import { HwInventory } from '../../inventory/inventory.interface.js';
 import { CreatureSpritePath } from '../../sprites/creature-sprites.const.js';
 import { HwAlignment } from './alignment.const.js';
 
@@ -18,4 +19,5 @@ export interface HwCreature {
   maxBodyPoints: number;
   mindPoints: number;
   maxMindPoints: number;
+  inventory: HwInventory;
 }

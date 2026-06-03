@@ -1,4 +1,5 @@
 import { Prisma } from '@hw/prismagen/client';
+import { HwInventory } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
 import { userToHwUser } from '../users/user-to-hw-user.js';
 
@@ -27,6 +28,7 @@ export const membershipToHwMembership = (
     character: membership.character
       ? {
           ...membership.character,
+          inventory: membership.character.inventory as unknown as HwInventory,
           me: membership.user.id === userId,
         }
       : undefined,

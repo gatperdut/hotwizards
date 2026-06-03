@@ -1,4 +1,5 @@
 import { Gender, Klass } from '@hw/prismagen/browser';
+import { HwInventory } from '../inventory/inventory.interface.js';
 import { HwMe } from '../shared/me.interface.js';
 
 export interface HwCharacter extends HwMe {
@@ -7,4 +8,5 @@ export interface HwCharacter extends HwMe {
   name: string;
   gender: Gender;
   klass: Klass;
+  inventory: HwInventory;
 }

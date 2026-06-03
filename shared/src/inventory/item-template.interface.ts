@@ -1,5 +1,5 @@
-import { ItemName } from './item-name.interface.js';
+import { HwItemName } from './item-name.interface.js';
 
-export interface ItemTemplate {
-  name: ItemName;
+export interface HwItemTemplate {
+  name: HwItemName;
 }
