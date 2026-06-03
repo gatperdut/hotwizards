@@ -29,6 +29,7 @@
     "./dungeon": "./dist/shared/src/dungeon/index.js",
     "./editor": "./dist/shared/src/editor/index.js",
     "./health": "./dist/shared/src/health/index.js",
+    "./inventory": "./dist/shared/src/inventory/index.js",
     "./memberships": "./dist/shared/src/memberships/index.js",
     "./pagination": "./dist/shared/src/pagination/index.js",
     "./push": "./dist/shared/src/push/index.js",
