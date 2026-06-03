@@ -16,7 +16,12 @@
   </div>
 
   <div appCardBody class="flex flex-col gap-hw-average">
-    <div class="typ-body">Inventory</div>
-    <app-inventory-manager [inventory]="inventory()"></app-inventory-manager>
+    <app-inventory-manager
+      [inventory]="inventory()"
+      [canEquip]="() => true"
+      [canUnequip]="() => true"
+      (equip)="onEquip($event)"
+      (unequip)="onUnequip($event)"
+    ></app-inventory-manager>
   </div>
 </app-card>

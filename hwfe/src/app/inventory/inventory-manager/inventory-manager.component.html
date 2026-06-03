@@ -1,8 +1,37 @@
-<div class="flex flex-col gap-3">
-  @for (slot of slots; track slot) {
+<div class="flex flex-row gap-3 items-start">
+  <div class="flex flex-col gap-3 mt-7.5">
+    @for (slot of slots; track slot) {
+      @let item = inventory().gear[slot];
+      @if (item) {
+        <div
+          class="size-10 rounded-full bg-cover bg-center cursor-pointer"
+          [style.background-image]="`url(/items/${item.name}.png)`"
+          (click)="viewItem(item)"
+        ></div>
+      } @else {
+        <div
+          class="size-10 rounded-full bg-cover bg-center border-black border"
+          [style.background-image]="`url(/slots/${slot}.png)`"
+        ></div>
+      }
+    }
+  </div>
+  <div class="flex-1 min-w-0 relative self-stretch">
     <div
-      class="size-10 rounded-full bg-cover bg-center"
-      [style.background-image]="`url(/slots/${slot}.png)`"
-    ></div>
-  }
+      class="absolute inset-0 flex flex-col gap-3 overflow-y-auto custom-scrollbar separator-l separator-secondary pl-2"
+    >
+      <div class="typ-body">Backpack</div>
+      @for (item of inventory().backpack; track item.id) {
+        <div class="flex flex-row gap-2 items-center cursor-pointer" (click)="viewItem(item)">
+          <div
+            class="size-10 shrink-0 rounded-full bg-cover bg-center"
+            [style.background-image]="`url(/items/${item.name}.png)`"
+          ></div>
+          <div class="typ-body truncate">
+            {{ item.name }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
 </div>

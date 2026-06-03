@@ -7,6 +7,7 @@ import {
   CardComponent,
 } from '@hw/hwfe/app/ui/card/card.component';
 import { HwCharacter } from '@hw/shared/characters';
+import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
 import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
 
@@ -51,4 +52,8 @@ export class TownMembershipComponent {
       },
     };
   }
+
+  public onEquip(item: HwItem): void {}
+
+  public onUnequip(slot: HwSlot): void {}
 }

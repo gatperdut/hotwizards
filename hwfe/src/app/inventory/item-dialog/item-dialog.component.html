@@ -1,0 +1,21 @@
+<app-dialog sizeClass="max-w-md">
+  <ng-template appDialogTitle>
+    <div class="flex flex-row gap-3 items-center">
+      <div
+        class="size-10 rounded-full bg-cover bg-center"
+        [style.background-image]="`url(/items/${data.item.name}.png)`"
+      ></div>
+      <div class="typ-h2">{{ data.item.name }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template appDialogContent>
+    <div class="flex flex-col gap-hw-average">
+      <div class="typ-body">TODO description</div>
+    </div>
+  </ng-template>
+
+  <ng-template appDialogActions>
+    <app-button label="OK" type="button" (click)="dialogRef.close()"></app-button>
+  </ng-template>
+</app-dialog>

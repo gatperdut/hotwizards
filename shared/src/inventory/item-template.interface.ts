@@ -1,4 +1,4 @@
-import { HwItemName } from './item-name.interface.js';
+import { HwItemName } from './item-name.const.js';
 
 export interface HwItemTemplate {
   name: HwItemName;
