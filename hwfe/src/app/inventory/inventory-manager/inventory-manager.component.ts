@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { HwInventory, HwItem, HwSlot, HwSlots } from '@hw/shared/inventory';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
+  ItemDialogAction,
   ItemDialogComponent,
   ItemDialogData,
   ItemDialogResult,
@@ -33,6 +34,17 @@ export class InventoryManagerComponent {
         import('../item-dialog/item-dialog.component').then((m) => m.ItemDialogComponent),
     };
 
-    void this.dialogService.open(dialog, { item: item });
+    const actions: ItemDialogAction[] = [
+      {
+        label: 'Equip',
+        color: 'primary' as const,
+        disabled: !this.canEquip(),
+        callback: (): void => {
+          console.log('equip');
+        },
+      },
+    ].filter((a) => !!a);
+
+    void this.dialogService.open(dialog, { item: item, actions: actions });
   }
 }

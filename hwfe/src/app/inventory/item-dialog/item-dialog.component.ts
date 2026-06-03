@@ -8,14 +8,22 @@ import { DialogContentDirective } from '../../ui/dialog/directives/dialog-conten
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 
+export type ItemDialogAction = {
+  label: string;
+  callback: () => void;
+  color?: 'primary' | 'secondary' | 'warning';
+  disabled?: boolean;
+};
+
 export type ItemDialogData = {
   item: HwItem;
+  actions: ItemDialogAction[];
 };
 
 export type ItemDialogResult = void;
 
 @Component({
-  selector: 'app-confirmation-dialog',
+  selector: 'app-item-dialog',
   imports: [
     DialogComponent,
     DialogTitleDirective,

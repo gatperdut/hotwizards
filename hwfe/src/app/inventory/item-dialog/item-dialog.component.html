@@ -16,6 +16,15 @@
   </ng-template>
 
   <ng-template appDialogActions>
-    <app-button label="OK" type="button" (click)="dialogRef.close()"></app-button>
+    @for (action of data.actions; track $index) {
+      <app-button
+        [label]="action.label"
+        [color]="action.color || 'primary'"
+        (click)="action.callback()"
+        [disabled]="action.disabled || false"
+        type="button"
+      ></app-button>
+    }
+    <app-button label="close" type="button" (click)="dialogRef.close()"></app-button>
   </ng-template>
 </app-dialog>
