@@ -41,7 +41,7 @@ export class InventoryManagerComponent {
             color: 'primary',
             disabled: !this.canEquip(),
             callback: (): void => {
-              console.log('equip');
+              this.equip.emit(item);
             },
           }
         : null;
@@ -53,7 +53,9 @@ export class InventoryManagerComponent {
             color: 'secondary',
             disabled: !this.canUnequip(),
             callback: (): void => {
-              console.log('unequip');
+              this.unequip.emit(
+                HwSlots.find((slot) => this.inventory().gear[slot]?.id === item.id)!,
+              );
             },
           }
         : null;

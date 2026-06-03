@@ -20,7 +20,7 @@
       <app-button
         [label]="action.label"
         [color]="action.color || 'primary'"
-        (click)="action.callback()"
+        (click)="dialogRef.close(); action.callback()"
         [disabled]="action.disabled || false"
         type="button"
       ></app-button>

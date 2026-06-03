@@ -9,6 +9,7 @@ import {
 import { HwCharacter } from '@hw/shared/characters';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
+import { CharactersApiService } from '../../characters/services/characters-api.service';
 import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
 
 @Component({
@@ -20,11 +21,11 @@ import { InventoryManagerComponent } from '../../inventory/inventory-manager/inv
 })
 export class TownMembershipComponent {
   public klassesService = inject(KlassesService);
+  private charactersApiService = inject(CharactersApiService);
 
   public membership = input.required<HwMembership>();
 
   public character = computed(() => this.membership().character as HwCharacter);
-
   public inventory = computed(() => this.character().inventory);
 
   public actions = computed(() => {
@@ -53,7 +54,11 @@ export class TownMembershipComponent {
     };
   }
 
-  public onEquip(item: HwItem): void {}
+  public onEquip(item: HwItem): void {
+    this.charactersApiService.equipItem(this.character().id, item.id).subscribe();
+  }
 
-  public onUnequip(slot: HwSlot): void {}
+  public onUnequip(slot: HwSlot): void {
+    this.charactersApiService.unequipItem(this.character().id, slot).subscribe();
+  }
 }

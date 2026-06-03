@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwAdventure } from '@hw/shared/adventures';
+import {
+  HwAdventure,
+  HwAdventureMoveHeroDto,
+  HwAdventureMoveMonsterDto,
+  HwAdventureOpenDoorDto,
+} from '@hw/shared/adventures';
 import { Direction } from '@hw/shared/directions';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../../services/api-notification.service';
@@ -29,9 +34,11 @@ export class AdventuresApiService {
   }
 
   public moveHero(adventureId: number, direction: Direction): Observable<void> {
-    return this.httpClient.post<void>(`/api/adventures/${adventureId}/move-hero`, {
+    const dto: HwAdventureMoveHeroDto = {
       direction: direction,
-    });
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/move-hero`, dto);
   }
 
   public moveMonster(
@@ -39,15 +46,19 @@ export class AdventuresApiService {
     monsterId: number,
     direction: Direction,
   ): Observable<void> {
-    return this.httpClient.post<void>(`/api/adventures/${adventureId}/move-monster`, {
+    const dto: HwAdventureMoveMonsterDto = {
       monsterId: monsterId,
       direction: direction,
-    });
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/move-monster`, dto);
   }
 
   public openDoor(adventureId: number, direction: Direction): Observable<void> {
-    return this.httpClient.post<void>(`/api/adventures/${adventureId}/open-door`, {
+    const dto: HwAdventureOpenDoorDto = {
       direction: direction,
-    });
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/open-door`, dto);
   }
 }

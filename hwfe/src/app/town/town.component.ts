@@ -16,6 +16,8 @@ import { HwCampaign } from '@hw/shared/campaigns';
 import {
   CampaignsDownstream,
   CampaignsUpstream,
+  CharactersDownstream,
+  CharactersUpstream,
   MembershipsDownstream,
   MembershipsUpstream,
 } from '@hw/shared/sockets';
@@ -53,13 +55,16 @@ export class TownComponent {
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
+  private charactersSocket!: Socket<CharactersDownstream, CharactersUpstream>;
 
   constructor() {
     this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
     this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
+    this.charactersSocket = this.socketService.socket('characters', this.destroyRef);
 
     this.campaignsListen();
     this.membershipsListen();
+    this.charactersListen();
   }
 
   private campaignsListen(): void {
@@ -185,6 +190,22 @@ export class TownComponent {
           });
         }
       });
+    });
+  }
+
+  private charactersListen(): void {
+    this.charactersSocket.on('downEquipItem', (campaignId, characterId, backpackItemId) => {
+      console.log('equip', campaignId, characterId, backpackItemId);
+      if (campaignId !== this.campaignService.campaign().id) {
+        return;
+      }
+    });
+
+    this.charactersSocket.on('downUnequipItem', (campaignId, characterId, slot) => {
+      console.log('unequip', campaignId, characterId, slot);
+      if (campaignId !== this.campaignService.campaign().id) {
+        return;
+      }
     });
   }
 
