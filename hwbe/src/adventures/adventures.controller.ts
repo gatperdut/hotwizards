@@ -68,7 +68,7 @@ export class AdventuresController {
     @CurrentAdventure() adventure: HwAdventure,
     @Body() body: HwAdventureSelectMonsterDto,
   ): void {
-    this.adventuresGateway.handleDownSelectMonster(adventure.id, body.monsterId);
+    this.adventuresGateway.handleDownSelectMonster(adventure.campaignId, body.monsterId);
   }
 
   @Post(':adventureId/move-hero')

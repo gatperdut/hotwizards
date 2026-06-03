@@ -19,7 +19,7 @@ export const adventureToHwAdventure = (
 
   return {
     id: adventure.id,
-    campaignId: adventure.campaignId as number,
+    campaignId: adventure.campaignId!,
     templateId: adventure.templateId,
     template: adventureTemplateToHwAdventureTemplate(adventure.template),
     turn: adventure.turn,

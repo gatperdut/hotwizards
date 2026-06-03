@@ -7,7 +7,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
-import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
+import { applyAuthWsMiddleware } from '../auth/ws-middleware/auth.ws-middleware.js';
 
 type MembershipsSocket = Socket<MembershipsUpstream, MembershipsDownstream>;
 
@@ -18,7 +18,7 @@ export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(private readonly authService: AuthService) {}
 
   public afterInit(server: Server): void {
-    applySocketAuthMiddleware(server, this.authService);
+    applyAuthWsMiddleware(server, this.authService);
   }
 
   public async handleConnection(socket: MembershipsSocket): Promise<void> {

@@ -38,7 +38,7 @@ export class AdventuresService {
       where: { id: adventure.id },
     });
 
-    this.adventuresGateway.handleDownFinishAdventure(adventure.id);
+    this.adventuresGateway.handleDownFinishAdventure(adventure.campaignId);
 
     return adventure.id;
   }
@@ -82,7 +82,7 @@ export class AdventuresService {
 
     this.endTurnPush(campaign, turn);
 
-    this.adventuresGateway.handleDownEndTurnMaster(adventure.id, {});
+    this.adventuresGateway.handleDownEndTurnMaster(campaign.id, {});
 
     return turn;
   }
@@ -111,7 +111,7 @@ export class AdventuresService {
 
     this.endTurnPush(campaign, turn);
 
-    this.adventuresGateway.handleDownEndTurnHero(adventure.id, {
+    this.adventuresGateway.handleDownEndTurnHero(campaign.id, {
       heroId: updatedHero.id,
       turn: turn,
     });
@@ -186,7 +186,7 @@ export class AdventuresService {
       },
     });
 
-    this.adventuresGateway.handleDownMoveHero(adventure.id, {
+    this.adventuresGateway.handleDownMoveHero(campaign.id, {
       heroId: hero.id,
       dir: direction,
       cell: { x: targetCell.x, y: targetCell.y },
@@ -255,7 +255,7 @@ export class AdventuresService {
       },
     });
 
-    this.adventuresGateway.handleDownMoveMonster(adventure.id, {
+    this.adventuresGateway.handleDownMoveMonster(campaign.id, {
       monsterId: monster.id,
       dir: direction,
       cell: { x: targetCell.x, y: targetCell.y },
@@ -322,7 +322,7 @@ export class AdventuresService {
       },
     });
 
-    this.adventuresGateway.handleDownOpenDoor(adventure.id, {
+    this.adventuresGateway.handleDownOpenDoor(campaign.id, {
       heroId: hero.id,
       dir: direction,
     });

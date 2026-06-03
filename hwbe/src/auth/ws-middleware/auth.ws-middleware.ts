@@ -2,7 +2,7 @@
 import { Server } from 'socket.io';
 import { AuthService } from '../auth.service.js';
 
-export function applySocketAuthMiddleware(server: Server, authService: AuthService): void {
+export function applyAuthWsMiddleware(server: Server, authService: AuthService): void {
   server.use((socket, next): void => {
     const token = socket.handshake.auth?.token?.split(' ')[1];
 

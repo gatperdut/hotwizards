@@ -61,7 +61,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       'adventures',
       this.destroyRef,
       {
-        adventureId: this.campaignService.campaign().adventure!.id,
+        campaignId: this.campaignService.campaign().id,
       },
     );
 

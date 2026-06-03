@@ -14,9 +14,9 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
-import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
+import { applyAuthWsMiddleware } from '../auth/ws-middleware/auth.ws-middleware.js';
+import { applyCampaignWsMiddleware } from '../campaigns/campaign.ws-middleware.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { applySocketAdventureMiddleware } from './middleware/socket-adventure.middleware.js';
 
 type AdventuresSocket = Socket<AdventuresUpstream, AdventuresDownstream>;
 
@@ -30,39 +30,39 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
   ) {}
 
   public afterInit(server: Server): void {
-    applySocketAuthMiddleware(server, this.authService);
-    applySocketAdventureMiddleware(server, this.prismaService);
+    applyAuthWsMiddleware(server, this.authService);
+    applyCampaignWsMiddleware(server, this.prismaService);
   }
 
   public async handleConnection(socket: AdventuresSocket): Promise<void> {
-    await socket.join(`adventure:${socket.adventureId}`);
+    await socket.join(`campaign:${socket.campaignId}:adventure`);
   }
 
-  public handleDownFinishAdventure(adventureId: number): void {
-    this.server.to(`adventure:${adventureId}`).emit('downFinishAdventure');
+  public handleDownFinishAdventure(campaignId: number): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downFinishAdventure');
   }
 
-  public handleDownEndTurnMaster(adventureId: number, data: HwTransformEndTurnMaster): void {
-    this.server.to(`adventure:${adventureId}`).emit('downEndTurnMaster', data);
+  public handleDownEndTurnMaster(campaignId: number, data: HwTransformEndTurnMaster): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downEndTurnMaster', data);
   }
 
-  public handleDownEndTurnHero(adventureId: number, data: HwTransformEndTurnHero): void {
-    this.server.to(`adventure:${adventureId}`).emit('downEndTurnHero', data);
+  public handleDownEndTurnHero(campaignId: number, data: HwTransformEndTurnHero): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downEndTurnHero', data);
   }
 
-  public handleDownSelectMonster(adventureId: number, monsterId: number | null): void {
-    this.server.to(`adventure:${adventureId}`).emit('downSelectMonster', monsterId);
+  public handleDownSelectMonster(campaignId: number, monsterId: number | null): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downSelectMonster', monsterId);
   }
 
-  public handleDownMoveHero(adventureId: number, data: HwTransformMoveHero): void {
-    this.server.to(`adventure:${adventureId}`).emit('downMoveHero', data);
+  public handleDownMoveHero(campaignId: number, data: HwTransformMoveHero): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downMoveHero', data);
   }
 
-  public handleDownMoveMonster(adventureId: number, data: HwTransformMoveMonster): void {
-    this.server.to(`adventure:${adventureId}`).emit('downMoveMonster', data);
+  public handleDownMoveMonster(campaignId: number, data: HwTransformMoveMonster): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downMoveMonster', data);
   }
 
-  public handleDownOpenDoor(adventureId: number, data: HwTransformOpenDoor): void {
-    this.server.to(`adventure:${adventureId}`).emit('downOpenDoor', data);
+  public handleDownOpenDoor(campaignId: number, data: HwTransformOpenDoor): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downOpenDoor', data);
   }
 }

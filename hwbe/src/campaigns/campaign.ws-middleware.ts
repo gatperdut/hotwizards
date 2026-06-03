@@ -1,9 +1,9 @@
 // auth/socket-auth.middleware.ts
 import { Server } from 'socket.io';
-import { CampaignHwRelations } from '../../campaigns/campaign-to-hw-campaign.js';
-import { PrismaService } from '../../prisma/prisma.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CampaignHwRelations } from './campaign-to-hw-campaign.js';
 
-export function applySocketCharacterMiddleware(server: Server, prismaService: PrismaService): void {
+export function applyCampaignWsMiddleware(server: Server, prismaService: PrismaService): void {
   server.use((socket, next): void => {
     const user = socket.user;
     const campaignId = socket.handshake.auth?.campaignId;

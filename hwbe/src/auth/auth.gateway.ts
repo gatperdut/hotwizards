@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
-import { applySocketAuthMiddleware } from './middleware/socket-auth.middleware.js';
+import { applyAuthWsMiddleware } from './ws-middleware/auth.ws-middleware.js';
 
 type PresenceSocket = Socket<PresenceUpstream, PresenceDownstream>;
 
@@ -24,7 +24,7 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
   constructor(private readonly authService: AuthService) {}
 
   public afterInit(server: Server): void {
-    applySocketAuthMiddleware(server, this.authService);
+    applyAuthWsMiddleware(server, this.authService);
   }
 
   @SubscribeMessage<keyof PresenceUpstream>('upOnline')

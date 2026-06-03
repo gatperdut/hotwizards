@@ -9,7 +9,7 @@ export abstract class SocketService {
 
   public socket(namespace: string, destroyRef: DestroyRef, payload?: any): Socket {
     const socket = io(`${window.location.origin}/${namespace}`, {
-      auth: (cb) => cb({ token: `Bearer ${this.authTokenService.get()}`, ...(payload || {}) }),
+      auth: (cb) => cb({ token: `Bearer ${this.authTokenService.get()}`, ...(payload ?? {}) }),
       autoConnect: true,
     });
 
