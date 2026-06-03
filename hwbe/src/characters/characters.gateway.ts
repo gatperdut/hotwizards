@@ -24,7 +24,7 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   public async handleConnection(socket: CharactersSocket): Promise<void> {
-    await socket.join(`user:${socket.user.id}`);
+    await socket.join(`campaign:${socket.handshake.auth.campaignId}`);
   }
 
   public handleDownEquipItem(
@@ -35,7 +35,9 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
   ): void {
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downEquipItem', campaignId, characterId, backpackItemId);
+    this.server
+      .to(`campaign:${campaignId}`)
+      .emit('downEquipItem', campaignId, characterId, backpackItemId);
   }
 
   public handleDownUnequipItem(
@@ -46,6 +48,6 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
   ): void {
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downUnequipItem', campaignId, characterId, slot);
+    this.server.to(`campaign:${campaignId}`).emit('downUnequipItem', campaignId, characterId, slot);
   }
 }

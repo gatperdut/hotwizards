@@ -60,7 +60,9 @@ export class TownComponent {
   constructor() {
     this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
     this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
-    this.charactersSocket = this.socketService.socket('characters', this.destroyRef);
+    this.charactersSocket = this.socketService.socket('characters', this.destroyRef, {
+      campaignId: this.campaignService.campaign().id,
+    });
 
     this.campaignsListen();
     this.membershipsListen();
