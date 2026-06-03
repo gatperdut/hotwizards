@@ -1,3 +1,1 @@
-export interface AdventuresUpstream {
-  upSelectMonster: (data: { monsterId: number | null }) => void;
-}
+export interface AdventuresUpstream {}

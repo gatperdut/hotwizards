@@ -6,13 +6,9 @@ import {
   HwTransformOpenDoor,
 } from '@hw/shared/dungeon';
 import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared/sockets';
-import { UseGuards } from '@nestjs/common';
 import {
-  ConnectedSocket,
-  MessageBody,
   OnGatewayConnection,
   OnGatewayInit,
-  SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
@@ -21,10 +17,6 @@ import { AuthService } from '../auth/auth.service.js';
 import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { applySocketAdventureMiddleware } from './middleware/socket-adventure.middleware.js';
-import { AdventureCampaignMasterWsGuard } from './ws-guards/adventure-campaign-master.ws-guard.js';
-import { AdventureProperTurnWsGuard } from './ws-guards/adventure-proper-turn.ws-guard.js';
-import { SetAdventureCampaignWsGuard } from './ws-guards/set-adventure-campaign.ws-guard.js';
-import { SetAdventureWsGuard } from './ws-guards/set-adventure.ws-guard.js';
 
 type AdventuresSocket = Socket<AdventuresUpstream, AdventuresDownstream>;
 
@@ -42,20 +34,6 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     applySocketAdventureMiddleware(server, this.prismaService);
   }
 
-  @UseGuards(
-    SetAdventureWsGuard,
-    SetAdventureCampaignWsGuard,
-    AdventureCampaignMasterWsGuard,
-    AdventureProperTurnWsGuard,
-  )
-  @SubscribeMessage<keyof AdventuresUpstream>('upSelectMonster')
-  public async handleUpSelectMonster(
-    @ConnectedSocket() socket: AdventuresSocket,
-    @MessageBody() data: Parameters<AdventuresUpstream['upSelectMonster']>[0],
-  ): Promise<void> {
-    this.server.to(`adventure:${socket.adventureId}`).emit('downSelectMonster', data.monsterId);
-  }
-
   public async handleConnection(socket: AdventuresSocket): Promise<void> {
     await socket.join(`adventure:${socket.adventureId}`);
   }
@@ -70,6 +48,10 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
 
   public handleDownEndTurnHero(adventureId: number, data: HwTransformEndTurnHero): void {
     this.server.to(`adventure:${adventureId}`).emit('downEndTurnHero', data);
+  }
+
+  public handleDownSelectMonster(adventureId: number, monsterId: number | null): void {
+    this.server.to(`adventure:${adventureId}`).emit('downSelectMonster', monsterId);
   }
 
   public handleDownMoveHero(adventureId: number, data: HwTransformMoveHero): void {

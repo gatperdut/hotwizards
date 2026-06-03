@@ -196,18 +196,12 @@ export class TownComponent {
   }
 
   private charactersListen(): void {
-    this.charactersSocket.on('downEquipItem', (campaignId, characterId, backpackItemId) => {
-      console.log('equip', campaignId, characterId, backpackItemId);
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
+    this.charactersSocket.on('downEquipItem', (characterId, backpackItemId) => {
+      console.log('equip', characterId, backpackItemId);
     });
 
-    this.charactersSocket.on('downUnequipItem', (campaignId, characterId, slot) => {
-      console.log('unequip', campaignId, characterId, slot);
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
+    this.charactersSocket.on('downUnequipItem', (characterId, slot) => {
+      console.log('unequip', characterId, slot);
     });
   }
 

@@ -5,6 +5,7 @@ import {
   HwAdventureMoveHeroDto,
   HwAdventureMoveMonsterDto,
   HwAdventureOpenDoorDto,
+  HwAdventureSelectMonsterDto,
 } from '@hw/shared/adventures';
 import { Direction } from '@hw/shared/directions';
 import { Observable } from 'rxjs';
@@ -39,6 +40,14 @@ export class AdventuresApiService {
     };
 
     return this.httpClient.post<void>(`/api/adventures/${adventureId}/move-hero`, dto);
+  }
+
+  public selectMonster(adventureId: number, monsterId: number | null): Observable<void> {
+    const dto: HwAdventureSelectMonsterDto = {
+      monsterId: monsterId,
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/select-monster`, dto);
   }
 
   public moveMonster(

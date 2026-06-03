@@ -1,4 +1,5 @@
 export { HwAdventureMoveHeroDto } from './adventure-move-hero.dto.js';
 export { HwAdventureMoveMonsterDto } from './adventure-move-monster.dto.js';
 export { HwAdventureOpenDoorDto } from './adventure-open-door.dto.js';
+export { HwAdventureSelectMonsterDto } from './adventure-select-monster.dto.js';
 export { HwAdventure } from './adventure.interface.js';

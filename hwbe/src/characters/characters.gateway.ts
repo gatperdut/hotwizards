@@ -10,44 +10,40 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applySocketAuthMiddleware } from '../auth/middleware/socket-auth.middleware.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { applySocketCharacterMiddleware } from './middleware/socket-character.middleware.js';
 
 type CharactersSocket = Socket<CharactersUpstream, CharactersDownstream>;
 
 @WebSocketGateway({ namespace: 'characters' })
 export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
-  @WebSocketServer() private readonly server: Server<CharactersUpstream, CharactersDownstream>;
+  @WebSocketServer() private server: Server<CharactersUpstream, CharactersDownstream>;
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private authService: AuthService,
+  ) {}
 
   public afterInit(server: Server): void {
     applySocketAuthMiddleware(server, this.authService);
+    applySocketCharacterMiddleware(server, this.prismaService);
   }
 
   public async handleConnection(socket: CharactersSocket): Promise<void> {
-    await socket.join(`campaign:${socket.handshake.auth.campaignId}`);
+    await socket.join(`campaign:${socket.campaignId}:characters`);
   }
 
   public handleDownEquipItem(
     campaignId: number,
     characterId: number,
     backpackItemId: string,
-    playerIds: number[],
   ): void {
-    const rooms = playerIds.map((id) => `user:${id}`);
-
     this.server
-      .to(`campaign:${campaignId}`)
-      .emit('downEquipItem', campaignId, characterId, backpackItemId);
+      .to(`campaign:${campaignId}:characters`)
+      .emit('downEquipItem', characterId, backpackItemId);
   }
 
-  public handleDownUnequipItem(
-    campaignId: number,
-    characterId: number,
-    slot: HwSlot,
-    playerIds: number[],
-  ): void {
-    const rooms = playerIds.map((id) => `user:${id}`);
-
-    this.server.to(`campaign:${campaignId}`).emit('downUnequipItem', campaignId, characterId, slot);
+  public handleDownUnequipItem(campaignId: number, characterId: number, slot: HwSlot): void {
+    this.server.to(`campaign:${campaignId}:characters`).emit('downUnequipItem', characterId, slot);
   }
 }

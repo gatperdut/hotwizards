@@ -27,6 +27,7 @@ import {
 } from '@hw/shared/sprites';
 import { FederatedPointerEvent, Sprite } from 'pixi.js';
 import { Socket } from 'socket.io-client';
+import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
@@ -54,6 +55,7 @@ export class DungeonService {
   private viewportService = inject(ViewportService);
   private campaignService = inject(CampaignService);
   private cellService = inject(CellService);
+  private adventuresApiService = inject(AdventuresApiService);
 
   public campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
@@ -466,9 +468,9 @@ export class DungeonService {
     if ((!master.me || !activePlayer?.me) && this.selectedMonster()?.id !== monsterId) {
       this.viewMonster(monsterId);
     } else {
-      this.adventuresSocket.emit('upSelectMonster', {
-        monsterId: monsterId ?? null,
-      });
+      this.adventuresApiService
+        .selectMonster(this.campaignService.campaign().adventure!.id, monsterId ?? null)
+        .subscribe();
     }
   }
 

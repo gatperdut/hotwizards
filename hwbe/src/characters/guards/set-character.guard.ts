@@ -29,7 +29,7 @@ export class SetCharacterGuard implements CanActivate {
     });
 
     if (!character) {
-      throw new NotFoundException('Adventure not found');
+      throw new NotFoundException('Character not found');
     }
 
     request.character = characterToHwCharacter(character, true);

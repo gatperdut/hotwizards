@@ -14,20 +14,14 @@ export class CharactersService {
 
   // TODO return Promise<void>
   public equipItem(campaign: HwCampaign, character: HwCharacter, backpackItem: HwItem): void {
-    this.charactersGateway.handleDownEquipItem(campaign.id, character.id, backpackItem.id, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-    ]);
+    this.charactersGateway.handleDownEquipItem(campaign.id, character.id, backpackItem.id);
 
     console.log(campaign, character, backpackItem);
   }
 
   // TODO return Promise<void>
   public unequipItem(campaign: HwCampaign, character: HwCharacter, slot: HwSlot): void {
-    this.charactersGateway.handleDownEquipItem(campaign.id, character.id, slot, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-    ]);
+    this.charactersGateway.handleDownEquipItem(campaign.id, character.id, slot);
     console.log(campaign, character, slot);
   }
 }
