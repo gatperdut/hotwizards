@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { debounce, form, SchemaPath } from '@angular/forms/signals';
-import { Router } from '@angular/router';
 import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwCampaign, HwCampaignSearchDto } from '@hw/shared/campaigns';
@@ -64,7 +63,6 @@ export class CampaignsListComponent {
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   public authService = inject(AuthService);
-  private router = inject(Router);
 
   private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
