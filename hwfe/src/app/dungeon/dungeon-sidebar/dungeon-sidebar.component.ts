@@ -1,8 +1,8 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DirectionIcons, Directions } from '@hw/shared/directions';
-import { HwCreature } from '@hw/shared/dungeon';
+import { DirectionIcons, DirectionOffsets, Directions } from '@hw/shared/directions';
+import { cellAt, cellIsTraversable, HwCreature } from '@hw/shared/dungeon';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
@@ -87,16 +87,25 @@ export class DungeonSidebarComponent {
 
     if (creature) {
       actions.push(
-        ...Directions.map((dir) => ({
-          icon: DirectionIcons[dir],
-          disabled: !this.dungeonService.canWalk(creature, dir),
-          callback: (): void => {
-            (creature.alignment === 'HERO'
-              ? this.adventuresApiService.moveHero(adventure.id, dir)
-              : this.adventuresApiService.moveMonster(adventure.id, creature.id, dir)
-            ).subscribe();
-          },
-        })),
+        ...Directions.map((dir) => {
+          const cell = cellAt(
+            adventure.dungeon.cells,
+            creature.x + DirectionOffsets[dir].x,
+            creature.y + DirectionOffsets[dir].y,
+          );
+          const enabled = creature.movementPoints >= 1 && !!cell && cellIsTraversable(cell);
+
+          return {
+            icon: DirectionIcons[dir],
+            disabled: !enabled,
+            callback: (): void => {
+              (creature.alignment === 'HERO'
+                ? this.adventuresApiService.moveHero(adventure.id, dir)
+                : this.adventuresApiService.moveMonster(adventure.id, creature.id, dir)
+              ).subscribe();
+            },
+          };
+        }),
       );
     }
 
@@ -109,24 +118,32 @@ export class DungeonSidebarComponent {
   }
 
   private openDoorButton(): SidebarButton | null {
-    if (this.campaignService.master().me) {
-      return null;
-    }
-
     const adventure = this.campaignService.campaign().adventure!;
+    const master = this.campaignService.master();
     const activeHero = this.dungeonService.activeHero();
 
+    if (master.me) {
+      return null;
+    }
     const actions: SidebarButtonAction[] = [];
 
     if (activeHero) {
       actions.push(
-        ...Directions.map((dir) => ({
-          icon: DirectionIcons[dir],
-          disabled: !this.dungeonService.canOpenDoor(activeHero, dir),
-          callback: (): void => {
-            this.adventuresApiService.openDoor(adventure.id, dir).subscribe();
-          },
-        })),
+        ...Directions.map((dir) => {
+          const cell = cellAt(
+            adventure.dungeon.cells,
+            activeHero.x + DirectionOffsets[dir].x,
+            activeHero.y + DirectionOffsets[dir].y,
+          );
+          const enabled = activeHero.movementPoints >= 1 && !!cell?.door && !cell.door.open;
+          return {
+            icon: DirectionIcons[dir],
+            disabled: !enabled,
+            callback: (): void => {
+              this.adventuresApiService.openDoor(adventure.id, dir).subscribe();
+            },
+          };
+        }),
       );
     }
 

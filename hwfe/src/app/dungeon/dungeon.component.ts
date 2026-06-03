@@ -12,8 +12,14 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
+import { DirectionOffsets } from '@hw/shared/directions';
 import { cellAt, cellsUpdateLos, sameCell } from '@hw/shared/dungeon';
-import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import {
+  ClosedDoorSpritePath,
+  ClosedToOpenDoorSpritePaths,
+  heroSpritePath,
+  monsterSpritePath,
+} from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
@@ -340,7 +346,60 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downOpenDoor', (data) => {
-      console.log(data);
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
+      const cell = cellAt(
+        dungeon.cells,
+        hero.x + DirectionOffsets[data.dir].x,
+        hero.y + DirectionOffsets[data.dir].y,
+      )!;
+
+      const cells = dungeon.cells.map((c) => {
+        if (sameCell(c, cell)) {
+          return {
+            ...c,
+            door: {
+              ...c.door!,
+              open: true,
+              spritePath: ClosedToOpenDoorSpritePaths[c.door!.spritePath as ClosedDoorSpritePath],
+            },
+          };
+        }
+
+        return c;
+      });
+
+      const heroes = dungeon.heroes.map((h) =>
+        h.id === hero.id
+          ? {
+              ...h,
+              spritePath: heroSpritePath(h.klass, h.gender, data.dir),
+              direction: data.dir,
+              movementPoints: h.movementPoints - 1,
+            }
+          : h,
+      );
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...dungeon,
+            heroes: heroes,
+            cells: cells,
+          },
+        },
+      }));
+
+      cellsUpdateLos(
+        cells,
+        heroes.map((h) => cellAt(cells, h.x, h.y)!),
+      );
+
+      this.dungeonService.hwfeCellsUpdate();
+      this.dungeonService.hwfeHeroesUpdate();
+      this.dungeonService.updateVisibility();
     });
   }
 }

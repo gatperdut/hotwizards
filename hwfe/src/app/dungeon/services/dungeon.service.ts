@@ -3,10 +3,8 @@ import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import {
   adjacentCells,
   cellAt,
-  cellIsTraversable,
   creatureAt,
   HwCell,
-  HwCreature,
   HwHero,
   HwMonster,
   losFrom,
@@ -135,11 +133,26 @@ export class DungeonService {
           cell.y,
         )!;
 
-        return {
+        const resultCell = {
           ...cell,
           creatureId: updatedCell.creatureId,
           visibility: updatedCell.visibility,
         };
+
+        if (cell.door?.spritePath !== updatedCell.door?.spritePath) {
+          if (cell.door) {
+            this.viewportService.destroySprite(cell.pixi.doorSprite!);
+          }
+          if (updatedCell.door) {
+            cell.pixi.doorSprite = this.createDoorSprite(
+              updatedCell.x,
+              updatedCell.y,
+              updatedCell.door.spritePath!,
+            );
+          }
+        }
+
+        return resultCell;
       }),
     );
   }
@@ -419,19 +432,6 @@ export class DungeonService {
     const cornersSprite = this.createSprite(x, y, cornerSpritePath!);
     cornersSprite.eventMode = 'none';
     return cornersSprite;
-  }
-
-  public canWalk(creature: HwCreature, direction: Direction): boolean {
-    if (creature.movementPoints < 1) {
-      return false;
-    }
-
-    const cell = cellAt(
-      this.hwfeCells(),
-      creature.x + DirectionOffsets[direction].x,
-      creature.y + DirectionOffsets[direction].y,
-    );
-    return !!cell && cellIsTraversable(cell);
   }
 
   public canOpenDoor(hero: HwHero, direction: Direction): boolean {

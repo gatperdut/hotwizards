@@ -268,7 +268,7 @@ export class AdventuresService {
     hero: HwHero,
     direction: Direction,
   ): Promise<void> {
-    if (hero.movementPoints < 2) {
+    if (hero.movementPoints < 1) {
       throw new UnprocessableEntityException('No movement points left');
     }
 
