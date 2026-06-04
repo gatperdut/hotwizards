@@ -57,13 +57,10 @@ export class MembershipsAllGateway implements OnGatewayInit, OnGatewayConnection
     this.server.to(rooms).emit('downKickoutMembership', campaign.id, campaignName, masterHandle);
   }
 
-  public handleDownUpdateMembership(
-    campaignId: number,
-    membershipId: number,
-    playerIds: number[],
-  ): void {
+  public handleDownUpdateMembership(campaign: HwCampaign, membershipId: number): void {
+    const playerIds = [campaign.master.id, ...campaign!.memberships.map((m) => m.userId)];
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downUpdateMembership', campaignId, membershipId);
+    this.server.to(rooms).emit('downUpdateMembership', campaign.id, membershipId);
   }
 }

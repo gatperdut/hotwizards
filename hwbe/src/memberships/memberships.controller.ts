@@ -1,8 +1,10 @@
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwMembership, HwMembershipAcceptDto } from '@hw/shared/memberships';
+import { HwUser } from '@hw/shared/users';
 import { Body, Controller, Delete, Patch, UseGuards } from '@nestjs/common';
 import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
 import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';
+import { CurrentUser } from '../users/current-user.decorator.js';
 import { CurrentMembership } from './decorators/current-membership.decorator.js';
 import { MembershipAdventureNotPresentGuard } from './guards/membership-adventure-not-present.guard.js';
 import { MembershipOwnerGuard } from './guards/membership-owner.guard.js';
@@ -24,10 +26,17 @@ export class MembershipsController {
     MembershipAdventureNotPresentGuard,
   )
   public accept(
+    @CurrentUser() user: HwUser,
     @CurrentMembership() membership: HwMembership,
     @Body() params: HwMembershipAcceptDto,
   ): Promise<number> {
-    return this.membershipsService.accept(membership, params.klass, params.gender, params.name);
+    return this.membershipsService.accept(
+      user,
+      membership,
+      params.klass,
+      params.gender,
+      params.name,
+    );
   }
 
   @Delete(':membershipId')

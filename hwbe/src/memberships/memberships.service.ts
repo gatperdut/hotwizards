@@ -3,9 +3,11 @@ import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
 import { heroStartingInventory } from '@hw/shared/dungeon';
 import { HwMembership } from '@hw/shared/memberships';
+import { HwUser } from '@hw/shared/users';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InputJsonObject } from '@prisma/client/runtime/client';
+import { CampaignHwRelations, campaignToHwCampaign } from '../campaigns/campaign-to-hw-campaign.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { MembershipsAllGateway } from './memberships-all.gateway.js';
@@ -61,11 +63,7 @@ export class MembershipsService {
       ...campaign.memberships.map((m) => m.user.id),
       ...memberships.map((m) => m.userId),
     ]);
-    this.membershipsSingleGateway.handleDownCreateMemberships(campaign.id, membershipIds, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-      ...memberships.map((m) => m.userId),
-    ]);
+    this.membershipsSingleGateway.handleDownCreateMemberships(campaign.id, membershipIds);
 
     memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
@@ -80,6 +78,7 @@ export class MembershipsService {
   }
 
   public async accept(
+    user: HwUser,
     membership: HwMembership,
     klass: Klass,
     gender: Gender,
@@ -110,21 +109,17 @@ export class MembershipsService {
 
     const campaign = await this.prismaService.campaign.findUnique({
       where: { id: membership.campaignId },
-      include: { memberships: true },
+      ...CampaignHwRelations,
     });
+
+    const hwCampaign = campaignToHwCampaign(campaign!, user.id);
 
     if (!campaign) {
       throw new NotFoundException('Campaign could not be found');
     }
 
-    this.membershipsAllGateway.handleDownUpdateMembership(campaign.id, membership.id, [
-      campaign.masterId,
-      ...campaign!.memberships.map((m) => m.userId),
-    ]);
-    this.membershipsSingleGateway.handleDownUpdateMembership(campaign.id, membership.id, [
-      campaign.masterId,
-      ...campaign!.memberships.map((m) => m.userId),
-    ]);
+    this.membershipsAllGateway.handleDownUpdateMembership(hwCampaign, membership.id);
+    this.membershipsSingleGateway.handleDownUpdateMembership(campaign.id, membership.id);
 
     void this.pushService.notifyUser(campaign.masterId, {
       title: 'Invitation accepted',

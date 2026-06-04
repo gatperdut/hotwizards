@@ -32,11 +32,7 @@ export class MembershipsSingleGateway implements OnGatewayInit, OnGatewayConnect
     await socket.join(`campaigns:${socket.campaignId}:memberships`);
   }
 
-  public handleDownCreateMemberships(
-    campaignId: number,
-    membershipIds: number[],
-    playerIds: number[],
-  ): void {
+  public handleDownCreateMemberships(campaignId: number, membershipIds: number[]): void {
     this.server
       .to(`campaigns:${campaignId}:memberships`)
       .emit('downCreateMemberships', membershipIds);
@@ -58,11 +54,7 @@ export class MembershipsSingleGateway implements OnGatewayInit, OnGatewayConnect
       .emit('downKickoutMembership', campaignName, masterHandle);
   }
 
-  public handleDownUpdateMembership(
-    campaignId: number,
-    membershipId: number,
-    playerIds: number[],
-  ): void {
+  public handleDownUpdateMembership(campaignId: number, membershipId: number): void {
     this.server
       .to(`campaigns:${campaignId}:memberships`)
       .emit('downUpdateMembership', membershipId);
