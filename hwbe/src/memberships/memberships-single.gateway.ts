@@ -1,3 +1,4 @@
+import { HwCampaign } from '@hw/shared/campaigns';
 import { MembershipsSingleDownstream, MembershipsSingleUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
@@ -31,27 +32,37 @@ export class MembershipsSingleGateway implements OnGatewayInit, OnGatewayConnect
     await socket.join(`campaigns:${socket.campaignId}:memberships`);
   }
 
-  public handleDownCreateMemberships(campaignId: number, membershipIds: number[]): void {
+  public handleDownCreateMemberships(
+    campaignId: number,
+    membershipIds: number[],
+    playerIds: number[],
+  ): void {
     this.server
       .to(`campaigns:${campaignId}:memberships`)
       .emit('downCreateMemberships', membershipIds);
   }
 
-  public handleDownAbandonMembership(campaignId: number, memberName: string): void {
-    this.server.to(`campaigns:${campaignId}:memberships`).emit('downAbandonMembership', memberName);
+  public handleDownAbandonMembership(campaign: HwCampaign, memberName: string): void {
+    this.server
+      .to(`campaigns:${campaign.id}:memberships`)
+      .emit('downAbandonMembership', memberName);
   }
 
   public handleDownKickoutMembership(
-    campaignId: number,
+    campaign: HwCampaign,
     campaignName: string,
     masterHandle: string,
   ): void {
     this.server
-      .to(`campaigns:${campaignId}:memberships`)
+      .to(`campaigns:${campaign.id}:memberships`)
       .emit('downKickoutMembership', campaignName, masterHandle);
   }
 
-  public handleDownUpdateMembership(campaignId: number, membershipId: number): void {
+  public handleDownUpdateMembership(
+    campaignId: number,
+    membershipId: number,
+    playerIds: number[],
+  ): void {
     this.server
       .to(`campaigns:${campaignId}:memberships`)
       .emit('downUpdateMembership', membershipId);

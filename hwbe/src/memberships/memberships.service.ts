@@ -61,7 +61,11 @@ export class MembershipsService {
       ...campaign.memberships.map((m) => m.user.id),
       ...memberships.map((m) => m.userId),
     ]);
-    this.membershipsSingleGateway.handleDownCreateMemberships(campaign.id, membershipIds);
+    this.membershipsSingleGateway.handleDownCreateMemberships(campaign.id, membershipIds, [
+      campaign.master.id,
+      ...campaign.memberships.map((m) => m.user.id),
+      ...memberships.map((m) => m.userId),
+    ]);
 
     memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
@@ -117,7 +121,10 @@ export class MembershipsService {
       campaign.masterId,
       ...campaign!.memberships.map((m) => m.userId),
     ]);
-    this.membershipsSingleGateway.handleDownUpdateMembership(campaign.id, membership.id);
+    this.membershipsSingleGateway.handleDownUpdateMembership(campaign.id, membership.id, [
+      campaign.masterId,
+      ...campaign!.memberships.map((m) => m.userId),
+    ]);
 
     void this.pushService.notifyUser(campaign.masterId, {
       title: 'Invitation accepted',
@@ -134,31 +141,21 @@ export class MembershipsService {
     membership: HwMembership,
     self: boolean,
   ): Promise<number> {
-    const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)];
-
     await this.prismaService.membership.delete({
       where: { id: membership.id },
     });
 
     if (self) {
-      this.membershipsAllGateway.handleDownAbandonMembership(
-        campaign.id,
-        membership.user.handle,
-        playerIds,
-      );
-      this.membershipsSingleGateway.handleDownAbandonMembership(
-        campaign.id,
-        membership.user.handle,
-      );
+      this.membershipsAllGateway.handleDownAbandonMembership(campaign, membership.user.handle);
+      this.membershipsSingleGateway.handleDownAbandonMembership(campaign, membership.user.handle);
     } else {
       this.membershipsAllGateway.handleDownKickoutMembership(
-        campaign.id,
+        campaign,
         campaign.name,
         campaign.master.handle,
-        playerIds,
       );
       this.membershipsSingleGateway.handleDownKickoutMembership(
-        campaign.id,
+        campaign,
         campaign.name,
         campaign.master.handle,
       );
