@@ -23,7 +23,7 @@ export class MembershipsService {
     private configService: ConfigService,
   ) {}
 
-  public async create(campaign: HwCampaign, userIds: number[]): Promise<number[]> {
+  public async create(user: HwUser, campaign: HwCampaign, userIds: number[]): Promise<number[]> {
     if (userIds.includes(campaign.master.id)) {
       throw new BadRequestException('You cannot invite yourself to your own campaign');
     }
@@ -56,13 +56,13 @@ export class MembershipsService {
       })),
     });
 
-    const membershipIds = memberships.map((membership) => membership.id);
+    const membershipIds = memberships.map((m) => m.id);
 
-    this.membershipsAllGateway.handleDownCreateMemberships(campaign.id, membershipIds, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-      ...memberships.map((m) => m.userId),
-    ]);
+    this.membershipsAllGateway.handleDownCreateMemberships(
+      campaign,
+      memberships.map((m) => m.userId),
+      membershipIds,
+    );
     this.membershipsSingleGateway.handleDownCreateMemberships(campaign.id, membershipIds);
 
     memberships.forEach((m) => {

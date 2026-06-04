@@ -30,20 +30,17 @@ export class MembershipsAllGateway implements OnGatewayInit, OnGatewayConnection
   }
 
   public handleDownCreateMemberships(
-    campaignId: number,
+    campaign: HwCampaign,
+    userIds: number[],
     membershipIds: number[],
-    playerIds: number[],
   ): void {
-    const rooms = playerIds.map((id) => `user:${id}`);
-
-    this.server.to(rooms).emit('downCreateMemberships', campaignId, membershipIds);
+    this.server
+      .to(this.rooms(campaign, ...userIds))
+      .emit('downCreateMemberships', campaign.id, membershipIds);
   }
 
   public handleDownAbandonMembership(campaign: HwCampaign, memberName: string): void {
-    const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)];
-    const rooms = playerIds.map((id) => `user:${id}`);
-
-    this.server.to(rooms).emit('downAbandonMembership', campaign.id, memberName);
+    this.server.to(this.rooms(campaign)).emit('downAbandonMembership', campaign.id, memberName);
   }
 
   public handleDownKickoutMembership(
@@ -51,16 +48,18 @@ export class MembershipsAllGateway implements OnGatewayInit, OnGatewayConnection
     campaignName: string,
     masterHandle: string,
   ): void {
-    const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id)];
-    const rooms = playerIds.map((id) => `user:${id}`);
-
-    this.server.to(rooms).emit('downKickoutMembership', campaign.id, campaignName, masterHandle);
+    this.server
+      .to(this.rooms(campaign))
+      .emit('downKickoutMembership', campaign.id, campaignName, masterHandle);
   }
 
   public handleDownUpdateMembership(campaign: HwCampaign, membershipId: number): void {
-    const playerIds = [campaign.master.id, ...campaign!.memberships.map((m) => m.userId)];
-    const rooms = playerIds.map((id) => `user:${id}`);
+    this.server.to(this.rooms(campaign)).emit('downUpdateMembership', campaign.id, membershipId);
+  }
 
-    this.server.to(rooms).emit('downUpdateMembership', campaign.id, membershipId);
+  private rooms(campaign: HwCampaign, ...userIds: number[]): string[] {
+    const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id), userIds];
+
+    return playerIds.map((id) => `user:${id}`);
   }
 }
