@@ -18,8 +18,8 @@ import {
   CampaignsSingleUpstream,
   CharactersDownstream,
   CharactersUpstream,
-  MembershipsDownstream,
-  MembershipsUpstream,
+  MembershipsSingleDownstream,
+  MembershipsSingleUpstream,
 } from '@hw/shared/sockets';
 import { catchError, EMPTY, filter, from, of, switchMap, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
@@ -54,14 +54,18 @@ export class TownComponent {
   private dialogService = inject(DialogService);
 
   private campaignsSingleSocket!: Socket<CampaignsSingleDownstream, CampaignsSingleUpstream>;
-  private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
+  private membershipsSingleSocket!: Socket<MembershipsSingleDownstream, MembershipsSingleUpstream>;
   private charactersSocket!: Socket<CharactersDownstream, CharactersUpstream>;
 
   constructor() {
     this.campaignsSingleSocket = this.socketService.socket('campaigns-single', this.destroyRef, {
       campaignId: this.campaignService.campaign().id,
     });
-    this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
+    this.membershipsSingleSocket = this.socketService.socket(
+      'memberships-single',
+      this.destroyRef,
+      { campaignId: this.campaignService.campaign().id },
+    );
     this.charactersSocket = this.socketService.socket('characters', this.destroyRef, {
       campaignId: this.campaignService.campaign().id,
     });
@@ -106,21 +110,13 @@ export class TownComponent {
   }
 
   private membershipsListen(): void {
-    this.membershipsSocket.on('downCreateMembership', (campaignId, _membershipIds) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.membershipsSingleSocket.on('downCreateMemberships', (_membershipIds) => {
       this.refresh();
     });
 
-    this.membershipsSocket.on('downKickoutMembership', (campaignId, campaignName, masterHandle) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.membershipsSingleSocket.on('downKickoutMembership', (campaignName, masterHandle) => {
       this.campaignsApiService
-        .get(campaignId)
+        .get(this.campaignService.campaign().id)
         .pipe(
           catchError(() => {
             this.toastService.show({
@@ -137,13 +133,9 @@ export class TownComponent {
         });
     });
 
-    this.membershipsSocket.on('downAbandonMembership', (campaignId, memberHandle) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.membershipsSingleSocket.on('downAbandonMembership', (memberHandle) => {
       this.campaignsApiService
-        .get(campaignId)
+        .get(this.campaignService.campaign().id)
         .pipe(
           catchError(() => {
             this.back();
@@ -154,20 +146,14 @@ export class TownComponent {
         .subscribe((campaign) => {
           this.refresh(campaign);
 
-          if (campaign.master.me) {
-            this.toastService.show({
-              message: `${memberHandle} has abandoned ${campaign.name}`,
-            });
-          }
+          this.toastService.show({
+            message: `${memberHandle} has abandoned ${campaign.name}`,
+          });
         });
     });
 
-    this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
-      this.campaignsApiService.get(campaignId).subscribe((campaign) => {
+    this.membershipsSingleSocket.on('downUpdateMembership', (membershipId) => {
+      this.campaignsApiService.get(this.campaignService.campaign().id).subscribe((campaign) => {
         this.refresh(campaign);
 
         if (campaign.master.me) {

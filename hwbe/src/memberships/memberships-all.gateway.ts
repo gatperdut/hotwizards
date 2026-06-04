@@ -1,4 +1,4 @@
-import { MembershipsDownstream, MembershipsUpstream } from '@hw/shared/sockets';
+import { MembershipsAllDownstream, MembershipsAllUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
   OnGatewayInit,
@@ -9,11 +9,14 @@ import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applyAuthWsMiddleware } from '../auth/ws-middleware/auth.ws-middleware.js';
 
-type MembershipsSocket = Socket<MembershipsUpstream, MembershipsDownstream>;
+type MembershipsSocket = Socket<MembershipsAllUpstream, MembershipsAllDownstream>;
 
-@WebSocketGateway({ namespace: 'memberships' })
-export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
-  @WebSocketServer() private readonly server: Server<MembershipsUpstream, MembershipsDownstream>;
+@WebSocketGateway({ namespace: 'memberships-all' })
+export class MembershipsAllGateway implements OnGatewayInit, OnGatewayConnection {
+  @WebSocketServer() private readonly server: Server<
+    MembershipsAllUpstream,
+    MembershipsAllDownstream
+  >;
 
   constructor(private readonly authService: AuthService) {}
 
@@ -25,14 +28,14 @@ export class MembershipsGateway implements OnGatewayInit, OnGatewayConnection {
     await socket.join(`user:${socket.user.id}`);
   }
 
-  public handleDownCreateMembership(
+  public handleDownCreateMemberships(
     campaignId: number,
     membershipIds: number[],
     playerIds: number[],
   ): void {
     const rooms = playerIds.map((id) => `user:${id}`);
 
-    this.server.to(rooms).emit('downCreateMembership', campaignId, membershipIds);
+    this.server.to(rooms).emit('downCreateMemberships', campaignId, membershipIds);
   }
 
   public handleDownAbandonMembership(

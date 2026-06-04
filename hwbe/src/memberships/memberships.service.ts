@@ -8,13 +8,15 @@ import { ConfigService } from '@nestjs/config';
 import { InputJsonObject } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
-import { MembershipsGateway } from './memberships.gateway.js';
+import { MembershipsAllGateway } from './memberships-all.gateway.js';
+import { MembershipsSingleGateway } from './memberships-single.gateway.js';
 
 @Injectable()
 export class MembershipsService {
   constructor(
     private prismaService: PrismaService,
-    private membershipsGateway: MembershipsGateway,
+    private membershipsAllGateway: MembershipsAllGateway,
+    private membershipsSingleGateway: MembershipsSingleGateway,
     private pushService: PushService,
     private configService: ConfigService,
   ) {}
@@ -54,11 +56,12 @@ export class MembershipsService {
 
     const membershipIds = memberships.map((membership) => membership.id);
 
-    this.membershipsGateway.handleDownCreateMembership(campaign.id, membershipIds, [
+    this.membershipsAllGateway.handleDownCreateMemberships(campaign.id, membershipIds, [
       campaign.master.id,
       ...campaign.memberships.map((m) => m.user.id),
       ...memberships.map((m) => m.userId),
     ]);
+    this.membershipsSingleGateway.handleDownCreateMemberships(campaign.id, membershipIds);
 
     memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
@@ -110,10 +113,11 @@ export class MembershipsService {
       throw new NotFoundException('Campaign could not be found');
     }
 
-    this.membershipsGateway.handleDownUpdateMembership(campaign.id, membership.id, [
+    this.membershipsAllGateway.handleDownUpdateMembership(campaign.id, membership.id, [
       campaign.masterId,
       ...campaign!.memberships.map((m) => m.userId),
     ]);
+    this.membershipsSingleGateway.handleDownUpdateMembership(campaign.id, membership.id);
 
     void this.pushService.notifyUser(campaign.masterId, {
       title: 'Invitation accepted',
@@ -137,17 +141,26 @@ export class MembershipsService {
     });
 
     if (self) {
-      this.membershipsGateway.handleDownAbandonMembership(
+      this.membershipsAllGateway.handleDownAbandonMembership(
         campaign.id,
         membership.user.handle,
         playerIds,
       );
+      this.membershipsSingleGateway.handleDownAbandonMembership(
+        campaign.id,
+        membership.user.handle,
+      );
     } else {
-      this.membershipsGateway.handleDownKickoutMembership(
+      this.membershipsAllGateway.handleDownKickoutMembership(
         campaign.id,
         campaign.name,
         campaign.master.handle,
         playerIds,
+      );
+      this.membershipsSingleGateway.handleDownKickoutMembership(
+        campaign.id,
+        campaign.name,
+        campaign.master.handle,
       );
     }
 

@@ -15,8 +15,8 @@ import { HwCampaign, HwCampaignSearchDto } from '@hw/shared/campaigns';
 import {
   CampaignsAllDownstream,
   CampaignsAllUpstream,
-  MembershipsDownstream,
-  MembershipsUpstream,
+  MembershipsAllDownstream,
+  MembershipsAllUpstream,
 } from '@hw/shared/sockets';
 import { catchError, EMPTY, map, tap } from 'rxjs';
 import { Socket } from 'socket.io-client';
@@ -65,11 +65,11 @@ export class CampaignsListComponent {
   public authService = inject(AuthService);
 
   private campaignsAllSocket!: Socket<CampaignsAllDownstream, CampaignsAllUpstream>;
-  private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
+  private membershipsAllSocket!: Socket<MembershipsAllDownstream, MembershipsAllUpstream>;
 
   constructor() {
     this.campaignsAllSocket = this.socketService.socket('campaigns-all', this.destroyRef);
-    this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
+    this.membershipsAllSocket = this.socketService.socket('memberships-all', this.destroyRef);
 
     this.campaignsListen();
     this.membershipsListen();
@@ -156,7 +156,7 @@ export class CampaignsListComponent {
   }
 
   private membershipsListen(): void {
-    this.membershipsSocket.on('downCreateMembership', (campaignId, membershipIds) => {
+    this.membershipsAllSocket.on('downCreateMemberships', (campaignId, membershipIds) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
         const memberships = campaign.memberships.filter(
           (m) => m.me && membershipIds.includes(m.id),
@@ -173,26 +173,29 @@ export class CampaignsListComponent {
       });
     });
 
-    this.membershipsSocket.on('downKickoutMembership', (campaignId, campaignName, masterHandle) => {
-      this.campaignsApiService
-        .get(campaignId)
-        .pipe(
-          catchError(() => {
-            this.toastService.show({
-              message: `${masterHandle} has kicked you out of ${campaignName}`,
-            });
+    this.membershipsAllSocket.on(
+      'downKickoutMembership',
+      (campaignId, campaignName, masterHandle) => {
+        this.campaignsApiService
+          .get(campaignId)
+          .pipe(
+            catchError(() => {
+              this.toastService.show({
+                message: `${masterHandle} has kicked you out of ${campaignName}`,
+              });
 
-            this.removeFromResource(campaignId);
+              this.removeFromResource(campaignId);
 
-            return EMPTY;
-          }),
-        )
-        .subscribe((campaign) => {
-          this.updateResource(campaign);
-        });
-    });
+              return EMPTY;
+            }),
+          )
+          .subscribe((campaign) => {
+            this.updateResource(campaign);
+          });
+      },
+    );
 
-    this.membershipsSocket.on('downAbandonMembership', (campaignId, memberHandle) => {
+    this.membershipsAllSocket.on('downAbandonMembership', (campaignId, memberHandle) => {
       this.campaignsApiService
         .get(campaignId)
         .pipe(
@@ -213,7 +216,7 @@ export class CampaignsListComponent {
         });
     });
 
-    this.membershipsSocket.on('downUpdateMembership', (campaignId, membershipId) => {
+    this.membershipsAllSocket.on('downUpdateMembership', (campaignId, membershipId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
         this.updateResource(campaign);
 

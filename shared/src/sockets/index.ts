@@ -6,7 +6,9 @@ export { CampaignsSingleDownstream } from './campaigns-single-downstream.interfa
 export { CampaignsSingleUpstream } from './campaigns-single-upstream.interface.js';
 export { CharactersDownstream } from './characters-downstream.interface.js';
 export { CharactersUpstream } from './characters-upstream.interface.js';
-export { MembershipsDownstream } from './memberships-downstream.interface.js';
-export { MembershipsUpstream } from './memberships-upstream.interface.js';
+export { MembershipsAllDownstream } from './memberships-all-downstream.interface.js';
+export { MembershipsAllUpstream } from './memberships-all-upstream.interface.js';
+export { MembershipsSingleDownstream } from './memberships-single-downstream.interface.js';
+export { MembershipsSingleUpstream } from './memberships-single-upstream.interface.js';
 export { PresenceDownstream } from './presence-downstream.interface.js';
 export { PresenceUpstream } from './presence-upstream.interface.js';
