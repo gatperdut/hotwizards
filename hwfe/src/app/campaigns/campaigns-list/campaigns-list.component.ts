@@ -13,8 +13,8 @@ import { PresenceService } from '@hw/hwfe/app/presence/presence.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwCampaign, HwCampaignSearchDto } from '@hw/shared/campaigns';
 import {
-  CampaignsDownstream,
-  CampaignsUpstream,
+  CampaignsAllDownstream,
+  CampaignsAllUpstream,
   MembershipsDownstream,
   MembershipsUpstream,
 } from '@hw/shared/sockets';
@@ -64,11 +64,11 @@ export class CampaignsListComponent {
   private toastService = inject(ToastService);
   public authService = inject(AuthService);
 
-  private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  private campaignsAllSocket!: Socket<CampaignsAllDownstream, CampaignsAllUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
 
   constructor() {
-    this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
+    this.campaignsAllSocket = this.socketService.socket('campaigns-all', this.destroyRef);
     this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
 
     this.campaignsListen();
@@ -137,18 +137,18 @@ export class CampaignsListComponent {
   }
 
   private campaignsListen(): void {
-    this.campaignsSocket.on('downCreateCampaign', (campaignId) => {
+    this.campaignsAllSocket.on('downCreateCampaign', (campaignId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
         this.addToResource(campaign);
       });
     });
 
-    this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
+    this.campaignsAllSocket.on('downDeleteCampaign', (campaignId) => {
       this.removeFromResource(campaignId);
       this.resource.value.set(this.resource.value()?.filter((c) => c.id !== campaignId) ?? []);
     });
 
-    this.campaignsSocket.on('downUpdateCampaign', (campaignId) => {
+    this.campaignsAllSocket.on('downUpdateCampaign', (campaignId) => {
       this.campaignsApiService.get(campaignId).subscribe((campaign) => {
         this.updateResource(campaign);
       });

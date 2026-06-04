@@ -1,7 +1,9 @@
 export { AdventuresDownstream } from './adventures-downstream.interface.js';
 export { AdventuresUpstream } from './adventures-upstream.interface.js';
-export { CampaignsDownstream } from './campaigns-downstream.interface.js';
-export { CampaignsUpstream } from './campaigns-upstream.interface.js';
+export { CampaignsAllDownstream } from './campaigns-all-downstream.interface.js';
+export { CampaignsAllUpstream } from './campaigns-all-upstream.interface.js';
+export { CampaignsSingleDownstream } from './campaigns-single-downstream.interface.js';
+export { CampaignsSingleUpstream } from './campaigns-single-upstream.interface.js';
 export { CharactersDownstream } from './characters-downstream.interface.js';
 export { CharactersUpstream } from './characters-upstream.interface.js';
 export { MembershipsDownstream } from './memberships-downstream.interface.js';

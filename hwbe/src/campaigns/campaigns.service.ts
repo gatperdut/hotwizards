@@ -42,13 +42,15 @@ import { InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
-import { CampaignsGateway } from './campaigns.gateway.js';
+import { CampaignsAllGateway } from './campaigns-all.gateway.js';
+import { CampaignsSingleGateway } from './campaigns-single.gateway.js';
 
 @Injectable()
 export class CampaignsService {
   constructor(
     private prismaService: PrismaService,
-    private campaignsGateway: CampaignsGateway,
+    private campaignsAllGateway: CampaignsAllGateway,
+    private campaignsSingleGateway: CampaignsSingleGateway,
     private pushService: PushService,
     private configService: ConfigService,
   ) {}
@@ -144,7 +146,7 @@ export class CampaignsService {
       },
     });
 
-    this.campaignsGateway.handleDownCreateCampaign(campaign.id, masterId);
+    this.campaignsAllGateway.handleDownCreateCampaign(campaign.id, masterId);
 
     return campaign.id;
   }
@@ -163,10 +165,8 @@ export class CampaignsService {
       },
     });
 
-    this.campaignsGateway.handleDownUpdateCampaign(campaign.id, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-    ]);
+    this.campaignsAllGateway.handleDownUpdateCampaign(campaign);
+    this.campaignsSingleGateway.handleDownUpdateCampaign(campaign.id);
 
     campaign.memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
@@ -185,10 +185,8 @@ export class CampaignsService {
       where: { id: campaign.id },
     });
 
-    this.campaignsGateway.handleDownDeleteCampaign(campaign.id, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-    ]);
+    this.campaignsAllGateway.handleDownDeleteCampaign(campaign);
+    this.campaignsSingleGateway.handleDownDeleteCampaign(campaign.id);
 
     campaign.memberships.forEach((m) => {
       void this.pushService.notifyUser(m.userId, {
@@ -227,10 +225,7 @@ export class CampaignsService {
       },
     });
 
-    this.campaignsGateway.handleDownStartAdventure(campaign.id, [
-      campaign.master.id,
-      ...campaign.memberships.map((m) => m.user.id),
-    ]);
+    this.campaignsSingleGateway.handleDownStartAdventure(campaign.id);
 
     return adventure.id;
   }

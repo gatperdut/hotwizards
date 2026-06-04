@@ -56,7 +56,11 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   public loading = signal(true);
 
   constructor() {
-    this.dungeonService.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
+    this.dungeonService.campaignsSingleSocket = this.socketService.socket(
+      'campaigns-single',
+      this.destroyRef,
+      { campaignId: this.campaignService.campaign().id },
+    );
     this.dungeonService.adventuresSocket = this.socketService.socket(
       'adventures',
       this.destroyRef,
@@ -120,11 +124,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   }
 
   private campaignsListen(): void {
-    this.dungeonService.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.dungeonService.campaignsSingleSocket.on('downDeleteCampaign', () => {
       this.toastService.show({
         message: `Campaign ${this.campaignService.campaign().name} has been deleted`,
       });

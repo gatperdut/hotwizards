@@ -13,8 +13,8 @@ import {
 import {
   AdventuresDownstream,
   AdventuresUpstream,
-  CampaignsDownstream,
-  CampaignsUpstream,
+  CampaignsSingleDownstream,
+  CampaignsSingleUpstream,
 } from '@hw/shared/sockets';
 import {
   BaseSpritePath,
@@ -57,7 +57,7 @@ export class DungeonService {
   private cellService = inject(CellService);
   private adventuresApiService = inject(AdventuresApiService);
 
-  public campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  public campaignsSingleSocket!: Socket<CampaignsSingleDownstream, CampaignsSingleUpstream>;
   public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
 
   public hwfeCells = signal<HwfeCell[]>([]);

@@ -14,8 +14,8 @@ import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
 import {
-  CampaignsDownstream,
-  CampaignsUpstream,
+  CampaignsSingleDownstream,
+  CampaignsSingleUpstream,
   CharactersDownstream,
   CharactersUpstream,
   MembershipsDownstream,
@@ -53,12 +53,14 @@ export class TownComponent {
   private campaignsApiService = inject(CampaignsApiService);
   private dialogService = inject(DialogService);
 
-  private campaignsSocket!: Socket<CampaignsDownstream, CampaignsUpstream>;
+  private campaignsSingleSocket!: Socket<CampaignsSingleDownstream, CampaignsSingleUpstream>;
   private membershipsSocket!: Socket<MembershipsDownstream, MembershipsUpstream>;
   private charactersSocket!: Socket<CharactersDownstream, CharactersUpstream>;
 
   constructor() {
-    this.campaignsSocket = this.socketService.socket('campaigns', this.destroyRef);
+    this.campaignsSingleSocket = this.socketService.socket('campaigns-single', this.destroyRef, {
+      campaignId: this.campaignService.campaign().id,
+    });
     this.membershipsSocket = this.socketService.socket('memberships', this.destroyRef);
     this.charactersSocket = this.socketService.socket('characters', this.destroyRef, {
       campaignId: this.campaignService.campaign().id,
@@ -70,32 +72,20 @@ export class TownComponent {
   }
 
   private campaignsListen(): void {
-    this.campaignsSocket.on('downDeleteCampaign', (campaignId) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.campaignsSingleSocket.on('downDeleteCampaign', () => {
       this.toastService.show({
         message: `Campaign ${this.campaignService.campaign().name} has been deleted`,
       });
       this.back();
     });
 
-    this.campaignsSocket.on('downUpdateCampaign', (campaignId) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.campaignsSingleSocket.on('downUpdateCampaign', () => {
       this.refresh();
     });
 
-    this.campaignsSocket.on('downStartAdventure', (campaignId) => {
-      if (campaignId !== this.campaignService.campaign().id) {
-        return;
-      }
-
+    this.campaignsSingleSocket.on('downStartAdventure', () => {
       this.campaignsApiService
-        .get(campaignId)
+        .get(this.campaignService.campaign().id)
         .pipe(
           tap((campaign) => {
             this.campaignService.campaign.set(campaign);
