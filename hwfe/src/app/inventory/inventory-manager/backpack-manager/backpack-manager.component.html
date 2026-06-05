@@ -1,0 +1,18 @@
+<div class="flex flex-col h-[404px]">
+  <div class="flex flex-row justify-between items-center shrink-0">
+    <div class="typ-body">Backpack</div>
+    <div class="typ-small text-primary!">Gold: {{ backpack().gold }}</div>
+  </div>
+
+  <div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar mt-3">
+    @for (item of backpack().items; track item.id) {
+      <div class="flex flex-row gap-2 items-center cursor-pointer" (click)="viewItem(item)">
+        <div
+          class="size-10 shrink-0 rounded-full bg-cover bg-center"
+          [style.background-image]="`url(/items/${item.name}.png)`"
+        ></div>
+        <div class="typ-body truncate">{{ item.name }}</div>
+      </div>
+    }
+  </div>
+</div>

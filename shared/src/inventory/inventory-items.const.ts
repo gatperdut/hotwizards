@@ -3,5 +3,7 @@ import { HwItem } from './item.interface.js';
 import { HwSlots } from './slots.const.js';
 
 export const inventoryItems = (inventory: HwInventory): HwItem[] => {
-  return [...HwSlots.map((slot) => inventory.gear[slot]), ...inventory.backpack].filter((i) => !!i);
+  return [...HwSlots.map((slot) => inventory.gear[slot]), ...inventory.backpack.items].filter(
+    (i) => !!i,
+  );
 };

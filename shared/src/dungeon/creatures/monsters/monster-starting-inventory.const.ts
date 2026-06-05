@@ -14,7 +14,10 @@ const MonsterStartingInventory: HwInventory = {
     shield: { id: '', name: 'shield' },
     twohanded: null,
   },
-  backpack: [],
+  backpack: {
+    gold: 0,
+    items: [],
+  },
 };
 
 export const monsterStartingInventory = (monsterType: MonsterType): HwInventory => {

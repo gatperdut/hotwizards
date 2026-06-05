@@ -178,9 +178,11 @@ export class TownComponent {
         .memberships()
         .find((m) => m.characterId === characterId)!.character!.inventory;
 
-      const backpackItem = inventory.backpack.find((item) => item.id === backpackItemId)!;
+      const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
       inventory.gear[HwItemSlots[backpackItem.name]!] = backpackItem;
-      inventory.backpack = inventory.backpack.filter((item) => item.id !== backpackItemId);
+      inventory.backpack.items = inventory.backpack.items.filter(
+        (item) => item.id !== backpackItemId,
+      );
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
@@ -192,7 +194,7 @@ export class TownComponent {
             ...m,
             character: {
               ...m.character!,
-              inventory: { ...inventory },
+              inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
             },
           };
         }),
@@ -205,7 +207,7 @@ export class TownComponent {
         .find((m) => m.characterId === characterId)!.character!.inventory;
 
       const gearItem = inventory.gear[slot]!;
-      inventory.backpack.push(gearItem);
+      inventory.backpack.items.push(gearItem);
       inventory.gear[slot] = null;
 
       this.campaignService.campaign.update((campaign) => ({
@@ -218,7 +220,7 @@ export class TownComponent {
             ...m,
             character: {
               ...m.character!,
-              inventory: { ...inventory },
+              inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
             },
           };
         }),

@@ -27,7 +27,7 @@ export class CharactersService {
     }
 
     inventory.gear[slot] = backpackItem;
-    inventory.backpack = inventory.backpack.filter((i) => i.id !== backpackItem.id);
+    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
 
     void (await this.prismaService.character.update({
       where: { id: character.id },
@@ -52,7 +52,7 @@ export class CharactersService {
     }
 
     inventory.gear[slot] = null;
-    inventory.backpack.unshift(item);
+    inventory.backpack.items.unshift(item);
 
     void (await this.prismaService.character.update({
       where: { id: character.id },

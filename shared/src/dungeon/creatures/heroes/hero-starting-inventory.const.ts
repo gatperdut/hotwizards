@@ -14,7 +14,7 @@ const HeroStartingInventory: Record<Klass, HwInventory> = {
       shield: null,
       twohanded: null,
     },
-    backpack: [],
+    backpack: { gold: 0, items: [] },
   },
   DWARF: {
     gear: {
@@ -27,7 +27,7 @@ const HeroStartingInventory: Record<Klass, HwInventory> = {
       shield: null,
       twohanded: null,
     },
-    backpack: [{ id: '', name: 'toolkit' }],
+    backpack: { gold: 0, items: [{ id: '', name: 'toolkit' }] },
   },
   ELF: {
     gear: {
@@ -40,7 +40,7 @@ const HeroStartingInventory: Record<Klass, HwInventory> = {
       shield: null,
       twohanded: null,
     },
-    backpack: [],
+    backpack: { gold: 0, items: [] },
   },
   WIZARD: {
     gear: {
@@ -53,7 +53,7 @@ const HeroStartingInventory: Record<Klass, HwInventory> = {
       shield: null,
       twohanded: null,
     },
-    backpack: [],
+    backpack: { gold: 0, items: [] },
   },
 };
 

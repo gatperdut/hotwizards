@@ -1,40 +1,16 @@
-<div class="flex flex-row gap-3 items-start">
-  <div class="flex flex-col gap-3 mt-7.5">
-    @for (slot of slots; track slot) {
-      @let item = inventory().gear[slot];
-      @if (item) {
-        <div
-          class="size-10 rounded-full bg-cover bg-center cursor-pointer"
-          [style.background-image]="`url(/items/${item.name}.png)`"
-          (click)="viewItem(item, 'gear')"
-        ></div>
-      } @else {
-        <div
-          class="size-10 rounded-full bg-cover bg-center border-black border"
-          [style.background-image]="`url(/slots/${slot}.png)`"
-        ></div>
-      }
-    }
-  </div>
-  <div class="flex-1 min-w-0 relative self-stretch">
-    <div
-      class="absolute inset-0 flex flex-col gap-3 overflow-y-auto custom-scrollbar separator-l separator-secondary pl-2"
-    >
-      <div class="typ-body">Backpack</div>
-      @for (item of inventory().backpack; track item.id) {
-        <div
-          class="flex flex-row gap-2 items-center cursor-pointer"
-          (click)="viewItem(item, 'backpack')"
-        >
-          <div
-            class="size-10 shrink-0 rounded-full bg-cover bg-center"
-            [style.background-image]="`url(/items/${item.name}.png)`"
-          ></div>
-          <div class="typ-body truncate">
-            {{ item.name }}
-          </div>
-        </div>
-      }
-    </div>
-  </div>
+<div class="flex flex-row items-start gap-3">
+  <app-gear-manager
+    [gear]="inventory().gear"
+    [showUnequip]="this.showUnequip()"
+    [canUnequip]="this.canUnequip()"
+    [unequip]="this.unequip"
+  ></app-gear-manager>
+  <div class="h-[404px] separator-l separator-secondary"></div>
+  <app-backpack-manager
+    [backpack]="inventory().backpack"
+    [showEquip]="this.showEquip()"
+    [canEquip]="this.canEquip()"
+    [equip]="this.equip"
+    class="grow"
+  ></app-backpack-manager>
 </div>

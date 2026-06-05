@@ -8,7 +8,9 @@ export class SetCharacterBackpackItemGuard implements CanActivate {
     const character = request.character;
     const backpackItemId: string = request.body.backpackItemId;
 
-    const backpackItem = character.inventory.backpack.find((item) => item.id === backpackItemId);
+    const backpackItem = character.inventory.backpack.items.find(
+      (item) => item.id === backpackItemId,
+    );
 
     if (!backpackItem) {
       throw new NotFoundException('Backpack item not found');

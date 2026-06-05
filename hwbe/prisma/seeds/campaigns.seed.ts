@@ -23,12 +23,15 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
       shield: null,
       twohanded: null,
     },
-    backpack: [
-      {
-        id: crypto.randomUUID(),
-        name: 'toolkit',
-      },
-    ],
+    backpack: {
+      gold: 3,
+      items: [
+        {
+          id: crypto.randomUUID(),
+          name: 'toolkit',
+        },
+      ],
+    },
   };
 
   const arnoInventory: HwInventory = {
@@ -42,7 +45,7 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
       shield: null,
       twohanded: null,
     },
-    backpack: [],
+    backpack: { gold: 0, items: [] },
   };
 
   const lefaInventory: HwInventory = {
@@ -56,7 +59,7 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
       shield: null,
       twohanded: null,
     },
-    backpack: [],
+    backpack: { gold: 10, items: [] },
   };
 
   await prismaClient.campaign.create({
