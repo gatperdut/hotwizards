@@ -8,9 +8,9 @@ import { Observable } from 'rxjs';
 export class CharactersApiService {
   private httpClient = inject(HttpClient);
 
-  public equipItem(characterId: number, itemId: string): Observable<void> {
+  public equipItem(characterId: number, backpackItemId: string): Observable<void> {
     const dto: HwCharacterEquipItemDto = {
-      itemId: itemId,
+      backpackItemId: backpackItemId,
     };
 
     return this.httpClient.post<void>(`/api/characters/${characterId}/equip-item`, dto);

@@ -4,5 +4,5 @@ export class HwCharacterEquipItemDto {
   @IsUUID('4')
   @IsString()
   @IsNotEmpty()
-  itemId: string;
+  backpackItemId: string;
 }

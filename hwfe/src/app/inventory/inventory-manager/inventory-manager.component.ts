@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { HwInventory, HwItem, HwItemSlots, HwSlot, HwSlots } from '@hw/shared/inventory';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
-import { InventoryCanFn } from '../consts/inventory-can-fn.const';
 import { ItemSource } from '../consts/item-source.const';
 import {
   ItemDialogAction,
@@ -21,8 +20,8 @@ export class InventoryManagerComponent {
   private dialogService = inject(DialogService);
 
   public inventory = input.required<HwInventory>();
-  public canEquip = input.required<InventoryCanFn>();
-  public canUnequip = input.required<InventoryCanFn>();
+  public canEquip = input.required<boolean>();
+  public canUnequip = input.required<boolean>();
   public equip = output<HwItem>();
   public unequip = output<HwSlot>();
 
@@ -35,7 +34,7 @@ export class InventoryManagerComponent {
     };
 
     const equipAction: ItemDialogAction | null =
-      source === 'backpack' && !!HwItemSlots[item.name]
+      this.canEquip() && source === 'backpack' && !!HwItemSlots[item.name]
         ? {
             label: 'Equip',
             color: 'primary',
@@ -47,7 +46,7 @@ export class InventoryManagerComponent {
         : null;
 
     const unequipAction: ItemDialogAction | null =
-      source === 'gear'
+      this.canUnequip() && source === 'gear'
         ? {
             label: 'Unequip',
             color: 'secondary',

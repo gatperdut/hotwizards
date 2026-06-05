@@ -18,8 +18,8 @@
   <div appCardBody class="flex flex-col gap-hw-average">
     <app-inventory-manager
       [inventory]="inventory()"
-      [canEquip]="() => true"
-      [canUnequip]="() => true"
+      [canEquip]="membership().me"
+      [canUnequip]="membership().me"
       (equip)="onEquip($event)"
       (unequip)="onUnequip($event)"
     ></app-inventory-manager>

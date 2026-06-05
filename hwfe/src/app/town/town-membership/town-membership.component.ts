@@ -6,7 +6,6 @@ import {
   AppCardMiniAction,
   CardComponent,
 } from '@hw/hwfe/app/ui/card/card.component';
-import { HwCharacter } from '@hw/shared/characters';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
 import { CharactersApiService } from '../../characters/services/characters-api.service';
@@ -25,7 +24,7 @@ export class TownMembershipComponent {
 
   public membership = input.required<HwMembership>();
 
-  public character = computed(() => this.membership().character as HwCharacter);
+  public character = computed(() => this.membership().character!);
   public inventory = computed(() => this.character().inventory);
 
   public actions = computed(() => {
@@ -54,8 +53,8 @@ export class TownMembershipComponent {
     };
   }
 
-  public onEquip(item: HwItem): void {
-    this.charactersApiService.equipItem(this.character().id, item.id).subscribe();
+  public onEquip(backpackItem: HwItem): void {
+    this.charactersApiService.equipItem(this.character().id, backpackItem.id).subscribe();
   }
 
   public onUnequip(slot: HwSlot): void {
