@@ -13,6 +13,7 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
+import { HwItemSlots } from '@hw/shared/inventory';
 import {
   CampaignsSingleDownstream,
   CampaignsSingleUpstream,
@@ -173,11 +174,55 @@ export class TownComponent {
 
   private charactersListen(): void {
     this.charactersSocket.on('downEquipItem', (characterId, backpackItemId) => {
-      console.log('equip', characterId, backpackItemId);
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      const backpackItem = inventory.backpack.find((item) => item.id === backpackItemId)!;
+      inventory.gear[HwItemSlots[backpackItem.name]!] = backpackItem;
+      inventory.backpack = inventory.backpack.filter((item) => item.id !== backpackItemId);
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: { ...inventory },
+            },
+          };
+        }),
+      }));
     });
 
     this.charactersSocket.on('downUnequipItem', (characterId, slot) => {
-      console.log('unequip', characterId, slot);
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      const gearItem = inventory.gear[slot]!;
+      inventory.backpack.push(gearItem);
+      inventory.gear[slot] = null;
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: { ...inventory },
+            },
+          };
+        }),
+      }));
     });
   }
 
