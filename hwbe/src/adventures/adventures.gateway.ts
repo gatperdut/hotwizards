@@ -15,7 +15,6 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applyAuthWsMiddleware } from '../auth/ws-middleware/auth.ws-middleware.js';
-import { applyCampaignWsMiddleware } from '../campaigns/campaign.ws-middleware.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 type AdventuresSocket = Socket<AdventuresUpstream, AdventuresDownstream>;
@@ -30,8 +29,7 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
   ) {}
 
   public afterInit(server: Server): void {
-    applyAuthWsMiddleware(server, this.authService);
-    applyCampaignWsMiddleware(server, this.prismaService);
+    void applyAuthWsMiddleware(server, this.authService, this.prismaService, true);
   }
 
   public async handleConnection(socket: AdventuresSocket): Promise<void> {

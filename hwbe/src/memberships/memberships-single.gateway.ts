@@ -9,7 +9,6 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applyAuthWsMiddleware } from '../auth/ws-middleware/auth.ws-middleware.js';
-import { applyCampaignWsMiddleware } from '../campaigns/campaign.ws-middleware.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 type MembershipsSocket = Socket<MembershipsSingleUpstream, MembershipsSingleDownstream>;
@@ -24,8 +23,7 @@ export class MembershipsSingleGateway implements OnGatewayInit, OnGatewayConnect
   ) {}
 
   public afterInit(server: Server): void {
-    applyAuthWsMiddleware(server, this.authService);
-    applyCampaignWsMiddleware(server, this.prismaService);
+    void applyAuthWsMiddleware(server, this.authService, this.prismaService, true);
   }
 
   public async handleConnection(socket: MembershipsSocket): Promise<void> {

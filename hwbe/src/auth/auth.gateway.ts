@@ -11,6 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { applyAuthWsMiddleware } from './ws-middleware/auth.ws-middleware.js';
 
 type PresenceSocket = Socket<PresenceUpstream, PresenceDownstream>;
@@ -21,10 +22,13 @@ export class AuthGateway implements OnGatewayInit, OnGatewayDisconnect {
 
   public readonly online = new Map<number, HwUser>();
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private prismaService: PrismaService,
+  ) {}
 
   public afterInit(server: Server): void {
-    applyAuthWsMiddleware(server, this.authService);
+    void applyAuthWsMiddleware(server, this.authService, this.prismaService, false);
   }
 
   @SubscribeMessage<keyof PresenceUpstream>('upOnline')

@@ -1,25 +1,55 @@
 // auth/socket-auth.middleware.ts
+import { PrismaService } from '@hw/hwbe/prisma/prisma.service.js';
 import { Server } from 'socket.io';
+import { CampaignHwRelations } from '../../campaigns/campaign-to-hw-campaign.js';
 import { AuthService } from '../auth.service.js';
 
-export function applyAuthWsMiddleware(server: Server, authService: AuthService): void {
-  server.use((socket, next): void => {
+export function applyAuthWsMiddleware(
+  server: Server,
+  authService: AuthService,
+  prismaService: PrismaService,
+  fetchCampaign: boolean,
+): void {
+  server.use((socket, next) => {
     const token = socket.handshake.auth?.token?.split(' ')[1];
-
     if (!token) {
-      return next(new Error('Authorization token is missing'));
+      return next(new Error('Unauthorized: token is not provided'));
+    }
+
+    const campaignId = socket.handshake.auth?.campaignId;
+    if (fetchCampaign && !campaignId) {
+      return next(new Error('Unauthorized: campaignId is not provided'));
     }
 
     authService
       .userFromToken(token)
       .then((user) => {
         if (!user) {
-          return next(new Error('Authorization token is invalid'));
+          throw new Error('Authorization token is invalid');
+        }
+        socket.user = user;
+
+        if (!fetchCampaign) {
+          return;
         }
 
-        socket.user = user;
-        next();
+        return prismaService.campaign
+          .findUnique({
+            where: {
+              id: campaignId,
+              OR: [{ masterId: user.id }, { memberships: { some: { userId: user.id } } }],
+            },
+            ...CampaignHwRelations,
+          })
+          .then((campaign) => {
+            if (!campaign) {
+              throw new Error('Unauthorized: campaign not found');
+            }
+
+            socket.campaignId = campaignId;
+          });
       })
-      .catch(() => next(new Error('Authorization token error')));
+      .then(() => next())
+      .catch((err) => next(new Error(err?.message ?? 'Unauthorized')));
   });
 }

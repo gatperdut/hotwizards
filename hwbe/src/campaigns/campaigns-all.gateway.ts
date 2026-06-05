@@ -9,17 +9,21 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service.js';
 import { applyAuthWsMiddleware } from '../auth/ws-middleware/auth.ws-middleware.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 
 type CampaignsSocket = Socket<CampaignsAllUpstream, CampaignsAllDownstream>;
 
 @WebSocketGateway({ namespace: 'campaigns-all' })
 export class CampaignsAllGateway implements OnGatewayInit, OnGatewayConnection {
-  @WebSocketServer() private readonly server: Server<CampaignsAllUpstream, CampaignsAllDownstream>;
+  @WebSocketServer() private server: Server<CampaignsAllUpstream, CampaignsAllDownstream>;
 
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private prismaService: PrismaService,
+  ) {}
 
   public afterInit(server: Server): void {
-    applyAuthWsMiddleware(server, this.authService);
+    void applyAuthWsMiddleware(server, this.authService, this.prismaService, false);
   }
 
   public async handleConnection(socket: CampaignsSocket): Promise<void> {
