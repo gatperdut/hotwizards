@@ -252,7 +252,8 @@ export class CampaignsService {
     );
 
     cells.forEach((cell) => {
-      cell.creatureId = creatureAt(monsters, cell.x, cell.y)?.id || null;
+      cell.creatureId =
+        creatureAt(monsters, cell.x, cell.y)?.id || creatureAt(heroes, cell.x, cell.y)?.id || null;
     });
 
     const response: HwDungeon = {
