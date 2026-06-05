@@ -1,7 +1,6 @@
 // auth/socket-auth.middleware.ts
 import { PrismaService } from '@hw/hwbe/prisma/prisma.service.js';
 import { Server } from 'socket.io';
-import { CampaignHwRelations } from '../../campaigns/campaign-to-hw-campaign.js';
 import { AuthService } from '../auth.service.js';
 
 export function applyAuthWsMiddleware(
@@ -39,13 +38,11 @@ export function applyAuthWsMiddleware(
               id: campaignId,
               OR: [{ masterId: user.id }, { memberships: { some: { userId: user.id } } }],
             },
-            ...CampaignHwRelations,
           })
           .then((campaign) => {
             if (!campaign) {
               throw new Error('Unauthorized: campaign not found');
             }
-
             socket.campaignId = campaignId;
           });
       })
