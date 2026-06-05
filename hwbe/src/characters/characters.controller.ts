@@ -21,7 +21,7 @@ export class CharactersController {
     @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentBackpackItem() backpackItem: HwItem,
-  ): void {
+  ): Promise<void> {
     return this.charactersService.equipItem(campaign, character, backpackItem);
   }
 
@@ -31,7 +31,7 @@ export class CharactersController {
     @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
     @Body() body: HwCharacterUnequipItemDto,
-  ): void {
+  ): Promise<void> {
     return this.charactersService.unequipItem(campaign, character, body.slot);
   }
 }

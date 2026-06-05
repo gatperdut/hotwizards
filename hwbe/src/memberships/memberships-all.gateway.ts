@@ -58,7 +58,11 @@ export class MembershipsAllGateway implements OnGatewayInit, OnGatewayConnection
   }
 
   private rooms(campaign: HwCampaign, ...userIds: number[]): string[] {
-    const playerIds = [campaign.master.id, ...campaign.memberships.map((m) => m.user.id), userIds];
+    const playerIds = [
+      campaign.master.id,
+      ...campaign.memberships.map((m) => m.user.id),
+      ...userIds,
+    ];
 
     return playerIds.map((id) => `user:${id}`);
   }

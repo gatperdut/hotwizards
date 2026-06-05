@@ -1,4 +1,4 @@
-import { Character, Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
+import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
 import { heroStartingInventory } from '@hw/shared/dungeon';
@@ -84,15 +84,13 @@ export class MembershipsService {
     gender: Gender,
     name: string,
   ): Promise<number> {
-    let character: Character | undefined;
-
-    await this.prismaService.$transaction(async (tx) => {
+    const character = await this.prismaService.$transaction(async (tx) => {
       await tx.membership.update({
         where: { id: membership.id },
         data: { status: MembershipStatus.ACTIVE },
       });
 
-      character = await tx.character.create({
+      return tx.character.create({
         data: {
           name: name,
           klass: klass,
