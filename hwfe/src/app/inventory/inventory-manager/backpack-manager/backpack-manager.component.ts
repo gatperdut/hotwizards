@@ -20,15 +20,15 @@ export class BackpackManagerComponent {
 
   public backpack = input.required<HwBackpack>();
 
-  public showEquip = input.required<boolean>();
+  public showEquip = input<boolean>(false);
   public canEquip = input<boolean>();
   public equip = input<OutputEmitterRef<HwItem>>();
 
-  public showPickup = input.required<boolean>();
+  public showPickup = input<boolean>(false);
   public canPickup = input<boolean>(false);
   public pickup = input<OutputEmitterRef<HwItem>>();
 
-  public showDrop = input.required<boolean>();
+  public showDrop = input<boolean>(false);
   public canDrop = input<boolean>(false);
   public drop = input<OutputEmitterRef<HwItem>>();
 

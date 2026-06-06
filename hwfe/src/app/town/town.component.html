@@ -49,6 +49,7 @@
   <app-town-stash
     [character]="campaignService.myMembership()?.character"
     [backpack]="campaignService.stash()"
+    (pickup)="onPickup($event)"
   ></app-town-stash>
 
   <app-adventure-template-picker [actions]="adventurePickerActions"></app-adventure-template-picker>

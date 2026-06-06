@@ -278,7 +278,7 @@ export class TownComponent {
 
       const stash = this.campaignService.campaign().stash;
 
-      const stashItem = inventory.backpack.items.find((item) => item.id === stashItemId)!;
+      const stashItem = stash.items.find((item) => item.id === stashItemId)!;
       stash.items = stash.items.filter((item) => item.id !== stashItemId);
       inventory.backpack.items.push(stashItem);
 

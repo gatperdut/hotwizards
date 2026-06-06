@@ -47,13 +47,13 @@ export class CharactersController {
     return this.charactersService.dropItem(campaign, character, backpackItem);
   }
 
-  @Post(':characterId/pikcup-item')
+  @Post(':characterId/pickup-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCampaignStashItemGuard)
   public pickupItem(
     @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentCampaignStashItem() stashItem: HwItem,
   ): Promise<void> {
-    return this.charactersService.dropItem(campaign, character, stashItem);
+    return this.charactersService.pickupItem(campaign, character, stashItem);
   }
 }

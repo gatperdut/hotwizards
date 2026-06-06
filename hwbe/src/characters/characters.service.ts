@@ -99,8 +99,8 @@ export class CharactersService {
     const inventory = { ...character.inventory };
     const stash = { ...campaign.stash };
 
-    character.inventory.backpack.items.push(stashItem);
-    campaign.stash.items = campaign.stash.items.filter((i) => i.id !== stashItem.id);
+    inventory.backpack.items.push(stashItem);
+    stash.items = stash.items.filter((i) => i.id !== stashItem.id);
 
     await this.prismaService.$transaction(async (tx) => {
       await tx.character.update({

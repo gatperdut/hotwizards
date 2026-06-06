@@ -19,9 +19,9 @@ export class GearManagerComponent {
   private dialogService = inject(DialogService);
 
   public gear = input.required<HwGear>();
-  public showUnequip = input.required<boolean>();
-  public canUnequip = input.required<boolean>();
-  public unequip = input.required<OutputEmitterRef<HwSlot>>();
+  public showUnequip = input<boolean>();
+  public canUnequip = input<boolean>();
+  public unequip = input<OutputEmitterRef<HwSlot>>();
 
   public slots = HwSlots.slice();
 
@@ -37,7 +37,7 @@ export class GearManagerComponent {
           color: 'secondary',
           disabled: !this.canUnequip(),
           callback: (): void => {
-            this.unequip().emit(HwSlots.find((slot) => this.gear()[slot]?.id === item.id)!);
+            this.unequip()!.emit(HwSlots.find((slot) => this.gear()[slot]?.id === item.id)!);
           },
         }
       : null;

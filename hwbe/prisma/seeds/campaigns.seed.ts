@@ -45,7 +45,7 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
       shield: null,
       twohanded: null,
     },
-    backpack: { gold: 0, items: [] },
+    backpack: { gold: 0, items: [{ id: crypto.randomUUID(), name: 'shield' }] },
   };
 
   const lefaInventory: HwInventory = {
