@@ -47,7 +47,7 @@
 
   <div class="typ-h2 text-primary!">Stash</div>
   <app-town-stash
-    [character]="campaignService.myMembership().character"
+    [character]="campaignService.myMembership()?.character"
     [backpack]="campaignService.stash()"
   ></app-town-stash>
 

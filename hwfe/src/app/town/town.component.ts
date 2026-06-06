@@ -230,6 +230,84 @@ export class TownComponent {
         }),
       }));
     });
+
+    this.charactersSocket.on('downDropItem', (characterId, backpackItemId) => {
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      const stash = this.campaignService.campaign().stash;
+
+      const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
+      inventory.backpack.items = inventory.backpack.items.filter(
+        (item) => item.id !== backpackItemId,
+      );
+      stash.items.push(backpackItem);
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        stash: {
+          ...campaign.stash,
+        },
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: {
+                gear: {
+                  ...inventory.gear,
+                },
+                backpack: {
+                  ...inventory.backpack,
+                },
+              },
+            },
+          };
+        }),
+      }));
+    });
+
+    this.charactersSocket.on('downPickupItem', (characterId, stashItemId) => {
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      const stash = this.campaignService.campaign().stash;
+
+      const stashItem = inventory.backpack.items.find((item) => item.id === stashItemId)!;
+      stash.items = stash.items.filter((item) => item.id !== stashItemId);
+      inventory.backpack.items.push(stashItem);
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        stash: {
+          ...campaign.stash,
+        },
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: {
+                gear: {
+                  ...inventory.gear,
+                },
+                backpack: {
+                  ...inventory.backpack,
+                },
+              },
+            },
+          };
+        }),
+      }));
+    });
   }
 
   private refresh(campaign?: HwCampaign): void {
@@ -287,7 +365,7 @@ export class TownComponent {
 
   public onPickup(stashItem: HwItem): void {
     this.charactersApiService
-      .pickupItem(this.campaignService.myMembership().character!.id, stashItem.id)
+      .pickupItem(this.campaignService.myMembership()!.character!.id, stashItem.id)
       .subscribe();
   }
 }

@@ -2,7 +2,7 @@ import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InputJsonValue } from '@prisma/client/runtime/client';
+import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CharactersGateway } from './characters.gateway.js';
 
@@ -13,7 +13,6 @@ export class CharactersService {
     private charactersGateway: CharactersGateway,
   ) {}
 
-  // TODO return Promise<void>
   public async equipItem(
     campaign: HwCampaign,
     character: HwCharacter,
@@ -62,5 +61,61 @@ export class CharactersService {
     }));
 
     this.charactersGateway.handleDownUnequipItem(campaign.id, character.id, slot);
+  }
+
+  public async dropItem(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    backpackItem: HwItem,
+  ): Promise<void> {
+    const inventory = { ...character.inventory };
+    const stash = { ...campaign.stash };
+
+    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
+    stash.items.push(backpackItem);
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.character.update({
+        where: { id: character.id },
+        data: { inventory: inventory as unknown as InputJsonObject },
+      });
+
+      return tx.campaign.update({
+        where: { id: campaign.id },
+        data: {
+          stash: stash as unknown as InputJsonObject,
+        },
+      });
+    });
+
+    this.charactersGateway.handleDownDropItem(campaign.id, character.id, backpackItem.id);
+  }
+
+  public async pickupItem(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    stashItem: HwItem,
+  ): Promise<void> {
+    const inventory = { ...character.inventory };
+    const stash = { ...campaign.stash };
+
+    character.inventory.backpack.items.push(stashItem);
+    campaign.stash.items = campaign.stash.items.filter((i) => i.id !== stashItem.id);
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.character.update({
+        where: { id: character.id },
+        data: { inventory: inventory as unknown as InputJsonObject },
+      });
+
+      return tx.campaign.update({
+        where: { id: campaign.id },
+        data: {
+          stash: stash as unknown as InputJsonObject,
+        },
+      });
+    });
+
+    this.charactersGateway.handleDownPickupItem(campaign.id, character.id, stashItem.id);
   }
 }

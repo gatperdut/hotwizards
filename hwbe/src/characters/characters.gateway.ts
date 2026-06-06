@@ -44,4 +44,16 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
   public handleDownUnequipItem(campaignId: number, characterId: number, slot: HwSlot): void {
     this.server.to(`campaign:${campaignId}:characters`).emit('downUnequipItem', characterId, slot);
   }
+
+  public handleDownDropItem(campaignId: number, characterId: number, backpackItemId: string): void {
+    this.server
+      .to(`campaign:${campaignId}:characters`)
+      .emit('downDropItem', characterId, backpackItemId);
+  }
+
+  public handleDownPickupItem(campaignId: number, characterId: number, stashItemId: string): void {
+    this.server
+      .to(`campaign:${campaignId}:characters`)
+      .emit('downPickupItem', characterId, stashItemId);
+  }
 }

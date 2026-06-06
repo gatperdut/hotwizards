@@ -20,4 +20,5 @@ export type HwRequest = Request & {
   cell: HwCell;
   backpackItem: HwItem;
   gearItem: HwItem;
+  stashItem: HwItem;
 };
