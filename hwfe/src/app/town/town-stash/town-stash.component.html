@@ -1,0 +1,16 @@
+<app-card color="secondary">
+  <div appCardTitle>
+    <div class="typ-body">Items left in town</div>
+  </div>
+
+  <div appCardBody class="flex flex-col gap-hw-average">
+    <app-backpack-manager
+      [backpack]="backpack()"
+      [showEquip]="false"
+      [showDrop]="false"
+      [showPickup]="!!character"
+      [canPickup]="true"
+      [pickup]="pickup"
+    ></app-backpack-manager>
+  </div>
+</app-card>

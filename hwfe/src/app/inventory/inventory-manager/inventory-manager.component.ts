@@ -12,10 +12,16 @@ import { GearManagerComponent } from './gear-manager/gear-manager.component';
 })
 export class InventoryManagerComponent {
   public inventory = input.required<HwInventory>();
+
   public showEquip = input.required<boolean>();
-  public canEquip = input.required<boolean>();
-  public showUnequip = input.required<boolean>();
-  public canUnequip = input.required<boolean>();
+  public canEquip = input<boolean>(false);
   public equip = output<HwItem>();
+
+  public showUnequip = input.required<boolean>();
+  public canUnequip = input<boolean>(false);
   public unequip = output<HwSlot>();
+
+  public showDrop = input.required<boolean>();
+  public canDrop = input<boolean>(false);
+  public drop = output<HwItem>();
 }

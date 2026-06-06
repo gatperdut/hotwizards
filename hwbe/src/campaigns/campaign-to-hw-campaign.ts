@@ -1,5 +1,6 @@
 import { Prisma, Ruleset } from '@hw/prismagen/client';
 import { HwCampaign } from '@hw/shared/campaigns';
+import { HwBackpack } from '@hw/shared/inventory';
 import {
   AdventureHwRelations,
   adventureToHwAdventure,
@@ -42,5 +43,6 @@ export const campaignToHwCampaign = (
     ),
     ruleset: rulesetToHwRuleset(ruleset),
     adventure: campaign.adventure ? adventureToHwAdventure(campaign.adventure, userId) : undefined,
+    stash: campaign.stash as unknown as HwBackpack,
   };
 };

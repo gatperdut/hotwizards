@@ -24,6 +24,9 @@
       [showUnequip]="membership().me"
       [canUnequip]="true"
       (unequip)="onUnequip($event)"
+      [showDrop]="membership().me"
+      [canDrop]="true"
+      (drop)="onDrop($event)"
     ></app-inventory-manager>
   </div>
 </app-card>

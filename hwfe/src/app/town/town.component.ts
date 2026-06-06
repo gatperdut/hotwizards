@@ -13,7 +13,7 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { HwItemSlots } from '@hw/shared/inventory';
+import { HwItem, HwItemSlots } from '@hw/shared/inventory';
 import {
   CampaignsSingleDownstream,
   CampaignsSingleUpstream,
@@ -30,13 +30,16 @@ import {
 } from '../adventure-templates/adventure-template-picker/adventure-template-picker.component';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
+import { CharactersApiService } from '../characters/services/characters-api.service';
 import { TownMembershipComponent } from './town-membership/town-membership.component';
+import { TownStashComponent } from './town-stash/town-stash.component';
 
 @Component({
   selector: 'app-town',
   imports: [
     ButtonComponent,
     TownMembershipComponent,
+    TownStashComponent,
     WhoCharacterComponent,
     AdventureTemplatePickerComponent,
     UserMenuComponent,
@@ -52,6 +55,7 @@ export class TownComponent {
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private campaignsApiService = inject(CampaignsApiService);
+  private charactersApiService = inject(CharactersApiService);
   private dialogService = inject(DialogService);
 
   private campaignsSingleSocket!: Socket<CampaignsSingleDownstream, CampaignsSingleUpstream>;
@@ -280,4 +284,10 @@ export class TownComponent {
         },
       ]
     : [];
+
+  public onPickup(stashItem: HwItem): void {
+    this.charactersApiService
+      .pickupItem(this.campaignService.myMembership().character!.id, stashItem.id)
+      .subscribe();
+  }
 }

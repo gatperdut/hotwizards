@@ -19,9 +19,18 @@ export class BackpackManagerComponent {
   private dialogService = inject(DialogService);
 
   public backpack = input.required<HwBackpack>();
+
   public showEquip = input.required<boolean>();
-  public canEquip = input.required<boolean>();
-  public equip = input.required<OutputEmitterRef<HwItem>>();
+  public canEquip = input<boolean>();
+  public equip = input<OutputEmitterRef<HwItem>>();
+
+  public showPickup = input.required<boolean>();
+  public canPickup = input<boolean>(false);
+  public pickup = input<OutputEmitterRef<HwItem>>();
+
+  public showDrop = input.required<boolean>();
+  public canDrop = input<boolean>(false);
+  public drop = input<OutputEmitterRef<HwItem>>();
 
   public viewItem(item: HwItem): void {
     const dialog: LazyDialog<ItemDialogComponent, ItemDialogData, ItemDialogResult> = {
@@ -36,12 +45,34 @@ export class BackpackManagerComponent {
             color: 'primary',
             disabled: !this.canEquip(),
             callback: (): void => {
-              this.equip().emit(item);
+              this.equip()!.emit(item);
             },
           }
         : null;
 
-    const actions: ItemDialogAction[] = [equipAction].filter((a) => !!a);
+    const pickupAction: ItemDialogAction | null = this.showPickup()
+      ? {
+          label: 'Pick up',
+          color: 'primary',
+          disabled: !this.canPickup(),
+          callback: (): void => {
+            this.pickup()!.emit(item);
+          },
+        }
+      : null;
+
+    const dropAction: ItemDialogAction | null = this.showDrop()
+      ? {
+          label: 'Drop',
+          color: 'primary',
+          disabled: !this.canDrop(),
+          callback: (): void => {
+            this.drop()!.emit(item);
+          },
+        }
+      : null;
+
+    const actions: ItemDialogAction[] = [equipAction, pickupAction, dropAction].filter((a) => !!a);
 
     void this.dialogService.open(dialog, { item: item, actions: actions });
   }

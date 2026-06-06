@@ -5,6 +5,7 @@ import { DirectionIcons, DirectionOffsets, Directions } from '@hw/shared/directi
 import { cellAt, cellIsTraversable, HwCreature } from '@hw/shared/dungeon';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
+import { AuthService } from '../../auth/services/auth.service';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { ViewportService } from '../../map/services/viewport.service';
 import {
@@ -32,6 +33,7 @@ export class DungeonSidebarComponent {
   public campaignService = inject(CampaignService);
   private dialogService = inject(DialogService);
   private viewportService = inject(ViewportService);
+  public authService = inject(AuthService);
 
   public buttons = computed<SidebarButton[]>(() => {
     return [

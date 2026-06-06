@@ -46,6 +46,8 @@ model Campaign {
   ruleset Ruleset?
 
   adventure Adventure?
+
+  stash Json
 }
 
 enum Movement {

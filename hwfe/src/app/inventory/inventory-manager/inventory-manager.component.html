@@ -1,16 +1,20 @@
 <div class="flex flex-row items-start gap-3">
   <app-gear-manager
     [gear]="inventory().gear"
-    [showUnequip]="this.showUnequip()"
-    [canUnequip]="this.canUnequip()"
-    [unequip]="this.unequip"
+    [showUnequip]="showUnequip()"
+    [canUnequip]="canUnequip()"
+    [unequip]="unequip"
   ></app-gear-manager>
   <div class="h-[404px] separator-l separator-secondary"></div>
   <app-backpack-manager
     [backpack]="inventory().backpack"
-    [showEquip]="this.showEquip()"
-    [canEquip]="this.canEquip()"
-    [equip]="this.equip"
+    [showEquip]="showEquip()"
+    [canEquip]="canEquip()"
+    [equip]="equip"
+    [showPickup]="false"
+    [showDrop]="true"
+    [canDrop]="true"
+    [drop]="drop"
     class="grow"
   ></app-backpack-manager>
 </div>

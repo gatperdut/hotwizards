@@ -1,5 +1,5 @@
 import { MembershipStatus, PrismaClient } from '@hw/prismagen/client';
-import { HwInventory } from '@hw/shared/inventory';
+import { HwBackpack, HwInventory } from '@hw/shared/inventory';
 import { InputJsonObject } from '@prisma/client/runtime/client';
 
 export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
@@ -62,6 +62,11 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
     backpack: { gold: 10, items: [] },
   };
 
+  const stash = {
+    gold: 2,
+    items: [{ id: crypto.randomUUID(), name: 'chainmail' }],
+  } satisfies HwBackpack;
+
   await prismaClient.campaign.create({
     data: {
       name: 'The Shadow over Valencia',
@@ -112,6 +117,7 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
           movement: 'BALANCED',
         },
       },
+      stash: stash,
     },
   });
 
@@ -124,6 +130,10 @@ export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
           aoo: false,
           movement: 'REGULAR',
         },
+      },
+      stash: {
+        gold: 1000,
+        items: [],
       },
     },
   });

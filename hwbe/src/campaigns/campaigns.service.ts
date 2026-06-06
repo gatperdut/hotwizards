@@ -143,6 +143,10 @@ export class CampaignsService {
             movement: movement,
           },
         },
+        stash: {
+          gold: 0,
+          items: [],
+        },
       },
     });
 

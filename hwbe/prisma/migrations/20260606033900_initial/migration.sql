@@ -40,6 +40,7 @@ CREATE TABLE "Campaign" (
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "masterId" INTEGER NOT NULL,
+    "stash" JSONB NOT NULL,
 
     CONSTRAINT "Campaign_pkey" PRIMARY KEY ("id")
 );
