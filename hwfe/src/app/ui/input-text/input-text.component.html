@@ -8,7 +8,7 @@
       <textarea
         [id]="id"
         class="app-input-text typ-input bg-transparent focus:outline-0 focus:bg-primary border-primary w-full hw-border rounded-tr-[unset]! pl-hw-small h-40 custom-scrollbar"
-        [formField]="field()"
+        [formField]="fieldAsString"
         [placeholder]="placeholder() || 'Text'"
         [autocomplete]="autocomplete()"
         [aria-invalid]="errorVisibility() ? 'true' : null"

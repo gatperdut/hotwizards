@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, OutputEmitterRef } from '@angular/core';
+import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { HwBackpack, HwItem, HwItemSlots } from '@hw/shared/inventory';
+import { filter, from, switchMap, tap } from 'rxjs';
 import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
 import {
   ItemDialogAction,
@@ -7,10 +9,15 @@ import {
   ItemDialogData,
   ItemDialogResult,
 } from '../../item-dialog/item-dialog.component';
+import {
+  PickupGoldDialogComponent,
+  PickupGoldDialogData,
+  PickupGoldDialogResult,
+} from './pickup-gold-dialog/pickup-gold-dialog.component';
 
 @Component({
   selector: 'app-backpack-manager',
-  imports: [],
+  imports: [ButtonComponent],
   templateUrl: './backpack-manager.component.html',
   styleUrl: './backpack-manager.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,6 +38,10 @@ export class BackpackManagerComponent {
   public showDrop = input<boolean>(false);
   public canDrop = input<boolean>(false);
   public drop = input<OutputEmitterRef<HwItem>>();
+
+  public showPickupGold = input<boolean>(false);
+  public canPickupGold = input<boolean>(false);
+  public pickupGold = input<OutputEmitterRef<number>>();
 
   public viewItem(item: HwItem): void {
     const dialog: LazyDialog<ItemDialogComponent, ItemDialogData, ItemDialogResult> = {
@@ -75,5 +86,28 @@ export class BackpackManagerComponent {
     const actions: ItemDialogAction[] = [equipAction, pickupAction, dropAction].filter((a) => !!a);
 
     void this.dialogService.open(dialog, { item: item, actions: actions });
+  }
+
+  public pickupGoldAmount(): void {
+    const dialog: LazyDialog<
+      PickupGoldDialogComponent,
+      PickupGoldDialogData,
+      PickupGoldDialogResult
+    > = {
+      importFn: () =>
+        import('./pickup-gold-dialog/pickup-gold-dialog.component').then(
+          (m) => m.PickupGoldDialogComponent,
+        ),
+    };
+
+    from(this.dialogService.open(dialog, { amount: this.backpack().gold }))
+      .pipe(
+        switchMap((dialogRef) => dialogRef.afterClosed$),
+        filter((amount) => !!amount),
+        tap((amount): void => {
+          this.pickupGold()!.emit(amount!);
+        }),
+      )
+      .subscribe();
   }
 }

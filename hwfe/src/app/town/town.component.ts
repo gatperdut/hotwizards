@@ -368,4 +368,11 @@ export class TownComponent {
       .pickupItem(this.campaignService.myMembership()!.character!.id, stashItem.id)
       .subscribe();
   }
+
+  public onPickupGold(amount: number): void {
+    console.log(amount);
+    this.charactersApiService
+      .pickupGold(this.campaignService.myMembership()!.character!.id, amount)
+      .subscribe();
+  }
 }

@@ -13,6 +13,7 @@ import { BackpackManagerComponent } from '../../inventory/inventory-manager/back
 })
 export class TownStashComponent {
   public character = input.required<HwCharacter | undefined>();
-  public backpack = input.required<HwBackpack>();
+  public stash = input.required<HwBackpack>();
   public pickup = output<HwItem>();
+  public pickupGold = output<number>();
 }

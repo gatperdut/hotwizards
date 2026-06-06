@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   HwCharacterDropItemDto,
   HwCharacterEquipItemDto,
+  HwCharacterPickupGoldDto,
   HwCharacterPickupItemDto,
   HwCharacterUnequipItemDto,
 } from '@hw/shared/characters';
@@ -43,5 +44,13 @@ export class CharactersApiService {
     };
 
     return this.httpClient.post<void>(`/api/characters/${characterId}/drop-item`, dto);
+  }
+
+  public pickupGold(characterId: number, amount: number): Observable<void> {
+    const dto: HwCharacterPickupGoldDto = {
+      amount: amount,
+    };
+
+    return this.httpClient.post<void>(`/api/characters/${characterId}/pickup-gold`, dto);
   }
 }

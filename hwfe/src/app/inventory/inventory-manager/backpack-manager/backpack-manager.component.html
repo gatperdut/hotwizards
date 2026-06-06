@@ -1,7 +1,16 @@
 <div class="flex flex-col h-[404px]">
   <div class="flex flex-row justify-between items-center shrink-0">
     <div class="typ-body">Backpack</div>
-    <div class="typ-small text-primary!">Gold: {{ backpack().gold }}</div>
+    <div class="flex flex-row justify-end items-center gap-1">
+      @if (showPickupGold()) {
+        <app-button
+          icon="cash-in"
+          (click)="pickupGoldAmount()"
+          [disabled]="!canPickupGold()"
+        ></app-button>
+      }
+      <div class="typ-small text-primary!">Gold: {{ backpack().gold }}</div>
+    </div>
   </div>
 
   <div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar mt-3">
