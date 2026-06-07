@@ -27,6 +27,9 @@
       [showDrop]="membership().me"
       [canDrop]="true"
       (drop)="onDrop($event)"
+      [showSellItem]="membership().me"
+      [canSellItem]="true"
+      (sellItem)="onSellItem($event)"
     ></app-inventory-manager>
   </div>
 </app-card>

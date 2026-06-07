@@ -64,4 +64,8 @@ export class TownMembershipComponent {
   public onDrop(backpackItem: HwItem): void {
     this.charactersApiService.dropItem(this.character().id, backpackItem.id).subscribe();
   }
+
+  public onSellItem(backpackItem: HwItem): void {
+    this.charactersApiService.sellItem(this.character().id, backpackItem.id).subscribe();
+  }
 }

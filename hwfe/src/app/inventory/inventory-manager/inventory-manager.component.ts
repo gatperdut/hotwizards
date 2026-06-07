@@ -24,4 +24,8 @@ export class InventoryManagerComponent {
   public showDrop = input.required<boolean>();
   public canDrop = input<boolean>(false);
   public drop = output<HwItem>();
+
+  public showSellItem = input.required<boolean>();
+  public canSellItem = input<boolean>(false);
+  public sellItem = output<HwItem>();
 }

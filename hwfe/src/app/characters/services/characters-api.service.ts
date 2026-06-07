@@ -5,6 +5,7 @@ import {
   HwCharacterEquipItemDto,
   HwCharacterPickupGoldDto,
   HwCharacterPickupItemDto,
+  HwCharacterSellItemDto,
   HwCharacterUnequipItemDto,
 } from '@hw/shared/characters';
 import { HwSlot } from '@hw/shared/inventory';
@@ -49,6 +50,14 @@ export class CharactersApiService {
   public pickupGold(characterId: number, amount: number): Observable<void> {
     const dto: HwCharacterPickupGoldDto = {
       amount: amount,
+    };
+
+    return this.httpClient.post<void>(`/api/characters/${characterId}/pickup-gold`, dto);
+  }
+
+  public sellItem(characterId: number, backpackItemId: string): Observable<void> {
+    const dto: HwCharacterSellItemDto = {
+      backpackItemId: backpackItemId,
     };
 
     return this.httpClient.post<void>(`/api/characters/${characterId}/pickup-gold`, dto);
