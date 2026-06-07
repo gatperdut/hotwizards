@@ -1,11 +1,12 @@
 import {
   HwArmorItemName,
+  HwItemName,
   HwMiscItemName,
   HwMonsterWeaponItemName,
   HwPotionItemName,
   HwShieldItemName,
   HwWeaponItemName,
-} from './item-name.const.js';
+} from './item-names.const.js';
 
 export const HwMonsterWeaponItemCosts: Record<HwMonsterWeaponItemName, number> = {
   goblin_dagger: 0,
@@ -50,9 +51,14 @@ export const HwMiscItemCosts: Record<HwMiscItemName, number> = {
 };
 
 export const HwItemCosts = {
+  ...HwMonsterWeaponItemCosts,
   ...HwWeaponItemCosts,
   ...HwShieldItemCosts,
   ...HwArmorItemCosts,
   ...HwPotionItemCosts,
   ...HwMiscItemCosts,
+};
+
+export const itemCanBeSold = (itemName: HwItemName): boolean => {
+  return HwItemCosts[itemName] > 0;
 };

@@ -60,7 +60,7 @@ export class TownMembershipComponent {
             import('../armory-dialog/armory-dialog.component').then((m) => m.ArmoryDialogComponent),
         };
 
-        void this.dialogService.open(dialog, { backpack: this.character().inventory.backpack });
+        void this.dialogService.open(dialog, { character: this.membership().character! });
       },
     };
   }

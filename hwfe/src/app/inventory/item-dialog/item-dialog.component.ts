@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { HwItem } from '@hw/shared/inventory';
+import { HwItem, HwItemCosts, itemCanBeSold } from '@hw/shared/inventory';
 import { HwfeColor } from '../../shared/color.const';
 import { ButtonComponent } from '../../ui/button/button.component';
 import { DialogRef } from '../../ui/dialog/dialog-ref.class';
@@ -39,4 +39,8 @@ export type ItemDialogResult = void;
 export class ItemDialogComponent {
   public data = inject<ItemDialogData>(APP_DIALOG_DATA);
   public dialogRef = inject<DialogRef<ItemDialogResult>>(DialogRef);
+
+  public itemCanBeSold = itemCanBeSold;
+  public buyAmount = HwItemCosts[this.data.item.name];
+  public sellAmount = Math.round(this.buyAmount / 2);
 }

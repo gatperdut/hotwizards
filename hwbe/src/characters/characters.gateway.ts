@@ -1,5 +1,5 @@
 // presence/presence.gateway.ts
-import { HwSlot } from '@hw/shared/inventory';
+import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { CharactersDownstream, CharactersUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
@@ -59,5 +59,17 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
 
   public handleDownPickupGold(campaignId: number, characterId: number, amount: number): void {
     this.server.to(`campaign:${campaignId}:characters`).emit('downPickupGold', characterId, amount);
+  }
+
+  public handleDownBuyItem(campaignId: number, characterId: number, boughtItem: HwItem): void {
+    this.server
+      .to(`campaign:${campaignId}:characters`)
+      .emit('downBuyItem', characterId, boughtItem);
+  }
+
+  public handleDownSellItem(campaignId: number, characterId: number, soldItemId: string): void {
+    this.server
+      .to(`campaign:${campaignId}:characters`)
+      .emit('downSellItem', characterId, soldItemId);
   }
 }

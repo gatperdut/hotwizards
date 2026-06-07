@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
+  HwCharacterBuyItemDto,
   HwCharacterDropItemDto,
   HwCharacterEquipItemDto,
   HwCharacterPickupGoldDto,
@@ -8,7 +9,7 @@ import {
   HwCharacterSellItemDto,
   HwCharacterUnequipItemDto,
 } from '@hw/shared/characters';
-import { HwSlot } from '@hw/shared/inventory';
+import { HwBuyableItemName, HwSlot } from '@hw/shared/inventory';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
@@ -55,11 +56,19 @@ export class CharactersApiService {
     return this.httpClient.post<void>(`/api/characters/${characterId}/pickup-gold`, dto);
   }
 
+  public buyItem(characterId: number, buyableItemName: HwBuyableItemName): Observable<void> {
+    const dto: HwCharacterBuyItemDto = {
+      buyableItemName: buyableItemName,
+    };
+
+    return this.httpClient.post<void>(`/api/characters/${characterId}/buy-item`, dto);
+  }
+
   public sellItem(characterId: number, backpackItemId: string): Observable<void> {
     const dto: HwCharacterSellItemDto = {
       backpackItemId: backpackItemId,
     };
 
-    return this.httpClient.post<void>(`/api/characters/${characterId}/pickup-gold`, dto);
+    return this.httpClient.post<void>(`/api/characters/${characterId}/sell-item`, dto);
   }
 }

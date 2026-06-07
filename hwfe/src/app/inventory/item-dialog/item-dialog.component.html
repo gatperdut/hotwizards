@@ -1,11 +1,20 @@
-<app-dialog sizeClass="max-w-md">
+<app-dialog sizeClass="max-w-3xl">
   <ng-template appDialogTitle>
-    <div class="flex flex-row gap-3 items-center">
-      <div
-        class="size-10 rounded-full bg-cover bg-center"
-        [style.background-image]="`url(/items/${data.item.name}.png)`"
-      ></div>
-      <div class="typ-h2">{{ data.item.name }}</div>
+    <div class="flex flex-row justify-between items-center gap-1 grow">
+      <div class="flex flex-row justify-start gap-3 items-center">
+        <div
+          class="size-10 rounded-full bg-cover bg-center"
+          [style.background-image]="`url(/items/${data.item.name}.png)`"
+        ></div>
+        <div class="typ-h2">{{ data.item.name }}</div>
+      </div>
+
+      <div class="flex flex-row justify-end items-center gap-2 typ-small">
+        @if (itemCanBeSold(data.item.name)) {
+          <span class="text-primary">Buy {{ buyAmount }}</span>
+          <span class="text-secondary">Sell {{ sellAmount }}</span>
+        }
+      </div>
     </div>
   </ng-template>
 

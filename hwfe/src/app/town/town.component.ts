@@ -13,7 +13,7 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { HwItem, HwItemSlots } from '@hw/shared/inventory';
+import { HwBuyableItemName, HwItem, HwItemCosts, HwItemSlots } from '@hw/shared/inventory';
 import {
   CampaignsSingleDownstream,
   CampaignsSingleUpstream,
@@ -337,6 +337,38 @@ export class TownComponent {
         stash: {
           ...campaign.stash,
         },
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: {
+                gear: {
+                  ...inventory.gear,
+                },
+                backpack: {
+                  ...inventory.backpack,
+                },
+              },
+            },
+          };
+        }),
+      }));
+    });
+
+    this.charactersSocket.on('downBuyItem', (characterId, boughtItem) => {
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      inventory.backpack.gold -= HwItemCosts[boughtItem.name as HwBuyableItemName];
+      inventory.backpack.items.push(boughtItem);
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
         memberships: campaign.memberships.map((m) => {
           if (m.characterId !== characterId) {
             return m;

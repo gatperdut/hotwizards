@@ -1,6 +1,13 @@
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
-import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
+import {
+  HwBuyableItemName,
+  HwBuyableItemNames,
+  HwItem,
+  HwItemCosts,
+  HwItemSlots,
+  HwSlot,
+} from '@hw/shared/inventory';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -151,5 +158,55 @@ export class CharactersService {
     });
 
     this.charactersGateway.handleDownPickupGold(campaign.id, character.id, amount);
+  }
+
+  public async buyItem(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    buyableItemName: HwBuyableItemName,
+  ): Promise<void> {
+    const inventory = { ...character.inventory };
+
+    const cost = HwItemCosts[buyableItemName];
+
+    if (inventory.backpack.gold < cost) {
+      throw new UnprocessableEntityException(
+        `Cannot buy ${buyableItemName} for ${cost} with ${inventory.backpack.gold} gold pieces`,
+      );
+    }
+
+    const boughtItem: HwItem = { id: crypto.randomUUID(), name: buyableItemName };
+
+    inventory.backpack.gold -= cost;
+    inventory.backpack.items.unshift(boughtItem);
+
+    await this.prismaService.character.update({
+      where: { id: character.id },
+      data: { inventory: inventory as unknown as InputJsonObject },
+    });
+
+    this.charactersGateway.handleDownBuyItem(campaign.id, character.id, boughtItem);
+  }
+
+  public async sellItem(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    backpackItem: HwItem,
+  ): Promise<void> {
+    if (!HwBuyableItemNames.includes(backpackItem.name as HwBuyableItemName)) {
+      throw new UnprocessableEntityException(`Item ${backpackItem.name} is not sellable`);
+    }
+
+    const inventory = { ...character.inventory };
+
+    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id)!;
+    inventory.backpack.gold += Math.round(HwItemCosts[backpackItem.name as HwBuyableItemName] / 2);
+
+    await this.prismaService.character.update({
+      where: { id: character.id },
+      data: { inventory: inventory as unknown as InputJsonObject },
+    });
+
+    this.charactersGateway.handleDownSellItem(campaign.id, character.id, backpackItem.id);
   }
 }

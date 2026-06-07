@@ -1,6 +1,7 @@
 import { HwCampaign } from '@hw/shared/campaigns';
 import {
   HwCharacter,
+  HwCharacterBuyItemDto,
   HwCharacterPickupGoldDto,
   HwCharacterUnequipItemDto,
 } from '@hw/shared/characters';
@@ -69,5 +70,25 @@ export class CharactersController {
     @Body() body: HwCharacterPickupGoldDto,
   ): Promise<void> {
     return this.charactersService.pickupGold(campaign, character, body.amount);
+  }
+
+  @Post(':characterId/buy-item')
+  @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard)
+  public buyItem(
+    @CurrentCharacter() character: HwCharacter,
+    @CurrentCampaign() campaign: HwCampaign,
+    @Body() body: HwCharacterBuyItemDto,
+  ): Promise<void> {
+    return this.charactersService.buyItem(campaign, character, body.buyableItemName);
+  }
+
+  @Post(':characterId/sell-item')
+  @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
+  public sellItem(
+    @CurrentCharacter() character: HwCharacter,
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentBackpackItem() backpackItem: HwItem,
+  ): Promise<void> {
+    return this.charactersService.sellItem(campaign, character, backpackItem);
   }
 }

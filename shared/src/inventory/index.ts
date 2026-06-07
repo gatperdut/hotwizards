@@ -10,6 +10,7 @@ export {
   HwPotionItemCosts,
   HwShieldItemCosts,
   HwWeaponItemCosts,
+  itemCanBeSold,
 } from './item-costs.const.js';
 export {
   HwArmorItemName,
@@ -28,7 +29,7 @@ export {
   HwShieldItemNames,
   HwWeaponItemName,
   HwWeaponItemNames,
-} from './item-name.const.js';
+} from './item-names.const.js';
 export { HwItemSlots } from './item-slots.const.js';
 export { HwItemTemplate } from './item-template.interface.js';
 export { HwItem } from './item.interface.js';
