@@ -118,4 +118,38 @@ export class CharactersService {
 
     this.charactersGateway.handleDownPickupItem(campaign.id, character.id, stashItem.id);
   }
+
+  public async pickupGold(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    amount: number,
+  ): Promise<void> {
+    const inventory = { ...character.inventory };
+    const stash = { ...campaign.stash };
+
+    if (stash.gold < amount) {
+      throw new UnprocessableEntityException(
+        `Cannot take ${amount} gold coins from a stash of ${stash.gold}`,
+      );
+    }
+
+    stash.gold -= amount;
+    inventory.backpack.gold += amount;
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.character.update({
+        where: { id: character.id },
+        data: { inventory: inventory as unknown as InputJsonObject },
+      });
+
+      return tx.campaign.update({
+        where: { id: campaign.id },
+        data: {
+          stash: stash as unknown as InputJsonObject,
+        },
+      });
+    });
+
+    this.charactersGateway.handleDownPickupGold(campaign.id, character.id, amount);
+  }
 }

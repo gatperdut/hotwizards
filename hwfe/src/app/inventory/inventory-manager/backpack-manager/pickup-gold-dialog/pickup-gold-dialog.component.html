@@ -19,7 +19,18 @@
     </ng-template>
 
     <ng-template appDialogActions>
-      <app-button label="Cancel" type="button" (click)="dialogRef.close()"></app-button>
+      <app-button
+        label="Cancel"
+        type="button"
+        (click)="dialogRef.close()"
+        appearance="outlined"
+      ></app-button>
+      <app-button
+        label="Take all"
+        type="button"
+        (click)="dialogRef.close(data.amount)"
+        appearance="outlined"
+      ></app-button>
       <app-button label="Take" type="submit" [disabled]="form().invalid()"></app-button
     ></ng-template>
   </app-dialog>

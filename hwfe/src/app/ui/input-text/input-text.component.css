@@ -10,4 +10,16 @@
   }
 
   caret-shape: block;
+
+  &[type='number'] {
+    text-align: right;
+
+    &&::-webkit-inner-spin-button,
+    &&::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    -moz-appearance: textfield;
+    padding-right: 15px;
+  }
 }

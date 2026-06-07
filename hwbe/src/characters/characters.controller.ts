@@ -1,5 +1,9 @@
 import { HwCampaign } from '@hw/shared/campaigns';
-import { HwCharacter, HwCharacterUnequipItemDto } from '@hw/shared/characters';
+import {
+  HwCharacter,
+  HwCharacterPickupGoldDto,
+  HwCharacterUnequipItemDto,
+} from '@hw/shared/characters';
 import { HwItem } from '@hw/shared/inventory';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CurrentCampaignStashItem } from '../campaigns/decorators/current-campaign-stash-item.decorator.js';
@@ -55,5 +59,15 @@ export class CharactersController {
     @CurrentCampaignStashItem() stashItem: HwItem,
   ): Promise<void> {
     return this.charactersService.pickupItem(campaign, character, stashItem);
+  }
+
+  @Post(':characterId/pickup-gold')
+  @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard)
+  public pickupGold(
+    @CurrentCharacter() character: HwCharacter,
+    @CurrentCampaign() campaign: HwCampaign,
+    @Body() body: HwCharacterPickupGoldDto,
+  ): Promise<void> {
+    return this.charactersService.pickupGold(campaign, character, body.amount);
   }
 }

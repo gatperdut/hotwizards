@@ -56,4 +56,8 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
       .to(`campaign:${campaignId}:characters`)
       .emit('downPickupItem', characterId, stashItemId);
   }
+
+  public handleDownPickupGold(campaignId: number, characterId: number, amount: number): void {
+    this.server.to(`campaign:${campaignId}:characters`).emit('downPickupGold', characterId, amount);
+  }
 }

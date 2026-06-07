@@ -5,4 +5,5 @@ export interface CharactersDownstream {
   downUnequipItem: (characterId: number, slot: HwSlot) => void;
   downDropItem: (characterId: number, backpackItemId: string) => void;
   downPickupItem: (characterId: number, stashItemId: string) => void;
+  downPickupGold: (characterId: number, amount: number) => void;
 }
