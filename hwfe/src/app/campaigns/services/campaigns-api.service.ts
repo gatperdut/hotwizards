@@ -1,6 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto } from '@hw/shared/campaigns';
+import {
+  HwCampaign,
+  HwCampaignDropGoldDto,
+  HwCampaignEditDto,
+  HwCampaignSearchDto,
+} from '@hw/shared/campaigns';
 import { HwMembershipCreateDto } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
 
@@ -72,5 +77,13 @@ export class CampaignsApiService {
     return this.httpClient
       .post<number>(`/api/campaigns/${campaignId}/adventure/${adventureTemplateId}`, null)
       .pipe(this.apiNotificationService.notify(undefined, 'Adventure could not be started'));
+  }
+
+  public dropGold(campaignId: number, amount: number): Observable<void> {
+    const dto: HwCampaignDropGoldDto = {
+      amount: amount,
+    };
+
+    return this.httpClient.post<void>(`/api/campaigns/${campaignId}/drop-gold`, dto);
   }
 }

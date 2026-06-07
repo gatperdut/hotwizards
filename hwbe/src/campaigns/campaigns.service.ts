@@ -38,7 +38,7 @@ import {
 } from '@hw/shared/sprites';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InputJsonValue } from '@prisma/client/runtime/client';
+import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
@@ -202,6 +202,20 @@ export class CampaignsService {
     });
 
     return campaign.id;
+  }
+
+  public async dropGold(campaign: HwCampaign, amount: number): Promise<void> {
+    const stash = { ...campaign.stash };
+    stash.gold += amount;
+
+    await this.prismaService.campaign.update({
+      where: { id: campaign.id },
+      data: {
+        stash: stash as unknown as InputJsonObject,
+      },
+    });
+
+    this.campaignsSingleGateway.handleDownDropGold(campaign.id, amount);
   }
 
   public async startAdventure(

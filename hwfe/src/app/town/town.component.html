@@ -47,10 +47,9 @@
 
   <div class="typ-h2 text-primary!">Stash</div>
   <app-town-stash
-    [character]="campaignService.myMembership()?.character"
-    [stash]="campaignService.stash()"
     (pickup)="onPickup($event)"
     (pickupGold)="onPickupGold($event)"
+    (dropGold)="onDropGold($event)"
   ></app-town-stash>
 
   <app-adventure-template-picker [actions]="adventurePickerActions"></app-adventure-template-picker>

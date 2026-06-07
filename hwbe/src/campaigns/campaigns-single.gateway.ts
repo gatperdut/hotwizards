@@ -43,4 +43,8 @@ export class CampaignsSingleGateway implements OnGatewayInit, OnGatewayConnectio
   public handleDownStartAdventure(campaignId: number): void {
     this.server.to(`campaigns:${campaignId}`).emit('downStartAdventure');
   }
+
+  public handleDownDropGold(campaignId: number, amount: number): void {
+    this.server.to(`campaigns:${campaignId}`).emit('downDropGold', amount);
+  }
 }

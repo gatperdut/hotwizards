@@ -9,6 +9,13 @@
           [disabled]="!canPickupGold()"
         ></app-button>
       }
+      @if (showDropGold()) {
+        <app-button
+          icon="cash-out"
+          (click)="dropGoldAmount()"
+          [disabled]="!canDropGold()"
+        ></app-button>
+      }
       <div class="typ-small text-primary!">Gold: {{ backpack().gold }}</div>
     </div>
   </div>

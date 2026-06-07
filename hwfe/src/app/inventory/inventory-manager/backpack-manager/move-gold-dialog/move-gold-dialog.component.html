@@ -1,17 +1,18 @@
 <form [formRoot]="form">
   <app-dialog sizeClass="max-w-md">
     <ng-template appDialogTitle>
-      <div class="typ-h2">Take gold from stash</div>
+      <div class="typ-h2">{{ data.taking ? 'Take gold from stash' : 'Add gold to the stash' }}</div>
     </ng-template>
 
     <ng-template appDialogContent>
       <div class="flex flex-col gap-hw-average">
         <div class="typ-body">
-          There are {{ data.amount }} gold coins in the stash. Take how many?
+          There are {{ data.amount }} gold coins in the stash.
+          {{ data.taking ? 'Take how many?' : 'Add how many?' }}
         </div>
         <app-input-text
           [field]="form"
-          label="Gold coins to take"
+          [label]="data.taking ? 'Gold coins to take' : 'Gold coins to add'"
           type="number"
           placeholder="Amount"
         ></app-input-text>
@@ -25,13 +26,19 @@
         (click)="dialogRef.close()"
         appearance="outlined"
       ></app-button>
+      @if (data.taking) {
+        <app-button
+          label="Take all"
+          type="button"
+          (click)="dialogRef.close(data.amount)"
+          appearance="outlined"
+        ></app-button>
+      }
       <app-button
-        label="Take all"
-        type="button"
-        (click)="dialogRef.close(data.amount)"
-        appearance="outlined"
-      ></app-button>
-      <app-button label="Take" type="submit" [disabled]="form().invalid()"></app-button
+        [label]="data.taking ? 'Take' : 'Add'"
+        type="submit"
+        [disabled]="form().invalid()"
+      ></app-button
     ></ng-template>
   </app-dialog>
 </form>

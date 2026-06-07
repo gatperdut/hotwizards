@@ -12,6 +12,9 @@
       [showPickupGold]="!!character()"
       [canPickupGold]="stash().gold > 0"
       [pickupGold]="pickupGold"
+      [showDropGold]="master().me"
+      [canDropGold]="true"
+      [dropGold]="dropGold"
     ></app-backpack-manager>
   </div>
 </app-card>

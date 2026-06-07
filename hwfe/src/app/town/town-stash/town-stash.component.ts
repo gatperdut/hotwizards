@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output } from '@angular/core';
 import { CardComponent } from '@hw/hwfe/app/ui/card/card.component';
-import { HwCharacter } from '@hw/shared/characters';
-import { HwBackpack, HwItem } from '@hw/shared/inventory';
+import { HwItem } from '@hw/shared/inventory';
+import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { BackpackManagerComponent } from '../../inventory/inventory-manager/backpack-manager/backpack-manager.component';
 
 @Component({
@@ -12,8 +12,14 @@ import { BackpackManagerComponent } from '../../inventory/inventory-manager/back
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TownStashComponent {
-  public character = input.required<HwCharacter | undefined>();
-  public stash = input.required<HwBackpack>();
+  public campaignService = inject(CampaignService);
+
   public pickup = output<HwItem>();
   public pickupGold = output<number>();
+  public dropGold = output<number>();
+
+  public stash = computed(() => this.campaignService.stash());
+  private membership = computed(() => this.campaignService.myMembership());
+  public character = computed(() => (this.membership() ? this.membership()!.character! : null));
+  public master = computed(() => this.campaignService.master());
 }

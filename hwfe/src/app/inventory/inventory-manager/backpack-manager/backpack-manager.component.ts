@@ -10,10 +10,10 @@ import {
   ItemDialogResult,
 } from '../../item-dialog/item-dialog.component';
 import {
-  PickupGoldDialogComponent,
-  PickupGoldDialogData,
-  PickupGoldDialogResult,
-} from './pickup-gold-dialog/pickup-gold-dialog.component';
+  MoveGoldDialogComponent,
+  MoveGoldDialogData,
+  MoveGoldDialogResult,
+} from './move-gold-dialog/move-gold-dialog.component';
 
 @Component({
   selector: 'app-backpack-manager',
@@ -42,6 +42,10 @@ export class BackpackManagerComponent {
   public showPickupGold = input<boolean>(false);
   public canPickupGold = input<boolean>(false);
   public pickupGold = input<OutputEmitterRef<number>>();
+
+  public showDropGold = input<boolean>(false);
+  public canDropGold = input<boolean>(false);
+  public dropGold = input<OutputEmitterRef<number>>();
 
   public viewItem(item: HwItem): void {
     const dialog: LazyDialog<ItemDialogComponent, ItemDialogData, ItemDialogResult> = {
@@ -89,23 +93,38 @@ export class BackpackManagerComponent {
   }
 
   public pickupGoldAmount(): void {
-    const dialog: LazyDialog<
-      PickupGoldDialogComponent,
-      PickupGoldDialogData,
-      PickupGoldDialogResult
-    > = {
+    const dialog: LazyDialog<MoveGoldDialogComponent, MoveGoldDialogData, MoveGoldDialogResult> = {
       importFn: () =>
-        import('./pickup-gold-dialog/pickup-gold-dialog.component').then(
-          (m) => m.PickupGoldDialogComponent,
+        import('./move-gold-dialog/move-gold-dialog.component').then(
+          (m) => m.MoveGoldDialogComponent,
         ),
     };
 
-    from(this.dialogService.open(dialog, { amount: this.backpack().gold }))
+    from(this.dialogService.open(dialog, { taking: true, amount: this.backpack().gold }))
       .pipe(
         switchMap((dialogRef) => dialogRef.afterClosed$),
         filter((amount) => !!amount),
         tap((amount): void => {
           this.pickupGold()!.emit(amount!);
+        }),
+      )
+      .subscribe();
+  }
+
+  public dropGoldAmount(): void {
+    const dialog: LazyDialog<MoveGoldDialogComponent, MoveGoldDialogData, MoveGoldDialogResult> = {
+      importFn: () =>
+        import('./move-gold-dialog/move-gold-dialog.component').then(
+          (m) => m.MoveGoldDialogComponent,
+        ),
+    };
+
+    from(this.dialogService.open(dialog, { taking: false, amount: this.backpack().gold }))
+      .pipe(
+        switchMap((dialogRef) => dialogRef.afterClosed$),
+        filter((amount) => !!amount),
+        tap((amount): void => {
+          this.dropGold()!.emit(amount!);
         }),
       )
       .subscribe();

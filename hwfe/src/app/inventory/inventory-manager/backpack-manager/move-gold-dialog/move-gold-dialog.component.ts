@@ -9,14 +9,15 @@ import { DialogContentDirective } from '../../../../ui/dialog/directives/dialog-
 import { DialogTitleDirective } from '../../../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../../../ui/dialog/services/dialog.service';
 
-export type PickupGoldDialogData = {
+export type MoveGoldDialogData = {
+  taking: boolean;
   amount: number;
 };
 
-export type PickupGoldDialogResult = number | undefined;
+export type MoveGoldDialogResult = number | undefined;
 
 @Component({
-  selector: 'app-pickup-gold-dialog',
+  selector: 'app-move-gold-dialog',
   imports: [
     DialogComponent,
     DialogTitleDirective,
@@ -26,22 +27,30 @@ export type PickupGoldDialogResult = number | undefined;
     ButtonComponent,
     FormRoot,
   ],
-  templateUrl: './pickup-gold-dialog.component.html',
-  styleUrl: './pickup-gold-dialog.component.css',
+  templateUrl: './move-gold-dialog.component.html',
+  styleUrl: './move-gold-dialog.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PickupGoldDialogComponent {
-  public data = inject<PickupGoldDialogData>(APP_DIALOG_DATA);
-  public dialogRef = inject<DialogRef<PickupGoldDialogResult>>(DialogRef);
+export class MoveGoldDialogComponent {
+  public data = inject<MoveGoldDialogData>(APP_DIALOG_DATA);
+  public dialogRef = inject<DialogRef<MoveGoldDialogResult>>(DialogRef);
 
-  public model = signal<number>(Math.round(this.data.amount / 2));
+  public model = signal<number>(this.data.taking ? Math.round(this.data.amount / 2) : 100);
 
   public form = form(
     this.model,
     (schemaPath) => {
-      required(schemaPath, { message: 'Enter  amount of gold coins to take' });
-      min(schemaPath, 1, { message: 'Take at least 1 gold coin' });
-      max(schemaPath, this.data.amount, { message: 'There are not that many gold coins' });
+      required(schemaPath, {
+        message: this.data.taking
+          ? 'Enter  amount of gold coins to take'
+          : 'Enter amount of gold coins to add',
+      });
+      min(schemaPath, 1, {
+        message: this.data.taking ? 'Take at least 1 gold coin' : 'Add at least 1 gold coin',
+      });
+      if (this.data.taking) {
+        max(schemaPath, this.data.amount, { message: 'There are not that many gold coins' });
+      }
     },
     {
       submission: {

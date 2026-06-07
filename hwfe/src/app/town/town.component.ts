@@ -112,6 +112,19 @@ export class TownComponent {
         )
         .subscribe();
     });
+
+    this.campaignsSingleSocket.on('downDropGold', (amount) => {
+      const stash = this.campaignService.campaign().stash;
+
+      stash.gold += amount;
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        stash: {
+          ...campaign.stash,
+        },
+      }));
+    });
   }
 
   private membershipsListen(): void {
@@ -407,9 +420,12 @@ export class TownComponent {
   }
 
   public onPickupGold(amount: number): void {
-    console.log(amount);
     this.charactersApiService
       .pickupGold(this.campaignService.myMembership()!.character!.id, amount)
       .subscribe();
+  }
+
+  public onDropGold(amount: number): void {
+    this.campaignsApiService.dropGold(this.campaignService.campaign().id, amount).subscribe();
   }
 }

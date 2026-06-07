@@ -1,6 +1,7 @@
 import { User } from '@hw/prismagen/client';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign, HwCampaignEditDto, HwCampaignSearchDto } from '@hw/shared/campaigns';
+import { HwCharacterPickupGoldDto } from '@hw/shared/characters';
 import { HwMembershipCreateDto } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
 import { HwUser } from '@hw/shared/users';
@@ -78,5 +79,14 @@ export class CampaignsController {
     @CurrentAdventureTemplate() adventureTemplate: HwAdventureTemplate,
   ): Promise<number> {
     return this.campaignsService.startAdventure(campaign, adventureTemplate);
+  }
+
+  @Post(':campaignId/drop-gold')
+  @UseGuards(SetCampaignGuard, CampaignMasterGuard)
+  public dropGold(
+    @CurrentCampaign() campaign: HwCampaign,
+    @Body() body: HwCharacterPickupGoldDto,
+  ): Promise<void> {
+    return this.campaignsService.dropGold(campaign, body.amount);
   }
 }
