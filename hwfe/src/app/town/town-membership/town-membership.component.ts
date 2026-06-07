@@ -30,7 +30,7 @@ export class TownMembershipComponent {
   public actions = computed(() => {
     const result: AppCardAction[] = [];
 
-    if (this.membership().me) {
+    if (this.membership()!.me) {
       result.push(this.buyAction());
     }
 
