@@ -2,6 +2,12 @@ import { HwItemName } from './item-name.const.js';
 import { HwSlot } from './slots.const.js';
 
 export const HwItemSlots: Record<HwItemName, HwSlot | null> = {
+  goblin_dagger: 'onehanded',
+  goblin_sword: 'onehanded',
+  goblin_axe: 'onehanded',
+  orc_mace: 'onehanded',
+  orc_sword: 'onehanded',
+  orc_cleaver: 'onehanded',
   dagger: 'onehanded',
   handaxe: 'onehanded',
   battleaxe: 'twohanded',

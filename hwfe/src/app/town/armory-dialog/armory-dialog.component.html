@@ -1,0 +1,40 @@
+<app-dialog sizeClass="max-w-xl">
+  <ng-template appDialogTitle>
+    <div class="flex flex-row justify-between items-center grow">
+      <div class="typ-body">Armory</div>
+      <div class="typ-small text-primary!">Gold: {{ data.backpack.gold }}</div>
+    </div>
+  </ng-template>
+
+  <ng-template appDialogContent>
+    <div class="flex flex-col gap-3 overflow-y-auto custom-scrollbar mt-3">
+      @for (buyableItemName of buyableItemNames; track buyableItemName) {
+        <div class="flex flex-row justify-between gap-2">
+          <div
+            class="flex flex-row gap-2 items-center cursor-pointer"
+            (click)="viewItem(buyableItemName)"
+          >
+            <div
+              class="size-10 shrink-0 rounded-full bg-cover bg-center"
+              [style.background-image]="`url(/items/${buyableItemName}.png)`"
+            ></div>
+            <div class="typ-body truncate">{{ buyableItemName }}</div>
+          </div>
+
+          <div class="flex flex-row justify-end items-center gap-2">
+            <div class="typ-small text-secondary!">{{ hwItemCosts[buyableItemName] }}</div>
+            <app-button
+              icon="cash-out"
+              (click)="buy(buyableItemName)"
+              [disabled]="!canBuy(buyableItemName)"
+            ></app-button>
+          </div>
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <ng-template appDialogActions>
+    <app-button label="Close" type="button" (click)="dialogRef.close()"></app-button>
+  </ng-template>
+</app-dialog>

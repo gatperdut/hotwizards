@@ -1,10 +1,20 @@
 import {
   HwArmorItemName,
   HwMiscItemName,
+  HwMonsterWeaponItemName,
   HwPotionItemName,
   HwShieldItemName,
   HwWeaponItemName,
 } from './item-name.const.js';
+
+export const HwMonsterWeaponItemCosts: Record<HwMonsterWeaponItemName, number> = {
+  goblin_dagger: 0,
+  goblin_sword: 0,
+  goblin_axe: 0,
+  orc_mace: 0,
+  orc_sword: 0,
+  orc_cleaver: 0,
+};
 
 export const HwWeaponItemCosts: Record<HwWeaponItemName, number> = {
   dagger: 25,

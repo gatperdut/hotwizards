@@ -10,6 +10,12 @@ import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
 import { CharactersApiService } from '../../characters/services/characters-api.service';
 import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
+import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import {
+  ArmoryDialogComponent,
+  ArmoryDialogData,
+  ArmoryDialogResult,
+} from '../armory-dialog/armory-dialog.component';
 
 @Component({
   selector: 'app-town-membership',
@@ -21,6 +27,7 @@ import { InventoryManagerComponent } from '../../inventory/inventory-manager/inv
 export class TownMembershipComponent {
   public klassesService = inject(KlassesService);
   private charactersApiService = inject(CharactersApiService);
+  private dialogService = inject(DialogService);
 
   public membership = input.required<HwMembership>();
 
@@ -48,7 +55,12 @@ export class TownMembershipComponent {
       label: 'Buy',
       color: 'primary',
       action: (): void => {
-        //TODO
+        const dialog: LazyDialog<ArmoryDialogComponent, ArmoryDialogData, ArmoryDialogResult> = {
+          importFn: () =>
+            import('../armory-dialog/armory-dialog.component').then((m) => m.ArmoryDialogComponent),
+        };
+
+        void this.dialogService.open(dialog, { backpack: this.character().inventory.backpack });
       },
     };
   }

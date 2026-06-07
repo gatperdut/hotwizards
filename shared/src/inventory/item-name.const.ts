@@ -1,3 +1,14 @@
+export const HwMonsterWeaponItemNames = [
+  'goblin_dagger',
+  'goblin_sword',
+  'goblin_axe',
+  'orc_mace',
+  'orc_sword',
+  'orc_cleaver',
+] as const;
+
+export type HwMonsterWeaponItemName = (typeof HwMonsterWeaponItemNames)[number];
+
 export const HwWeaponItemNames = [
   'dagger',
   'handaxe',
@@ -30,6 +41,7 @@ export const HwMiscItemNames = ['toolkit'] as const;
 export type HwMiscItemName = (typeof HwMiscItemNames)[number];
 
 export const HwItemNames = [
+  ...HwMonsterWeaponItemNames,
   ...HwWeaponItemNames,
   ...HwShieldItemNames,
   ...HwArmorItemNames,
@@ -37,3 +49,10 @@ export const HwItemNames = [
   ...HwMiscItemNames,
 ] as const;
 export type HwItemName = (typeof HwItemNames)[number];
+
+export const HwBuyableItemNames = HwItemNames.filter(
+  (name): name is Exclude<HwItemName, HwMonsterWeaponItemName> =>
+    !(HwMonsterWeaponItemNames as readonly string[]).includes(name),
+);
+
+export type HwBuyableItemName = (typeof HwBuyableItemNames)[number];
