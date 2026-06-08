@@ -33,6 +33,9 @@
       [showGiveGold]="!master().me && !membership().me"
       [canGiveGold]="!master().me && myCharacter()!.inventory.backpack.gold > 0"
       (giveGold)="onGiveGold($event)"
+      [showDestroyItem]="membership().me"
+      [canDestroyItem]="true"
+      (destroyItem)="onDestroyItem($event)"
     ></app-inventory-manager>
   </div>
 </app-card>

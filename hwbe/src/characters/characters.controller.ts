@@ -105,4 +105,14 @@ export class CharactersController {
   ): Promise<void> {
     return this.charactersService.giveGold(campaign, character, targetCharacter, body.amount);
   }
+
+  @Post(':characterId/destroy-item')
+  @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
+  public destroyItem(
+    @CurrentCharacter() character: HwCharacter,
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentBackpackItem() backpackItem: HwItem,
+  ): Promise<void> {
+    return this.charactersService.destroyItem(campaign, character, backpackItem);
+  }
 }

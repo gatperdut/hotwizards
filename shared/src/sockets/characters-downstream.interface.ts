@@ -10,4 +10,5 @@ export interface CharactersDownstream {
   downBuyItem: (characterId: number, boughtItem: HwItem) => void;
   downSellItem: (characterId: number, soldItemId: string) => void;
   downGiveGold: (characterId: number, targetCharacterId: number, amount: number) => void;
+  downDestroyItem: (characterId: number, destroyedItemId: string) => void;
 }

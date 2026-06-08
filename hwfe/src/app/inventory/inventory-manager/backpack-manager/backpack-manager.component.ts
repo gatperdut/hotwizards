@@ -57,6 +57,10 @@ export class BackpackManagerComponent {
   public canGiveGold = input<boolean>(false);
   public giveGold = input<OutputEmitterRef<number>>();
 
+  public showDestroyItem = input<boolean>(false);
+  public canDestroyItem = input<boolean>(false);
+  public destroyItem = input<OutputEmitterRef<HwItem>>();
+
   public viewItem(item: HwItem): void {
     const dialog: LazyDialog<ItemDialogComponent, ItemDialogData, ItemDialogResult> = {
       importFn: () =>
@@ -108,9 +112,24 @@ export class BackpackManagerComponent {
         }
       : null;
 
-    const actions: ItemDialogAction[] = [equipAction, pickupAction, dropAction, sellAction].filter(
-      (a) => !!a,
-    );
+    const destroyItemAction: ItemDialogAction | null = this.showDestroyItem()
+      ? {
+          label: 'Destroy',
+          color: 'warning',
+          disabled: !this.canDestroyItem(),
+          callback: (): void => {
+            this.destroyItem()!.emit(item);
+          },
+        }
+      : null;
+
+    const actions: ItemDialogAction[] = [
+      destroyItemAction,
+      equipAction,
+      pickupAction,
+      dropAction,
+      sellAction,
+    ].filter((a) => !!a);
 
     void this.dialogService.open(dialog, { item: item, actions: actions });
   }

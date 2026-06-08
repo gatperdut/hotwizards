@@ -247,4 +247,21 @@ export class CharactersService {
       amount,
     );
   }
+
+  public async destroyItem(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    backpackItem: HwItem,
+  ): Promise<void> {
+    const inventory = { ...character.inventory };
+
+    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id)!;
+
+    await this.prismaService.character.update({
+      where: { id: character.id },
+      data: { inventory: inventory as unknown as InputJsonObject },
+    });
+
+    this.charactersGateway.handleDownDestroyItem(campaign.id, character.id, backpackItem.id);
+  }
 }

@@ -32,4 +32,8 @@ export class InventoryManagerComponent {
   public showGiveGold = input.required<boolean>();
   public canGiveGold = input<boolean>(false);
   public giveGold = output<number>();
+
+  public showDestroyItem = input.required<boolean>();
+  public canDestroyItem = input<boolean>(false);
+  public destroyItem = output<HwItem>();
 }

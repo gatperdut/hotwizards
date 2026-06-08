@@ -1,4 +1,5 @@
 export { HwCharacterBuyItemDto } from './character-buy-item.dto.js';
+export { HwCharacterDestroyItemDto } from './character-destroy-item.dto.js';
 export { HwCharacterDropItemDto } from './character-drop-item.dto.js';
 export { HwCharacterEquipItemDto } from './character-equip-item.dto.js';
 export { HwCharacterGiveGoldDto } from './character-give-gold.dto.js';

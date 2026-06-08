@@ -90,4 +90,8 @@ export class TownMembershipComponent {
       .giveGold(this.myCharacter()!.id, this.character().id, amount)
       .subscribe();
   }
+
+  public onDestroyItem(backpackItem: HwItem): void {
+    this.charactersApiService.destroyItem(this.character().id, backpackItem.id).subscribe();
+  }
 }

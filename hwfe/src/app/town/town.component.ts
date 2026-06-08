@@ -461,6 +461,39 @@ export class TownComponent {
         }),
       }));
     });
+
+    this.charactersSocket.on('downDestroyItem', (characterId, destroyedItemId) => {
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      inventory.backpack.items = inventory.backpack.items.filter(
+        (item) => item.id !== destroyedItemId,
+      );
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: {
+                gear: {
+                  ...inventory.gear,
+                },
+                backpack: {
+                  ...inventory.backpack,
+                },
+              },
+            },
+          };
+        }),
+      }));
+    });
   }
 
   private refresh(campaign?: HwCampaign): void {

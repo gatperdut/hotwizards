@@ -83,4 +83,14 @@ export class CharactersGateway implements OnGatewayInit, OnGatewayConnection {
       .to(`campaign:${campaignId}:characters`)
       .emit('downGiveGold', characterId, targetCharacterId, amount);
   }
+
+  public handleDownDestroyItem(
+    campaignId: number,
+    characterId: number,
+    destroyedItemId: string,
+  ): void {
+    this.server
+      .to(`campaign:${campaignId}:characters`)
+      .emit('downDestroyItem', characterId, destroyedItemId);
+  }
 }

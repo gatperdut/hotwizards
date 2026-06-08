@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
   HwCharacterBuyItemDto,
+  HwCharacterDestroyItemDto,
   HwCharacterDropItemDto,
   HwCharacterEquipItemDto,
   HwCharacterGiveGoldDto,
@@ -86,5 +87,13 @@ export class CharactersApiService {
       `/api/characters/${characterId}/give-gold/${targetCharacterId}`,
       dto,
     );
+  }
+
+  public destroyItem(characterId: number, backpackItemId: string): Observable<void> {
+    const dto: HwCharacterDestroyItemDto = {
+      backpackItemId: backpackItemId,
+    };
+
+    return this.httpClient.post<void>(`/api/characters/${characterId}/destroy-item`, dto);
   }
 }
