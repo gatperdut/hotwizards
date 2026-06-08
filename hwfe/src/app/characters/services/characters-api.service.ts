@@ -4,6 +4,7 @@ import {
   HwCharacterBuyItemDto,
   HwCharacterDropItemDto,
   HwCharacterEquipItemDto,
+  HwCharacterGiveGoldDto,
   HwCharacterPickupGoldDto,
   HwCharacterPickupItemDto,
   HwCharacterSellItemDto,
@@ -70,5 +71,20 @@ export class CharactersApiService {
     };
 
     return this.httpClient.post<void>(`/api/characters/${characterId}/sell-item`, dto);
+  }
+
+  public giveGold(
+    characterId: number,
+    targetCharacterId: number,
+    amount: number,
+  ): Observable<void> {
+    const dto: HwCharacterGiveGoldDto = {
+      amount: amount,
+    };
+
+    return this.httpClient.post<void>(
+      `/api/characters/${characterId}/give-gold/${targetCharacterId}`,
+      dto,
+    );
   }
 }

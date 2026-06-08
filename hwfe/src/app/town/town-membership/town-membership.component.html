@@ -30,6 +30,9 @@
       [showSellItem]="membership().me"
       [canSellItem]="true"
       (sellItem)="onSellItem($event)"
+      [showGiveGold]="!master().me && !membership().me"
+      [canGiveGold]="!master().me && myCharacter()!.inventory.backpack.gold > 0"
+      (giveGold)="onGiveGold($event)"
     ></app-inventory-manager>
   </div>
 </app-card>

@@ -209,4 +209,42 @@ export class CharactersService {
 
     this.charactersGateway.handleDownSellItem(campaign.id, character.id, backpackItem.id);
   }
+
+  public async giveGold(
+    campaign: HwCampaign,
+    character: HwCharacter,
+    targetCharacter: HwCharacter,
+    amount: number,
+  ): Promise<void> {
+    if (character.id === targetCharacter.id) {
+      throw new UnprocessableEntityException('Cannot give gold coins to yourself');
+    }
+
+    const inventory = { ...character.inventory };
+    const targetInventory = { ...targetCharacter.inventory };
+
+    inventory.backpack.gold -= amount;
+    targetInventory.backpack.gold += amount;
+
+    await this.prismaService.$transaction(async (tx) => {
+      await tx.character.update({
+        where: { id: character.id },
+        data: { inventory: inventory as unknown as InputJsonObject },
+      });
+
+      return tx.character.update({
+        where: { id: targetCharacter.id },
+        data: {
+          inventory: targetInventory as unknown as InputJsonObject,
+        },
+      });
+    });
+
+    this.charactersGateway.handleDownGiveGold(
+      campaign.id,
+      character.id,
+      targetCharacter.id,
+      amount,
+    );
+  }
 }

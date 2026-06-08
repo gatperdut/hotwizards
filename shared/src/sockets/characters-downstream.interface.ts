@@ -9,4 +9,5 @@ export interface CharactersDownstream {
   downPickupGold: (characterId: number, amount: number) => void;
   downBuyItem: (characterId: number, boughtItem: HwItem) => void;
   downSellItem: (characterId: number, soldItemId: string) => void;
+  downGiveGold: (characterId: number, targetCharacterId: number, amount: number) => void;
 }

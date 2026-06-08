@@ -28,4 +28,8 @@ export class InventoryManagerComponent {
   public showSellItem = input.required<boolean>();
   public canSellItem = input<boolean>(false);
   public sellItem = output<HwItem>();
+
+  public showGiveGold = input.required<boolean>();
+  public canGiveGold = input<boolean>(false);
+  public giveGold = output<number>();
 }

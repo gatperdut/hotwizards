@@ -1,18 +1,42 @@
 <form [formRoot]="form">
   <app-dialog sizeClass="max-w-md">
     <ng-template appDialogTitle>
-      <div class="typ-h2">{{ data.taking ? 'Take gold from stash' : 'Add gold to the stash' }}</div>
+      <div class="typ-h2">
+        {{
+          data.type === 'drop'
+            ? 'Add gold to the stash'
+            : data.type === 'give'
+              ? 'Give gold to character'
+              : 'Take gold from stash'
+        }}
+      </div>
     </ng-template>
 
     <ng-template appDialogContent>
       <div class="flex flex-col gap-hw-average">
         <div class="typ-body">
-          There are {{ data.amount }} gold coins in the stash.
-          {{ data.taking ? 'Take how many?' : 'Add how many?' }}
+          @if (data.type === 'drop' || data.type === 'pickup') {
+            There are {{ data.amount }} gold coins in the stash.
+          } @else {
+            You have {{ data.amount }} gold coins.
+          }
+          {{
+            data.type === 'drop'
+              ? 'Add how many'
+              : data.type === 'give'
+                ? 'Give how many?'
+                : 'Take how many?'
+          }}
         </div>
         <app-input-text
           [field]="form"
-          [label]="data.taking ? 'Gold coins to take' : 'Gold coins to add'"
+          [label]="
+            data.type === 'drop'
+              ? 'Gold coins to add'
+              : data.type === 'give'
+                ? 'Gold coins to give'
+                : 'Gold coins to take'
+          "
           type="number"
           placeholder="Amount"
         ></app-input-text>
@@ -26,16 +50,16 @@
         (click)="dialogRef.close()"
         appearance="outlined"
       ></app-button>
-      @if (data.taking) {
+      @if (data.type === 'give' || data.type === 'pickup') {
         <app-button
-          label="Take all"
+          [label]="data.type === 'give' ? 'Give all' : 'Take all'"
           type="button"
           (click)="dialogRef.close(data.amount)"
           appearance="outlined"
         ></app-button>
       }
       <app-button
-        [label]="data.taking ? 'Take' : 'Add'"
+        [label]="data.type === 'drop' ? 'Add' : data.type === 'give' ? 'Give' : 'Take'"
         type="submit"
         [disabled]="form().invalid()"
       ></app-button

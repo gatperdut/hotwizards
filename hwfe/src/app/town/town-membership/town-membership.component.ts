@@ -8,6 +8,7 @@ import {
 } from '@hw/hwfe/app/ui/card/card.component';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
+import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { CharactersApiService } from '../../characters/services/characters-api.service';
 import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
@@ -25,12 +26,15 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TownMembershipComponent {
+  private campaignService = inject(CampaignService);
   public klassesService = inject(KlassesService);
   private charactersApiService = inject(CharactersApiService);
   private dialogService = inject(DialogService);
 
   public membership = input.required<HwMembership>();
 
+  public master = computed(() => this.campaignService.master());
+  public myCharacter = computed(() => this.campaignService.myMembership()?.character);
   public character = computed(() => this.membership().character!);
   public inventory = computed(() => this.character().inventory);
 
@@ -79,5 +83,11 @@ export class TownMembershipComponent {
 
   public onSellItem(backpackItem: HwItem): void {
     this.charactersApiService.sellItem(this.character().id, backpackItem.id).subscribe();
+  }
+
+  public onGiveGold(amount: number): void {
+    this.charactersApiService
+      .giveGold(this.myCharacter()!.id, this.character().id, amount)
+      .subscribe();
   }
 }

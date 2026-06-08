@@ -390,6 +390,77 @@ export class TownComponent {
         }),
       }));
     });
+
+    this.charactersSocket.on('downSellItem', (characterId, soldItemId) => {
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      const soldItem = inventory.backpack.items.find((item) => item.id === soldItemId)!;
+      inventory.backpack.items = inventory.backpack.items.filter((item) => item.id !== soldItemId);
+      inventory.backpack.gold += HwItemCosts[soldItem.name as HwBuyableItemName];
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId) {
+            return m;
+          }
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: {
+                gear: {
+                  ...inventory.gear,
+                },
+                backpack: {
+                  ...inventory.backpack,
+                },
+              },
+            },
+          };
+        }),
+      }));
+    });
+
+    this.charactersSocket.on('downGiveGold', (characterId, targetCharacterId, amount) => {
+      const inventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === characterId)!.character!.inventory;
+
+      const targetInventory = this.campaignService
+        .memberships()
+        .find((m) => m.characterId === targetCharacterId)!.character!.inventory;
+
+      inventory.backpack.gold -= amount;
+      targetInventory.backpack.gold += amount;
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        memberships: campaign.memberships.map((m) => {
+          if (m.characterId !== characterId && m.characterId !== targetCharacterId) {
+            return m;
+          }
+
+          const whichInventory = m.characterId === characterId ? inventory : targetInventory;
+          return {
+            ...m,
+            character: {
+              ...m.character!,
+              inventory: {
+                gear: {
+                  ...whichInventory.gear,
+                },
+                backpack: {
+                  ...whichInventory.backpack,
+                },
+              },
+            },
+          };
+        }),
+      }));
+    });
   }
 
   private refresh(campaign?: HwCampaign): void {

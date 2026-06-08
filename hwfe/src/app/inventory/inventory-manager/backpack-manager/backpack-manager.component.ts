@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, OutputEmitterRef } from '@angular/core';
+import { CampaignService } from '@hw/hwfe/app/campaigns/campaign/campaign.service';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { HwBackpack, HwItem, HwItemSlots } from '@hw/shared/inventory';
 import { filter, from, switchMap, tap } from 'rxjs';
@@ -24,6 +25,7 @@ import {
 })
 export class BackpackManagerComponent {
   private dialogService = inject(DialogService);
+  private campaignService = inject(CampaignService);
 
   public backpack = input.required<HwBackpack>();
 
@@ -50,6 +52,10 @@ export class BackpackManagerComponent {
   public showSellItem = input<boolean>(false);
   public canSellItem = input<boolean>(false);
   public sellItem = input<OutputEmitterRef<HwItem>>();
+
+  public showGiveGold = input<boolean>(false);
+  public canGiveGold = input<boolean>(false);
+  public giveGold = input<OutputEmitterRef<number>>();
 
   public viewItem(item: HwItem): void {
     const dialog: LazyDialog<ItemDialogComponent, ItemDialogData, ItemDialogResult> = {
@@ -117,7 +123,7 @@ export class BackpackManagerComponent {
         ),
     };
 
-    from(this.dialogService.open(dialog, { taking: true, amount: this.backpack().gold }))
+    from(this.dialogService.open(dialog, { type: 'pickup', amount: this.backpack().gold }))
       .pipe(
         switchMap((dialogRef) => dialogRef.afterClosed$),
         filter((amount) => !!amount),
@@ -136,12 +142,36 @@ export class BackpackManagerComponent {
         ),
     };
 
-    from(this.dialogService.open(dialog, { taking: false, amount: this.backpack().gold }))
+    from(this.dialogService.open(dialog, { type: 'drop', amount: this.backpack().gold }))
       .pipe(
         switchMap((dialogRef) => dialogRef.afterClosed$),
         filter((amount) => !!amount),
         tap((amount): void => {
           this.dropGold()!.emit(amount!);
+        }),
+      )
+      .subscribe();
+  }
+
+  public giveGoldAmount(): void {
+    const dialog: LazyDialog<MoveGoldDialogComponent, MoveGoldDialogData, MoveGoldDialogResult> = {
+      importFn: () =>
+        import('./move-gold-dialog/move-gold-dialog.component').then(
+          (m) => m.MoveGoldDialogComponent,
+        ),
+    };
+
+    from(
+      this.dialogService.open(dialog, {
+        type: 'give',
+        amount: this.campaignService.myMembership()!.character!.inventory.backpack.gold,
+      }),
+    )
+      .pipe(
+        switchMap((dialogRef) => dialogRef.afterClosed$),
+        filter((amount) => !!amount),
+        tap((amount): void => {
+          this.giveGold()!.emit(amount!);
         }),
       )
       .subscribe();

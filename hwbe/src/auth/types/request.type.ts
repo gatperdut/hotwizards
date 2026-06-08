@@ -21,4 +21,5 @@ export type HwRequest = Request & {
   backpackItem: HwItem;
   gearItem: HwItem;
   stashItem: HwItem;
+  targetCharacter: HwCharacter;
 };
