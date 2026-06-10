@@ -1,4 +1,4 @@
-<app-sidebar [buttons]="buttons()"></app-sidebar>
+<app-sidebar class="absolute top-7" [buttons]="buttons()"></app-sidebar>
 
 @let activePlayer = dungeonService.activePlayer();
 @let master = campaignService.master();
@@ -9,7 +9,7 @@
 @let viewedMonster = dungeonService.viewedMonster();
 
 @if (myHero) {
-  <div class="absolute top-1 left-18 hw-border border-primary p-1.5 bg-background/75">
+  <div class="absolute top-10 left-18 hw-border border-primary p-1.5 bg-background/75">
     <div class="flex flex-row gap-3 items-center">
       <app-who-character
         [user]="authService.user()!"
@@ -24,7 +24,7 @@
 }
 
 @if (master.me) {
-  <div class="absolute top-1 left-18 hw-border border-primary p-1.5 bg-background/75">
+  <div class="absolute top-10 left-18 hw-border border-primary p-1.5 bg-background/75">
     <div class="flex flex-row gap-3 items-center">
       @if (selectedMonster) {
         <app-who-monster [master]="true" [monster]="selectedMonster"></app-who-monster>
@@ -45,9 +45,12 @@
 }
 
 @if (viewedMonster) {
-  <div class="absolute top-21 left-18 hw-border border-off-medium p-1.5 bg-background/75">
+  <div
+    class="absolute left-18 hw-border border-off-medium p-1.5 bg-background/75"
+    [class]="master.me ? 'top-30' : 'top-40'"
+  >
     <div class="flex flex-row gap-3 items-center">
-      <app-who-monster [master]="false" [monster]="viewedMonster"></app-who-monster>
+      <app-who-monster [master]="master.me" [monster]="viewedMonster"></app-who-monster>
       <ng-container
         *ngTemplateOutlet="
           creatureStatsOutlet;
