@@ -6,6 +6,13 @@ import {
   AppCardMiniAction,
   CardComponent,
 } from '@hw/hwfe/app/ui/card/card.component';
+import {
+  characterAttackDie,
+  characterBodyPoints,
+  characterDefendDie,
+  characterMindPoints,
+  characterMovementPoints,
+} from '@hw/shared/characters';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
@@ -37,6 +44,13 @@ export class TownMembershipComponent {
   public myCharacter = computed(() => this.campaignService.myMembership()?.character);
   public character = computed(() => this.membership().character!);
   public inventory = computed(() => this.character().inventory);
+  public attackDie = computed(() => characterAttackDie(this.character()));
+  public defendDie = computed(() => characterDefendDie(this.character()));
+  public movementPoints = computed(() =>
+    characterMovementPoints(this.character(), this.campaignService.campaign().ruleset.movement),
+  );
+  public bodyPoints = computed(() => characterBodyPoints(this.character()));
+  public mindPoints = computed(() => characterMindPoints(this.character()));
 
   public actions = computed(() => {
     const result: AppCardAction[] = [];

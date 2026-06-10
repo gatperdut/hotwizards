@@ -23,10 +23,7 @@ export type AppCardMiniAction = {
 })
 export class CardComponent {
   public color = input<HwfeColor>('primary');
-
   public separatorColor = input<HwfeColor>('secondary');
-
   public actions = input<AppCardAction[]>([]);
-
   public miniactions = input<AppCardMiniAction[]>([]);
 }

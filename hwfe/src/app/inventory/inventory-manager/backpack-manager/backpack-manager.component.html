@@ -1,6 +1,8 @@
 <div class="flex flex-col h-[404px]">
   <div class="flex flex-row justify-between items-center shrink-0">
-    <div class="typ-body">Backpack</div>
+    @if (title()) {
+      <div class="typ-body">{{ title() }}</div>
+    }
     <div class="flex flex-row justify-end items-center gap-2">
       @if (showPickupGold()) {
         <app-button

@@ -27,6 +27,8 @@ export class BackpackManagerComponent {
   private dialogService = inject(DialogService);
   private campaignService = inject(CampaignService);
 
+  public title = input<string>();
+
   public backpack = input.required<HwBackpack>();
 
   public showEquip = input<boolean>(false);

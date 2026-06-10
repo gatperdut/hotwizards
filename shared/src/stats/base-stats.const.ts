@@ -87,71 +87,71 @@ export const MindPoints: Record<Klass | MonsterType, number> = {
 // TODO proper values: monster balanced
 export const MovementPoints: Record<Klass | MonsterType, MovementValues> = {
   BARBARIAN: {
-    BALANCED: { die: 1, static: 6 },
-    REGULAR: { die: 2, static: 0 },
+    BALANCED: { die: 1, fixed: 6 },
+    REGULAR: { die: 2, fixed: 0 },
   },
   DWARF: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 2, static: 0 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 2, fixed: 0 },
   },
   ELF: {
-    BALANCED: { die: 1, static: 5 },
-    REGULAR: { die: 2, static: 0 },
+    BALANCED: { die: 1, fixed: 5 },
+    REGULAR: { die: 2, fixed: 0 },
   },
   WIZARD: {
-    BALANCED: { die: 1, static: 4 },
-    REGULAR: { die: 2, static: 0 },
+    BALANCED: { die: 1, fixed: 4 },
+    REGULAR: { die: 2, fixed: 0 },
   },
   chaos_mage: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 7 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 7 },
   },
   chaos_warrior: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 7 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 7 },
   },
   fimir: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 6 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 6 },
   },
   gargoyle: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 6 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 6 },
   },
   goblin_axe: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 10 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 10 },
   },
   goblin_dagger: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 10 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 10 },
   },
   goblin_sword: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 10 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 10 },
   },
   mummy: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 4 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 4 },
   },
   orc_cleaver: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 8 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 8 },
   },
   orc_mace: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 8 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 8 },
   },
   orc_sword: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 8 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 8 },
   },
   skeleton: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 6 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 6 },
   },
   zombie: {
-    BALANCED: { die: 1, static: 3 },
-    REGULAR: { die: 0, static: 5 },
+    BALANCED: { die: 1, fixed: 3 },
+    REGULAR: { die: 0, fixed: 5 },
   },
 };
