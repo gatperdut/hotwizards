@@ -1,5 +1,6 @@
 import { MonsterType } from './monster-type.const.js';
 
+// TODO drop
 export const MonsterAttackDie: Record<MonsterType, number> = {
   chaos_mage: 2,
   chaos_warrior: 4,

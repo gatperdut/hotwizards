@@ -1,5 +1,6 @@
 import { Klass } from '@hw/prismagen/browser';
 
+// TODO drop
 export const HeroAttackDie: Record<Klass, number> = {
   BARBARIAN: 3,
   DWARF: 2,
