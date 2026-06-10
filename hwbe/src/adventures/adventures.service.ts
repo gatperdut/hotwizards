@@ -6,8 +6,10 @@ import {
   cellAt,
   cellIsTraversable,
   cellsUpdateLos,
+  creatureMovementPoints,
   HwHero,
   HwMonster,
+  HwTransformEndTurnMaster,
   sameCell,
 } from '@hw/shared/dungeon';
 import {
@@ -64,10 +66,18 @@ export class AdventuresService {
   public async endTurnMaster(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
 
-    const updatedMonsters = adventure.dungeon.monsters.map((m) => ({
-      ...m,
-      movementPoints: m.maxMovementPoints,
-    }));
+    const wsData: HwTransformEndTurnMaster = {
+      monsters: {},
+    };
+    const updatedMonsters = adventure.dungeon.monsters.map((m) => {
+      const movementPoints = creatureMovementPoints(
+        m.type!,
+        m.inventory,
+        campaign.ruleset.movement,
+      );
+      wsData.monsters[m.id] = { movementPoints: movementPoints };
+      return { ...m, movementPoints: movementPoints, maxMovementPoints: movementPoints };
+    });
 
     await this.prismaService.adventure.update({
       where: { id: adventure.id },
@@ -82,7 +92,7 @@ export class AdventuresService {
 
     this.endTurnPush(campaign, turn);
 
-    this.adventuresGateway.handleDownEndTurnMaster(campaign.id, {});
+    this.adventuresGateway.handleDownEndTurnMaster(campaign.id, wsData);
 
     return turn;
   }
@@ -96,7 +106,17 @@ export class AdventuresService {
 
     const hero = adventure.dungeon.heroes.find((h) => h.id === user.id)!;
 
-    const updatedHero = { ...hero, movementPoints: hero.maxMovementPoints };
+    const movementPoints = creatureMovementPoints(
+      hero.klass,
+      hero.inventory,
+      campaign.ruleset.movement,
+    );
+
+    const updatedHero = {
+      ...hero,
+      movementPoints: movementPoints,
+      maxMovementPoints: movementPoints,
+    };
 
     await this.prismaService.adventure.update({
       where: { id: adventure.id },
@@ -113,6 +133,7 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownEndTurnHero(campaign.id, {
       heroId: updatedHero.id,
+      movementPoints: movementPoints,
       turn: turn,
     });
 

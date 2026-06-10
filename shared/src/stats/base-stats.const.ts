@@ -103,55 +103,55 @@ export const MovementPoints: Record<Klass | MonsterType, MovementValues> = {
     REGULAR: { die: 2, fixed: 0 },
   },
   chaos_mage: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 7 },
     REGULAR: { die: 0, fixed: 7 },
   },
   chaos_warrior: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 7 },
     REGULAR: { die: 0, fixed: 7 },
   },
   fimir: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 6 },
     REGULAR: { die: 0, fixed: 6 },
   },
   gargoyle: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 6 },
     REGULAR: { die: 0, fixed: 6 },
   },
   goblin_axe: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 10 },
     REGULAR: { die: 0, fixed: 10 },
   },
   goblin_dagger: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 10 },
     REGULAR: { die: 0, fixed: 10 },
   },
   goblin_sword: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 10 },
     REGULAR: { die: 0, fixed: 10 },
   },
   mummy: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 4 },
     REGULAR: { die: 0, fixed: 4 },
   },
   orc_cleaver: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 8 },
     REGULAR: { die: 0, fixed: 8 },
   },
   orc_mace: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 8 },
     REGULAR: { die: 0, fixed: 8 },
   },
   orc_sword: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 8 },
     REGULAR: { die: 0, fixed: 8 },
   },
   skeleton: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 6 },
     REGULAR: { die: 0, fixed: 6 },
   },
   zombie: {
-    BALANCED: { die: 1, fixed: 3 },
+    BALANCED: { die: 0, fixed: 5 },
     REGULAR: { die: 0, fixed: 5 },
   },
 };

@@ -7,11 +7,11 @@ import {
   cellAt,
   cellsUpdateLos,
   creatureAt,
-  HeroAttackDie,
-  HeroBodyPoints,
-  HeroDefendDie,
-  HeroMindPoints,
-  HeroMovementPoints,
+  creatureAttackDie,
+  creatureBodyPoints,
+  creatureDefendDie,
+  creatureMindPoints,
+  creatureMovementPoints,
   HwCell,
   HwDoor,
   HwDungeon,
@@ -19,11 +19,6 @@ import {
   HwFloorTrap,
   HwHero,
   HwMonster,
-  MonsterAttackDie,
-  MonsterBodyPoints,
-  MonsterDefendDie,
-  MonsterMindPoints,
-  MonsterMovementPoints,
   MonsterNames,
   monsterStartingInventory,
 } from '@hw/shared/dungeon';
@@ -257,6 +252,7 @@ export class CampaignsService {
         .filter((editorCell) => editorCell.spawn)
         .map((editorCell) => cellAt(cells, editorCell.x, editorCell.y))
         .filter((cell) => !!cell),
+      campaign.ruleset.movement,
     );
 
     cellsUpdateLos(
@@ -267,6 +263,7 @@ export class CampaignsService {
     const monsters = this.cellsToMonsters(
       editorDungeon.cells,
       heroes.map((h) => h.id),
+      campaign.ruleset.movement,
     );
 
     cells.forEach((cell) => {
@@ -301,7 +298,11 @@ export class CampaignsService {
     return response;
   }
 
-  private charactersToHeroes(memberships: HwMembership[], spawnCells: HwCell[]): HwHero[] {
+  private charactersToHeroes(
+    memberships: HwMembership[],
+    spawnCells: HwCell[],
+    movement: Movement,
+  ): HwHero[] {
     return memberships.map((membership, index) => {
       const character = membership.character as HwCharacter;
       const user = membership.user;
@@ -311,6 +312,8 @@ export class CampaignsService {
 
       spawnCell.creatureId = user.id;
 
+      const movementPoints = creatureMovementPoints(character.klass, character.inventory, movement);
+      console.log('hero created', movementPoints);
       return {
         id: user.id,
         membershipId: membership.id,
@@ -319,14 +322,12 @@ export class CampaignsService {
         klass: character.klass,
         me: false,
         alignment: 'HERO',
-        attackDie: HeroAttackDie[character.klass],
-        defendDie: HeroDefendDie[character.klass],
-        movementPoints: HeroMovementPoints[character.klass],
-        maxMovementPoints: HeroMovementPoints[character.klass],
-        bodyPoints: HeroBodyPoints[character.klass],
-        maxBodyPoints: HeroBodyPoints[character.klass],
-        mindPoints: HeroMindPoints[character.klass],
-        maxMindPoints: HeroMindPoints[character.klass],
+        attackDie: creatureAttackDie(character.klass, character.inventory),
+        defendDie: creatureDefendDie(character.klass, character.inventory),
+        movementPoints: movementPoints,
+        maxMovementPoints: movementPoints,
+        bodyPoints: creatureBodyPoints(character.klass, character.inventory),
+        mindPoints: creatureMindPoints(character.klass, character.inventory),
         spritePath: heroSpritePath(character.klass, character.gender, direction),
         direction: direction,
         x: spawnCell.x,
@@ -336,7 +337,11 @@ export class CampaignsService {
     });
   }
 
-  private cellsToMonsters(cells: HwEditorCell[], heroIds: number[]): HwMonster[] {
+  private cellsToMonsters(
+    cells: HwEditorCell[],
+    heroIds: number[],
+    movement: Movement,
+  ): HwMonster[] {
     const idsTaken: number[] = [...heroIds];
 
     return cells
@@ -345,6 +350,9 @@ export class CampaignsService {
           return null;
         }
 
+        const inventory = monsterStartingInventory(cell.monster.type);
+        const movementPoints = creatureMovementPoints(cell.monster.type, inventory, movement);
+
         const monster: HwMonster = {
           id: this.generateMonsterId(idsTaken),
           type: cell.monster.type,
@@ -352,21 +360,19 @@ export class CampaignsService {
             Math.floor(Math.random() * MonsterNames[cell.monster.type].length)
           ],
           alignment: 'MONSTER',
-          attackDie: MonsterAttackDie[cell.monster.type],
-          defendDie: MonsterDefendDie[cell.monster.type],
-          movementPoints: MonsterMovementPoints[cell.monster.type],
-          maxMovementPoints: MonsterMovementPoints[cell.monster.type],
-          bodyPoints: MonsterBodyPoints[cell.monster.type],
-          maxBodyPoints: MonsterBodyPoints[cell.monster.type],
-          mindPoints: MonsterMindPoints[cell.monster.type],
-          maxMindPoints: MonsterMindPoints[cell.monster.type],
+          attackDie: creatureAttackDie(cell.monster.type, inventory),
+          defendDie: creatureDefendDie(cell.monster.type, inventory),
+          movementPoints: movementPoints,
+          maxMovementPoints: movementPoints,
+          bodyPoints: creatureBodyPoints(cell.monster.type, inventory),
+          mindPoints: creatureMindPoints(cell.monster.type, inventory),
           spritePath: monsterSpritePath(cell.monster.type, cell.monster.direction),
           direction: cell.monster.direction,
           x: cell.x,
           y: cell.y,
-          inventory: monsterStartingInventory(cell.monster.type),
+          inventory: inventory,
         };
-
+        console.log('monster created', movementPoints);
         return monster;
       })
       .filter((cell) => !!cell);

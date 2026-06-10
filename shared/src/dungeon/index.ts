@@ -18,31 +18,27 @@ export { cellIsTraversable } from './cells/traversable/cell-is-traversable.const
 export { HwAlignment } from './creatures/alignment.const.js';
 export { creatureAt } from './creatures/creature-at.const.js';
 export { creatureIsAt } from './creatures/creature-is-at.const.js';
+export {
+  creatureAttackDie,
+  creatureBodyPoints,
+  creatureDefendDie,
+  creatureMindPoints,
+  creatureMovementPoints,
+} from './creatures/creature-stats.const.js';
 export { HwCreature } from './creatures/creature.interface.js';
 export { heroStartingInventory } from './creatures/heroes/hero-starting-inventory.const.js';
-export {
-  HeroAttackDie,
-  HeroBodyPoints,
-  HeroDefendDie,
-  HeroMindPoints,
-  HeroMovementPoints,
-} from './creatures/heroes/hero-stats.const.js';
 export { HwHero } from './creatures/heroes/hero.interface.js';
 export { MonsterNames } from './creatures/monsters/monster-names.const.js';
 export { monsterPortrait } from './creatures/monsters/monster-portrait.const.js';
 export { monsterStartingInventory } from './creatures/monsters/monster-starting-inventory.const.js';
-export {
-  MonsterAttackDie,
-  MonsterBodyPoints,
-  MonsterDefendDie,
-  MonsterMindPoints,
-  MonsterMovementPoints,
-} from './creatures/monsters/monster-stats.const.js';
 export { MonsterType, MonsterTypes } from './creatures/monsters/monster-type.const.js';
 export { HwMonster } from './creatures/monsters/monster.interface.js';
 export { HwDungeon } from './dungeon.interface.js';
 export { HwTransformEndTurnHero } from './transform/transform-end-turn-hero.interface.js';
-export { HwTransformEndTurnMaster } from './transform/transform-end-turn-master.interface.js';
+export {
+  HwTransformEndTurnMaster,
+  HwTransformEndTurnMasterMonster,
+} from './transform/transform-end-turn-master.interface.js';
 export { HwTransformMoveHero } from './transform/transform-move-hero.interface.js';
 export { HwTransformMoveMonster } from './transform/transform-move-monster.interface.js';
 export { HwTransformOpenDoor } from './transform/transform-open-door.interface.js';

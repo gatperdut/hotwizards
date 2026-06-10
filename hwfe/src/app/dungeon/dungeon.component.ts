@@ -188,7 +188,11 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           dungeon: {
             ...campaign.adventure!.dungeon,
             monsters: campaign.adventure!.dungeon.monsters.map((monster) => {
-              return { ...monster, movementPoints: monster.maxMovementPoints };
+              return {
+                ...monster,
+                movementPoints: data.monsters[monster.id].movementPoints,
+                maxMovementPoints: data.monsters[monster.id].movementPoints,
+              };
             }),
           },
         },
@@ -214,7 +218,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
               return {
                 ...hero,
-                movementPoints: hero.maxMovementPoints,
+                movementPoints: data.movementPoints,
+                maxMovementPoints: data.movementPoints,
               };
             }),
           },

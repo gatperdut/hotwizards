@@ -2,7 +2,15 @@ import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DirectionIcons, DirectionOffsets, Directions } from '@hw/shared/directions';
-import { cellAt, cellIsTraversable, HwCreature } from '@hw/shared/dungeon';
+import {
+  cellAt,
+  cellIsTraversable,
+  creatureAttackDie,
+  creatureBodyPoints,
+  creatureDefendDie,
+  creatureMindPoints,
+  HwCreature,
+} from '@hw/shared/dungeon';
 import { filter, from, switchMap } from 'rxjs';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { AuthService } from '../../auth/services/auth.service';
@@ -34,6 +42,11 @@ export class DungeonSidebarComponent {
   private dialogService = inject(DialogService);
   private viewportService = inject(ViewportService);
   public authService = inject(AuthService);
+
+  public creatureBodyPoints = creatureBodyPoints;
+  public creatureMindPoints = creatureMindPoints;
+  public creatureAttackDie = creatureAttackDie;
+  public creatureDefendDie = creatureDefendDie;
 
   public buttons = computed<SidebarButton[]>(() => {
     return [
