@@ -56,7 +56,7 @@ export class TownMembershipComponent {
     const result: AppCardAction[] = [];
 
     if (this.membership()!.me) {
-      result.push(this.buyAction());
+      result.push(this.armoryAction());
     }
 
     return result;
@@ -68,9 +68,9 @@ export class TownMembershipComponent {
     return result;
   });
 
-  private buyAction(): AppCardAction {
+  private armoryAction(): AppCardAction {
     return {
-      label: 'Buy',
+      label: 'Armory',
       color: 'primary',
       action: (): void => {
         const dialog: LazyDialog<ArmoryDialogComponent, ArmoryDialogData, ArmoryDialogResult> = {

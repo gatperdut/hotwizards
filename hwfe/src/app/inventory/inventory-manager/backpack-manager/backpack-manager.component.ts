@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, input, OutputEmitterRef } from '@angular/core';
-import { CampaignService } from '@hw/hwfe/app/campaigns/campaign/campaign.service';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { HwBackpack, HwItem, HwItemSlots } from '@hw/shared/inventory';
 import { filter, from, switchMap, tap } from 'rxjs';
@@ -25,7 +24,6 @@ import {
 })
 export class BackpackManagerComponent {
   private dialogService = inject(DialogService);
-  private campaignService = inject(CampaignService);
 
   public title = input<string>();
 
@@ -185,7 +183,7 @@ export class BackpackManagerComponent {
     from(
       this.dialogService.open(dialog, {
         type: 'give',
-        amount: this.campaignService.myMembership()!.character!.inventory.backpack.gold,
+        amount: 1,
       }),
     )
       .pipe(

@@ -12,7 +12,7 @@ import { BackpackManagerComponent } from '../../inventory/inventory-manager/back
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TownStashComponent {
-  public campaignService = inject(CampaignService);
+  private campaignService = inject(CampaignService);
 
   public pickup = output<HwItem>();
   public pickupGold = output<number>();

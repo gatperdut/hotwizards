@@ -14,7 +14,26 @@
     </div>
   </ng-template>
 
-  <ng-template appDialogContent> </ng-template>
+  <ng-template appDialogContent>
+    <app-inventory-manager
+      [inventory]="data.creature.inventory"
+      [showEquip]="data.user?.me || false"
+      [canEquip]="data.creature.movementPoints > 1"
+      (equip)="onEquip($event)"
+      [showUnequip]="data.user?.me || false"
+      [canUnequip]="data.creature.movementPoints > 1"
+      (unequip)="onUnequip($event)"
+      [showDrop]="data.user?.me || false"
+      [canDrop]="data.creature.movementPoints > 1"
+      (drop)="onDrop($event)"
+      [showSellItem]="false"
+      [canSellItem]="true"
+      [showGiveGold]="false"
+      [showDestroyItem]="data.user?.me || false"
+      [canDestroyItem]="true"
+      (destroyItem)="onDestroyItem($event)"
+    ></app-inventory-manager>
+  </ng-template>
 
   <ng-template appDialogActions>
     <app-button label="Close" type="button" (click)="dialogRef.close()"></app-button>

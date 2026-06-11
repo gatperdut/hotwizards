@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { HwCreature, HwHero, HwMonster } from '@hw/shared/dungeon';
+import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwUser } from '@hw/shared/users';
+import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
 import { WhoCharacterComponent } from '../../shared/who-character/who-character.component';
 import { WhoMonsterComponent } from '../../shared/who-monster/who-monster.component';
 import { ButtonComponent } from '../../ui/button/button.component';
@@ -31,6 +33,7 @@ export type CreatureDialogResult = void;
     WhoCharacterComponent,
     WhoMonsterComponent,
     CreatureStatsComponent,
+    InventoryManagerComponent,
   ],
   templateUrl: './creature-dialog.component.html',
   styleUrl: './creature-dialog.component.css',
@@ -42,4 +45,20 @@ export class CreatureDialogComponent {
 
   public hero = this.data.creature as HwHero;
   public monster = this.data.creature as HwMonster;
+
+  public onEquip(backpackItem: HwItem): void {
+    // TODO
+  }
+
+  public onUnequip(slot: HwSlot): void {
+    // TODO
+  }
+
+  public onDrop(backpackItem: HwItem): void {
+    // TODO
+  }
+
+  public onDestroyItem(backpackItem: HwItem): void {
+    // TODO
+  }
 }

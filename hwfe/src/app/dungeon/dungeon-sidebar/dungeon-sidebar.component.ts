@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DirectionIcons, DirectionOffsets, Directions } from '@hw/shared/directions';
@@ -31,13 +30,7 @@ import { DungeonService } from '../services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon-sidebar',
-  imports: [
-    SidebarComponent,
-    WhoCharacterComponent,
-    WhoMonsterComponent,
-    NgTemplateOutlet,
-    CreatureStatsComponent,
-  ],
+  imports: [SidebarComponent, WhoCharacterComponent, WhoMonsterComponent, CreatureStatsComponent],
   templateUrl: './dungeon-sidebar.component.html',
   styleUrl: './dungeon-sidebar.component.css',
 })
