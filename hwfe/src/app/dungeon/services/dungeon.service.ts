@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { Direction, DirectionOffsets } from '@hw/shared/directions';
 import {
   adjacentCells,
@@ -44,6 +44,12 @@ import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
 import { MonsterSelectedTint } from '../../sprites/monster-sprites.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
+import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import {
+  CreatureDialogComponent,
+  CreatureDialogData,
+  CreatureDialogResult,
+} from '../creature-dialog/creature-dialog.component';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
@@ -57,6 +63,8 @@ export class DungeonService {
   private campaignService = inject(CampaignService);
   private cellService = inject(CellService);
   private adventuresApiService = inject(AdventuresApiService);
+  private dialogService = inject(DialogService);
+  private injector = inject(Injector);
 
   public campaignsSingleSocket!: Socket<CampaignsSingleDownstream, CampaignsSingleUpstream>;
   public adventuresSocket!: Socket<AdventuresDownstream, AdventuresUpstream>;
@@ -510,7 +518,27 @@ export class DungeonService {
   }
 
   private viewCreature(creature: HwCreature): void {
-    // TODO open dialog
-    alert(`open dialog ${creature.name}`);
+    const dialog: LazyDialog<CreatureDialogComponent, CreatureDialogData, CreatureDialogResult> = {
+      importFn: () =>
+        import('../creature-dialog/creature-dialog.component').then(
+          (m) => m.CreatureDialogComponent,
+        ),
+    };
+
+    void this.dialogService.open(
+      dialog,
+      creature.alignment === 'HERO'
+        ? {
+            creature: creature,
+            master: this.campaignService.master(),
+            user: this.campaignService.memberships().find((m) => m.userId === creature.id)!.user,
+          }
+        : {
+            creature: creature,
+            master: this.campaignService.master(),
+            user: null,
+          },
+      this.injector,
+    );
   }
 }
