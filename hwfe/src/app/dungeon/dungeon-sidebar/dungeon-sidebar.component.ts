@@ -26,11 +26,18 @@ import { WhoMonsterComponent } from '../../shared/who-monster/who-monster.compon
 import { SidebarButtonAction } from '../../sidebar/sidebar-button/sidebar-button.component';
 import { SidebarButton, SidebarComponent } from '../../sidebar/sidebar.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
+import { CreatureStatsComponent } from '../creature-stats/creature-stats.component';
 import { DungeonService } from '../services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon-sidebar',
-  imports: [SidebarComponent, WhoCharacterComponent, WhoMonsterComponent, NgTemplateOutlet],
+  imports: [
+    SidebarComponent,
+    WhoCharacterComponent,
+    WhoMonsterComponent,
+    NgTemplateOutlet,
+    CreatureStatsComponent,
+  ],
   templateUrl: './dungeon-sidebar.component.html',
   styleUrl: './dungeon-sidebar.component.css',
 })

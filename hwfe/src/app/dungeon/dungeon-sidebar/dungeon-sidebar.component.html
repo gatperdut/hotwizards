@@ -15,9 +15,7 @@
         [character]="myHero"
         [master]="false"
       ></app-who-character>
-      <ng-container
-        *ngTemplateOutlet="creatureStatsOutlet; context: { creature: myHero, key: myHero.klass }"
-      ></ng-container>
+      <app-creature-stats [creature]="myHero"></app-creature-stats>
     </div>
   </div>
 }
@@ -27,12 +25,7 @@
     <div class="flex flex-row gap-3 items-center">
       @if (selectedMonster) {
         <app-who-monster [master]="true" [monster]="selectedMonster"></app-who-monster>
-        <ng-container
-          *ngTemplateOutlet="
-            creatureStatsOutlet;
-            context: { creature: selectedMonster, key: selectedMonster.type }
-          "
-        ></ng-container>
+        <app-creature-stats [creature]="selectedMonster"></app-creature-stats>
       } @else {
         <app-who-character
           [master]="true"
@@ -64,12 +57,7 @@
           @if (activePlayerIsMaster) {
             @if (selectedMonster) {
               <app-who-monster [master]="false" [monster]="selectedMonster"></app-who-monster>
-              <ng-container
-                *ngTemplateOutlet="
-                  creatureStatsOutlet;
-                  context: { creature: selectedMonster, key: selectedMonster.type }
-                "
-              ></ng-container>
+              <app-creature-stats [creature]="selectedMonster"></app-creature-stats>
             } @else {
               <app-who-character
                 [master]="true"
@@ -77,52 +65,12 @@
               ></app-who-character>
             }
           } @else {
-            <ng-container
-              *ngTemplateOutlet="
-                creatureStatsOutlet;
-                context: { creature: activeHero, key: activeHero?.klass }
-              "
-            ></ng-container>
+            @if (activeHero) {
+              <app-creature-stats [creature]="activeHero"></app-creature-stats>
+            }
           }
         </div>
       </div>
     }
   </div>
 }
-
-<ng-template #creatureStatsOutlet let-creature="creature" let-key="key">
-  @if (creature) {
-    <div class="flex flex-col text-sm leading-4.5">
-      <div class="flex flex-row justify-between gap-1">
-        <span class="text-primary">BP</span>
-        <span class="text-primary">
-          {{ creature.bodyPoints }}/{{ creatureBodyPoints(key, creature.inventory) }}
-        </span>
-      </div>
-      <div class="flex flex-row justify-between gap-1">
-        <span class="text-secondary">MP</span>
-        <span class="text-secondary">
-          {{ creature.mindPoints }}/{{ creatureMindPoints(key, creature.inventory) }}
-        </span>
-      </div>
-      <div class="flex flex-row justify-between gap-1">
-        <span class="text-off-medium">MP</span>
-        <span class="text-off-medium">
-          {{ creature.movementPoints }}/{{ creature.maxMovementPoints }}
-        </span>
-      </div>
-      <div class="flex flex-row justify-between gap-1">
-        <span class="text-warning">AD</span>
-        <span class="text-warning">
-          {{ creatureAttackDie(key, creature.inventory) }}
-        </span>
-      </div>
-      <div class="flex flex-row justify-between gap-1">
-        <span class="text-off-light">DD</span>
-        <span class="text-off-light">
-          {{ creatureDefendDie(key, creature.inventory) }}
-        </span>
-      </div>
-    </div>
-  }
-</ng-template>

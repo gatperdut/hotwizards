@@ -10,6 +10,7 @@ import { DialogActionsDirective } from '../../ui/dialog/directives/dialog-action
 import { DialogContentDirective } from '../../ui/dialog/directives/dialog-content.directive';
 import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
+import { CreatureStatsComponent } from '../creature-stats/creature-stats.component';
 
 export type CreatureDialogData = {
   master: HwUser;
@@ -29,6 +30,7 @@ export type CreatureDialogResult = void;
     ButtonComponent,
     WhoCharacterComponent,
     WhoMonsterComponent,
+    CreatureStatsComponent,
   ],
   templateUrl: './creature-dialog.component.html',
   styleUrl: './creature-dialog.component.css',

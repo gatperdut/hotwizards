@@ -10,9 +10,7 @@
       } @else {
         <app-who-monster [master]="true" [monster]="monster"></app-who-monster>
       }
-      <!-- <ng-container
-        *ngTemplateOutlet="creatureStatsOutlet; context: { creature: myHero, key: myHero.klass }"
-      ></ng-container> -->
+      <app-creature-stats [creature]="data.creature"></app-creature-stats>
     </div>
   </ng-template>
 
