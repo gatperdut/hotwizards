@@ -283,15 +283,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.updateVisibility();
-
-      const viewedMonster = this.dungeonService.viewedMonster();
-      if (!master.me && viewedMonster) {
-        if (
-          cellAt(this.dungeonService.hwfeCells(), viewedMonster.x, viewedMonster.y)!.visibility < 2
-        ) {
-          this.dungeonService.viewMonster(null);
-        }
-      }
     });
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {

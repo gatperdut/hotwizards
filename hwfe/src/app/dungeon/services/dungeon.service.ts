@@ -5,6 +5,7 @@ import {
   cellAt,
   creatureAt,
   HwCell,
+  HwCreature,
   HwHero,
   HwMonster,
   losFrom,
@@ -41,7 +42,7 @@ import {
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
-import { MonsterSelectedTint, MonsterViewedTint } from '../../sprites/monster-sprites.const';
+import { MonsterSelectedTint } from '../../sprites/monster-sprites.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
@@ -65,7 +66,6 @@ export class DungeonService {
   public hwfeMonsters = signal<HwfeMonster[]>([]);
 
   public selectedMonster = signal<HwfeMonster | null>(null);
-  public viewedMonster = signal<HwfeMonster | null>(null);
 
   public activePlayer = computed(() => {
     const adventure = this.campaignService.campaign().adventure;
@@ -455,31 +455,43 @@ export class DungeonService {
     }
     event.stopPropagation();
 
-    const activePlayer = this.activePlayer();
+    const activePlayer = this.activePlayer()!;
     const master = this.campaignService.master();
     const hwfeCell = cellAt(this.hwfeCells(), x, y)!;
 
     if (hwfeCell.visibility < 2 && !master.me) {
-      this.viewMonster(null);
       return;
     }
 
-    const monsterId = creatureAt(this.hwfeMonsters(), hwfeCell.x, hwfeCell.y)?.id ?? null;
-    if ((!master.me || !activePlayer?.me) && this.selectedMonster()?.id !== monsterId) {
-      this.viewMonster(monsterId);
+    const creature =
+      creatureAt([...this.hwfeHeroes(), ...this.hwfeMonsters()], hwfeCell.x, hwfeCell.y) ?? null;
+    if (!master.me || !activePlayer.me) {
+      if (creature) {
+        this.viewCreature(creature);
+      }
     } else {
-      this.adventuresApiService
-        .selectMonster(this.campaignService.campaign().adventure!.id, monsterId ?? null)
-        .subscribe();
+      if (!creature) {
+        this.adventuresApiService
+          .selectMonster(this.campaignService.campaign().adventure!.id, null)
+          .subscribe();
+      } else {
+        if (creature.alignment === 'HERO') {
+          this.viewCreature(creature);
+        } else {
+          const selectedMonster = this.selectedMonster();
+          if (selectedMonster && selectedMonster.id === creature.id) {
+            this.viewCreature(creature);
+          } else {
+            this.adventuresApiService
+              .selectMonster(this.campaignService.campaign().adventure!.id, creature.id)
+              .subscribe();
+          }
+        }
+      }
     }
   }
 
   public selectMonster(monsterId: number | null, manual: boolean): void {
-    const viewedMonster = this.viewedMonster();
-    if (viewedMonster?.id === monsterId) {
-      this.viewMonster(null);
-    }
-
     const prevSelectedMonster = this.selectedMonster();
     if (prevSelectedMonster) {
       prevSelectedMonster.pixi.sprite.tint = CreatureUnselectTint;
@@ -497,21 +509,8 @@ export class DungeonService {
     }
   }
 
-  public viewMonster(monsterId: number | null): void {
-    const prevViewedMonster = this.viewedMonster();
-    if (prevViewedMonster) {
-      prevViewedMonster.pixi.sprite.tint = CreatureUnselectTint;
-
-      if (prevViewedMonster.id === monsterId) {
-        this.viewedMonster.set(null);
-        return;
-      }
-    }
-
-    const viewedMonster = this.hwfeMonsters().find((m) => m.id === monsterId) ?? null;
-    this.viewedMonster.set(viewedMonster);
-    if (viewedMonster) {
-      viewedMonster.pixi.sprite.tint = MonsterViewedTint;
-    }
+  private viewCreature(creature: HwCreature): void {
+    // TODO open dialog
+    alert(`open dialog ${creature.name}`);
   }
 }
