@@ -528,14 +528,12 @@ export class DungeonService {
     void this.dialogService.open(
       dialog,
       {
-        adventure: this.campaignService.campaign().adventure!,
-        creature: creature,
-        master: this.campaignService.master(),
+        campaign: this.campaignService.campaign,
         user:
           creature.alignment === 'HERO'
             ? this.campaignService.memberships().find((m) => m.userId === creature.id)!.user
             : null,
-        movement: this.campaignService.campaign().ruleset.movement,
+        creatureId: creature.id,
       },
       this.injector,
     );

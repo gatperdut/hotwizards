@@ -1,14 +1,18 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Movement } from '@hw/prismagen/browser';
-import { HwAdventure } from '@hw/shared/adventures';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  WritableSignal,
+} from '@angular/core';
+import { HwCampaign } from '@hw/shared/campaigns';
 import {
   creatureAttackDie,
   creatureBodyPoints,
   creatureDefendDie,
   creatureMaxMovementPointsFn,
   creatureMindPoints,
-  HwCreature,
   HwHero,
   HwMonster,
 } from '@hw/shared/dungeon';
@@ -28,11 +32,9 @@ import { DialogTitleDirective } from '../../ui/dialog/directives/dialog-title.di
 import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 
 export type CreatureDialogData = {
-  adventure: HwAdventure;
-  master: HwUser;
+  campaign: WritableSignal<HwCampaign>;
   user: HwUser | null;
-  creature: HwCreature;
-  movement: Movement;
+  creatureId: number;
 };
 
 export type CreatureDialogResult = void;
@@ -60,21 +62,30 @@ export class CreatureDialogComponent {
   public dialogRef = inject<DialogRef<CreatureDialogResult>>(DialogRef);
   private adventuresApiService = inject(AdventuresApiService);
 
+  public adventure = computed(() => this.data.campaign().adventure!);
+  public master = computed(() => this.data.campaign().master);
+  public creature = computed(
+    () =>
+      [...this.adventure().dungeon.heroes, ...this.adventure().dungeon.monsters].find(
+        (c) => c.id === this.data.creatureId,
+      )!,
+  );
+
   public creatureBodyPoints = creatureBodyPoints;
   public creatureMindPoints = creatureMindPoints;
   public creatureAttackDie = creatureAttackDie;
   public creatureDefendDie = creatureDefendDie;
   public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
 
-  public hero = this.data.creature as HwHero;
-  public monster = this.data.creature as HwMonster;
+  public hero = this.creature() as HwHero;
+  public monster = this.creature() as HwMonster;
 
   public onEquip(backpackItem: HwItem): void {
-    this.adventuresApiService.equipItem(this.data.adventure.id, backpackItem.id).subscribe();
+    this.adventuresApiService.equipItem(this.adventure().id, backpackItem.id).subscribe();
   }
 
   public onUnequip(slot: HwSlot): void {
-    this.adventuresApiService.unequipItem(this.data.adventure.id, slot).subscribe();
+    this.adventuresApiService.unequipItem(this.adventure().id, slot).subscribe();
   }
 
   public onDrop(backpackItem: HwItem): void {

@@ -1,7 +1,7 @@
 <app-dialog sizeClass="max-w-3xl">
   <ng-template appDialogTitle>
     <div class="flex flex-row gap-3 items-center">
-      @if (data.creature.alignment === 'HERO') {
+      @if (creature().alignment === 'HERO') {
         <app-who-character
           [user]="data.user!"
           [character]="hero"
@@ -24,15 +24,15 @@
 
   <ng-template appDialogContent>
     <app-inventory-manager
-      [inventory]="data.creature.inventory"
+      [inventory]="creature().inventory"
       [showEquip]="data.user?.me || false"
-      [canEquip]="data.creature.movementPoints > 1"
+      [canEquip]="creature().movementPoints > 1"
       (equip)="onEquip($event)"
       [showUnequip]="data.user?.me || false"
-      [canUnequip]="data.creature.movementPoints > 1"
+      [canUnequip]="creature().movementPoints > 1"
       (unequip)="onUnequip($event)"
       [showDrop]="data.user?.me || false"
-      [canDrop]="data.creature.movementPoints > 1"
+      [canDrop]="creature().movementPoints > 1"
       (drop)="onDrop($event)"
       [showSellItem]="false"
       [canSellItem]="true"
@@ -57,7 +57,11 @@
     [movementPoints]="creature.movementPoints"
     [maxMovementPoints]="creature.maxMovementPoints"
     [maxMovementPointsFn]="
-      creatureMaxMovementPointsFn(creatureType, creature.inventory, data.movement)
+      creatureMaxMovementPointsFn(
+        creatureType,
+        creature.inventory,
+        data.campaign().ruleset.movement
+      )
     "
     [attackDie]="creatureAttackDie(creatureType, creature.inventory)"
     [defendDie]="creatureDefendDie(creatureType, creature.inventory)"
