@@ -88,7 +88,7 @@ export const spriteZIndex = (spritePath: SpritePath): number => {
     return 0;
   }
   if (LootSpritePaths.includes(spritePath as LootSpritePath)) {
-    return 0;
+    return 1;
   }
 
   return 0;

@@ -163,7 +163,10 @@ export class DungeonService {
           }
         }
 
-        if ((cell.loot.gold > 0 || cell.loot.items.length > 0) && !cell.pixi.lootSprite) {
+        if (
+          (updatedCell.loot.gold > 0 || updatedCell.loot.items.length > 0) &&
+          !cell.pixi.lootSprite
+        ) {
           cell.pixi.lootSprite = this.createLootSprite(
             updatedCell.x,
             updatedCell.y,
@@ -171,7 +174,11 @@ export class DungeonService {
           );
         }
 
-        if ((cell.loot.gold <= 0 || cell.loot.items.length <= 0) && cell.pixi.lootSprite) {
+        if (
+          updatedCell.loot.gold <= 0 &&
+          updatedCell.loot.items.length <= 0 &&
+          cell.pixi.lootSprite
+        ) {
           this.viewportService.destroySprite(cell.pixi.lootSprite);
         }
 
@@ -356,6 +363,10 @@ export class DungeonService {
         ? this.createCornerSprite(cell.x, cell.y, '/tiles/corners/corner_w.png')
         : null,
     };
+    const lootSprite =
+      cell.loot.gold > 0 || !!cell.loot.items.length
+        ? this.createLootSprite(cell.x, cell.y, '/tiles/loots/loot.png')
+        : null;
 
     const hwfeCell: HwfeCell = {
       x: cell.x,
@@ -368,6 +379,10 @@ export class DungeonService {
       stairsSpritePath: cell.stairsSpritePath,
       corners: { ...cell.corners },
       secondary: cell.secondary ? { ...cell.secondary } : null,
+      loot: {
+        gold: cell.loot.gold,
+        items: [...cell.loot.items],
+      },
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
@@ -375,13 +390,9 @@ export class DungeonService {
         floorTrapSprite: floorTrapSprite,
         stairsSprite: stairsSprite,
         corners: pixiCorners,
-        lootSprite: null,
+        lootSprite: lootSprite,
       },
       visibility: cell.visibility,
-      loot: {
-        gold: 0,
-        items: [],
-      },
     };
 
     baseSprite.eventMode = 'static';

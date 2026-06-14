@@ -234,7 +234,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-      const master = this.campaignService.campaign().master;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
       const leftCell = cellAt(dungeon.cells, hero.x, hero.y)!;
       const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
@@ -403,8 +402,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const inventory = this.campaignService
         .campaign()
         .adventure!.dungeon.heroes.find((h) => h.id === heroId)!.inventory;
-
       const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
+
       inventory.gear[HwItemSlots[backpackItem.name]!] = backpackItem;
       inventory.backpack.items = inventory.backpack.items.filter(
         (item) => item.id !== backpackItemId,
@@ -438,8 +437,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const inventory = this.campaignService
         .campaign()
         .adventure!.dungeon.heroes.find((h) => h.id === heroId)!.inventory;
-
       const gearItem = inventory.gear[slot]!;
+
       inventory.backpack.items.push(gearItem);
       inventory.gear[slot] = null;
 
@@ -465,6 +464,59 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       }));
 
       this.dungeonService.hwfeHeroesUpdate();
+    });
+
+    this.dungeonService.adventuresSocket.on('downDropItem', (heroId, backpackItemId) => {
+      const hero = this.campaignService
+        .campaign()
+        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
+      const inventory = hero.inventory;
+      const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
+      const cell = cellAt(
+        this.campaignService.campaign().adventure!.dungeon.cells,
+        hero.x,
+        hero.y,
+      )!;
+      const loot = cell.loot;
+
+      inventory.backpack.items = inventory.backpack.items.filter(
+        (item) => item.id !== backpackItemId,
+      );
+      loot.items.push(backpackItem);
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+              if (h.id !== heroId) {
+                return h;
+              }
+
+              return {
+                ...h,
+                movementPoints: h.movementPoints - 1,
+                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
+              };
+            }),
+            cells: campaign.adventure!.dungeon.cells.map((c) => {
+              if (!sameCell(c, cell)) {
+                return c;
+              }
+
+              return {
+                ...c,
+                loot: { ...loot },
+              };
+            }),
+          },
+        },
+      }));
+
+      this.dungeonService.hwfeHeroesUpdate();
+      this.dungeonService.hwfeCellsUpdate();
     });
   }
 }

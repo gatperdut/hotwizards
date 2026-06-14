@@ -88,7 +88,7 @@ export class CreatureDialogComponent {
   }
 
   public onDrop(backpackItem: HwItem): void {
-    // TODO
+    this.adventuresApiService.dropItem(this.adventure().id, backpackItem.id).subscribe();
   }
 
   public onDestroyItem(backpackItem: HwItem): void {

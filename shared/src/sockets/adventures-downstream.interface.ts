@@ -15,4 +15,5 @@ export interface AdventuresDownstream {
   downOpenDoor: (data: HwTransformOpenDoor) => void;
   downEquipItem: (heroId: number, backpackItemId: string) => void;
   downUnequipItem: (heroId: number, slot: HwSlot) => void;
+  downDropItem: (heroId: number, backpackItemId: string) => void;
 }

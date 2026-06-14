@@ -157,4 +157,21 @@ export class AdventuresController {
   ): Promise<void> {
     return this.adventuresService.unequipItem(campaign, hero, body.slot);
   }
+
+  @Post(':adventureId/drop-item')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+    HeroHasMovementPoints,
+    SetHeroBackpackItemGuard,
+  )
+  public dropItem(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentHero() hero: HwHero,
+    @CurrentBackpackItem() backpackItem: HwItem,
+  ): Promise<void> {
+    return this.adventuresService.dropItem(campaign, hero, backpackItem);
+  }
 }
