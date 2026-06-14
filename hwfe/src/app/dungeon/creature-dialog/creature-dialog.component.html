@@ -4,18 +4,18 @@
       @if (creature().alignment === 'HERO') {
         <app-who-character
           [user]="data.user!"
-          [character]="hero"
+          [character]="hero()"
           [master]="false"
         ></app-who-character>
         <ng-container
-          *ngTemplateOutlet="statsOutlet; context: { creature: hero, creatureType: hero.klass }"
+          *ngTemplateOutlet="statsOutlet; context: { creature: hero(), creatureType: hero().klass }"
         ></ng-container>
       } @else {
-        <app-who-monster [master]="true" [monster]="monster"></app-who-monster>
+        <app-who-monster [master]="true" [monster]="monster()"></app-who-monster>
         <ng-container
           *ngTemplateOutlet="
             statsOutlet;
-            context: { creature: monster, creatureType: monster.type! }
+            context: { creature: monster(), creatureType: monster().type! }
           "
         ></ng-container>
       }
@@ -26,13 +26,13 @@
     <app-inventory-manager
       [inventory]="creature().inventory"
       [showEquip]="data.user?.me || false"
-      [canEquip]="creature().movementPoints > 1"
+      [canEquip]="creature().movementPoints >= 1"
       (equip)="onEquip($event)"
       [showUnequip]="data.user?.me || false"
-      [canUnequip]="creature().movementPoints > 1"
+      [canUnequip]="creature().movementPoints >= 1"
       (unequip)="onUnequip($event)"
       [showDrop]="data.user?.me || false"
-      [canDrop]="creature().movementPoints > 1"
+      [canDrop]="creature().movementPoints >= 1"
       (drop)="onDrop($event)"
       [showSellItem]="false"
       [canSellItem]="true"

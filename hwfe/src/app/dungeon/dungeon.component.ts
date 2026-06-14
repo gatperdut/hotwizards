@@ -423,12 +423,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
               return {
                 ...h,
+                movementPoints: h.movementPoints - 1,
                 inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
               };
             }),
           },
         },
       }));
+
+      this.dungeonService.hwfeHeroesUpdate();
     });
 
     this.dungeonService.adventuresSocket.on('downUnequipItem', (heroId, slot) => {
@@ -453,12 +456,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
               return {
                 ...h,
+                movementPoints: h.movementPoints - 1,
                 inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
               };
             }),
           },
         },
       }));
+
+      this.dungeonService.hwfeHeroesUpdate();
     });
   }
 }

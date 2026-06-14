@@ -76,9 +76,8 @@ export class CreatureDialogComponent {
   public creatureAttackDie = creatureAttackDie;
   public creatureDefendDie = creatureDefendDie;
   public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
-
-  public hero = this.creature() as HwHero;
-  public monster = this.creature() as HwMonster;
+  public hero = computed(() => this.creature() as HwHero);
+  public monster = computed(() => this.creature() as HwMonster);
 
   public onEquip(backpackItem: HwItem): void {
     this.adventuresApiService.equipItem(this.adventure().id, backpackItem.id).subscribe();
