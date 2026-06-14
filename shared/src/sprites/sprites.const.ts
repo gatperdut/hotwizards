@@ -5,6 +5,7 @@ import { DoorSpritePaths } from './door-sprites.const.js';
 import { FeatureSpritePaths } from './feature-sprites.const.js';
 import { FeatureTrapSpritePaths } from './feature-trap-sprites.const.js';
 import { FloorTrapSpritePaths } from './floor-trap-sprites.const.js';
+import { LootSpritePaths } from './loot-sprites.const.js';
 import { SpawnSpritePaths } from './spawn-sprites.const.js';
 import { StairsSpritePaths } from './stairs-sprites.const.js';
 
@@ -18,6 +19,7 @@ export const SpritePaths = [
   ...FloorTrapSpritePaths,
   ...StairsSpritePaths,
   ...SpawnSpritePaths,
+  ...LootSpritePaths,
 ] as const;
 
 export type SpritePath = (typeof SpritePaths)[number];

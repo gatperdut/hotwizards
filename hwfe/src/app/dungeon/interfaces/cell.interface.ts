@@ -10,5 +10,6 @@ export interface HwfeCell extends HwCell {
     floorTrapSprite: Sprite | null;
     stairsSprite: Sprite | null;
     corners: HwfeCorners;
+    lootSprite: Sprite | null;
   };
 }

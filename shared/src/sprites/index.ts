@@ -29,6 +29,7 @@ export { FeatureTrapSpritePath, FeatureTrapSpritePaths } from './feature-trap-sp
 export { FloorSpritePath, FloorSpritePaths } from './floor-sprites.const.js';
 export { FloorTrapSpritePath, FloorTrapSpritePaths } from './floor-trap-sprites.const.js';
 export { HeroSpritePath, heroSpritePath, HeroSpritePaths } from './hero-sprites.const.js';
+export { LootSpritePath, LootSpritePaths } from './loot-sprites.const.js';
 export {
   MonsterSpritePath,
   monsterSpritePath,

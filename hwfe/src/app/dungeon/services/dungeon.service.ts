@@ -23,6 +23,7 @@ import {
   DoorSpritePath,
   FeatureSpritePath,
   FloorTrapSpritePath,
+  LootSpritePath,
   SpritePath,
   StairsSpritePath,
 } from '@hw/shared/sprites';
@@ -160,6 +161,18 @@ export class DungeonService {
               updatedCell.door.spritePath!,
             );
           }
+        }
+
+        if ((cell.loot.gold > 0 || cell.loot.items.length > 0) && !cell.pixi.lootSprite) {
+          cell.pixi.lootSprite = this.createLootSprite(
+            updatedCell.x,
+            updatedCell.y,
+            '/tiles/loots/loot.png',
+          );
+        }
+
+        if ((cell.loot.gold <= 0 || cell.loot.items.length <= 0) && cell.pixi.lootSprite) {
+          this.viewportService.destroySprite(cell.pixi.lootSprite);
         }
 
         return resultCell;
@@ -362,8 +375,13 @@ export class DungeonService {
         floorTrapSprite: floorTrapSprite,
         stairsSprite: stairsSprite,
         corners: pixiCorners,
+        lootSprite: null,
       },
       visibility: cell.visibility,
+      loot: {
+        gold: 0,
+        items: [],
+      },
     };
 
     baseSprite.eventMode = 'static';
@@ -442,6 +460,12 @@ export class DungeonService {
     const cornersSprite = this.createSprite(x, y, cornerSpritePath!);
     cornersSprite.eventMode = 'none';
     return cornersSprite;
+  }
+
+  private createLootSprite(x: number, y: number, lootSpritePath: LootSpritePath): Sprite {
+    const lootSprite = this.createSprite(x, y, lootSpritePath!);
+    lootSprite.eventMode = 'none';
+    return lootSprite;
   }
 
   public canOpenDoor(hero: HwHero, direction: Direction): boolean {

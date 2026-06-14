@@ -293,6 +293,10 @@ export class CampaignsService {
       corners: { ...editorCell.corners },
       secondary: editorCell.secondary ? { ...editorCell.secondary } : null,
       visibility: 0,
+      loot: {
+        gold: 0,
+        items: [],
+      },
     };
 
     return response;

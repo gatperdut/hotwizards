@@ -13,6 +13,8 @@ import {
   FeatureTrapSpritePaths,
   FloorTrapSpritePath,
   FloorTrapSpritePaths,
+  LootSpritePath,
+  LootSpritePaths,
   SpawnSpritePath,
   SpawnSpritePaths,
   SpriteOffset,
@@ -27,6 +29,7 @@ import { DoorSpriteOffsets, DoorSpriteSizes } from './door-sprites.const';
 import { FeatureSpriteOffsets, FeatureSpriteSizes } from './feature-sprites.const';
 import { FeatureTrapSpriteOffsets, FeatureTrapSpriteSizes } from './feature-trap-sprites.const';
 import { FloorTrapSpriteOffsets, FloorTrapSpriteSizes } from './floor-trap-sprites.const';
+import { LootSpriteOffsets, LootSpriteSizes } from './loot-sprites.const';
 import { SpawnSpriteOffsets, SpawnSpriteSizes } from './spawn-sprites.const';
 import { StairsSpriteOffsets, StairsSpriteSizes } from './stairs-sprites.const';
 
@@ -40,6 +43,7 @@ export const SpriteSizes: Record<SpritePath, SpriteOffset> = {
   ...FloorTrapSpriteSizes,
   ...StairsSpriteSizes,
   ...SpawnSpriteSizes,
+  ...LootSpriteSizes,
 } as const;
 
 export const SpriteOffsets: Record<SpritePath, SpriteOffset> = {
@@ -52,6 +56,7 @@ export const SpriteOffsets: Record<SpritePath, SpriteOffset> = {
   ...FloorTrapSpriteOffsets,
   ...StairsSpriteOffsets,
   ...SpawnSpriteOffsets,
+  ...LootSpriteOffsets,
 } as const;
 
 export const spriteZIndex = (spritePath: SpritePath): number => {
@@ -80,6 +85,9 @@ export const spriteZIndex = (spritePath: SpritePath): number => {
     return 0;
   }
   if (SpawnSpritePaths.includes(spritePath as SpawnSpritePath)) {
+    return 0;
+  }
+  if (LootSpritePaths.includes(spritePath as LootSpritePath)) {
     return 0;
   }
 
