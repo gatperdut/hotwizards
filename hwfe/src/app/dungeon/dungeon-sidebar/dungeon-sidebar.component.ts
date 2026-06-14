@@ -62,6 +62,7 @@ export class DungeonSidebarComponent {
       this.backButton(),
       this.endTurnButton(),
       this.moveButton(),
+      this.pickupButton(),
       this.openDoorButton(),
       this.centerButton(),
       this.stopButton(),
@@ -138,6 +139,27 @@ export class DungeonSidebarComponent {
       autoClose: false,
       disabled: !creature || actions.every((a) => a.disabled),
       actions: actions,
+    };
+  }
+
+  private pickupButton(): SidebarButton | null {
+    const adventure = this.campaignService.campaign().adventure!;
+    const master = this.campaignService.master();
+    const activeHero = this.dungeonService.activeHero();
+
+    if (master.me) {
+      return null;
+    }
+
+    const cell = activeHero ? cellAt(adventure.dungeon.cells, activeHero.x, activeHero.y) : null;
+
+    return {
+      icon: 'arrow-up-on-square',
+      color: 'primary',
+      disabled: !activeHero || (cell!.loot.gold <= 0 && cell!.loot.items.length <= 0),
+      callback: (): void => {
+        // TODO
+      },
     };
   }
 
