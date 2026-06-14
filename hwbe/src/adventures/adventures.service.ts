@@ -12,7 +12,7 @@ import {
   HwTransformEndTurnMaster,
   sameCell,
 } from '@hw/shared/dungeon';
-import { HwItem } from '@hw/shared/inventory';
+import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
 import {
   ClosedDoorSpritePath,
   ClosedToOpenDoorSpritePaths,
@@ -64,7 +64,8 @@ export class AdventuresService {
     });
   }
 
-  public async endTurnMaster(campaign: HwCampaign, adventure: HwAdventure): Promise<number> {
+  public async endTurnMaster(campaign: HwCampaign): Promise<number> {
+    const adventure = campaign.adventure!;
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
 
     const wsData: HwTransformEndTurnMaster = {
@@ -98,13 +99,9 @@ export class AdventuresService {
     return turn;
   }
 
-  public async endTurnHero(
-    user: HwUser,
-    campaign: HwCampaign,
-    adventure: HwAdventure,
-  ): Promise<number> {
+  public async endTurnHero(user: HwUser, campaign: HwCampaign): Promise<number> {
+    const adventure = campaign.adventure!;
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
-
     const hero = adventure.dungeon.heroes.find((h) => h.id === user.id)!;
 
     const movementPoints = creatureMovementPoints(
@@ -141,15 +138,8 @@ export class AdventuresService {
     return turn;
   }
 
-  public async moveHero(
-    campaign: HwCampaign,
-    adventure: HwAdventure,
-    hero: HwHero,
-    direction: Direction,
-  ): Promise<void> {
-    if (hero.movementPoints < 1) {
-      throw new UnprocessableEntityException('No movement points left');
-    }
+  public async moveHero(campaign: HwCampaign, hero: HwHero, direction: Direction): Promise<void> {
+    const adventure = campaign.adventure!;
 
     const currentCell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
 
@@ -217,13 +207,10 @@ export class AdventuresService {
 
   public async moveMonster(
     campaign: HwCampaign,
-    adventure: HwAdventure,
     monster: HwMonster,
     direction: Direction,
   ): Promise<void> {
-    if (monster.movementPoints < 1) {
-      throw new UnprocessableEntityException('No movement points left');
-    }
+    const adventure = campaign.adventure!;
 
     const currentCell = cellAt(adventure.dungeon.cells, monster.x, monster.y)!;
 
@@ -284,15 +271,8 @@ export class AdventuresService {
     });
   }
 
-  public async openDoor(
-    campaign: HwCampaign,
-    adventure: HwAdventure,
-    hero: HwHero,
-    direction: Direction,
-  ): Promise<void> {
-    if (hero.movementPoints < 1) {
-      throw new UnprocessableEntityException('No movement points left');
-    }
+  public async openDoor(campaign: HwCampaign, hero: HwHero, direction: Direction): Promise<void> {
+    const adventure = campaign.adventure!;
 
     const targetCell = cellAt(
       adventure.dungeon.cells,
@@ -350,12 +330,57 @@ export class AdventuresService {
     });
   }
 
-  public async equipItem(
-    campaign: HwCampaign,
-    adventure: HwAdventure,
-    hero: HwHero,
-    backpackItem: HwItem,
-  ): Promise<void> {
-    console.log(campaign, adventure, hero, backpackItem);
+  public async equipItem(campaign: HwCampaign, hero: HwHero, backpackItem: HwItem): Promise<void> {
+    const adventure = campaign.adventure!;
+    const inventory = { ...hero.inventory };
+
+    const slot = HwItemSlots[backpackItem.name];
+    if (!slot) {
+      throw new UnprocessableEntityException(`Item ${backpackItem.name} cannot be equiped`);
+    }
+
+    inventory.gear[slot] = backpackItem;
+    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
+
+    void (await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        dungeon: {
+          ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) =>
+            h.id === hero.id ? { ...h, inventory, movementPoints: h.movementPoints - 1 } : h,
+          ),
+        } as unknown as InputJsonValue,
+      },
+    }));
+
+    this.adventuresGateway.handleDownEquipItem(campaign.id, hero.id, backpackItem.id);
+  }
+
+  public async unequipItem(campaign: HwCampaign, hero: HwHero, slot: HwSlot): Promise<void> {
+    const adventure = campaign.adventure!;
+    const inventory = { ...hero.inventory };
+
+    const item = inventory.gear[slot];
+    if (!item) {
+      throw new UnprocessableEntityException(`No item equipped in slot ${slot}`);
+    }
+
+    inventory.gear[slot] = null;
+    inventory.backpack.items.unshift(item);
+
+    void (await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        dungeon: {
+          ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) =>
+            h.id === hero.id ? { ...h, inventory, movementPoints: h.movementPoints - 1 } : h,
+          ),
+        } as unknown as InputJsonValue,
+      },
+    }));
+
+    this.adventuresGateway.handleDownUnequipItem(campaign.id, hero.id, slot);
   }
 }

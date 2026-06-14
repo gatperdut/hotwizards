@@ -5,6 +5,7 @@ import {
   HwTransformMoveMonster,
   HwTransformOpenDoor,
 } from '@hw/shared/dungeon';
+import { HwSlot } from '@hw/shared/inventory';
 import { AdventuresDownstream, AdventuresUpstream } from '@hw/shared/sockets';
 import {
   OnGatewayConnection,
@@ -62,5 +63,15 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
 
   public handleDownOpenDoor(campaignId: number, data: HwTransformOpenDoor): void {
     this.server.to(`campaign:${campaignId}:adventure`).emit('downOpenDoor', data);
+  }
+
+  public handleDownEquipItem(campaignId: number, heroId: number, backpackItemId: string): void {
+    this.server
+      .to(`campaign:${campaignId}:adventure`)
+      .emit('downEquipItem', heroId, backpackItemId);
+  }
+
+  public handleDownUnequipItem(campaignId: number, heroId: number, slot: HwSlot): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downUnequipItem', heroId, slot);
   }
 }

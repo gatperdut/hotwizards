@@ -3,6 +3,7 @@ import { HwTransformEndTurnMaster } from '../dungeon/transform/transform-end-tur
 import { HwTransformMoveHero } from '../dungeon/transform/transform-move-hero.interface.js';
 import { HwTransformMoveMonster } from '../dungeon/transform/transform-move-monster.interface.js';
 import { HwTransformOpenDoor } from '../dungeon/transform/transform-open-door.interface.js';
+import { HwSlot } from '../inventory/slots.const.js';
 
 export interface AdventuresDownstream {
   downFinishAdventure: () => void;
@@ -12,4 +13,6 @@ export interface AdventuresDownstream {
   downMoveMonster: (data: HwTransformMoveMonster) => void;
   downSelectMonster: (id: number | null) => void;
   downOpenDoor: (data: HwTransformOpenDoor) => void;
+  downEquipItem: (heroId: number, backpackItemId: string) => void;
+  downUnequipItem: (heroId: number, slot: HwSlot) => void;
 }

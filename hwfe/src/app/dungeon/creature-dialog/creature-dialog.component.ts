@@ -74,7 +74,7 @@ export class CreatureDialogComponent {
   }
 
   public onUnequip(slot: HwSlot): void {
-    // TODO
+    this.adventuresApiService.unequipItem(this.data.adventure.id, slot).subscribe();
   }
 
   public onDrop(backpackItem: HwItem): void {

@@ -7,8 +7,10 @@ import {
   HwAdventureMoveMonsterDto,
   HwAdventureOpenDoorDto,
   HwAdventureSelectMonsterDto,
+  HwAdventureUnequipItemDto,
 } from '@hw/shared/adventures';
 import { Direction } from '@hw/shared/directions';
+import { HwSlot } from '@hw/shared/inventory';
 import { Observable } from 'rxjs';
 import { ApiNotificationService } from '../../services/api-notification.service';
 
@@ -78,5 +80,13 @@ export class AdventuresApiService {
     };
 
     return this.httpClient.post<void>(`/api/adventures/${adventureId}/equip-item`, dto);
+  }
+
+  public unequipItem(adventureId: number, slot: HwSlot): Observable<void> {
+    const dto: HwAdventureUnequipItemDto = {
+      slot: slot,
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/unequip-item`, dto);
   }
 }
