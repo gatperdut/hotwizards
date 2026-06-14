@@ -8,6 +8,7 @@
   <div class="h-[404px] separator-l separator-secondary"></div>
   <app-backpack-manager
     title="Backpack"
+    [gear]="inventory().gear"
     [backpack]="inventory().backpack"
     [showEquip]="showEquip()"
     [canEquip]="canEquip()"

@@ -14,3 +14,14 @@ export const HwSlots = [
   'head',
 ] as const;
 export type HwSlot = (typeof HwSlots)[number];
+
+export const HwExclusiveSlots: Record<HwSlot, HwSlot[]> = {
+  onehanded: ['twohanded'],
+  twohanded: ['onehanded', 'shield'],
+  shield: ['twohanded'],
+  arms: [],
+  body: [],
+  cloak: [],
+  feet: [],
+  head: [],
+};

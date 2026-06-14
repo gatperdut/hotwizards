@@ -5,6 +5,7 @@
 
   <div appCardBody class="flex flex-col gap-hw-average">
     <app-backpack-manager
+      [gear]="null"
       [backpack]="stash()"
       [showPickup]="!!character()"
       [canPickup]="true"

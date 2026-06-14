@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input, OutputEmitterRef } from '@angular/core';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
-import { HwBackpack, HwItem, HwItemSlots } from '@hw/shared/inventory';
+import { HwBackpack, HwExclusiveSlots, HwGear, HwItem, HwItemSlots } from '@hw/shared/inventory';
 import { filter, from, switchMap, tap } from 'rxjs';
 import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
 import {
@@ -27,6 +27,7 @@ export class BackpackManagerComponent {
 
   public title = input<string>();
 
+  public gear = input.required<HwGear | null>();
   public backpack = input.required<HwBackpack>();
 
   public showEquip = input<boolean>(false);
@@ -72,7 +73,10 @@ export class BackpackManagerComponent {
         ? {
             label: 'Equip',
             color: 'primary',
-            disabled: !this.canEquip(),
+            disabled:
+              !this.canEquip() ||
+              !!this.gear()?.[HwItemSlots[item.name]!] ||
+              !!HwExclusiveSlots[HwItemSlots[item.name]!].find((s) => this.gear()?.[s]),
             callback: (): void => {
               this.equip()!.emit(item);
             },

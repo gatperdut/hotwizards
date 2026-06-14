@@ -66,7 +66,7 @@ export class CreatureDialogComponent {
   public monster = this.data.creature as HwMonster;
 
   public onEquip(backpackItem: HwItem): void {
-    // TODO
+    // this.charactersApiService.equipItem(this.character().id, backpackItem.id).subscribe();
   }
 
   public onUnequip(slot: HwSlot): void {

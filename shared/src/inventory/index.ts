@@ -34,6 +34,7 @@ export { HwItemSlots } from './item-slots.const.js';
 export { HwItemTemplate } from './item-template.interface.js';
 export { HwItem } from './item.interface.js';
 export {
+  HwExclusiveSlots,
   HwShieldSlot,
   HwShieldSlots,
   HwSlot,

@@ -47,7 +47,7 @@ export const ItemDefendDie: Record<HwItemName, number> = {
   orc_sword: 0,
   padded_armor: 1,
   plate_armor: 4,
-  shield: 0,
+  shield: 1,
   shortsword: 0,
   spear: 0,
   staff: 0,
