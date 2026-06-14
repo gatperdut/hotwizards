@@ -1,3 +1,4 @@
+export { HwAdventureEquipItemDto } from './adventure-equip-item.dto.js';
 export { HwAdventureMoveHeroDto } from './adventure-move-hero.dto.js';
 export { HwAdventureMoveMonsterDto } from './adventure-move-monster.dto.js';
 export { HwAdventureOpenDoorDto } from './adventure-open-door.dto.js';

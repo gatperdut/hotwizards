@@ -7,10 +7,12 @@ import {
 } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwHero, HwMonster } from '@hw/shared/dungeon';
+import { HwItem } from '@hw/shared/inventory';
 import { HwUser } from '@hw/shared/users';
 import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
 import { CurrentCampaign } from '../campaigns/decorators/current-campaign.decorator.js';
 import { CampaignMasterGuard } from '../campaigns/guards/campaign-master.guard.js';
+import { CurrentBackpackItem } from '../characters/decorators/current-backpack-item.decorator.js';
 import { CurrentUser } from '../users/current-user.decorator.js';
 import { AdventuresGateway } from './adventures.gateway.js';
 import { AdventuresService } from './adventures.service.js';
@@ -23,6 +25,7 @@ import { SetAdventureCampaignGuard } from './guards/set-adventure-campaign.guard
 import { SetAdventureHeroGuard } from './guards/set-adventure-hero.guard.js';
 import { SetAdventureMonsterGuard } from './guards/set-adventure-monster.guard.js';
 import { SetAdventureGuard } from './guards/set-adventure.guard.js';
+import { SetHeroBackpackItemGuard } from './guards/set-hero-backpack-item.guard.js';
 
 @Controller('adventures')
 export class AdventuresController {
@@ -117,5 +120,22 @@ export class AdventuresController {
     @Body() body: HwAdventureOpenDoorDto,
   ): Promise<void> {
     return this.adventuresService.openDoor(campaign, adventure, hero, body.direction);
+  }
+
+  @Post(':adventureId/equip-item')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+    SetHeroBackpackItemGuard,
+  )
+  public equipItem(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentAdventure() adventure: HwAdventure,
+    @CurrentHero() hero: HwHero,
+    @CurrentBackpackItem() backpackItem: HwItem,
+  ): Promise<void> {
+    return this.adventuresService.equipItem(campaign, adventure, hero, backpackItem);
   }
 }

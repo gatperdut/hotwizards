@@ -529,12 +529,14 @@ export class DungeonService {
       dialog,
       creature.alignment === 'HERO'
         ? {
+            adventure: this.campaignService.campaign().adventure!,
             creature: creature,
             master: this.campaignService.master(),
             user: this.campaignService.memberships().find((m) => m.userId === creature.id)!.user,
             movement: this.campaignService.campaign().ruleset.movement,
           }
         : {
+            adventure: this.campaignService.campaign().adventure!,
             creature: creature,
             master: this.campaignService.master(),
             user: null,

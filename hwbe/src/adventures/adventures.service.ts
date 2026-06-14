@@ -12,6 +12,7 @@ import {
   HwTransformEndTurnMaster,
   sameCell,
 } from '@hw/shared/dungeon';
+import { HwItem } from '@hw/shared/inventory';
 import {
   ClosedDoorSpritePath,
   ClosedToOpenDoorSpritePaths,
@@ -347,5 +348,14 @@ export class AdventuresService {
       heroId: hero.id,
       dir: direction,
     });
+  }
+
+  public async equipItem(
+    campaign: HwCampaign,
+    adventure: HwAdventure,
+    hero: HwHero,
+    backpackItem: HwItem,
+  ): Promise<void> {
+    console.log(campaign, adventure, hero, backpackItem);
   }
 }
