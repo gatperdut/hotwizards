@@ -372,7 +372,6 @@ export class CampaignsService {
           y: cell.y,
           inventory: inventory,
         };
-        console.log('monster created', movementPoints);
         return monster;
       })
       .filter((cell) => !!cell);

@@ -14,6 +14,7 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { DirectionOffsets } from '@hw/shared/directions';
 import { cellAt, cellsUpdateLos, sameCell } from '@hw/shared/dungeon';
+import { HwItemSlots } from '@hw/shared/inventory';
 import {
   ClosedDoorSpritePath,
   ClosedToOpenDoorSpritePaths,
@@ -396,6 +397,68 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.updateVisibility();
+    });
+
+    this.dungeonService.adventuresSocket.on('downEquipItem', (heroId, backpackItemId) => {
+      const inventory = this.campaignService
+        .campaign()
+        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!.inventory;
+
+      const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
+      inventory.gear[HwItemSlots[backpackItem.name]!] = backpackItem;
+      inventory.backpack.items = inventory.backpack.items.filter(
+        (item) => item.id !== backpackItemId,
+      );
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+              if (h.id !== heroId) {
+                return h;
+              }
+
+              return {
+                ...h,
+                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
+              };
+            }),
+          },
+        },
+      }));
+    });
+
+    this.dungeonService.adventuresSocket.on('downUnequipItem', (heroId, slot) => {
+      const inventory = this.campaignService
+        .campaign()
+        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!.inventory;
+
+      const gearItem = inventory.gear[slot]!;
+      inventory.backpack.items.push(gearItem);
+      inventory.gear[slot] = null;
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+              if (h.id !== heroId) {
+                return h;
+              }
+
+              return {
+                ...h,
+                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
+              };
+            }),
+          },
+        },
+      }));
     });
   }
 }
