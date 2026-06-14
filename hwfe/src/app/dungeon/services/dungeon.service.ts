@@ -532,11 +532,13 @@ export class DungeonService {
             creature: creature,
             master: this.campaignService.master(),
             user: this.campaignService.memberships().find((m) => m.userId === creature.id)!.user,
+            movement: this.campaignService.campaign().ruleset.movement,
           }
         : {
             creature: creature,
             master: this.campaignService.master(),
             user: null,
+            movement: this.campaignService.campaign().ruleset.movement,
           },
       this.injector,
     );

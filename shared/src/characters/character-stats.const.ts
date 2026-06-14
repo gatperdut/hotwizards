@@ -46,7 +46,10 @@ export const characterDefendDie = (character: HwCharacter): number => {
   return base + gear;
 };
 
-export const characterMovementPoints = (character: HwCharacter, movement: Movement): string => {
+export const characterMaxMovementPointsFn = (
+  character: HwCharacter,
+  movement: Movement,
+): string => {
   const movementValue = MovementPoints[character.klass][movement];
 
   const die = movementValue.die > 0 ? `${movementValue.die}d6` : '';

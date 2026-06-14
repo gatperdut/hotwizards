@@ -1,9 +1,11 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Movement } from '@hw/prismagen/browser';
 import {
   creatureAttackDie,
   creatureBodyPoints,
   creatureDefendDie,
+  creatureMaxMovementPointsFn,
   creatureMindPoints,
   HwCreature,
   HwHero,
@@ -27,6 +29,7 @@ export type CreatureDialogData = {
   master: HwUser;
   user: HwUser | null;
   creature: HwCreature;
+  movement: Movement;
 };
 
 export type CreatureDialogResult = void;
@@ -57,6 +60,7 @@ export class CreatureDialogComponent {
   public creatureMindPoints = creatureMindPoints;
   public creatureAttackDie = creatureAttackDie;
   public creatureDefendDie = creatureDefendDie;
+  public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
 
   public hero = this.data.creature as HwHero;
   public monster = this.data.creature as HwMonster;

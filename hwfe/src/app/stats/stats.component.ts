@@ -12,7 +12,8 @@ export class StatsComponent {
   public mindPoints = input.required<number | null>();
   public maxMindPoints = input.required<number>();
   public movementPoints = input.required<number | null>();
-  public maxMovementPoints = input.required<number | string>();
+  public maxMovementPoints = input.required<number | null>();
+  public maxMovementPointsFn = input.required<string>();
   public attackDie = input.required<number>();
   public defendDie = input.required<number>();
 }

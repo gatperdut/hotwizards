@@ -8,6 +8,7 @@ import {
   creatureAttackDie,
   creatureBodyPoints,
   creatureDefendDie,
+  creatureMaxMovementPointsFn,
   creatureMindPoints,
   HwCreature,
 } from '@hw/shared/dungeon';
@@ -54,6 +55,7 @@ export class DungeonSidebarComponent {
   public creatureMindPoints = creatureMindPoints;
   public creatureAttackDie = creatureAttackDie;
   public creatureDefendDie = creatureDefendDie;
+  public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
 
   public buttons = computed<SidebarButton[]>(() => {
     return [

@@ -56,6 +56,9 @@
     [maxMindPoints]="creatureMindPoints(creatureType, creature.inventory)"
     [movementPoints]="creature.movementPoints"
     [maxMovementPoints]="creature.maxMovementPoints"
+    [maxMovementPointsFn]="
+      creatureMaxMovementPointsFn(creatureType, creature.inventory, data.movement)
+    "
     [attackDie]="creatureAttackDie(creatureType, creature.inventory)"
     [defendDie]="creatureDefendDie(creatureType, creature.inventory)"
   ></app-stats>

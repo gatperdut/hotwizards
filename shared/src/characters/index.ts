@@ -11,8 +11,8 @@ export {
   characterAttackDie,
   characterBodyPoints,
   characterDefendDie,
+  characterMaxMovementPointsFn,
   characterMindPoints,
-  characterMovementPoints,
 } from './character-stats.const.js';
 export { HwCharacterUnequipItemDto } from './character-unequip-item.dto.js';
 export { HwCharacter } from './character.interface.js';

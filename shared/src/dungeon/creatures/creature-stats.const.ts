@@ -62,3 +62,16 @@ export const creatureMovementPoints = (
 
   return result;
 };
+
+export const creatureMaxMovementPointsFn = (
+  key: Klass | MonsterType,
+  inventory: HwInventory,
+  movement: Movement,
+): string => {
+  const movementValue = MovementPoints[key][movement];
+
+  const die = movementValue.die > 0 ? `${movementValue.die}d6` : '';
+  const fixed = movementValue.fixed > 0 ? `${movementValue.fixed}` : '';
+  const union = die && fixed ? '+' : '';
+  return `${die}${union}${fixed}`;
+};

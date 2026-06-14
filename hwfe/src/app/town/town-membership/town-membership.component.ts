@@ -10,8 +10,8 @@ import {
   characterAttackDie,
   characterBodyPoints,
   characterDefendDie,
+  characterMaxMovementPointsFn,
   characterMindPoints,
-  characterMovementPoints,
 } from '@hw/shared/characters';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
@@ -47,8 +47,11 @@ export class TownMembershipComponent {
   public inventory = computed(() => this.character().inventory);
   public attackDie = computed(() => characterAttackDie(this.character()));
   public defendDie = computed(() => characterDefendDie(this.character()));
-  public movementPoints = computed(() =>
-    characterMovementPoints(this.character(), this.campaignService.campaign().ruleset.movement),
+  public maxMovementPointsFn = computed(() =>
+    characterMaxMovementPointsFn(
+      this.character(),
+      this.campaignService.campaign().ruleset.movement,
+    ),
   );
   public bodyPoints = computed(() => characterBodyPoints(this.character()));
   public mindPoints = computed(() => characterMindPoints(this.character()));

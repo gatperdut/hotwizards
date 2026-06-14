@@ -22,6 +22,7 @@ export {
   creatureAttackDie,
   creatureBodyPoints,
   creatureDefendDie,
+  creatureMaxMovementPointsFn,
   creatureMindPoints,
   creatureMovementPoints,
 } from './creatures/creature-stats.const.js';
