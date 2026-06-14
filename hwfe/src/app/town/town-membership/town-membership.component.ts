@@ -18,6 +18,7 @@ import { HwMembership } from '@hw/shared/memberships';
 import { CampaignService } from '../../campaigns/campaign/campaign.service';
 import { CharactersApiService } from '../../characters/services/characters-api.service';
 import { InventoryManagerComponent } from '../../inventory/inventory-manager/inventory-manager.component';
+import { StatsComponent } from '../../stats/stats.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
   ArmoryDialogComponent,
@@ -27,7 +28,7 @@ import {
 
 @Component({
   selector: 'app-town-membership',
-  imports: [CardComponent, WhoCharacterComponent, InventoryManagerComponent],
+  imports: [CardComponent, WhoCharacterComponent, InventoryManagerComponent, StatsComponent],
   templateUrl: './town-membership.component.html',
   styleUrl: './town-membership.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

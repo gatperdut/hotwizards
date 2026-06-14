@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DirectionIcons, DirectionOffsets, Directions } from '@hw/shared/directions';
@@ -24,13 +25,19 @@ import { WhoCharacterComponent } from '../../shared/who-character/who-character.
 import { WhoMonsterComponent } from '../../shared/who-monster/who-monster.component';
 import { SidebarButtonAction } from '../../sidebar/sidebar-button/sidebar-button.component';
 import { SidebarButton, SidebarComponent } from '../../sidebar/sidebar.component';
+import { StatsComponent } from '../../stats/stats.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
-import { CreatureStatsComponent } from '../creature-stats/creature-stats.component';
 import { DungeonService } from '../services/dungeon.service';
 
 @Component({
   selector: 'app-dungeon-sidebar',
-  imports: [SidebarComponent, WhoCharacterComponent, WhoMonsterComponent, CreatureStatsComponent],
+  imports: [
+    SidebarComponent,
+    WhoCharacterComponent,
+    WhoMonsterComponent,
+    StatsComponent,
+    NgTemplateOutlet,
+  ],
   templateUrl: './dungeon-sidebar.component.html',
   styleUrl: './dungeon-sidebar.component.css',
 })

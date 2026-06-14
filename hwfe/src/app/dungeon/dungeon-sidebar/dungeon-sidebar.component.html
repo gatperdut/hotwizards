@@ -15,7 +15,9 @@
         [character]="myHero"
         [master]="false"
       ></app-who-character>
-      <app-creature-stats [creature]="myHero"></app-creature-stats>
+      <ng-container
+        *ngTemplateOutlet="statsOutlet; context: { creature: myHero, creatureType: myHero.klass }"
+      ></ng-container>
     </div>
   </div>
 }
@@ -25,7 +27,12 @@
     <div class="flex flex-row gap-3 items-center">
       @if (selectedMonster) {
         <app-who-monster [master]="true" [monster]="selectedMonster"></app-who-monster>
-        <app-creature-stats [creature]="selectedMonster"></app-creature-stats>
+        <ng-container
+          *ngTemplateOutlet="
+            statsOutlet;
+            context: { creature: selectedMonster, creatureType: selectedMonster.type! }
+          "
+        ></ng-container>
       } @else {
         <app-who-character
           [master]="true"
@@ -57,7 +64,12 @@
           @if (activePlayerIsMaster) {
             @if (selectedMonster) {
               <app-who-monster [master]="false" [monster]="selectedMonster"></app-who-monster>
-              <app-creature-stats [creature]="selectedMonster"></app-creature-stats>
+              <ng-container
+                *ngTemplateOutlet="
+                  statsOutlet;
+                  context: { creature: selectedMonster, creatureType: selectedMonster.type! }
+                "
+              ></ng-container>
             } @else {
               <app-who-character
                 [master]="true"
@@ -66,7 +78,12 @@
             }
           } @else {
             @if (activeHero) {
-              <app-creature-stats [creature]="activeHero"></app-creature-stats>
+              <ng-container
+                *ngTemplateOutlet="
+                  statsOutlet;
+                  context: { creature: activeHero, creatureType: activeHero.klass }
+                "
+              ></ng-container>
             }
           }
         </div>
@@ -74,3 +91,16 @@
     }
   </div>
 }
+
+<ng-template #statsOutlet let-creature="creature" let-creatureType="creatureType">
+  <app-stats
+    [bodyPoints]="creature.bodyPoints"
+    [maxBodyPoints]="creatureBodyPoints(creatureType, creature.inventory)"
+    [mindPoints]="creature.mindPoints"
+    [maxMindPoints]="creatureMindPoints(creatureType, creature.inventory)"
+    [movementPoints]="creature.movementPoints"
+    [maxMovementPoints]="creature.maxMovementPoints"
+    [attackDie]="creatureAttackDie(creatureType, creature.inventory)"
+    [defendDie]="creatureDefendDie(creatureType, creature.inventory)"
+  ></app-stats>
+</ng-template>

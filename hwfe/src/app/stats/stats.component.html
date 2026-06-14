@@ -1,0 +1,49 @@
+@let bodyPoints = this.bodyPoints();
+@let mindPoints = this.mindPoints();
+@let movementPoints = this.movementPoints();
+
+<div class="flex flex-row text-sm leading-4.5 gap-2">
+  <div class="flex flex-col">
+    <div class="flex flex-row justify-between gap-1">
+      <span class="text-primary">Body</span>
+      <span class="text-primary">
+        @if (bodyPoints !== null) {
+          {{ bodyPoints }}/
+        }
+        {{ maxBodyPoints() }}</span
+      >
+    </div>
+    <div class="flex flex-row justify-between gap-1">
+      <span class="text-secondary">Mind</span>
+      <span class="text-secondary">
+        @if (mindPoints !== null) {
+          {{ mindPoints }}/
+        }
+        {{ maxMindPoints() }}
+      </span>
+    </div>
+    <div class="flex flex-row justify-between gap-1">
+      <span class="text-off-medium">Movement</span>
+      <span class="text-off-medium">
+        @if (movementPoints !== null) {
+          {{ movementPoints }}/
+        }
+        {{ maxMovementPoints() }}
+      </span>
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <div class="flex flex-row justify-between gap-1">
+      <span class="text-warning">Attack</span>
+      <span class="text-warning">
+        {{ attackDie() }}
+      </span>
+    </div>
+    <div class="flex flex-row justify-between gap-1">
+      <span class="text-off-light">Defend</span>
+      <span class="text-off-light">
+        {{ defendDie() }}
+      </span>
+    </div>
+  </div>
+</div>
