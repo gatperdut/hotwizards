@@ -28,8 +28,8 @@ export class CharactersController {
   @Post(':characterId/equip-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
   public equipItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @CurrentBackpackItem() backpackItem: HwItem,
   ): Promise<void> {
     return this.charactersService.equipItem(campaign, character, backpackItem);
@@ -38,8 +38,8 @@ export class CharactersController {
   @Post(':characterId/unequip-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterGearItemGuard)
   public unequipItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @Body() body: HwCharacterUnequipItemDto,
   ): Promise<void> {
     return this.charactersService.unequipItem(campaign, character, body.slot);
@@ -48,8 +48,8 @@ export class CharactersController {
   @Post(':characterId/drop-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
   public dropItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @CurrentBackpackItem() backpackItem: HwItem,
   ): Promise<void> {
     return this.charactersService.dropItem(campaign, character, backpackItem);
@@ -58,8 +58,8 @@ export class CharactersController {
   @Post(':characterId/pickup-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCampaignStashItemGuard)
   public pickupItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaignStashItem() stashItem: HwItem,
   ): Promise<void> {
     return this.charactersService.pickupItem(campaign, character, stashItem);
@@ -68,8 +68,8 @@ export class CharactersController {
   @Post(':characterId/pickup-gold')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard)
   public pickupGold(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @Body() body: HwCharacterPickupGoldDto,
   ): Promise<void> {
     return this.charactersService.pickupGold(campaign, character, body.amount);
@@ -78,8 +78,8 @@ export class CharactersController {
   @Post(':characterId/buy-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard)
   public buyItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @Body() body: HwCharacterBuyItemDto,
   ): Promise<void> {
     return this.charactersService.buyItem(campaign, character, body.buyableItemName);
@@ -88,8 +88,8 @@ export class CharactersController {
   @Post(':characterId/sell-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
   public sellItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @CurrentBackpackItem() backpackItem: HwItem,
   ): Promise<void> {
     return this.charactersService.sellItem(campaign, character, backpackItem);
@@ -98,8 +98,8 @@ export class CharactersController {
   @Post(':characterId/give-gold/:targetCharacterId')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetTargetCharacterGuard)
   public giveGold(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @TargetCharacter() targetCharacter: HwCharacter,
     @Body() body: HwCharacterGiveGoldDto,
   ): Promise<void> {
@@ -109,8 +109,8 @@ export class CharactersController {
   @Post(':characterId/destroy-item')
   @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
   public destroyItem(
-    @CurrentCharacter() character: HwCharacter,
     @CurrentCampaign() campaign: HwCampaign,
+    @CurrentCharacter() character: HwCharacter,
     @CurrentBackpackItem() backpackItem: HwItem,
   ): Promise<void> {
     return this.charactersService.destroyItem(campaign, character, backpackItem);

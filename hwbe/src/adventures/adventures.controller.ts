@@ -3,6 +3,7 @@ import {
   HwAdventureMoveHeroDto,
   HwAdventureMoveMonsterDto,
   HwAdventureOpenDoorDto,
+  HwAdventurePickupGoldDto,
   HwAdventureSelectMonsterDto,
   HwAdventureUnequipItemDto,
 } from '@hw/shared/adventures';
@@ -192,5 +193,21 @@ export class AdventuresController {
     @CurrentLootItem() lootItem: HwItem,
   ): Promise<void> {
     return this.adventuresService.pickupItem(campaign, hero, lootItem);
+  }
+
+  @Post(':adventureId/pickup-gold')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+    HeroHasMovementPoints,
+  )
+  public pickupGold(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentHero() hero: HwHero,
+    @Body() body: HwAdventurePickupGoldDto,
+  ): Promise<void> {
+    return this.adventuresService.pickupGold(campaign, hero, body.amount);
   }
 }

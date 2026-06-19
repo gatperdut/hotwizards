@@ -17,4 +17,5 @@ export interface AdventuresDownstream {
   downUnequipItem: (heroId: number, slot: HwSlot) => void;
   downDropItem: (heroId: number, backpackItemId: string) => void;
   downPickupItem: (heroId: number, lootItemId: string) => void;
+  downPickupGold: (heroId: number, amount: number) => void;
 }

@@ -437,4 +437,37 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownPickupItem(campaign.id, hero.id, lootItem.id);
   }
+
+  public async pickupGold(campaign: HwCampaign, hero: HwHero, amount: number): Promise<void> {
+    const adventure = campaign.adventure!;
+    const inventory = { ...hero.inventory };
+    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
+    const loot = { ...cell.loot };
+
+    if (loot.gold < amount) {
+      throw new UnprocessableEntityException(
+        `Cannot take ${amount} gold coins from a loot of ${loot.gold}`,
+      );
+    }
+
+    loot.gold -= amount;
+    inventory.backpack.gold += amount;
+
+    void (await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        dungeon: {
+          ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) =>
+            h.id === hero.id
+              ? { ...h, inventory: inventory, movementPoints: h.movementPoints - 1 }
+              : h,
+          ),
+          cells: adventure.dungeon.cells.map((c) => (sameCell(cell, c) ? { ...c, loot: loot } : c)),
+        } as unknown as InputJsonValue,
+      },
+    }));
+
+    this.adventuresGateway.handleDownPickupGold(campaign.id, hero.id, amount);
+  }
 }
