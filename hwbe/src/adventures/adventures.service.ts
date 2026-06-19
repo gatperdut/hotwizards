@@ -1,7 +1,7 @@
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
-import { Direction, DirectionOffsets } from '@hw/shared/directions';
+import { Adjacent, AdjacentOffsets } from '@hw/shared/directions';
 import {
   cellAt,
   cellIsTraversable,
@@ -138,15 +138,15 @@ export class AdventuresService {
     return turn;
   }
 
-  public async moveHero(campaign: HwCampaign, hero: HwHero, direction: Direction): Promise<void> {
+  public async moveHero(campaign: HwCampaign, hero: HwHero, adjacent: Adjacent): Promise<void> {
     const adventure = campaign.adventure!;
 
     const currentCell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
 
     const targetCell = cellAt(
       adventure.dungeon.cells,
-      hero.x + DirectionOffsets[direction].x,
-      hero.y + DirectionOffsets[direction].y,
+      hero.x + AdjacentOffsets[adjacent].x,
+      hero.y + AdjacentOffsets[adjacent].y,
     );
 
     if (!targetCell || !cellIsTraversable(targetCell)) {
@@ -179,10 +179,10 @@ export class AdventuresService {
 
       return {
         ...h,
-        spritePath: heroSpritePath(h.klass, h.gender, direction),
+        spritePath: heroSpritePath(h.klass, h.gender, adjacent),
         x: targetCell.x,
         y: targetCell.y,
-        direction: direction,
+        adjacent: adjacent,
         movementPoints: h.movementPoints - 1,
       };
     });
@@ -201,7 +201,7 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownMoveHero(campaign.id, {
       heroId: hero.id,
-      dir: direction,
+      adj: adjacent,
       cell: { x: targetCell.x, y: targetCell.y },
     });
   }
@@ -209,7 +209,7 @@ export class AdventuresService {
   public async moveMonster(
     campaign: HwCampaign,
     monster: HwMonster,
-    direction: Direction,
+    adjacent: Adjacent,
   ): Promise<void> {
     const adventure = campaign.adventure!;
 
@@ -217,8 +217,8 @@ export class AdventuresService {
 
     const targetCell = cellAt(
       adventure.dungeon.cells,
-      monster.x + DirectionOffsets[direction].x,
-      monster.y + DirectionOffsets[direction].y,
+      monster.x + AdjacentOffsets[adjacent].x,
+      monster.y + AdjacentOffsets[adjacent].y,
     );
 
     if (!targetCell || !cellIsTraversable(targetCell)) {
@@ -250,10 +250,10 @@ export class AdventuresService {
 
       return {
         ...m,
-        spritePath: monsterSpritePath(m.type!, direction),
+        spritePath: monsterSpritePath(m.type!, adjacent),
         x: targetCell.x,
         y: targetCell.y,
-        direction: direction,
+        direction: adjacent,
         movementPoints: m.movementPoints - 1,
       };
     });
@@ -267,18 +267,18 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownMoveMonster(campaign.id, {
       monsterId: monster.id,
-      dir: direction,
+      adj: adjacent,
       cell: { x: targetCell.x, y: targetCell.y },
     });
   }
 
-  public async openDoor(campaign: HwCampaign, hero: HwHero, direction: Direction): Promise<void> {
+  public async openDoor(campaign: HwCampaign, hero: HwHero, adjacent: Adjacent): Promise<void> {
     const adventure = campaign.adventure!;
 
     const targetCell = cellAt(
       adventure.dungeon.cells,
-      hero.x + DirectionOffsets[direction].x,
-      hero.y + DirectionOffsets[direction].y,
+      hero.x + AdjacentOffsets[adjacent].x,
+      hero.y + AdjacentOffsets[adjacent].y,
     );
 
     if (!targetCell || !targetCell.door.spritePath || targetCell.door.open) {
@@ -308,7 +308,7 @@ export class AdventuresService {
 
       return {
         ...h,
-        direction: direction,
+        direction: adjacent,
         movementPoints: h.movementPoints - 1,
       };
     });
@@ -327,7 +327,7 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownOpenDoor(campaign.id, {
       heroId: hero.id,
-      dir: direction,
+      adj: adjacent,
     });
   }
 

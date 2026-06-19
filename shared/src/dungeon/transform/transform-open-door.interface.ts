@@ -1,6 +1,6 @@
-import { Direction } from '../../directions/directions.const.js';
+import { Adjacent } from '../../directions/adjacents/adjacents.const.js';
 
 export interface HwTransformOpenDoor {
   heroId: number;
-  dir: Direction;
+  adj: Adjacent;
 }

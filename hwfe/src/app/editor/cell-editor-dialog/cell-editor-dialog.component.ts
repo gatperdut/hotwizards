@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
-import { Direction, Directions } from '@hw/shared/directions';
+import { Adjacent, Adjacents, Direction } from '@hw/shared/directions';
 import { MonsterType, MonsterTypes, sameCell } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
@@ -481,11 +481,11 @@ export class CellEditorDialogComponent {
   public monsterTypes = MonsterTypes.slice();
   public floorTrapSpritePaths = FloorTrapSpritePaths.slice();
   public stairsSpritePaths = StairsSpritePaths.slice();
-  public directions = Directions.slice();
+  public adjacents = Adjacents.slice();
 
   public spritePathDisplayFn = spritePathDisplayFn;
   public monsterTypeDisplayFn = (monsterType: MonsterType): string => monsterType;
-  public directionDisplayFn = (direction: Direction): string => direction;
+  public directionDisplayFn = (adjacent: Adjacent): string => adjacent;
 
   public randomFloor(): void {
     this.form

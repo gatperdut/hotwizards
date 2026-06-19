@@ -2,7 +2,7 @@ import { Movement, Prisma } from '@hw/prismagen/client';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
-import { Directions } from '@hw/shared/directions';
+import { Adjacents } from '@hw/shared/directions';
 import {
   cellAt,
   cellsUpdateLos,
@@ -311,7 +311,7 @@ export class CampaignsService {
       const character = membership.character as HwCharacter;
       const user = membership.user;
 
-      const direction = Directions[Math.floor(Math.random() * Directions.length)];
+      const adjacent = Adjacents[Math.floor(Math.random() * Adjacents.length)];
       const spawnCell = spawnCells[index];
 
       spawnCell.creatureId = user.id;
@@ -332,8 +332,8 @@ export class CampaignsService {
         maxMovementPoints: movementPoints,
         bodyPoints: creatureBodyPoints(character.klass, character.inventory),
         mindPoints: creatureMindPoints(character.klass, character.inventory),
-        spritePath: heroSpritePath(character.klass, character.gender, direction),
-        direction: direction,
+        spritePath: heroSpritePath(character.klass, character.gender, adjacent),
+        direction: adjacent,
         x: spawnCell.x,
         y: spawnCell.y,
         inventory: { ...character.inventory },

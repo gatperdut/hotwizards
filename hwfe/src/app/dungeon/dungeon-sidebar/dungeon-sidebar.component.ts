@@ -1,7 +1,7 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DirectionIcons, DirectionOffsets, Directions } from '@hw/shared/directions';
+import { AdjacentOffsets, Adjacents, DirectionIcons } from '@hw/shared/directions';
 import {
   cellAt,
   cellIsTraversable,
@@ -118,21 +118,21 @@ export class DungeonSidebarComponent {
 
     if (creature) {
       actions.push(
-        ...Directions.map((dir) => {
+        ...Adjacents.map((adj) => {
           const cell = cellAt(
             adventure.dungeon.cells,
-            creature.x + DirectionOffsets[dir].x,
-            creature.y + DirectionOffsets[dir].y,
+            creature.x + AdjacentOffsets[adj].x,
+            creature.y + AdjacentOffsets[adj].y,
           );
           const enabled = creature.movementPoints >= 1 && !!cell && cellIsTraversable(cell);
 
           return {
-            icon: DirectionIcons[dir],
+            icon: DirectionIcons[adj],
             disabled: !enabled,
             callback: (): void => {
               (creature.alignment === 'HERO'
-                ? this.adventuresApiService.moveHero(adventure.id, dir)
-                : this.adventuresApiService.moveMonster(adventure.id, creature.id, dir)
+                ? this.adventuresApiService.moveHero(adventure.id, adj)
+                : this.adventuresApiService.moveMonster(adventure.id, creature.id, adj)
               ).subscribe();
             },
           };
@@ -181,19 +181,19 @@ export class DungeonSidebarComponent {
 
     if (activeHero) {
       actions.push(
-        ...Directions.map((dir) => {
+        ...Adjacents.map((adj) => {
           const cell = cellAt(
             adventure.dungeon.cells,
-            activeHero.x + DirectionOffsets[dir].x,
-            activeHero.y + DirectionOffsets[dir].y,
+            activeHero.x + AdjacentOffsets[adj].x,
+            activeHero.y + AdjacentOffsets[adj].y,
           );
           const enabled =
             activeHero.movementPoints >= 1 && !!cell?.door.spritePath && !cell.door.open;
           return {
-            icon: DirectionIcons[dir],
+            icon: DirectionIcons[adj],
             disabled: !enabled,
             callback: (): void => {
-              this.adventuresApiService.openDoor(adventure.id, dir).subscribe();
+              this.adventuresApiService.openDoor(adventure.id, adj).subscribe();
             },
           };
         }),

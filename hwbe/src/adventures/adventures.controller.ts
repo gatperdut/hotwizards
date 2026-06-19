@@ -90,7 +90,7 @@ export class AdventuresController {
     @CurrentHero() hero: HwHero,
     @Body() body: HwAdventureMoveHeroDto,
   ): Promise<void> {
-    return this.adventuresService.moveHero(campaign, hero, body.direction);
+    return this.adventuresService.moveHero(campaign, hero, body.adjacent);
   }
 
   @Post(':adventureId/move-monster')
@@ -107,7 +107,7 @@ export class AdventuresController {
     @CurrentMonster() monster: HwMonster,
     @Body() body: HwAdventureMoveMonsterDto,
   ): Promise<void> {
-    return this.adventuresService.moveMonster(campaign, monster, body.direction);
+    return this.adventuresService.moveMonster(campaign, monster, body.adjacent);
   }
 
   @Post(':adventureId/open-door')
@@ -124,7 +124,7 @@ export class AdventuresController {
     @CurrentHero() hero: HwHero,
     @Body() body: HwAdventureOpenDoorDto,
   ): Promise<void> {
-    return this.adventuresService.openDoor(campaign, hero, body.direction);
+    return this.adventuresService.openDoor(campaign, hero, body.adjacent);
   }
 
   @Post(':adventureId/equip-item')

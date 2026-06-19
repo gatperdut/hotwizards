@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Directions } from '@hw/shared/directions';
+import { Adjacents } from '@hw/shared/directions';
 import { Sprite } from 'pixi.js';
 import { HwfeCell } from '../interfaces/cell.interface';
 
@@ -8,7 +8,7 @@ export class CellService {
   public sprites(cell: HwfeCell): Sprite[] {
     return [
       cell.pixi.baseSprite,
-      ...Directions.map((dir) => cell.pixi.corners[dir]),
+      ...Adjacents.map((adj) => cell.pixi.corners[adj]),
       cell.pixi.doorSprite,
       cell.pixi.featureSprite,
       cell.pixi.floorTrapSprite,

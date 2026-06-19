@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
-import { Directions } from '@hw/shared/directions';
+import { Adjacents } from '@hw/shared/directions';
 import { sameCell } from '@hw/shared/dungeon';
 import {
   HwEditorCorners,
@@ -417,17 +417,17 @@ export class EditorService {
       s: cellTransform.cornerS,
       w: cellTransform.cornerW,
     };
-    Directions.forEach((dir) => {
-      if (cell.corners[dir] !== cornersAux[dir]) {
-        if (cell.corners[dir]) {
-          this.viewportService.destroySprite(cell.pixi.corners[dir]!);
+    Adjacents.forEach((adj) => {
+      if (cell.corners[adj] !== cornersAux[adj]) {
+        if (cell.corners[adj]) {
+          this.viewportService.destroySprite(cell.pixi.corners[adj]!);
         }
-        cell.corners[dir] = cornersAux[dir];
-        if (cornersAux[dir]) {
-          cell.pixi.corners[dir] = this.createCornerSprite(
+        cell.corners[adj] = cornersAux[adj];
+        if (cornersAux[adj]) {
+          cell.pixi.corners[adj] = this.createCornerSprite(
             cell.x,
             cell.y,
-            `/tiles/corners/corner_${dir}.png`,
+            `/tiles/corners/corner_${adj}.png`,
           );
         }
       }
@@ -481,9 +481,9 @@ export class EditorService {
     if (cell.pixi.stairsSprite) {
       this.viewportService.destroySprite(cell.pixi.stairsSprite);
     }
-    Directions.forEach((dir) => {
-      if (cell.pixi.corners[dir]) {
-        this.viewportService.destroySprite(cell.pixi.corners[dir]);
+    Adjacents.forEach((adj) => {
+      if (cell.pixi.corners[adj]) {
+        this.viewportService.destroySprite(cell.pixi.corners[adj]);
       }
     });
     if (cell.pixi.spawnSprite) {

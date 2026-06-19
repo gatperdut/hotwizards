@@ -150,7 +150,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         undefined,
         { spritePath: null, trapped: false },
         { spritePath: null, trapped: false },
-        { type: null, spritePath: null, direction: 'w' },
+        { type: null, spritePath: null, direction: 's' },
         null,
         null,
         { n: false, e: false, s: false, w: false },

@@ -1,8 +1,8 @@
-import { Direction } from '../../directions/directions.const.js';
+import { Adjacent } from '../../directions/adjacents/adjacents.const.js';
 import { SpriteOffset } from '../../sprites/sprite-offset.const.js';
 
 export interface HwTransformMoveHero {
   heroId: number;
-  dir: Direction;
+  adj: Adjacent;
   cell: SpriteOffset;
 }

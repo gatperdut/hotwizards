@@ -12,7 +12,7 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { DirectionOffsets } from '@hw/shared/directions';
+import { AdjacentOffsets } from '@hw/shared/directions';
 import { cellAt, cellsUpdateLos, sameCell } from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
 import {
@@ -254,8 +254,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         h.id === hero.id
           ? {
               ...h,
-              spritePath: heroSpritePath(h.klass, h.gender, data.dir),
-              direction: data.dir,
+              spritePath: heroSpritePath(h.klass, h.gender, data.adj),
+              direction: data.adj,
               x: data.cell.x,
               y: data.cell.y,
               movementPoints: h.movementPoints - 1,
@@ -312,8 +312,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
         return {
           ...m,
-          spritePath: monsterSpritePath(m.type!, data.dir),
-          direction: data.dir,
+          spritePath: monsterSpritePath(m.type!, data.adj),
+          direction: data.adj,
           x: data.cell.x,
           y: data.cell.y,
           movementPoints: m.movementPoints - 1,
@@ -346,8 +346,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
       const cell = cellAt(
         dungeon.cells,
-        hero.x + DirectionOffsets[data.dir].x,
-        hero.y + DirectionOffsets[data.dir].y,
+        hero.x + AdjacentOffsets[data.adj].x,
+        hero.y + AdjacentOffsets[data.adj].y,
       )!;
 
       const cells = dungeon.cells.map((c) => {
@@ -369,8 +369,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         h.id === hero.id
           ? {
               ...h,
-              spritePath: heroSpritePath(h.klass, h.gender, data.dir),
-              direction: data.dir,
+              spritePath: heroSpritePath(h.klass, h.gender, data.adj),
+              direction: data.adj,
               movementPoints: h.movementPoints - 1,
             }
           : h,

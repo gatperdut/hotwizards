@@ -1,5 +1,5 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
-import { Direction, DirectionOffsets } from '@hw/shared/directions';
+import { Adjacent, AdjacentOffsets } from '@hw/shared/directions';
 import {
   adjacentCells,
   cellAt,
@@ -490,15 +490,15 @@ export class DungeonService {
     return lootSprite;
   }
 
-  public canOpenDoor(hero: HwHero, direction: Direction): boolean {
+  public canOpenDoor(hero: HwHero, adjacent: Adjacent): boolean {
     if (hero.movementPoints < 1) {
       return false;
     }
 
     const cell = cellAt(
       this.hwfeCells(),
-      hero.x + DirectionOffsets[direction].x,
-      hero.y + DirectionOffsets[direction].y,
+      hero.x + AdjacentOffsets[adjacent].x,
+      hero.y + AdjacentOffsets[adjacent].y,
     );
     return !!cell && !!cell.door.spritePath && !cell.door.open;
   }
