@@ -3,7 +3,7 @@
     [gear]="inventory().gear"
     [showUnequip]="showUnequip()"
     [canUnequip]="canUnequip()"
-    [unequip]="unequip"
+    (unequip)="unequip.emit($event)"
   ></app-gear-manager>
   <div class="h-[404px] separator-l separator-secondary"></div>
   <app-backpack-manager
@@ -12,19 +12,19 @@
     [backpack]="inventory().backpack"
     [showEquip]="showEquip()"
     [canEquip]="canEquip()"
-    [equip]="equip"
+    (equip)="equip.emit($event)"
     [showDrop]="showDrop()"
     [canDrop]="canDrop()"
-    [drop]="drop"
+    (drop)="drop.emit($event)"
     [showSellItem]="showSellItem()"
     [canSellItem]="canSellItem()"
-    [sellItem]="sellItem"
+    (sellItem)="sellItem.emit($event)"
     [showGiveGold]="showGiveGold()"
     [canGiveGold]="canGiveGold()"
-    [giveGold]="giveGold"
+    (giveGold)="giveGold.emit($event)"
     [showDestroyItem]="showDestroyItem()"
     [canDestroyItem]="canDestroyItem()"
-    [destroyItem]="destroyItem"
+    (destroyItem)="destroyItem.emit($event)"
     class="grow"
   ></app-backpack-manager>
 </div>

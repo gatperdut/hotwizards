@@ -1,0 +1,23 @@
+<app-dialog sizeClass="max-w-3xl">
+  <ng-template appDialogTitle>
+    <div class="typ-h2">Loot</div>
+  </ng-template>
+
+  <ng-template appDialogContent>
+    <app-backpack-manager
+      [gear]="null"
+      [backpack]="loot()"
+      [showPickup]="true"
+      [canPickup]="hero().movementPoints >= 1"
+      (pickup)="onPickupItem($event)"
+      [showPickupGold]="true"
+      [canPickupGold]="loot().gold > 0 && hero().movementPoints >= 1"
+      (pickupGold)="onPickupGold($event)"
+      [showDropGold]="false"
+    ></app-backpack-manager>
+  </ng-template>
+
+  <ng-template appDialogActions>
+    <app-button label="Close" type="button" (click)="dialogRef.close()"></app-button>
+  </ng-template>
+</app-dialog>

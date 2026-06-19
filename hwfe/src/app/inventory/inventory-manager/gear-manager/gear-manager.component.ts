@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, OutputEmitterRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { HwGear, HwItem, HwSlot, HwSlots } from '@hw/shared/inventory';
 import { DialogService, LazyDialog } from '../../../ui/dialog/services/dialog.service';
 import {
@@ -21,7 +21,7 @@ export class GearManagerComponent {
   public gear = input.required<HwGear>();
   public showUnequip = input<boolean>();
   public canUnequip = input<boolean>();
-  public unequip = input<OutputEmitterRef<HwSlot>>();
+  public unequip = output<HwSlot>();
 
   public slots = HwSlots.slice();
 
@@ -37,7 +37,7 @@ export class GearManagerComponent {
           color: 'secondary',
           disabled: !this.canUnequip(),
           callback: (): void => {
-            this.unequip()!.emit(HwSlots.find((slot) => this.gear()[slot]?.id === item.id)!);
+            this.unequip.emit(HwSlots.find((slot) => this.gear()[slot]?.id === item.id)!);
           },
         }
       : null;

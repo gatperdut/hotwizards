@@ -9,13 +9,13 @@
       [backpack]="stash()"
       [showPickup]="!!character()"
       [canPickup]="true"
-      [pickup]="pickup"
+      (pickup)="pickup.emit($event)"
       [showPickupGold]="!!character()"
       [canPickupGold]="stash().gold > 0"
-      [pickupGold]="pickupGold"
+      (pickupGold)="pickupGold.emit($event)"
       [showDropGold]="master().me"
       [canDropGold]="true"
-      [dropGold]="dropGold"
+      (dropGold)="dropGold.emit($event)"
     ></app-backpack-manager>
   </div>
 </app-card>
