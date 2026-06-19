@@ -7,6 +7,8 @@ import {
   HwAdventureMoveHeroDto,
   HwAdventureMoveMonsterDto,
   HwAdventureOpenDoorDto,
+  HwAdventurePickupGoldDto,
+  HwAdventurePickupItemDto,
   HwAdventureSelectMonsterDto,
   HwAdventureUnequipItemDto,
 } from '@hw/shared/adventures';
@@ -97,5 +99,21 @@ export class AdventuresApiService {
     };
 
     return this.httpClient.post<void>(`/api/adventures/${adventureId}/drop-item`, dto);
+  }
+
+  public pickupItem(adventureId: number, lootItemId: string): Observable<void> {
+    const dto: HwAdventurePickupItemDto = {
+      lootItemId: lootItemId,
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/pickup-item`, dto);
+  }
+
+  public pickupGold(adventureId: number, amount: number): Observable<void> {
+    const dto: HwAdventurePickupGoldDto = {
+      amount: amount,
+    };
+
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/pickup-gold`, dto);
   }
 }

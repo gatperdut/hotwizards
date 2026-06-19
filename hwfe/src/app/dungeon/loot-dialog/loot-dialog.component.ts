@@ -68,12 +68,10 @@ export class LootDialogComponent {
   public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
 
   public onPickupItem(lootItem: HwItem): void {
-    console.log('pickupItem', lootItem);
-    // this.adventuresApiService.pickupItem(this.adventure().id, lootItem.id).subscribe();
+    this.adventuresApiService.pickupItem(this.adventure().id, lootItem.id).subscribe();
   }
 
   public onPickupGold(amount: number): void {
-    console.log('pickupGold', amount);
-    // this.adventuresApiService.pickupGold(this.adventure().id, amount).subscribe();
+    this.adventuresApiService.pickupGold(this.adventure().id, amount).subscribe();
   }
 }

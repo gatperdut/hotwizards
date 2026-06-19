@@ -410,4 +410,31 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownDropItem(campaign.id, hero.id, backpackItem.id);
   }
+
+  public async pickupItem(campaign: HwCampaign, hero: HwHero, lootItem: HwItem): Promise<void> {
+    const adventure = campaign.adventure!;
+    const inventory = { ...hero.inventory };
+    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
+    const loot = { ...cell.loot };
+
+    loot.items = loot.items.filter((i) => i.id !== lootItem.id);
+    inventory.backpack.items.push(lootItem);
+
+    void (await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        dungeon: {
+          ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) =>
+            h.id === hero.id
+              ? { ...h, inventory: inventory, movementPoints: h.movementPoints - 1 }
+              : h,
+          ),
+          cells: adventure.dungeon.cells.map((c) => (sameCell(cell, c) ? { ...c, loot: loot } : c)),
+        } as unknown as InputJsonValue,
+      },
+    }));
+
+    this.adventuresGateway.handleDownPickupItem(campaign.id, hero.id, lootItem.id);
+  }
 }

@@ -19,6 +19,7 @@ import { AdventuresGateway } from './adventures.gateway.js';
 import { AdventuresService } from './adventures.service.js';
 import { CurrentAdventure } from './decorators/current-adventure.decorator.js';
 import { CurrentHero } from './decorators/current-hero.decorator.js';
+import { CurrentLootItem } from './decorators/current-loot-item.decorator.js';
 import { CurrentMonster } from './decorators/current-monster.decorator.js';
 import { AdventureCampaignMasterGuard } from './guards/adventure-campaign-master.guard.js';
 import { AdventureProperTurnGuard } from './guards/adventure-proper-turn.guard.js';
@@ -30,6 +31,7 @@ import { SetAdventureMonsterGuard } from './guards/set-adventure-monster.guard.j
 import { SetAdventureGuard } from './guards/set-adventure.guard.js';
 import { SetHeroBackpackItemGuard } from './guards/set-hero-backpack-item.guard.js';
 import { SetHeroGearItemGuard } from './guards/set-hero-gear-item.guard.js';
+import { SetHeroLootItemGuard } from './guards/set-hero-loot-item.guard.js';
 
 @Controller('adventures')
 export class AdventuresController {
@@ -173,5 +175,22 @@ export class AdventuresController {
     @CurrentBackpackItem() backpackItem: HwItem,
   ): Promise<void> {
     return this.adventuresService.dropItem(campaign, hero, backpackItem);
+  }
+
+  @Post(':adventureId/pickup-item')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+    HeroHasMovementPoints,
+    SetHeroLootItemGuard,
+  )
+  public pickupItem(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentHero() hero: HwHero,
+    @CurrentLootItem() lootItem: HwItem,
+  ): Promise<void> {
+    return this.adventuresService.pickupItem(campaign, hero, lootItem);
   }
 }

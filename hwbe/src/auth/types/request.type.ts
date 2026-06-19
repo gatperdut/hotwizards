@@ -3,7 +3,7 @@ import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
-import { HwCell, HwHero, HwMonster } from '@hw/shared/dungeon';
+import { HwHero, HwMonster } from '@hw/shared/dungeon';
 import { HwItem } from '@hw/shared/inventory';
 import { HwMembership } from '@hw/shared/memberships';
 import { Request } from 'express';
@@ -17,8 +17,8 @@ export type HwRequest = Request & {
   adventureTemplate: HwAdventureTemplate;
   hero: HwHero;
   monster: HwMonster;
-  cell: HwCell;
   backpackItem: HwItem;
+  lootItem: HwItem;
   gearItem: HwItem;
   stashItem: HwItem;
   targetCharacter: HwCharacter;

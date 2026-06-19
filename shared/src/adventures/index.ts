@@ -3,6 +3,8 @@ export { HwAdventureEquipItemDto } from './adventure-equip-item.dto.js';
 export { HwAdventureMoveHeroDto } from './adventure-move-hero.dto.js';
 export { HwAdventureMoveMonsterDto } from './adventure-move-monster.dto.js';
 export { HwAdventureOpenDoorDto } from './adventure-open-door.dto.js';
+export { HwAdventurePickupGoldDto } from './adventure-pickup-gold.dto.js';
+export { HwAdventurePickupItemDto } from './adventure-pickup-item.dto.js';
 export { HwAdventureSelectMonsterDto } from './adventure-select-monster.dto.js';
 export { HwAdventureUnequipItemDto } from './adventure-unequip-item.dto.js';
 export { HwAdventure } from './adventure.interface.js';
