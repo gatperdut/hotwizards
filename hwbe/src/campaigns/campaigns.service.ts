@@ -255,7 +255,7 @@ export class CampaignsService {
       heroes.map((h) => cellAt(cells, h.x, h.y)!),
     );
 
-    const monsters = this.cellsToMonsters(
+    const monsters = this.editorCellsToMonsters(
       editorDungeon.cells,
       heroes.map((h) => h.id),
       campaign.ruleset.movement,
@@ -341,7 +341,7 @@ export class CampaignsService {
     });
   }
 
-  private cellsToMonsters(
+  private editorCellsToMonsters(
     cells: HwEditorCell[],
     heroIds: number[],
     movement: Movement,
