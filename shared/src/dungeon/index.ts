@@ -22,10 +22,11 @@ export { creatureAt } from './creatures/creature-at.const.js';
 export { creatureIsAt } from './creatures/creature-is-at.const.js';
 export {
   creatureAttackDie,
-  creatureBodyPoints,
   creatureDefendDie,
+  creatureMaxActionPoints,
+  creatureMaxBodyPoints,
+  creatureMaxMindPoints,
   creatureMaxMovementPointsFn,
-  creatureMindPoints,
   creatureMovementPoints,
 } from './creatures/creature-stats.const.js';
 export { HwCreature } from './creatures/creature.interface.js';

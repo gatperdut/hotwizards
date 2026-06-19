@@ -1,4 +1,5 @@
 export {
+  ActionPoints,
   AttackDie,
   BodyPoints,
   DefendDie,

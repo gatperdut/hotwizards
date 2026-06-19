@@ -2,6 +2,7 @@ import { Klass, Movement } from '@hw/prismagen/browser';
 import { HwInventory } from '../../inventory/inventory.interface.js';
 import { HwSlots } from '../../inventory/slots.const.js';
 import {
+  ActionPoints,
   AttackDie,
   BodyPoints,
   DefendDie,
@@ -11,11 +12,11 @@ import {
 import { ItemAttackDie, ItemDefendDie } from '../../stats/item-stats.const.js';
 import { MonsterType } from './monsters/monster-type.const.js';
 
-export const creatureBodyPoints = (key: Klass | MonsterType, inventory: HwInventory): number => {
+export const creatureMaxBodyPoints = (key: Klass | MonsterType, inventory: HwInventory): number => {
   return BodyPoints[key];
 };
 
-export const creatureMindPoints = (key: Klass | MonsterType, inventory: HwInventory): number => {
+export const creatureMaxMindPoints = (key: Klass | MonsterType, inventory: HwInventory): number => {
   return MindPoints[key];
 };
 
@@ -45,6 +46,13 @@ export const creatureDefendDie = (key: Klass | MonsterType, inventory: HwInvento
   }).reduce((prev, curr) => prev + curr, 0);
 
   return base + gear;
+};
+
+export const creatureMaxActionPoints = (
+  key: Klass | MonsterType,
+  inventory: HwInventory,
+): number => {
+  return ActionPoints[key];
 };
 
 export const creatureMovementPoints = (

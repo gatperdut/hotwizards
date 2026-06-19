@@ -2,6 +2,46 @@ import { Klass } from '@hw/prismagen/browser';
 import { MonsterType } from '../dungeon/creatures/monsters/monster-type.const.js';
 import { MovementValues } from './movement-values.type.js';
 
+export const BodyPoints: Record<Klass | MonsterType, number> = {
+  BARBARIAN: 8,
+  DWARF: 7,
+  ELF: 6,
+  WIZARD: 4,
+  chaos_mage: 2,
+  chaos_warrior: 3,
+  fimir: 2,
+  gargoyle: 3,
+  goblin_axe: 1,
+  goblin_dagger: 1,
+  goblin_sword: 1,
+  mummy: 2,
+  orc_cleaver: 1,
+  orc_mace: 1,
+  orc_sword: 1,
+  skeleton: 1,
+  zombie: 1,
+};
+
+export const MindPoints: Record<Klass | MonsterType, number> = {
+  BARBARIAN: 2,
+  DWARF: 3,
+  ELF: 4,
+  WIZARD: 6,
+  chaos_mage: 5,
+  chaos_warrior: 3,
+  fimir: 3,
+  gargoyle: 4,
+  goblin_axe: 1,
+  goblin_dagger: 1,
+  goblin_sword: 1,
+  mummy: 0,
+  orc_cleaver: 2,
+  orc_mace: 2,
+  orc_sword: 2,
+  skeleton: 0,
+  zombie: 0,
+};
+
 // TODO proper values for monsters
 export const AttackDie: Record<Klass | MonsterType, number> = {
   BARBARIAN: 0,
@@ -44,44 +84,24 @@ export const DefendDie: Record<Klass | MonsterType, number> = {
   zombie: 3,
 };
 
-export const BodyPoints: Record<Klass | MonsterType, number> = {
-  BARBARIAN: 8,
-  DWARF: 7,
-  ELF: 6,
-  WIZARD: 4,
-  chaos_mage: 2,
-  chaos_warrior: 3,
-  fimir: 2,
-  gargoyle: 3,
+export const ActionPoints: Record<Klass | MonsterType, number> = {
+  BARBARIAN: 1,
+  DWARF: 1,
+  ELF: 1,
+  WIZARD: 1,
+  chaos_mage: 1,
+  chaos_warrior: 1,
+  fimir: 1,
+  gargoyle: 1,
   goblin_axe: 1,
   goblin_dagger: 1,
   goblin_sword: 1,
-  mummy: 2,
+  mummy: 1,
   orc_cleaver: 1,
   orc_mace: 1,
   orc_sword: 1,
   skeleton: 1,
   zombie: 1,
-};
-
-export const MindPoints: Record<Klass | MonsterType, number> = {
-  BARBARIAN: 2,
-  DWARF: 3,
-  ELF: 4,
-  WIZARD: 6,
-  chaos_mage: 5,
-  chaos_warrior: 3,
-  fimir: 3,
-  gargoyle: 4,
-  goblin_axe: 1,
-  goblin_dagger: 1,
-  goblin_sword: 1,
-  mummy: 0,
-  orc_cleaver: 2,
-  orc_mace: 2,
-  orc_sword: 2,
-  skeleton: 0,
-  zombie: 0,
 };
 
 // TODO proper values: monster balanced

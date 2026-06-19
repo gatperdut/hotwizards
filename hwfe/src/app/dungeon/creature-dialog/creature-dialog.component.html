@@ -51,9 +51,13 @@
 <ng-template #statsOutlet let-creature="creature" let-creatureType="creatureType">
   <app-stats
     [bodyPoints]="creature.bodyPoints"
-    [maxBodyPoints]="creatureBodyPoints(creatureType, creature.inventory)"
+    [maxBodyPoints]="creatureMaxBodyPoints(creatureType, creature.inventory)"
     [mindPoints]="creature.mindPoints"
-    [maxMindPoints]="creatureMindPoints(creatureType, creature.inventory)"
+    [maxMindPoints]="creatureMaxMindPoints(creatureType, creature.inventory)"
+    [attackDie]="creatureAttackDie(creatureType, creature.inventory)"
+    [defendDie]="creatureDefendDie(creatureType, creature.inventory)"
+    [actionPoints]="creature.actionPoints"
+    [maxActionPoints]="creatureMaxActionPoints(creatureType, creature.inventory)"
     [movementPoints]="creature.movementPoints"
     [maxMovementPoints]="creature.maxMovementPoints"
     [maxMovementPointsFn]="
@@ -63,7 +67,5 @@
         data.campaign().ruleset.movement
       )
     "
-    [attackDie]="creatureAttackDie(creatureType, creature.inventory)"
-    [defendDie]="creatureDefendDie(creatureType, creature.inventory)"
   ></app-stats>
 </ng-template>

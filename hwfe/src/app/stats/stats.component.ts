@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 
 @Component({
   selector: 'app-stats',
@@ -11,9 +11,13 @@ export class StatsComponent {
   public maxBodyPoints = input.required<number>();
   public mindPoints = input.required<number | null>();
   public maxMindPoints = input.required<number>();
+  public attackDie = input.required<number>();
+  public defendDie = input.required<number>();
+  public actionPoints = input.required<number>();
+  public maxActionPoints = input.required<number>();
   public movementPoints = input.required<number | null>();
   public maxMovementPoints = input.required<number | null>();
   public maxMovementPointsFn = input.required<string>();
-  public attackDie = input.required<number>();
-  public defendDie = input.required<number>();
+
+  public maxActionPointsArray = computed(() => Array.from({ length: this.maxActionPoints() }));
 }

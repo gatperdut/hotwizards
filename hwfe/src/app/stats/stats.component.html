@@ -1,54 +1,73 @@
 @let bodyPoints = this.bodyPoints();
+@let maxBodyPoints = this.maxBodyPoints();
 @let mindPoints = this.mindPoints();
+@let maxMindPoints = this.maxMindPoints();
+@let attackDie = this.attackDie();
+@let defendDie = this.defendDie();
+@let actionPoints = this.actionPoints();
+@let maxActionPoints = this.maxActionPoints();
 @let movementPoints = this.movementPoints();
 @let maxMovementPoints = this.maxMovementPoints();
 
-<div class="flex flex-col text-sm leading-4">
-  <div class="flex flex-row gap-2">
-    <div class="flex flex-col">
-      <div class="flex flex-row justify-between items-center gap-1">
-        <span class="text-primary">Body</span>
-        <span class="text-primary">
-          @if (bodyPoints !== null) {
-            {{ bodyPoints }} /
-          }
-          {{ maxBodyPoints() }}</span
-        >
+<div class="flex flex-row text-sm leading-4 gap-2">
+  <div class="flex flex-col">
+    <div class="flex flex-row gap-2">
+      <div class="flex flex-col">
+        <div class="flex flex-row justify-between items-center gap-1">
+          <span class="text-primary">Body</span>
+          <span class="text-primary">
+            @if (bodyPoints !== null) {
+              {{ bodyPoints }} /
+            }
+            {{ maxBodyPoints }}</span
+          >
+        </div>
+        <div class="flex flex-row justify-between items-center gap-1">
+          <span class="text-warning">Attack</span>
+          <span class="text-warning">
+            {{ attackDie }}
+          </span>
+        </div>
       </div>
-      <div class="flex flex-row justify-between items-center gap-1">
-        <span class="text-warning">Attack</span>
-        <span class="text-warning">
-          {{ attackDie() }}
-        </span>
+      <div class="flex flex-col">
+        <div class="flex flex-row justify-between items-center gap-1">
+          <span class="text-secondary">Mind</span>
+          <span class="text-secondary">
+            @if (mindPoints !== null) {
+              {{ mindPoints }} /
+            }
+            {{ maxMindPoints }}
+          </span>
+        </div>
+        <div class="flex flex-row justify-between items-center gap-1">
+          <span class="text-off-light">Defend</span>
+          <span class="text-off-light">
+            {{ defendDie }}
+          </span>
+        </div>
       </div>
     </div>
-    <div class="flex flex-col">
-      <div class="flex flex-row justify-between items-center gap-1">
-        <span class="text-secondary">Mind</span>
-        <span class="text-secondary">
-          @if (mindPoints !== null) {
-            {{ mindPoints }} /
-          }
-          {{ maxMindPoints() }}
-        </span>
-      </div>
-      <div class="flex flex-row justify-between items-center gap-1">
-        <span class="text-off-light">Defend</span>
-        <span class="text-off-light">
-          {{ defendDie() }}
-        </span>
-      </div>
+
+    <div class="flex flex-row justify-between items-center gap-1">
+      <span class="text-off-medium">Move</span>
+      <span class="text-off-medium">
+        @if (movementPoints !== null && maxMovementPoints !== null) {
+          {{ movementPoints }} / {{ maxMovementPoints }} ({{ maxMovementPointsFn() }})
+        } @else {
+          {{ maxMovementPointsFn() }}
+        }
+      </span>
     </div>
   </div>
 
-  <div class="flex flex-row justify-between items-center gap-1">
-    <span class="text-off-medium">Move</span>
-    <span class="text-off-medium">
-      @if (movementPoints !== null && maxMovementPoints !== null) {
-        {{ movementPoints }} / {{ maxMovementPoints }} ({{ maxMovementPointsFn() }})
-      } @else {
-        {{ maxMovementPointsFn() }}
+  @if (maxActionPoints) {
+    <div class="flex flex-col justify-center gap-1">
+      @for (maxActionPoint of maxActionPointsArray(); track $index) {
+        <div
+          class="w-2.5 h-2.5 inline-block rounded-full mb-hw-xxsmall"
+          [class]="{ 'bg-primary': $index < actionPoints, 'bg-off-medium': $index >= actionPoints }"
+        ></div>
       }
-    </span>
-  </div>
+    </div>
+  }
 </div>

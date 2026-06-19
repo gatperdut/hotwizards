@@ -9,10 +9,11 @@ import {
 import { HwCampaign } from '@hw/shared/campaigns';
 import {
   creatureAttackDie,
-  creatureBodyPoints,
   creatureDefendDie,
+  creatureMaxActionPoints,
+  creatureMaxBodyPoints,
+  creatureMaxMindPoints,
   creatureMaxMovementPointsFn,
-  creatureMindPoints,
   HwHero,
   HwMonster,
 } from '@hw/shared/dungeon';
@@ -71,10 +72,11 @@ export class CreatureDialogComponent {
       )!,
   );
 
-  public creatureBodyPoints = creatureBodyPoints;
-  public creatureMindPoints = creatureMindPoints;
+  public creatureMaxBodyPoints = creatureMaxBodyPoints;
+  public creatureMaxMindPoints = creatureMaxMindPoints;
   public creatureAttackDie = creatureAttackDie;
   public creatureDefendDie = creatureDefendDie;
+  public creatureMaxActionPoints = creatureMaxActionPoints;
   public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
   public hero = computed(() => this.creature() as HwHero);
   public monster = computed(() => this.creature() as HwMonster);

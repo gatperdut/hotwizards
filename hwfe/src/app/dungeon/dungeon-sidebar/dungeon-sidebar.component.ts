@@ -6,10 +6,12 @@ import {
   cellAt,
   cellIsTraversable,
   creatureAttackDie,
-  creatureBodyPoints,
   creatureDefendDie,
+  creatureMaxActionPoints,
+  creatureMaxBodyPoints,
+  creatureMaxMindPoints,
   creatureMaxMovementPointsFn,
-  creatureMindPoints,
+  directionCells,
   HwCreature,
 } from '@hw/shared/dungeon';
 import { filter, from, switchMap } from 'rxjs';
@@ -56,10 +58,11 @@ export class DungeonSidebarComponent {
   private viewportService = inject(ViewportService);
   public authService = inject(AuthService);
 
-  public creatureBodyPoints = creatureBodyPoints;
-  public creatureMindPoints = creatureMindPoints;
+  public creatureMaxBodyPoints = creatureMaxBodyPoints;
+  public creatureMaxMindPoints = creatureMaxMindPoints;
   public creatureAttackDie = creatureAttackDie;
   public creatureDefendDie = creatureDefendDie;
+  public creatureMaxActionPoints = creatureMaxActionPoints;
   public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
 
   public buttons = computed<SidebarButton[]>(() => {
@@ -162,9 +165,12 @@ export class DungeonSidebarComponent {
     return {
       icon: 'magnifying-glass',
       color: 'primary',
-      disabled: !activeHero?.me, // TODO || cellsInSearchArea all searched,
+      disabled:
+        !activeHero?.me ||
+        !cell ||
+        !directionCells(adventure.dungeon.cells, cell).find((c) => !c.searched),
       callback: (): void => {
-        // TODO
+        this.adventuresApiService.search(adventure.id).subscribe();
       },
     };
   }

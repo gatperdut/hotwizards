@@ -103,7 +103,6 @@ export class AdventuresController {
   )
   public moveMonster(
     @CurrentCampaign() campaign: HwCampaign,
-    @CurrentAdventure() adventure: HwAdventure,
     @CurrentMonster() monster: HwMonster,
     @Body() body: HwAdventureMoveMonsterDto,
   ): Promise<void> {
@@ -120,7 +119,6 @@ export class AdventuresController {
   )
   public openDoor(
     @CurrentCampaign() campaign: HwCampaign,
-    @CurrentAdventure() adventure: HwAdventure,
     @CurrentHero() hero: HwHero,
     @Body() body: HwAdventureOpenDoorDto,
   ): Promise<void> {
@@ -220,6 +218,22 @@ export class AdventuresController {
     HeroHasMovementPoints,
   )
   public pickupGold(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentHero() hero: HwHero,
+    @Body() body: HwAdventurePickupGoldDto,
+  ): Promise<void> {
+    return this.adventuresService.pickupGold(campaign, hero, body.amount);
+  }
+
+  @Post(':adventureId/search')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+    // HeroHasActionPoints,
+  )
+  public search(
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentHero() hero: HwHero,
     @Body() body: HwAdventurePickupGoldDto,

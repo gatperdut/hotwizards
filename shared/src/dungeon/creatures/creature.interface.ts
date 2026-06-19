@@ -9,11 +9,12 @@ export interface HwCreature {
   y: number;
   name: string;
   spritePath: CreatureSpritePath;
-  movementPoints: number;
-  maxMovementPoints: number;
-  attackDie: number;
-  defendDie: number;
   bodyPoints: number;
   mindPoints: number;
+  attackDie: number;
+  defendDie: number;
+  actionPoints: number;
+  movementPoints: number;
+  maxMovementPoints: number;
   inventory: HwInventory;
 }

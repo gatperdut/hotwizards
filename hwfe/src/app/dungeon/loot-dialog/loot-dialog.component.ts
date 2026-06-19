@@ -6,14 +6,7 @@ import {
   WritableSignal,
 } from '@angular/core';
 import { HwCampaign } from '@hw/shared/campaigns';
-import {
-  cellAt,
-  creatureAttackDie,
-  creatureBodyPoints,
-  creatureDefendDie,
-  creatureMaxMovementPointsFn,
-  creatureMindPoints,
-} from '@hw/shared/dungeon';
+import { cellAt } from '@hw/shared/dungeon';
 import { HwItem } from '@hw/shared/inventory';
 import { AdventuresApiService } from '../../adventures/services/adventures-api.service';
 import { BackpackManagerComponent } from '../../inventory/inventory-manager/backpack-manager/backpack-manager.component';
@@ -60,12 +53,6 @@ export class LootDialogComponent {
     return cellAt(this.adventure().dungeon.cells, hero.x, hero.y)!;
   });
   public loot = computed(() => this.cell()?.loot);
-
-  public creatureBodyPoints = creatureBodyPoints;
-  public creatureMindPoints = creatureMindPoints;
-  public creatureAttackDie = creatureAttackDie;
-  public creatureDefendDie = creatureDefendDie;
-  public creatureMaxMovementPointsFn = creatureMaxMovementPointsFn;
 
   public onPickupItem(lootItem: HwItem): void {
     this.adventuresApiService.pickupItem(this.adventure().id, lootItem.id).subscribe();

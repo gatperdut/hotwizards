@@ -121,4 +121,8 @@ export class AdventuresApiService {
 
     return this.httpClient.post<void>(`/api/adventures/${adventureId}/pickup-gold`, dto);
   }
+
+  public search(adventureId: number): Observable<void> {
+    return this.httpClient.post<void>(`/api/adventures/${adventureId}/search`, null);
+  }
 }
