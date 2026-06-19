@@ -244,7 +244,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         }
 
         if (sameCell(c, enteredCell)) {
-          return { ...c, creatureId: data.heroId };
+          return { ...c, creatureId: data.heroId, searched: true };
         }
 
         return c;

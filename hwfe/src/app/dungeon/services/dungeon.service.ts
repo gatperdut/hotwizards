@@ -38,6 +38,7 @@ import { ViewportService } from '../../map/services/viewport.service';
 import {
   BaseSpriteFoggedTint,
   BaseSpritePersonalVisibleTint,
+  BaseSpriteSearchedTintSubtraction,
   BaseSpriteSharedVisibleTint,
 } from '../../sprites/base-sprites.const';
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
@@ -144,10 +145,11 @@ export class DungeonService {
           cell.y,
         )!;
 
-        const resultCell = {
+        const resultCell: HwfeCell = {
           ...cell,
           creatureId: updatedCell.creatureId,
           visibility: updatedCell.visibility,
+          searched: updatedCell.searched,
         };
 
         if (cell.door?.spritePath !== updatedCell.door?.spritePath) {
@@ -196,6 +198,7 @@ export class DungeonService {
       cell.pixi.baseSprite.alpha = 1.0;
 
       const sprites = this.cellService.sprites(cell);
+      const searchedTintSubtraction = cell.searched ? BaseSpriteSearchedTintSubtraction : 0;
 
       if (
         cell.visibility === 0 &&
@@ -207,7 +210,7 @@ export class DungeonService {
         cell.pixi.baseSprite.visible = true;
         cell.pixi.baseSprite.alpha = master.me ? 1.0 : 0.1;
         if (master.me) {
-          cell.pixi.baseSprite.tint = BaseSpriteFoggedTint;
+          cell.pixi.baseSprite.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
         }
       } else {
         switch (cell.visibility) {
@@ -215,7 +218,7 @@ export class DungeonService {
             sprites.forEach((s) => {
               s.visible = master.me;
               if (master.me) {
-                s.tint = BaseSpriteFoggedTint;
+                s.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
               }
             });
             break;
@@ -223,14 +226,16 @@ export class DungeonService {
           case 1:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint = BaseSpriteFoggedTint;
+              s.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
             });
             break;
 
           case 2:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
+              s.tint =
+                (master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint) -
+                searchedTintSubtraction;
             });
             break;
         }
@@ -242,18 +247,21 @@ export class DungeonService {
         return;
       }
 
+      const searchedTintSubtraction = cell.searched ? BaseSpriteSearchedTintSubtraction : 0;
+
       const secCells = secondaryCells(cells, cell);
       if (!secCells.length || secCells.every((c) => c.visibility === 2)) {
         return;
       }
-      cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint;
+      cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
     });
 
     if (myHero) {
       losFrom<HwfeCell>(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {
         const sprites = this.cellService.sprites(cell);
+        const searchedTintSubtraction = cell.searched ? BaseSpriteSearchedTintSubtraction : 0;
         sprites.forEach((s) => {
-          s.tint = BaseSpritePersonalVisibleTint;
+          s.tint = BaseSpritePersonalVisibleTint - searchedTintSubtraction;
         });
       });
     }

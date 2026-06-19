@@ -9,3 +9,5 @@ export const BrightRedSpriteTint = 0xd94f4f;
 export const BrightGreenSpriteTint = 0x3db36a;
 export const LightGreySpriteTint = 0x999999;
 export const GreySpriteTint = 0x444444;
+
+export const GreenSpriteTintSubtraction = 0x330033;

@@ -1,5 +1,10 @@
 import { BaseSpritePath, SpriteOffset } from '@hw/shared/sprites';
-import { GreySpriteTint, LightGreySpriteTint, WhiteSpriteTint } from './sprite-tints.const';
+import {
+  GreenSpriteTintSubtraction,
+  GreySpriteTint,
+  LightGreySpriteTint,
+  WhiteSpriteTint,
+} from './sprite-tints.const';
 
 export const BaseSpriteSizes: Record<BaseSpritePath, SpriteOffset> = {
   '/tiles/floors/floor_01.png': { x: 64, y: 64 },
@@ -60,3 +65,5 @@ export const BaseSpriteOffsets: Record<BaseSpritePath, SpriteOffset> = {
 export const BaseSpriteSharedVisibleTint = LightGreySpriteTint;
 export const BaseSpritePersonalVisibleTint = WhiteSpriteTint;
 export const BaseSpriteFoggedTint = GreySpriteTint;
+
+export const BaseSpriteSearchedTintSubtraction = GreenSpriteTintSubtraction;

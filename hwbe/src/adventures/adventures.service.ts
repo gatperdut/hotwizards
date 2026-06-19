@@ -165,6 +165,7 @@ export class AdventuresService {
         return {
           ...targetCell,
           creatureId: hero.id,
+          searched: true,
         };
       }
 
