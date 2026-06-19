@@ -79,6 +79,12 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
     this.server.to(`campaign:${campaignId}:adventure`).emit('downDropItem', heroId, backpackItemId);
   }
 
+  public handleDownDestroyItem(campaignId: number, heroId: number, backpackItemId: string): void {
+    this.server
+      .to(`campaign:${campaignId}:adventure`)
+      .emit('downDestroyItem', heroId, backpackItemId);
+  }
+
   public handleDownPickupItem(campaignId: number, heroId: number, lootItemId: string): void {
     this.server.to(`campaign:${campaignId}:adventure`).emit('downPickupItem', heroId, lootItemId);
   }

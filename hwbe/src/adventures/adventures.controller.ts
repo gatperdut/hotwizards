@@ -178,6 +178,22 @@ export class AdventuresController {
     return this.adventuresService.dropItem(campaign, hero, backpackItem);
   }
 
+  @Post(':adventureId/destroy-item')
+  @UseGuards(
+    SetAdventureGuard,
+    SetAdventureCampaignGuard,
+    AdventureProperTurnGuard,
+    SetAdventureHeroGuard,
+    SetHeroBackpackItemGuard,
+  )
+  public destroyItem(
+    @CurrentCampaign() campaign: HwCampaign,
+    @CurrentHero() hero: HwHero,
+    @CurrentBackpackItem() backpackItem: HwItem,
+  ): Promise<void> {
+    return this.adventuresService.destroyItem(campaign, hero, backpackItem);
+  }
+
   @Post(':adventureId/pickup-item')
   @UseGuards(
     SetAdventureGuard,

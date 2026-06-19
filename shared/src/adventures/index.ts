@@ -1,3 +1,4 @@
+export { HwAdventureDestroyItemDto } from './adventure-destroy-item.dto.js';
 export { HwAdventureDropItemDto } from './adventure-drop-item.dto.js';
 export { HwAdventureEquipItemDto } from './adventure-equip-item.dto.js';
 export { HwAdventureMoveHeroDto } from './adventure-move-hero.dto.js';

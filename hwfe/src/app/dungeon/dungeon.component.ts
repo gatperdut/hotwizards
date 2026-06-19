@@ -519,6 +519,40 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeCellsUpdate();
     });
 
+    this.dungeonService.adventuresSocket.on('downDestroyItem', (heroId, backpackItemId) => {
+      const hero = this.campaignService
+        .campaign()
+        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
+      const inventory = hero.inventory;
+
+      inventory.backpack.items = inventory.backpack.items.filter(
+        (item) => item.id !== backpackItemId,
+      );
+
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+              if (h.id !== heroId) {
+                return h;
+              }
+
+              return {
+                ...h,
+                movementPoints: h.movementPoints - 1,
+                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
+              };
+            }),
+          },
+        },
+      }));
+
+      this.dungeonService.hwfeHeroesUpdate();
+    });
+
     this.dungeonService.adventuresSocket.on('downPickupItem', (heroId, lootItemId) => {
       const hero = this.campaignService
         .campaign()

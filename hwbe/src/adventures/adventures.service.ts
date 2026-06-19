@@ -411,6 +411,33 @@ export class AdventuresService {
     this.adventuresGateway.handleDownDropItem(campaign.id, hero.id, backpackItem.id);
   }
 
+  public async destroyItem(
+    campaign: HwCampaign,
+    hero: HwHero,
+    backpackItem: HwItem,
+  ): Promise<void> {
+    const adventure = campaign.adventure!;
+    const inventory = { ...hero.inventory };
+
+    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
+
+    void (await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        dungeon: {
+          ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) =>
+            h.id === hero.id
+              ? { ...h, inventory: inventory, movementPoints: h.movementPoints - 1 }
+              : h,
+          ),
+        } as unknown as InputJsonValue,
+      },
+    }));
+
+    this.adventuresGateway.handleDownDestroyItem(campaign.id, hero.id, backpackItem.id);
+  }
+
   public async pickupItem(campaign: HwCampaign, hero: HwHero, lootItem: HwItem): Promise<void> {
     const adventure = campaign.adventure!;
     const inventory = { ...hero.inventory };
