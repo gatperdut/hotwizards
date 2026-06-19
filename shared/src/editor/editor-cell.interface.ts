@@ -1,8 +1,8 @@
 import { BaseSpritePath } from '../sprites/base-sprites.const.js';
-import { DoorSpritePath } from '../sprites/door-sprites.const.js';
 import { FloorTrapSpritePath } from '../sprites/floor-trap-sprites.const.js';
 import { StairsSpritePath } from '../sprites/stairs-sprites.const.js';
 import { HwEditorCorners } from './editor-corners.interface.js';
+import { HwEditorDoor } from './editor-door.interface.js';
 import { HwEditorFeature } from './editor-feature.interface.js';
 import { HwEditorMonster } from './editor-monster.interface.js';
 import { HwEditorSecondary } from './editor-secondary.interface.js';
@@ -12,7 +12,7 @@ export interface HwEditorCell {
   y: number;
   baseSpritePath: BaseSpritePath;
   feature: HwEditorFeature;
-  doorSpritePath: DoorSpritePath | null;
+  door: HwEditorDoor;
   monster: HwEditorMonster;
   floorTrapSpritePath: FloorTrapSpritePath | null;
   stairsSpritePath: StairsSpritePath | null;

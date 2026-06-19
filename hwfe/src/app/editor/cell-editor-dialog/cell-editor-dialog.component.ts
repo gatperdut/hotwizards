@@ -49,6 +49,7 @@ type CellTransformEditable = {
   featureSpritePath: FeatureSpritePath | null;
   featureTrapped: boolean;
   doorSpritePath: DoorSpritePath | null;
+  doorTrapped: boolean;
   monsterType: MonsterType | null;
   monsterDirection: Direction;
   floorTrapSpritePath: FloorTrapSpritePath | null;
@@ -107,6 +108,7 @@ export class CellEditorDialogComponent {
       this.form.featureSpritePath().value();
       this.form.featureTrapped().value();
       this.form.doorSpritePath().value();
+      this.form.doorTrapped().value();
       this.form.monsterType().value();
       this.form.monsterDirection().value();
       this.form.floorTrapSpritePath().value();
@@ -121,6 +123,7 @@ export class CellEditorDialogComponent {
       this.form.featureSpritePath().markAsTouched();
       this.form.featureTrapped().markAsTouched();
       this.form.doorSpritePath().markAsTouched();
+      this.form.doorTrapped().markAsTouched();
       this.form.monsterType().markAsTouched();
       this.form.monsterDirection().markAsTouched();
       this.form.floorTrapSpritePath().markAsTouched();
@@ -199,7 +202,8 @@ export class CellEditorDialogComponent {
     baseSpritePath: this.data.cell.baseSpritePath,
     featureSpritePath: this.data.cell.feature.spritePath as FeatureSpritePath,
     featureTrapped: this.data.cell.feature.trapped,
-    doorSpritePath: this.data.cell.doorSpritePath,
+    doorSpritePath: this.data.cell.door.spritePath as DoorSpritePath,
+    doorTrapped: this.data.cell.door.trapped,
     monsterType: this.data.cell.monster.type,
     monsterDirection: this.data.cell.monster.direction,
     floorTrapSpritePath: this.data.cell.floorTrapSpritePath,
@@ -279,7 +283,7 @@ export class CellEditorDialogComponent {
             if (cell.feature.spritePath) {
               return this.error(`There is a feature at ${coords}`);
             }
-            if (cell.doorSpritePath) {
+            if (cell.door.spritePath) {
               return this.error(`There is a door at ${coords}`);
             }
             if (cell.monster.type) {

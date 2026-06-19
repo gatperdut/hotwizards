@@ -4,6 +4,7 @@ import { Directions } from '@hw/shared/directions';
 import { sameCell } from '@hw/shared/dungeon';
 import {
   HwEditorCorners,
+  HwEditorDoor,
   HwEditorDungeon,
   HwEditorFeature,
   HwEditorMonster,
@@ -84,7 +85,7 @@ export class EditorService {
           cell.y,
           cell.baseSpritePath,
           cell.feature,
-          cell.doorSpritePath,
+          cell.door,
           cell.monster,
           cell.floorTrapSpritePath,
           cell.stairsSpritePath,
@@ -114,7 +115,7 @@ export class EditorService {
       Math.floor(Math.random() * FloorSpritePaths.length)
     ],
     feature: HwEditorFeature,
-    doorSpritePath: DoorSpritePath | null = null,
+    door: HwEditorDoor,
     monster: HwEditorMonster,
     floorTrapSpritePath: FloorTrapSpritePath | null = null,
     stairsSpritePath: StairsSpritePath | null = null,
@@ -129,7 +130,10 @@ export class EditorService {
     const featureTrapSprite = feature.trapped
       ? this.createFeatureTrapSprite(x, y, '/tiles/feature-traps/feature-trap.png')
       : null;
-    const doorSprite = doorSpritePath ? this.createDoorSprite(x, y, doorSpritePath) : null;
+    const doorSprite = door.spritePath ? this.createDoorSprite(x, y, door.spritePath) : null;
+    const doorTrapSprite = door.trapped
+      ? this.createFeatureTrapSprite(x, y, '/tiles/feature-traps/feature-trap.png')
+      : null;
     const monsterSprite = monster.spritePath
       ? this.createMonsterSprite(x, y, monster.spritePath as MonsterSpritePath)
       : null;
@@ -150,7 +154,7 @@ export class EditorService {
       y: y,
       baseSpritePath: baseSpritePath,
       feature: feature,
-      doorSpritePath: doorSpritePath,
+      door: door,
       monster: monster,
       floorTrapSpritePath: floorTrapSpritePath,
       stairsSpritePath: stairsSpritePath,
@@ -162,6 +166,7 @@ export class EditorService {
         featureSprite: featureSprite,
         featureTrapSprite: featureTrapSprite,
         doorSprite: doorSprite,
+        doorTrapSprite: doorTrapSprite,
         monsterSprite: monsterSprite,
         floorTrapSprite: floorTrapSprite,
         stairsSprite: stairsSprite,
@@ -303,12 +308,14 @@ export class EditorService {
   }
 
   private transformCell(cell: HwfeEditorCell, cellTransform: CellTransform): void {
+    // baseSprite
     if (cell.baseSpritePath !== cellTransform.baseSpritePath) {
       cell.baseSpritePath = cellTransform.baseSpritePath;
       this.viewportService.destroySprite(cell.pixi.baseSprite);
       cell.pixi.baseSprite = this.createBaseSprite(cell.x, cell.y, cellTransform.baseSpritePath);
       cell.pixi.baseSprite.on('pointertap', (event) => this.baseSpriteTap(event, cell));
     }
+    // feature
     if (cell.feature.spritePath !== cellTransform.featureSpritePath) {
       if (cell.feature.spritePath) {
         this.viewportService.destroySprite(cell.pixi.featureSprite!);
@@ -322,6 +329,7 @@ export class EditorService {
         );
       }
     }
+    // featureTrap
     if (cell.pixi.featureTrapSprite) {
       this.viewportService.destroySprite(cell.pixi.featureTrapSprite);
     }
@@ -333,15 +341,29 @@ export class EditorService {
         '/tiles/feature-traps/feature-trap.png',
       );
     }
-    if (cell.doorSpritePath !== cellTransform.doorSpritePath) {
-      if (cell.doorSpritePath) {
+    // door
+    if (cell.door.spritePath !== cellTransform.doorSpritePath) {
+      if (cell.door.spritePath) {
         this.viewportService.destroySprite(cell.pixi.doorSprite!);
       }
-      cell.doorSpritePath = cellTransform.doorSpritePath;
+      cell.door.spritePath = cellTransform.doorSpritePath;
       if (cellTransform.doorSpritePath) {
         cell.pixi.doorSprite = this.createDoorSprite(cell.x, cell.y, cellTransform.doorSpritePath);
       }
     }
+    // doorTrap
+    if (cell.pixi.doorTrapSprite) {
+      this.viewportService.destroySprite(cell.pixi.doorTrapSprite);
+    }
+    cell.door.trapped = cellTransform.doorTrapped;
+    if (cell.door.spritePath && cellTransform.doorTrapped) {
+      cell.pixi.doorTrapSprite = this.createFeatureTrapSprite(
+        cell.x,
+        cell.y,
+        '/tiles/feature-traps/feature-trap.png',
+      );
+    }
+    // monster
     if (
       cell.monster.type !== cellTransform.monsterType ||
       cell.monster.direction !== cellTransform.monsterDirection
@@ -360,6 +382,7 @@ export class EditorService {
         );
       }
     }
+    // floorTrap
     if (cell.floorTrapSpritePath !== cellTransform.floorTrapSpritePath) {
       if (cell.floorTrapSpritePath) {
         this.viewportService.destroySprite(cell.pixi.floorTrapSprite!);
@@ -373,6 +396,7 @@ export class EditorService {
         );
       }
     }
+    // stairs
     if (cell.stairsSpritePath !== cellTransform.stairsSpritePath) {
       if (cell.stairsSpritePath) {
         this.viewportService.destroySprite(cell.pixi.stairsSprite!);
@@ -442,6 +466,9 @@ export class EditorService {
     }
     if (cell.pixi.doorSprite) {
       this.viewportService.destroySprite(cell.pixi.doorSprite);
+    }
+    if (cell.pixi.doorTrapSprite) {
+      this.viewportService.destroySprite(cell.pixi.doorTrapSprite);
     }
     if (cell.monster.type) {
       cell.monster.type = null;

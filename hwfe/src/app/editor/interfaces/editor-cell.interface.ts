@@ -8,6 +8,7 @@ export interface HwfeEditorCell extends HwEditorCell {
     featureSprite: Sprite | null;
     featureTrapSprite: Sprite | null;
     doorSprite: Sprite | null;
+    doorTrapSprite: Sprite | null;
     monsterSprite: Sprite | null;
     floorTrapSprite: Sprite | null;
     stairsSprite: Sprite | null;

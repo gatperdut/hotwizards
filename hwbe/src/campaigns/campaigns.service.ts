@@ -22,15 +22,10 @@ import {
   MonsterNames,
   monsterStartingInventory,
 } from '@hw/shared/dungeon';
-import { HwEditorCell, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
+import { HwEditorCell, HwEditorDoor, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
 import { HwMembership } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
-import {
-  DoorSpritePath,
-  FloorTrapSpritePath,
-  heroSpritePath,
-  monsterSpritePath,
-} from '@hw/shared/sprites';
+import { FloorTrapSpritePath, heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
@@ -291,7 +286,7 @@ export class CampaignsService {
       creatureId: null,
       baseSpritePath: editorCell.baseSpritePath,
       feature: this.editorFeatureToFeature(editorCell.feature),
-      door: editorCell.doorSpritePath ? this.editorDoorToDoor(editorCell.doorSpritePath) : null,
+      door: this.editorDoorToDoor(editorCell.door),
       floorTrap: this.floorTrap(editorCell.floorTrapSpritePath),
       stairsSpritePath: editorCell.stairsSpritePath,
       corners: { ...editorCell.corners },
@@ -322,7 +317,7 @@ export class CampaignsService {
       spawnCell.creatureId = user.id;
 
       const movementPoints = creatureMovementPoints(character.klass, character.inventory, movement);
-      console.log('hero created', movementPoints);
+
       return {
         id: user.id,
         membershipId: membership.id,
@@ -391,17 +386,15 @@ export class CampaignsService {
       spritePath: editorFeature.spritePath,
       trapped: editorFeature.trapped,
       found: false,
-      sprung: false,
     };
   }
 
-  private editorDoorToDoor(doorSpritePath: DoorSpritePath | null): HwDoor {
+  private editorDoorToDoor(editorDoor: HwEditorDoor): HwDoor {
     return {
-      spritePath: doorSpritePath,
-      trapped: false,
-      found: false,
-      sprung: false,
+      spritePath: editorDoor.spritePath,
       open: false,
+      trapped: editorDoor.trapped,
+      found: false,
     };
   }
 
@@ -409,7 +402,6 @@ export class CampaignsService {
     return {
       spritePath: floorTrapSpritePath,
       found: false,
-      sprung: false,
     };
   }
 

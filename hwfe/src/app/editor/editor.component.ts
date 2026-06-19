@@ -149,7 +149,7 @@ export class EditorComponent implements AfterViewInit, OnDestroy {
         cellCoords.y,
         undefined,
         { spritePath: null, trapped: false },
-        undefined,
+        { spritePath: null, trapped: false },
         { type: null, spritePath: null, direction: 'w' },
         null,
         null,

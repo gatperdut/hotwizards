@@ -63,6 +63,12 @@
             [options]="doorSpritePaths"
             [canClearSingle]="true"
           />
+          @let doorSpritePath = model().doorSpritePath;
+          @if (doorSpritePath) {
+            <div class="flex flex-col gap-0">
+              <app-checkbox [field]="form.doorTrapped" label="Trapped"></app-checkbox>
+            </div>
+          }
         </div>
         <div class="flex flex-col gap-hw-average">
           <div class="typ-h2">Monster</div>
