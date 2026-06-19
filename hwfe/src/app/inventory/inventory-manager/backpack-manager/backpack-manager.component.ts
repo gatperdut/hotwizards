@@ -34,13 +34,13 @@ export class BackpackManagerComponent {
   public canEquip = input<boolean>();
   public equip = output<HwItem>();
 
-  public showPickup = input<boolean>(false);
-  public canPickup = input<boolean>(false);
-  public pickup = output<HwItem>();
+  public showPickupItem = input<boolean>(false);
+  public canPickupItem = input<boolean>(false);
+  public pickupItem = output<HwItem>();
 
-  public showDrop = input<boolean>(false);
-  public canDrop = input<boolean>(false);
-  public drop = output<HwItem>();
+  public showDropItem = input<boolean>(false);
+  public canDropItem = input<boolean>(false);
+  public dropItem = output<HwItem>();
 
   public showPickupGold = input<boolean>(false);
   public canPickupGold = input<boolean>(false);
@@ -83,24 +83,24 @@ export class BackpackManagerComponent {
           }
         : null;
 
-    const pickupAction: ItemDialogAction | null = this.showPickup()
+    const pickupAction: ItemDialogAction | null = this.showPickupItem()
       ? {
           label: 'Pick up',
           color: 'primary',
-          disabled: !this.canPickup(),
+          disabled: !this.canPickupItem(),
           callback: (): void => {
-            this.pickup.emit(item);
+            this.pickupItem.emit(item);
           },
         }
       : null;
 
-    const dropAction: ItemDialogAction | null = this.showDrop()
+    const dropAction: ItemDialogAction | null = this.showDropItem()
       ? {
           label: 'Drop',
           color: 'primary',
-          disabled: !this.canDrop(),
+          disabled: !this.canDropItem(),
           callback: (): void => {
-            this.drop.emit(item);
+            this.dropItem.emit(item);
           },
         }
       : null;

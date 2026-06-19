@@ -14,7 +14,7 @@ import { BackpackManagerComponent } from '../../inventory/inventory-manager/back
 export class TownStashComponent {
   private campaignService = inject(CampaignService);
 
-  public pickup = output<HwItem>();
+  public pickupItem = output<HwItem>();
   public pickupGold = output<number>();
   public dropGold = output<number>();
 

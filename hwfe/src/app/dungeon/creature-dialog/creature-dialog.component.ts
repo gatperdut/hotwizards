@@ -87,7 +87,7 @@ export class CreatureDialogComponent {
     this.adventuresApiService.unequipItem(this.adventure().id, slot).subscribe();
   }
 
-  public onDrop(backpackItem: HwItem): void {
+  public onDropItem(backpackItem: HwItem): void {
     this.adventuresApiService.dropItem(this.adventure().id, backpackItem.id).subscribe();
   }
 

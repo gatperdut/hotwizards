@@ -7,9 +7,9 @@
     <app-backpack-manager
       [gear]="null"
       [backpack]="loot()"
-      [showPickup]="true"
-      [canPickup]="hero().movementPoints >= 1"
-      (pickup)="onPickupItem($event)"
+      [showPickupItem]="true"
+      [canPickupItem]="hero().movementPoints >= 1"
+      (pickupItem)="onPickupItem($event)"
       [showPickupGold]="true"
       [canPickupGold]="loot().gold > 0 && hero().movementPoints >= 1"
       (pickupGold)="onPickupGold($event)"

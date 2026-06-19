@@ -95,7 +95,7 @@ export class TownMembershipComponent {
     this.charactersApiService.unequipItem(this.character().id, slot).subscribe();
   }
 
-  public onDrop(backpackItem: HwItem): void {
+  public onDropItem(backpackItem: HwItem): void {
     this.charactersApiService.dropItem(this.character().id, backpackItem.id).subscribe();
   }
 

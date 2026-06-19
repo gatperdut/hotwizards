@@ -549,7 +549,7 @@ export class TownComponent {
       ]
     : [];
 
-  public onPickup(stashItem: HwItem): void {
+  public onPickupItem(stashItem: HwItem): void {
     this.charactersApiService
       .pickupItem(this.campaignService.myMembership()!.character!.id, stashItem.id)
       .subscribe();

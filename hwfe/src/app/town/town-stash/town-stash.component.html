@@ -7,9 +7,9 @@
     <app-backpack-manager
       [gear]="null"
       [backpack]="stash()"
-      [showPickup]="!!character()"
-      [canPickup]="true"
-      (pickup)="pickup.emit($event)"
+      [showPickupItem]="!!character()"
+      [canPickupItem]="true"
+      (pickupItem)="pickupItem.emit($event)"
       [showPickupGold]="!!character()"
       [canPickupGold]="stash().gold > 0"
       (pickupGold)="pickupGold.emit($event)"
