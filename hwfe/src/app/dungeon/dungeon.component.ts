@@ -355,9 +355,9 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           return {
             ...c,
             door: {
-              ...c.door!,
+              ...c.door,
+              spritePath: ClosedToOpenDoorSpritePaths[c.door.spritePath as ClosedDoorSpritePath],
               open: true,
-              spritePath: ClosedToOpenDoorSpritePaths[c.door!.spritePath as ClosedDoorSpritePath],
             },
           };
         }

@@ -22,7 +22,7 @@ export const cellsHaveLos = <T extends HwCell>(cells: T[], origin: T, dest: T): 
   const tDeltaY = 2 * adx;
 
   const blockedByDoor = (cell: T, cx: number, cy: number): boolean =>
-    cell.door !== null && !cell.door.open && !(cx === dest.x && cy === dest.y);
+    !!cell.door.spritePath && !cell.door.open && !(cx === dest.x && cy === dest.y);
 
   while (true) {
     if (tMaxX < tMaxY) {

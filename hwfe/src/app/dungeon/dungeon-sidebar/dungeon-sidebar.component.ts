@@ -215,7 +215,8 @@ export class DungeonSidebarComponent {
             activeHero.x + DirectionOffsets[dir].x,
             activeHero.y + DirectionOffsets[dir].y,
           );
-          const enabled = activeHero.movementPoints >= 1 && !!cell?.door && !cell.door.open;
+          const enabled =
+            activeHero.movementPoints >= 1 && !!cell?.door.spritePath && !cell.door.open;
           return {
             icon: DirectionIcons[dir],
             disabled: !enabled,

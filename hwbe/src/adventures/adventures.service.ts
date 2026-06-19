@@ -281,7 +281,7 @@ export class AdventuresService {
       hero.y + DirectionOffsets[direction].y,
     );
 
-    if (!targetCell || !targetCell.door || targetCell.door.open) {
+    if (!targetCell || !targetCell.door.spritePath || targetCell.door.open) {
       throw new UnprocessableEntityException('There is no door to open');
     }
 
@@ -290,9 +290,9 @@ export class AdventuresService {
         return {
           ...targetCell,
           door: {
-            ...targetCell.door!,
+            ...targetCell.door,
             spritePath:
-              ClosedToOpenDoorSpritePaths[targetCell.door!.spritePath as ClosedDoorSpritePath],
+              ClosedToOpenDoorSpritePaths[targetCell.door.spritePath as ClosedDoorSpritePath],
             open: true,
           },
         };

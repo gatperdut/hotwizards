@@ -152,15 +152,15 @@ export class DungeonService {
           searched: updatedCell.searched,
         };
 
-        if (cell.door?.spritePath !== updatedCell.door?.spritePath) {
-          if (cell.door) {
+        if (cell.door.spritePath !== updatedCell.door.spritePath) {
+          if (cell.door.spritePath) {
             this.viewportService.destroySprite(cell.pixi.doorSprite!);
           }
-          if (updatedCell.door) {
+          if (updatedCell.door.spritePath) {
             cell.pixi.doorSprite = this.createDoorSprite(
               updatedCell.x,
               updatedCell.y,
-              updatedCell.door.spritePath!,
+              updatedCell.door.spritePath,
             );
           }
         }
@@ -202,7 +202,9 @@ export class DungeonService {
 
       if (
         cell.visibility === 0 &&
-        adjacentCells(cells, cell).some((c) => c.visibility > 0 && (!c.door || c.door.open))
+        adjacentCells(cells, cell).some(
+          (c) => c.visibility > 0 && (!c.door.spritePath || c.door.open),
+        )
       ) {
         sprites.forEach((s) => {
           s.visible = master.me;
@@ -348,7 +350,7 @@ export class DungeonService {
     const featureSprite = cell.feature.spritePath
       ? this.createFeatureSprite(cell.x, cell.y, cell.feature.spritePath)
       : null;
-    const doorSprite = cell.door?.spritePath
+    const doorSprite = cell.door.spritePath
       ? this.createDoorSprite(cell.x, cell.y, cell.door.spritePath)
       : null;
     const floorTrapSprite = cell.floorTrap.spritePath
@@ -498,7 +500,7 @@ export class DungeonService {
       hero.x + DirectionOffsets[direction].x,
       hero.y + DirectionOffsets[direction].y,
     );
-    return !!cell && !!cell.door && !cell.door.open;
+    return !!cell && !!cell.door.spritePath && !cell.door.open;
   }
 
   private baseSpriteTap(event: FederatedPointerEvent, x: number, y: number): void {

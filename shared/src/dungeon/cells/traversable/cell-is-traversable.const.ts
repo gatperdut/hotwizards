@@ -8,6 +8,6 @@ export const cellIsTraversable = <T extends HwCell>(cell: T): boolean => {
     !cell.stairsSpritePath &&
     !cell.feature.spritePath &&
     !cell.secondary &&
-    (!cell.door || cell.door.open)
+    (!cell.door.spritePath || cell.door.open)
   );
 };

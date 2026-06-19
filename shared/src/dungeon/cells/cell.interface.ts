@@ -13,7 +13,7 @@ export interface HwCell {
   creatureId: number | null;
   baseSpritePath: BaseSpritePath;
   feature: HwFeature;
-  door: HwDoor | null;
+  door: HwDoor;
   floorTrap: HwFloorTrap;
   stairsSpritePath: StairsSpritePath | null;
   corners: HwCorners;
