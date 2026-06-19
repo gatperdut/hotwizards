@@ -147,6 +147,27 @@ export class DungeonSidebarComponent {
     };
   }
 
+  private searchButton(): SidebarButton | null {
+    const adventure = this.campaignService.campaign().adventure!;
+    const master = this.campaignService.master();
+    const activeHero = this.dungeonService.activeHero();
+
+    if (master.me) {
+      return null;
+    }
+
+    const cell = activeHero ? cellAt(adventure.dungeon.cells, activeHero.x, activeHero.y) : null;
+
+    return {
+      icon: 'magnifying-glass',
+      color: 'primary',
+      disabled: !activeHero?.me, // TODO || cellsInSearchArea all searched,
+      callback: (): void => {
+        // TODO
+      },
+    };
+  }
+
   private pickupButton(): SidebarButton | null {
     const adventure = this.campaignService.campaign().adventure!;
     const master = this.campaignService.master();

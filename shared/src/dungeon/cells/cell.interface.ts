@@ -20,4 +20,5 @@ export interface HwCell {
   secondary: HwSecondary | null;
   visibility: number;
   loot: HwBackpack;
+  searched: boolean;
 }

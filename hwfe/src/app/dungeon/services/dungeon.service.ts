@@ -379,10 +379,12 @@ export class DungeonService {
       stairsSpritePath: cell.stairsSpritePath,
       corners: { ...cell.corners },
       secondary: cell.secondary ? { ...cell.secondary } : null,
+      visibility: cell.visibility,
       loot: {
         gold: cell.loot.gold,
         items: [...cell.loot.items],
       },
+      searched: cell.searched,
       pixi: {
         baseSprite: baseSprite,
         featureSprite: featureSprite,
@@ -392,7 +394,6 @@ export class DungeonService {
         corners: pixiCorners,
         lootSprite: lootSprite,
       },
-      visibility: cell.visibility,
     };
 
     baseSprite.eventMode = 'static';

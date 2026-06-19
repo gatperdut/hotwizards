@@ -271,6 +271,10 @@ export class CampaignsService {
         creatureAt(monsters, cell.x, cell.y)?.id || creatureAt(heroes, cell.x, cell.y)?.id || null;
     });
 
+    heroes.forEach((h) => {
+      cellAt(cells, h.x, h.y)!.searched = true;
+    });
+
     const response: HwDungeon = {
       cells: cells,
       heroes: heroes,
@@ -297,6 +301,7 @@ export class CampaignsService {
         gold: 0,
         items: [],
       },
+      searched: false,
     };
 
     return response;
