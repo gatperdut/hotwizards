@@ -1,8 +1,10 @@
 import { Gender, Klass } from '@hw/prismagen/browser';
+import { Direction } from '../../../directions/directions.const.js';
 import { HeroSpritePath } from '../../../sprites/hero-sprites.const.js';
 import { HwCreature } from '../creature.interface.js';
 
 export interface HwHero extends HwCreature {
+  direction: Direction;
   alignment: 'HERO';
   spritePath: HeroSpritePath;
   membershipId: number;

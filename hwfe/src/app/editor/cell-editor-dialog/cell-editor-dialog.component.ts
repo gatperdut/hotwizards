@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { form, FormRoot, required, validate, ValidationError } from '@angular/forms/signals';
-import { Adjacent, Adjacents, Direction } from '@hw/shared/directions';
+import { Adjacent, Adjacents } from '@hw/shared/directions';
 import { MonsterType, MonsterTypes, sameCell } from '@hw/shared/dungeon';
 import {
   BaseSpritePath,
@@ -51,7 +51,7 @@ type CellTransformEditable = {
   doorSpritePath: DoorSpritePath | null;
   doorTrapped: boolean;
   monsterType: MonsterType | null;
-  monsterDirection: Direction;
+  monsterDirection: Adjacent;
   floorTrapSpritePath: FloorTrapSpritePath | null;
   stairsSpritePath: StairsSpritePath | null;
   cornerN: boolean;
