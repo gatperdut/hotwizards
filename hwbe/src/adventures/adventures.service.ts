@@ -7,6 +7,8 @@ import {
   cellIsTraversable,
   cellsUpdateLos,
   creatureMovementPoints,
+  directionCells,
+  HwCell,
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
@@ -497,5 +499,56 @@ export class AdventuresService {
     }));
 
     this.adventuresGateway.handleDownPickupGold(campaign.id, hero.id, amount);
+  }
+
+  public async search(campaign: HwCampaign, hero: HwHero): Promise<void> {
+    const adventure = campaign.adventure!;
+    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
+
+    console.log('searching from', cell.x, cell.y);
+
+    const cells = directionCells(adventure.dungeon.cells, cell);
+    if (!cells.find((c) => !c.searched)) {
+      throw new UnprocessableEntityException('No direction cells to search');
+    }
+
+    const added: HwCell[] = [];
+
+    cells.forEach((c) => {
+      adventure.dungeon.cells
+        .filter((somec) => !!somec.secondary && sameCell(c, somec.secondary))
+        .forEach((somec) => {
+          if (!cellAt(cells, somec.x, somec.y)) {
+            added.push(somec);
+          }
+        });
+
+      if (c.secondary) {
+        const somec = cellAt(adventure.dungeon.cells, c.secondary.x, c.secondary.y)!;
+        if (!cellAt(cells, somec.x, somec.y)) {
+          added.push(somec);
+        }
+      }
+    });
+
+    cells.push(...added);
+
+    void (await this.prismaService.adventure.update({
+      where: { id: adventure.id },
+      data: {
+        dungeon: {
+          ...adventure.dungeon,
+          cells: adventure.dungeon.cells.map((c) =>
+            cellAt(cells, c.x, c.y) ? { ...c, searched: true } : c,
+          ),
+        } as unknown as InputJsonValue,
+      },
+    }));
+
+    cells.forEach((c) => {
+      console.log('searched', c.x, c.y);
+    });
+
+    this.adventuresGateway.handleDownSearch(campaign.id, hero.id);
   }
 }

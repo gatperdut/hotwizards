@@ -24,6 +24,7 @@ import { CurrentLootItem } from './decorators/current-loot-item.decorator.js';
 import { CurrentMonster } from './decorators/current-monster.decorator.js';
 import { AdventureCampaignMasterGuard } from './guards/adventure-campaign-master.guard.js';
 import { AdventureProperTurnGuard } from './guards/adventure-proper-turn.guard.js';
+import { HeroHasActionPoints } from './guards/hero-has-action-points.guard.js';
 import { HeroHasMovementPoints } from './guards/hero-has-movement-points.guard.js';
 import { MonsterHasMovementPoints } from './guards/monster-has-movement-points.guard.js';
 import { SetAdventureCampaignGuard } from './guards/set-adventure-campaign.guard.js';
@@ -231,13 +232,12 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    // HeroHasActionPoints,
+    HeroHasActionPoints,
   )
   public search(
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentHero() hero: HwHero,
-    @Body() body: HwAdventurePickupGoldDto,
   ): Promise<void> {
-    return this.adventuresService.pickupGold(campaign, hero, body.amount);
+    return this.adventuresService.search(campaign, hero);
   }
 }

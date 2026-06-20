@@ -19,4 +19,5 @@ export interface AdventuresDownstream {
   downDestroyItem: (heroId: number, backpackItemId: string) => void;
   downPickupItem: (heroId: number, lootItemId: string) => void;
   downPickupGold: (heroId: number, amount: number) => void;
+  downSearch: (heroId: number) => void;
 }

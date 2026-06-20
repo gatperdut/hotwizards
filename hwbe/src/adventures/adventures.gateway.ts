@@ -92,4 +92,8 @@ export class AdventuresGateway implements OnGatewayInit, OnGatewayConnection {
   public handleDownPickupGold(campaignId: number, heroId: number, amount: number): void {
     this.server.to(`campaign:${campaignId}:adventure`).emit('downPickupGold', heroId, amount);
   }
+
+  public handleDownSearch(campaignId: number, heroId: number): void {
+    this.server.to(`campaign:${campaignId}:adventure`).emit('downSearch', heroId);
+  }
 }

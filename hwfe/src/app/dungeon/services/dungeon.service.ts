@@ -198,7 +198,6 @@ export class DungeonService {
       cell.pixi.baseSprite.alpha = 1.0;
 
       const sprites = this.cellService.sprites(cell);
-      const searchedTintSubtraction = cell.searched ? BaseSpriteSearchedTintSubtraction : 0;
 
       if (
         cell.visibility === 0 &&
@@ -212,7 +211,7 @@ export class DungeonService {
         cell.pixi.baseSprite.visible = true;
         cell.pixi.baseSprite.alpha = master.me ? 1.0 : 0.1;
         if (master.me) {
-          cell.pixi.baseSprite.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
+          cell.pixi.baseSprite.tint = BaseSpriteFoggedTint;
         }
       } else {
         switch (cell.visibility) {
@@ -220,7 +219,7 @@ export class DungeonService {
             sprites.forEach((s) => {
               s.visible = master.me;
               if (master.me) {
-                s.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
+                s.tint = BaseSpriteFoggedTint;
               }
             });
             break;
@@ -228,16 +227,14 @@ export class DungeonService {
           case 1:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
+              s.tint = BaseSpriteFoggedTint;
             });
             break;
 
           case 2:
             sprites.forEach((s) => {
               s.visible = true;
-              s.tint =
-                (master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint) -
-                searchedTintSubtraction;
+              s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
             });
             break;
         }
@@ -249,24 +246,28 @@ export class DungeonService {
         return;
       }
 
-      const searchedTintSubtraction = cell.searched ? BaseSpriteSearchedTintSubtraction : 0;
-
       const secCells = secondaryCells(cells, cell);
       if (!secCells.length || secCells.every((c) => c.visibility === 2)) {
         return;
       }
-      cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint - searchedTintSubtraction;
+      cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint;
     });
 
     if (myHero) {
       losFrom<HwfeCell>(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {
         const sprites = this.cellService.sprites(cell);
-        const searchedTintSubtraction = cell.searched ? BaseSpriteSearchedTintSubtraction : 0;
+
         sprites.forEach((s) => {
-          s.tint = BaseSpritePersonalVisibleTint - searchedTintSubtraction;
+          s.tint = BaseSpritePersonalVisibleTint;
         });
       });
     }
+
+    cells.forEach((cell) => {
+      if (cell.searched) {
+        cell.pixi.baseSprite.tint = cell.pixi.baseSprite.tint - BaseSpriteSearchedTintSubtraction;
+      }
+    });
 
     this.hwfeMonsters().forEach((monster) => {
       switch (cellAt(cells, monster.x, monster.y)!.visibility) {

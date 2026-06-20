@@ -653,5 +653,51 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.hwfeCellsUpdate();
     });
+
+    // this.dungeonService.adventuresSocket.on('downSearch', (heroId) => {
+    //   const hero = this.campaignService
+    //     .campaign()
+    //     .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
+    //   const cells = this.campaignService.campaign().adventure!.dungeon.cells;
+    //   const cell = cellAt(
+    //     cells,
+    //     hero.x,
+    //     hero.y,
+    //   )!;
+
+    //   this.campaignService.campaign.update((campaign) => ({
+    //     ...campaign,
+    //     adventure: {
+    //       ...campaign.adventure!,
+    //       dungeon: {
+    //         ...campaign.adventure!.dungeon,
+    //         heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+    //           if (h.id !== heroId) {
+    //             return h;
+    //           }
+
+    //           return {
+    //             ...h,
+    //             movementPoints: h.movementPoints - 1,
+    //             inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
+    //           };
+    //         }),
+    //         cells: campaign.adventure!.dungeon.cells.map((c) => {
+    //           if (!sameCell(c, cell)) {
+    //             return c;
+    //           }
+
+    //           return {
+    //             ...c,
+    //             loot: { ...loot },
+    //           };
+    //         }),
+    //       },
+    //     },
+    //   }));
+
+    //   this.dungeonService.hwfeHeroesUpdate();
+    //   this.dungeonService.hwfeCellsUpdate();
+    // });
   }
 }
