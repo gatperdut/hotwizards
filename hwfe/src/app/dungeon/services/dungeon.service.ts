@@ -45,6 +45,7 @@ import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
 import { MonsterSelectedTint } from '../../sprites/monster-sprites.const';
+import { GreenSpriteTintSubtraction } from '../../sprites/sprite-tints.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
@@ -182,6 +183,10 @@ export class DungeonService {
           cell.pixi.lootSprite
         ) {
           this.viewportService.destroySprite(cell.pixi.lootSprite);
+        }
+
+        if (!cell.searched && updatedCell.searched) {
+          cell.pixi.baseSprite.tint -= GreenSpriteTintSubtraction;
         }
 
         return resultCell;

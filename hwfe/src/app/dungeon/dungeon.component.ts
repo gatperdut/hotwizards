@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { AdjacentOffsets } from '@hw/shared/directions';
-import { cellAt, cellsUpdateLos, sameCell } from '@hw/shared/dungeon';
+import { cellAt, cellsUpdateLos, sameCell, searchedCells } from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
 import {
   ClosedDoorSpritePath,
@@ -191,6 +191,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
             monsters: campaign.adventure!.dungeon.monsters.map((monster) => {
               return {
                 ...monster,
+                actionPoints: data.monsters[monster.id].actionPoints,
                 movementPoints: data.monsters[monster.id].movementPoints,
                 maxMovementPoints: data.monsters[monster.id].movementPoints,
               };
@@ -219,6 +220,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
               return {
                 ...hero,
+                actionPoints: data.actionPoints,
                 movementPoints: data.movementPoints,
                 maxMovementPoints: data.movementPoints,
               };
@@ -654,50 +656,39 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       this.dungeonService.hwfeCellsUpdate();
     });
 
-    // this.dungeonService.adventuresSocket.on('downSearch', (heroId) => {
-    //   const hero = this.campaignService
-    //     .campaign()
-    //     .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
-    //   const cells = this.campaignService.campaign().adventure!.dungeon.cells;
-    //   const cell = cellAt(
-    //     cells,
-    //     hero.x,
-    //     hero.y,
-    //   )!;
+    this.dungeonService.adventuresSocket.on('downSearch', (heroId) => {
+      const hero = this.campaignService
+        .campaign()
+        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
+      const allCells = this.campaignService.campaign().adventure!.dungeon.cells;
 
-    //   this.campaignService.campaign.update((campaign) => ({
-    //     ...campaign,
-    //     adventure: {
-    //       ...campaign.adventure!,
-    //       dungeon: {
-    //         ...campaign.adventure!.dungeon,
-    //         heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-    //           if (h.id !== heroId) {
-    //             return h;
-    //           }
+      const cells = searchedCells(allCells, cellAt(allCells, hero.x, hero.y)!);
 
-    //           return {
-    //             ...h,
-    //             movementPoints: h.movementPoints - 1,
-    //             inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
-    //           };
-    //         }),
-    //         cells: campaign.adventure!.dungeon.cells.map((c) => {
-    //           if (!sameCell(c, cell)) {
-    //             return c;
-    //           }
+      this.campaignService.campaign.update((campaign) => ({
+        ...campaign,
+        adventure: {
+          ...campaign.adventure!,
+          dungeon: {
+            ...campaign.adventure!.dungeon,
+            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+              if (h.id !== heroId) {
+                return h;
+              }
 
-    //           return {
-    //             ...c,
-    //             loot: { ...loot },
-    //           };
-    //         }),
-    //       },
-    //     },
-    //   }));
+              return {
+                ...h,
+                actionPoints: h.actionPoints - 1,
+              };
+            }),
+            cells: campaign.adventure!.dungeon.cells.map((c) =>
+              cellAt(cells, c.x, c.y) ? { ...c, searched: true } : c,
+            ),
+          },
+        },
+      }));
 
-    //   this.dungeonService.hwfeHeroesUpdate();
-    //   this.dungeonService.hwfeCellsUpdate();
-    // });
+      this.dungeonService.hwfeHeroesUpdate();
+      this.dungeonService.hwfeCellsUpdate();
+    });
   }
 }

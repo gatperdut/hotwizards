@@ -1,4 +1,5 @@
 export interface HwTransformEndTurnMasterMonster {
+  actionPoints: number;
   movementPoints: number;
 }
 

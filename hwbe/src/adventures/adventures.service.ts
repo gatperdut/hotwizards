@@ -6,13 +6,13 @@ import {
   cellAt,
   cellIsTraversable,
   cellsUpdateLos,
+  creatureMaxActionPoints,
   creatureMovementPoints,
-  directionCells,
-  HwCell,
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
   sameCell,
+  searchedCells,
 } from '@hw/shared/dungeon';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
 import {
@@ -74,13 +74,19 @@ export class AdventuresService {
       monsters: {},
     };
     const updatedMonsters = adventure.dungeon.monsters.map((m) => {
+      const actionPoints = creatureMaxActionPoints(m.type!, m.inventory);
       const movementPoints = creatureMovementPoints(
         m.type!,
         m.inventory,
         campaign.ruleset.movement,
       );
-      wsData.monsters[m.id] = { movementPoints: movementPoints };
-      return { ...m, movementPoints: movementPoints, maxMovementPoints: movementPoints };
+      wsData.monsters[m.id] = { actionPoints: actionPoints, movementPoints: movementPoints };
+      return {
+        ...m,
+        actionPoints: actionPoints,
+        movementPoints: movementPoints,
+        maxMovementPoints: movementPoints,
+      };
     });
 
     await this.prismaService.adventure.update({
@@ -106,6 +112,8 @@ export class AdventuresService {
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
     const hero = adventure.dungeon.heroes.find((h) => h.id === user.id)!;
 
+    const actionPoints = creatureMaxActionPoints(hero.klass, hero.inventory);
+
     const movementPoints = creatureMovementPoints(
       hero.klass,
       hero.inventory,
@@ -114,6 +122,7 @@ export class AdventuresService {
 
     const updatedHero = {
       ...hero,
+      actionPoints: creatureMaxActionPoints(hero.klass, hero.inventory),
       movementPoints: movementPoints,
       maxMovementPoints: movementPoints,
     };
@@ -133,6 +142,7 @@ export class AdventuresService {
 
     this.adventuresGateway.handleDownEndTurnHero(campaign.id, {
       heroId: updatedHero.id,
+      actionPoints: actionPoints,
       movementPoints: movementPoints,
       turn: turn,
     });
@@ -503,51 +513,26 @@ export class AdventuresService {
 
   public async search(campaign: HwCampaign, hero: HwHero): Promise<void> {
     const adventure = campaign.adventure!;
-    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
 
-    console.log('searching from', cell.x, cell.y);
-
-    const cells = directionCells(adventure.dungeon.cells, cell);
-    if (!cells.find((c) => !c.searched)) {
-      throw new UnprocessableEntityException('No direction cells to search');
-    }
-
-    const added: HwCell[] = [];
-
-    cells.forEach((c) => {
-      adventure.dungeon.cells
-        .filter((somec) => !!somec.secondary && sameCell(c, somec.secondary))
-        .forEach((somec) => {
-          if (!cellAt(cells, somec.x, somec.y)) {
-            added.push(somec);
-          }
-        });
-
-      if (c.secondary) {
-        const somec = cellAt(adventure.dungeon.cells, c.secondary.x, c.secondary.y)!;
-        if (!cellAt(cells, somec.x, somec.y)) {
-          added.push(somec);
-        }
-      }
-    });
-
-    cells.push(...added);
+    const cells = searchedCells(
+      adventure.dungeon.cells,
+      cellAt(adventure.dungeon.cells, hero.x, hero.y)!,
+    );
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
         dungeon: {
           ...adventure.dungeon,
+          heroes: adventure.dungeon.heroes.map((h) =>
+            h.id === hero.id ? { ...h, actionPoints: h.actionPoints - 1 } : h,
+          ),
           cells: adventure.dungeon.cells.map((c) =>
             cellAt(cells, c.x, c.y) ? { ...c, searched: true } : c,
           ),
         } as unknown as InputJsonValue,
       },
     }));
-
-    cells.forEach((c) => {
-      console.log('searched', c.x, c.y);
-    });
 
     this.adventuresGateway.handleDownSearch(campaign.id, hero.id);
   }

@@ -167,6 +167,7 @@ export class DungeonSidebarComponent {
       color: 'primary',
       disabled:
         !activeHero?.me ||
+        activeHero.actionPoints <= 0 ||
         !cell ||
         !directionCells(adventure.dungeon.cells, cell).find((c) => !c.searched),
       callback: (): void => {
