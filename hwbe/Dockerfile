@@ -40,6 +40,11 @@ RUN npm ci --omit=dev
 # ---- Stage 3: runtime ----
 FROM node:24-slim
 
+# Prisma's CLI needs openssl, which node:24-slim does not ship.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
+
 ENV NODE_ENV=production
 
 WORKDIR /app
