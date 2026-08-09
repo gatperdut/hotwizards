@@ -12,7 +12,6 @@
   "scripts": {
     "start": "nest start --watch",
     "start:debug": "nest start --watch --debug",
-    "start:prod": "node dist/hwbe/src/main.js",
     "build": "nest build",
     "prisma:gen": "npx prisma generate",
     "prisma:migrate:dev": "npx prisma migrate dev",
