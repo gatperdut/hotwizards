@@ -16,7 +16,12 @@
 # no longer matches; wipe its DB volume once with: npm run reset:prod
 
 set -euo pipefail
-. "$(dirname "$0")/ensure-node.sh"
+
+# nvm is a shell function, not a binary: source it, then switch to .nvmrc's node.
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+. "$NVM_DIR/nvm.sh"
+nvm use > /dev/null
+
 cd "$(dirname "$0")/../hwbe"
 
 echo "==> Wiping database and migration history"
