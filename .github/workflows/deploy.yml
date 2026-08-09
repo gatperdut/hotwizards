@@ -156,6 +156,7 @@ jobs:
           script: |
             cd /opt/hw
             docker compose cp sitemap.xml hwfe:/usr/share/nginx/html/sitemap.xml
+            rm sitemap.xml
 
       - name: Common - Prune old GHCR image versions
         uses: dataaxiom/ghcr-cleanup-action@v1
