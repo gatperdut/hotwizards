@@ -7,11 +7,6 @@
 
 set -euo pipefail
 
-# nvm is a shell function, not a binary: source it, then switch to .nvmrc's node.
-export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
-. "$NVM_DIR/nvm.sh"
-nvm use > /dev/null
-
 cd "$(dirname "$0")/.."
 
 echo "==> Cleaning build outputs, generated code and node_modules"
