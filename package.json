@@ -35,6 +35,7 @@
     "reset:db": "npm run hwbe:prisma:migrate:reset",
     "reset:schema": "./scripts/reset-schema.sh",
     "reset:dev": "./scripts/reset-dev.sh",
+    "reset:prod": "./scripts/reset-prod.sh",
     "clean": "rm -rf node_modules hwbe/node_modules hwfe/node_modules shared/node_modules prismagen/node_modules",
     "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run shared:clean && npm run prismagen:clean && npm run clean"
   },

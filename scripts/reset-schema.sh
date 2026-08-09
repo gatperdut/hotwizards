@@ -12,9 +12,8 @@
 # seed (there is no schema yet at that point), so it drops the schema directly;
 # reset:db interactively re-applies the existing migrations + seeds.
 #
-# After committing a squash, production's migration history no longer matches;
-# wipe its DB volume once:
-#   ssh root@hotwizards.net 'cd /opt/hw && docker compose down && docker volume rm hw_db-data && docker compose up -d'
+# After a squash lands on master and deploys, production's migration history
+# no longer matches; wipe its DB volume once with: npm run reset:prod
 
 set -euo pipefail
 cd "$(dirname "$0")/../hwbe"

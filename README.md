@@ -14,8 +14,4 @@ Three tiers, from lightest to heaviest:
 - `npm run reset:schema` — squash migrations: wipe the database and migration history, derive a single `initial` migration from the current `schema.prisma`, seed. For after schema changes. Commit the regenerated `hwbe/prisma/migrations`.
 - `npm run reset:dev` — full environment reset: clean everything, fresh `npm ci`, then `reset:schema`, then build `shared`.
 
-After a squash lands on `master`, production's migration history no longer matches; wipe its DB volume once:
-
-```sh
-ssh root@hotwizards.net 'cd /opt/hw && docker compose down && docker volume rm hw_db-data && docker compose up -d'
-```
+After a squash lands on `master` and has been deployed, production's migration history no longer matches; wipe its DB volume once with `npm run reset:prod` (asks for confirmation, then waits until the backend is back up — expect ~1 minute of downtime).
