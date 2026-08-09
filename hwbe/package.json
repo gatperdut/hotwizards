@@ -12,7 +12,6 @@
   "scripts": {
     "start": "nest start --watch",
     "start:debug": "nest start --watch --debug",
-    "start:prod": "node dist/hwbe/src/main.js",
     "build": "nest build",
     "prisma:gen": "npx prisma generate",
     "prisma:migrate:dev": "npx prisma migrate dev",
@@ -37,23 +36,19 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^17.4.0",
     "pg": "^8.20.0",
+    "prisma": "^7.6.0",
     "reflect-metadata": "^0.2.2",
     "socket.io": "^4.8.3",
+    "tsx": "^4.21.0",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
-    "@nestjs/testing": "^11.0.1",
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/node": "^24.0.0",
     "@types/web-push": "^3.6.4",
-    "globals": "^17.0.0",
-    "prisma": "^7.6.0",
-    "source-map-support": "^0.5.21",
-    "ts-loader": "^9.5.2",
-    "tsx": "^4.21.0",
-    "tsconfig-paths": "^4.2.0"
+    "globals": "^17.0.0"
   }
 }

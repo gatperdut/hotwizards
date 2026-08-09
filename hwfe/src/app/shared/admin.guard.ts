@@ -8,6 +8,6 @@ export class AdminGuard implements CanActivate {
   private router = inject(Router);
 
   public canActivate(): MaybeAsync<GuardResult> {
-    return this.authService.user()!.admin || this.router.createUrlTree(['home', 'campaigns']);
+    return this.authService.user()?.admin || this.router.createUrlTree(['home', 'campaigns']);
   }
 }

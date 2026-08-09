@@ -12,17 +12,13 @@
   "scripts": {
     "start": "ng serve",
     "start:wifi": "ng serve --host 0.0.0.0",
-    "start:prod": "ng serve --configuration production",
     "build": "ng build --verbose",
     "build:watch": "ng build --watch",
     "build:stats": "ng build --stats-json",
     "build:dev": "ng build --configuration development",
-    "serve:prod": "npx serve dist/hwfe/browser",
     "clean": "rm -rf dist .angular"
   },
   "dependencies": {
-    "@angular/aria": "^21.2.6",
-    "@angular/cdk": "^21.2.4",
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",
@@ -33,13 +29,13 @@
     "@sentry/angular": "^10.47.0",
     "pixi.js": "^8.18.1",
     "pixi-viewport": "^6.0.3",
+    "rxjs": "^7.8.2",
     "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@angular/build": "^21.2.5",
     "@angular/cli": "^21.2.5",
     "@angular/compiler-cli": "^21.2.0",
-    "@sentry/cli": "^3.3.5",
     "@tailwindcss/postcss": "^4.1.12",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.12"

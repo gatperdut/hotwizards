@@ -1,0 +1,46 @@
+# Build context is the monorepo root: docker build -f hwfe/Dockerfile .
+
+# ---- Stage 1: build ----
+FROM node:24-slim AS build
+
+WORKDIR /app
+
+# Install all dependencies first, so this layer is cached until a package.json changes.
+COPY package.json package-lock.json ./
+COPY hwbe/package.json hwbe/
+COPY hwfe/package.json hwfe/
+COPY shared/package.json shared/
+COPY prismagen/package.json prismagen/
+RUN npm ci
+
+COPY tsconfig.json ./
+COPY shared/ shared/
+COPY prismagen/ prismagen/
+COPY hwbe/ hwbe/
+COPY hwfe/ hwfe/
+
+# Values baked into the bundle via src/environments/environment.ts placeholders.
+ARG HWFE_SENTRY_DSN=
+ARG SENTRY_RELEASE=dev
+ARG HWFE_HWBE_URL=https://hotwizards.net
+ARG PUBLIC_VAPID_KEY=
+
+RUN sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${HWFE_SENTRY_DSN}|" hwfe/src/environments/environment.ts \
+  && sed -i "s|HWFE_SENTRY_RELEASE_PLACEHOLDER|${SENTRY_RELEASE}|" hwfe/src/environments/environment.ts \
+  && sed -i "s|HWFE_HWBE_URL|${HWFE_HWBE_URL}|" hwfe/src/environments/environment.ts \
+  && sed -i "s|HWFE_PUBLIC_VAPID_KEY|${PUBLIC_VAPID_KEY}|" hwfe/src/environments/environment.ts
+
+# prisma.config.ts requires a DB url to load; generate/build never connect, so a dummy works.
+ENV HWBE_DB_URL=postgresql://build:build@localhost:5432/build?schema=public
+
+RUN npm run hwbe:prisma:gen \
+  && npm run shared:build \
+  && npm run hwfe:build
+
+# ---- Stage 2: runtime ----
+FROM nginx:1.27-alpine
+
+COPY hwfe/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/hwfe/dist/hwfe/browser /usr/share/nginx/html
+
+EXPOSE 80

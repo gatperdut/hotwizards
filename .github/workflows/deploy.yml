@@ -6,108 +6,110 @@ on:
       - master
   workflow_dispatch:
 
+env:
+  IMAGE_HWBE: ghcr.io/${{ github.repository }}-hwbe
+  IMAGE_HWFE: ghcr.io/${{ github.repository }}-hwfe
+
 jobs:
   build-and-deploy-hw:
     runs-on: ubuntu-latest
     environment: production
-    env:
-      RELEASE_NAME: '${{ github.sha }}'
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Common - Checkout code
         uses: actions/checkout@v6.0.2
 
-      - name: Common - Setup node.js
-        uses: actions/setup-node@v6.3.0
+      - name: Common - Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Common - Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          node-version: '24.14.1'
-          cache: 'npm'
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: HWBE - Create .env file
-        working-directory: hwbe
+      - name: HWBE - Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: hwbe/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_HWBE }}:latest
+            ${{ env.IMAGE_HWBE }}:${{ github.sha }}
+          cache-from: type=gha,scope=hwbe
+          cache-to: type=gha,scope=hwbe,mode=max
+
+      - name: HWFE - Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: hwfe/Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_HWFE }}:latest
+            ${{ env.IMAGE_HWFE }}:${{ github.sha }}
+          cache-from: type=gha,scope=hwfe
+          cache-to: type=gha,scope=hwfe,mode=max
+          build-args: |
+            HWFE_SENTRY_DSN=${{ vars.HWFE_SENTRY_DSN }}
+            SENTRY_RELEASE=${{ github.sha }}
+            HWFE_HWBE_URL=${{ vars.HWFE_HWBE_URL }}
+            PUBLIC_VAPID_KEY=${{ vars.PUBLIC_VAPID_KEY }}
+
+      - name: Deploy - Create .env file
         run: |
-          echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" >> .env
-          echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> .env
-          echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> .env
-          echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> .env
-          echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@${{ vars.HWBE_DB_HOST }}:${{ vars.HWBE_DB_PORT }}/${{ vars.HWBE_DB_NAME }}?schema=public" >> .env
-          echo "HWBE_JWT_KEY=${{ secrets.HWBE_JWT_KEY }}" >> .env
-          echo "HWBE_JWT_EXPIRES_IN=${{ vars.HWBE_JWT_EXPIRES_IN }}" >> .env
-          echo "HWBE_PRIVATE_VAPID_KEY=${{ secrets.PRIVATE_VAPID_KEY }}" >> .env
-          echo "HWBE_PUBLIC_VAPID_KEY=${{ vars.PUBLIC_VAPID_KEY }}" >> .env
-          echo "HWBE_VAPID_EMAIL=${{ secrets.HWBE_VAPID_EMAIL }}" >> .env
-          echo "SENTRY_RELEASE=${{ github.sha }}" >> .env
+          mkdir deploy
+          cp docker-compose.yml deploy
+          echo "HWBE_NODE_ENV=${{ vars.HWBE_NODE_ENV }}" >> deploy/.env
+          echo "HWBE_CORS_ORIGIN=${{ vars.HWBE_CORS_ORIGIN }}" >> deploy/.env
+          echo "HWBE_PORT=${{ vars.HWBE_PORT }}" >> deploy/.env
+          echo "HWBE_SENTRY_DSN=${{ secrets.HWBE_SENTRY_DSN }}" >> deploy/.env
+          echo "HWBE_DB_USER=${{ vars.HWBE_DB_USER }}" >> deploy/.env
+          echo "HWBE_DB_PASSWORD=${{ secrets.HWBE_DB_PASSWORD }}" >> deploy/.env
+          echo "HWBE_DB_NAME=${{ vars.HWBE_DB_NAME }}" >> deploy/.env
+          echo "HWBE_DB_URL=postgresql://${{ vars.HWBE_DB_USER }}:${{ secrets.HWBE_DB_PASSWORD }}@db:5432/${{ vars.HWBE_DB_NAME }}?schema=public" >> deploy/.env
+          echo "HWBE_JWT_KEY=${{ secrets.HWBE_JWT_KEY }}" >> deploy/.env
+          echo "HWBE_JWT_EXPIRES_IN=${{ vars.HWBE_JWT_EXPIRES_IN }}" >> deploy/.env
+          echo "HWBE_PRIVATE_VAPID_KEY=${{ secrets.PRIVATE_VAPID_KEY }}" >> deploy/.env
+          echo "HWBE_PUBLIC_VAPID_KEY=${{ vars.PUBLIC_VAPID_KEY }}" >> deploy/.env
+          echo "HWBE_VAPID_EMAIL=${{ secrets.HWBE_VAPID_EMAIL }}" >> deploy/.env
+          echo "SENTRY_RELEASE=${{ github.sha }}" >> deploy/.env
 
-      - name: HWFE - Inject Sentry DSN
-        working-directory: hwfe
-        run: |
-          sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${{ vars.HWFE_SENTRY_DSN }}|" src/environments/environment.ts
-          sed -i "s|HWFE_SENTRY_RELEASE_PLACEHOLDER|${{ github.sha }}|" src/environments/environment.ts
-          sed -i "s|HWFE_HWBE_URL|${{ vars.HWFE_HWBE_URL }}|" src/environments/environment.ts
-          sed -i "s|HWFE_PUBLIC_VAPID_KEY|${{ vars.PUBLIC_VAPID_KEY }}|" src/environments/environment.ts
-
-      - name: Install and build
-        run: |
-          npm install
-          npm run hwbe:prisma:gen
-          npm run shared:build
-          npm run hwbe:build
-          npm run hwfe:build
-
-      - name: Prepare deployment
-        run: |
-          mkdir hw
-          mv package.json hw
-          mv package-lock.json hw
-          mv prismagen hw
-          mv shared hw
-          mv node_modules hw
-          mv hwbe/dist/hwbe hw
-          mv hwbe/package.json hw/hwbe
-          mv hwbe/.env hw/hwbe
-          mv hwfe/dist/hwfe/browser hw/hwfe
-
-      - name: Deploy
+      - name: Deploy - Copy compose file and .env to droplet
         uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: hw
-          rm: true
-          target: '/var/www/hw'
+          source: deploy/docker-compose.yml,deploy/.env
+          target: '/opt/hw'
           strip_components: 1
 
-      - name: HWBE - Database migration
+      - name: Deploy - Pull images and restart stack
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw
-            npm run hwbe:prisma:migrate:deploy
-            npm run hwbe:prisma:db:seed
-
-      - name: HWBE - pm2
-        uses: appleboy/ssh-action@v1.2.5
-        with:
-          host: ${{ vars.SSH_HOST }}
-          username: ${{ vars.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            pm2 delete hwbe || true
-            pm2 start src/main.js --name hwbe --update-env --cwd /var/www/hw/hwbe
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            cd /opt/hw
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
 
       - name: HWBE - Upload sourcemaps
-        working-directory: hwbe
         run: |
+          docker create --name hwbe-dist ${{ env.IMAGE_HWBE }}:${{ github.sha }}
+          docker cp hwbe-dist:/app/hwbe/dist ./hwbe-dist
+          docker rm hwbe-dist
           npx @sentry/cli releases new -p $SENTRY_PROJECT "${{ github.sha }}"
-          npx @sentry/cli sourcemaps upload hwbe/dist/hwbe/src \
+          npx @sentry/cli sourcemaps upload hwbe-dist/hwbe/src \
             --project $SENTRY_PROJECT \
             --release "${{ github.sha }}" \
             --rewrite
@@ -118,10 +120,12 @@ jobs:
           SENTRY_PROJECT: 'hwbe'
 
       - name: HWFE - Upload sourcemaps
-        working-directory: hwfe
         run: |
+          docker create --name hwfe-dist ${{ env.IMAGE_HWFE }}:${{ github.sha }}
+          docker cp hwfe-dist:/usr/share/nginx/html ./hwfe-dist
+          docker rm hwfe-dist
           npx @sentry/cli releases new -p $SENTRY_PROJECT "${{ github.sha }}"
-          npx @sentry/cli sourcemaps upload dist/hwfe/browser \
+          npx @sentry/cli sourcemaps upload hwfe-dist \
             --project $SENTRY_PROJECT \
             --release "${{ github.sha }}" \
             --rewrite
@@ -132,13 +136,32 @@ jobs:
           SENTRY_PROJECT: 'hwfe'
 
       - name: HWFE - Sitemap generation
+        run: npx sitemap-generator-cli https://hotwizards.net --output sitemap.xml
+
+      - name: HWFE - Copy sitemap to droplet
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: sitemap.xml
+          target: '/opt/hw'
+
+      - name: HWFE - Install sitemap into hwfe container
         uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ vars.SSH_HOST }}
           username: ${{ vars.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd /var/www/hw/hwfe
-            npx sitemap-generator-cli https://hotwizards.net --output sitemap.xml
+            cd /opt/hw
+            docker compose cp sitemap.xml hwfe:/usr/share/nginx/html/sitemap.xml
+            rm sitemap.xml
+
+      - name: Common - Prune old GHCR image versions
+        uses: dataaxiom/ghcr-cleanup-action@v1
+        with:
+          packages: hotwizards-hwbe,hotwizards-hwfe
+          keep-n-tagged: 5
+          exclude-tags: latest
+          delete-untagged: true

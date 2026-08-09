@@ -6,13 +6,12 @@
 - Deal with pixi `.on()`?
 - Are the dialogs being pulled in by the imports anyway, despite the lazy loading?
 
-### Fully reset application development
+### Resetting
 
-- `npm run clean:all`
-- `npm i`
-- `npm run hwbe:prisma:gen`
-- `npm run shared:build`
-- Delete `hwbe/prisma/migrations`
-- `npm run hwbe:prisma:migrate:reset`
-- `npm run hwbe:prisma:migrate:dev`
-- `npm run hwbe:prisma:db:seed`
+Three tiers, from lightest to heaviest:
+
+- `npm run reset:db` — wipe and reseed the database, keeping the existing migrations. For when the dev *data* is in a bad state.
+- `npm run reset:schema` — squash migrations: wipe the database and migration history, derive a single `initial` migration from the current `schema.prisma`, seed. For after schema changes. Commit the regenerated `hwbe/prisma/migrations`.
+- `npm run reset:dev` — full environment reset: clean everything, fresh `npm ci`, then `reset:schema`, then build `shared`.
+
+After a squash lands on `master` and has been deployed, production's migration history no longer matches; wipe its DB volume once with `npm run reset:prod` (asks for confirmation, then waits until the backend is back up — expect ~1 minute of downtime).
