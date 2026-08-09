@@ -13,7 +13,7 @@
 # reset:db interactively re-applies the existing migrations + seeds.
 #
 # After a squash lands on master and deploys, production's migration history
-# no longer matches; wipe its DB volume once with: npm run reset:prod
+# no longer matches; wipe its DB volume once with: pnpm run reset:prod
 
 set -euo pipefail
 
