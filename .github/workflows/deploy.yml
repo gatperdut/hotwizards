@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - docker # TODO: remove after merging to master
   workflow_dispatch:
 
 env:
