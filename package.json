@@ -32,7 +32,7 @@
     "shared:build": "npm run build -w @hw/shared",
     "shared:clean": "npm run clean -w @hw/shared",
     "prismagen:clean": "npm run clean -w @hw/prismagen",
-    "db:reset": "npm run hwbe:prisma:migrate:reset",
+    "reset:db": "npm run hwbe:prisma:migrate:reset",
     "reset:dev": "./scripts/reset-dev.sh",
     "clean": "rm -rf node_modules hwbe/node_modules hwfe/node_modules shared/node_modules prismagen/node_modules",
     "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run shared:clean && npm run prismagen:clean && npm run clean"
