@@ -23,17 +23,19 @@
     "hwbe:prisma:studio": "npm run prisma:studio -w @hw/hwbe",
     "hwfe:start": "npm run start -w @hw/hwfe",
     "hwfe:start:wifi": "npm run start:wifi -w @hw/hwfe",
-    "hwfe:start:prod": "npm run start:prod -w @hw/hwfe",
     "hwfe:build": "npm run build -w @hw/hwfe",
     "hwfe:build:dev": "npm run build:dev -w @hw/hwfe",
+    "hwfe:build:watch": "npm run build:watch -w @hw/hwfe",
+    "hwfe:build:stats": "npm run build:stats -w @hw/hwfe",
     "hwfe:clean": "npm run clean -w @hw/hwfe",
     "shared:start": "npm run start -w @hw/shared",
     "shared:build": "npm run build -w @hw/shared",
     "shared:clean": "npm run clean -w @hw/shared",
     "prismagen:clean": "npm run clean -w @hw/prismagen",
-    "db:reset": "npm run prismagen:clean && npm run hwbe:prisma:gen && npm run hwbe:prisma:migrate:reset && npm run hwbe:prisma:migrate:dev && npm run hwbe:prisma:db:seed",
-    "clean": "rm -rf node_modules package-lock.json",
-    "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run prismagen:clean && npm run clean"
+    "db:reset": "npm run hwbe:prisma:migrate:reset",
+    "reset:dev": "./scripts/reset-dev.sh",
+    "clean": "rm -rf node_modules hwbe/node_modules hwfe/node_modules shared/node_modules prismagen/node_modules",
+    "clean:all": "npm run hwbe:clean && npm run hwfe:clean && npm run shared:clean && npm run prismagen:clean && npm run clean"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
