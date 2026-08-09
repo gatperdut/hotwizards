@@ -7,7 +7,7 @@
   "license": "MIT",
   "engines": {
     "node": ">=24.0.0",
-    "npm": ">=11.0.0"
+    "pnpm": ">=11.0.0"
   },
   "scripts": {
     "start": "npx tsc --watch",
@@ -15,6 +15,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@hw/prismagen": "workspace:*",
     "class-validator": "^0.15.1",
     "class-transformer": "^0.5.1"
   },

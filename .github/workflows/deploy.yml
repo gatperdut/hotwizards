@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - pnpm # TODO: remove after merging to master
   workflow_dispatch:
 
 env:

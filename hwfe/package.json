@@ -7,7 +7,7 @@
   "license": "MIT",
   "engines": {
     "node": ">=24.0.0",
-    "npm": ">=11.0.0"
+    "pnpm": ">=11.0.0"
   },
   "scripts": {
     "start": "ng serve",
@@ -19,6 +19,8 @@
     "clean": "rm -rf dist .angular"
   },
   "dependencies": {
+    "@hw/prismagen": "workspace:*",
+    "@hw/shared": "workspace:*",
     "@angular/common": "^21.2.0",
     "@angular/compiler": "^21.2.0",
     "@angular/core": "^21.2.0",

@@ -1,22 +1,30 @@
 # Build context is the monorepo root: docker build -f hwfe/Dockerfile .
 
+ARG PNPM_VERSION=11.21.0
+
 # ---- Stage 1: build ----
 FROM node:24-slim AS build
+ARG PNPM_VERSION
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 WORKDIR /app
 
-# Install all dependencies first, so this layer is cached until a package.json changes.
-COPY package.json package-lock.json ./
+# Install all dependencies first, so this layer is cached until a manifest changes.
+# pnpm needs every workspace's package.json present to validate the lockfile.
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY hwbe/package.json hwbe/
 COPY hwfe/package.json hwfe/
 COPY shared/package.json shared/
 COPY prismagen/package.json prismagen/
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 COPY tsconfig.json ./
 COPY shared/ shared/
 COPY prismagen/ prismagen/
-COPY hwbe/ hwbe/
+# From hwbe only what prisma generate needs, so backend code changes
+# don't invalidate this image's build cache.
+COPY hwbe/prisma.config.ts hwbe/
+COPY hwbe/prisma hwbe/prisma/
 COPY hwfe/ hwfe/
 
 # Values baked into the bundle via src/environments/environment.ts placeholders.
@@ -33,9 +41,9 @@ RUN sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${HWFE_SENTRY_DSN}|" hwfe/src/environm
 # prisma.config.ts requires a DB url to load; generate/build never connect, so a dummy works.
 ENV HWBE_DB_URL=postgresql://build:build@localhost:5432/build?schema=public
 
-RUN npm run hwbe:prisma:gen \
-  && npm run shared:build \
-  && npm run hwfe:build
+RUN pnpm run hwbe:prisma:gen \
+  && pnpm run shared:build \
+  && pnpm run hwfe:build
 
 # ---- Stage 2: runtime ----
 FROM nginx:1.27-alpine

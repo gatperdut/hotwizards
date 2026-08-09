@@ -7,10 +7,13 @@
   "license": "MIT",
   "engines": {
     "node": ">=24.0.0",
-    "npm": ">=11.0.0"
+    "pnpm": ">=11.0.0"
   },
   "scripts": {
     "clean": "rm -rf src/*"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.6.0"
   },
   "exports": {
     "./client": "./src/client.ts",
