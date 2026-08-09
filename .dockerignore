@@ -1,21 +1,15 @@
-# Dependencies (reinstalled inside the image)
 node_modules
 **/node_modules
 
-# Build outputs (rebuilt inside the image)
 hwbe/dist
 hwfe/dist
 hwfe/.angular
 shared/dist
 
-# Generated code (regenerated inside the image via prisma generate)
 prismagen/src
 
-# Local env files (never bake secrets into images)
-**/.env
-**/.env.*
+**/.env *_/.env._
 
-# Misc
 .git
 .github
 .vscode

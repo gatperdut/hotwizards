@@ -8,10 +8,10 @@
 
 ### Resetting
 
-Three tiers, from lightest to heaviest:
+From lightest to heaviest:
 
-- `pnpm run reset:db` — wipe and reseed the database, keeping the existing migrations. For when the dev *data* is in a bad state.
-- `pnpm run reset:schema` — squash migrations: wipe the database and migration history, derive a single `initial` migration from the current `schema.prisma`, seed. For after schema changes. Commit the regenerated `hwbe/prisma/migrations`.
-- `pnpm run reset:dev` — full environment reset: clean everything, fresh `pnpm install --frozen-lockfile`, then `reset:schema`, then build `shared`.
+- `pnpm run reset:db`: wipe and reseed the database, keeping the existing migrations.
+- `pnpm run reset:schema`: wipe the database and migration history after schema changes, derive a single `initial` migration from the current `schema.prisma`, and seed.
+- `pnpm run reset:dev`: full environment reset: clean everything, fresh `pnpm install --frozen-lockfile`, then `reset:schema`, then build `shared`.
 
-After a squash lands on `master` and has been deployed, production's migration history no longer matches; wipe its DB volume once with `pnpm run reset:prod` (asks for confirmation, then waits until the backend is back up — expect ~1 minute of downtime).
+After a squash lands on `master` and has been deployed, production's migration history no longer matches. Wipe its DB volume once with `pnpm run reset:prod` (asks for confirmation, then waits until the backend is back up. expect ~1 minute of downtime).
