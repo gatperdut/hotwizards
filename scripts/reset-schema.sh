@@ -16,6 +16,7 @@
 # no longer matches; wipe its DB volume once with: npm run reset:prod
 
 set -euo pipefail
+. "$(dirname "$0")/ensure-node.sh"
 cd "$(dirname "$0")/../hwbe"
 
 echo "==> Wiping database and migration history"

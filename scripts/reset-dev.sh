@@ -6,6 +6,7 @@
 #   - build shared so the dev watches resolve immediately
 
 set -euo pipefail
+. "$(dirname "$0")/ensure-node.sh"
 cd "$(dirname "$0")/.."
 
 echo "==> Cleaning build outputs, generated code and node_modules"
