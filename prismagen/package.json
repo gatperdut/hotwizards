@@ -11,22 +11,18 @@
   },
   "scripts": {
     "generate": "prisma generate",
-    "clean": "rm -rf src/*",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
-    "seed": "tsx prisma/seed.ts",
-    "seed:dev": "tsx prisma/dev.seed.ts",
-    "seed:prod": "tsx prisma/prod.seed.ts",
-    "studio": "prisma studio"
+    "db:execute": "prisma db execute",
+    "studio": "prisma studio",
+    "clear": "rm -rf src/* node_modules"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "^7.6.0",
-    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.0",
-    "prisma": "^7.6.0",
-    "tsx": "^4.21.0"
+    "prisma": "^7.6.0"
   },
   "exports": {
     "./adapter-pg": "./adapter-pg.ts",

@@ -4,7 +4,7 @@ set -euo pipefail
 
 echo "This WIPES the production database at hotwizards.net and rebuilds it from migrations + seed."
 read -r -p "Type 'wipe' to continue: " answer
-[ "$answer" = "wipe" ] || { echo "Aborted."; exit 1; }
+[ "$answer" = "wipe" ] || { echo "Aborted."; exit 0; }
 
 ssh root@hotwizards.net 'cd /opt/hw && docker compose down && docker volume rm hw_db-data && docker compose up -d'
 

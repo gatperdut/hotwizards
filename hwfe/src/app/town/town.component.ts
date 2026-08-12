@@ -398,7 +398,7 @@ export class TownComponent {
 
       const soldItem = inventory.backpack.items.find((item) => item.id === soldItemId)!;
       inventory.backpack.items = inventory.backpack.items.filter((item) => item.id !== soldItemId);
-      inventory.backpack.gold += HwItemCosts[soldItem.name as HwBuyableItemName];
+      inventory.backpack.gold += Math.round(HwItemCosts[soldItem.name as HwBuyableItemName] / 2);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,

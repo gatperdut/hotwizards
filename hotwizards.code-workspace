@@ -20,6 +20,10 @@
       "name": "PRISMAGEN",
       "path": "prismagen",
     },
+    {
+      "name": "SEEDS",
+      "path": "seeds",
+    },
   ],
   "settings": {
     "files.exclude": {
@@ -27,6 +31,7 @@
       "hwfe": true,
       "shared": true,
       "prismagen": true,
+      "seeds": true,
     },
     "search.exclude": {
       "**/package-lock.json": true,

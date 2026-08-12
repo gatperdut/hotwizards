@@ -12,7 +12,7 @@
   "scripts": {
     "start": "npx tsc --watch",
     "build": "npx tsc",
-    "clean": "rm -rf dist"
+    "clear": "rm -rf dist"
   },
   "dependencies": {
     "@hw/prismagen": "workspace:*",

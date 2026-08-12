@@ -6,6 +6,7 @@ cd /app/prismagen
 pnpm run migrate:deploy
 
 echo "Seeding database..."
+cd /app/seeds
 pnpm run seed
 
 echo "Starting hwbe..."

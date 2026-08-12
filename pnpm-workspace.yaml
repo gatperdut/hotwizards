@@ -3,6 +3,7 @@ packages:
   - hwfe
   - shared
   - prismagen
+  - seeds
 allowBuilds:
   '@parcel/watcher': true
   '@prisma/engines': true

@@ -1,6 +1,6 @@
 import { PrismaClient } from '@hw/prismagen/client';
 import { HwEditorCell } from '@hw/shared/editor';
-import { InputJsonValue } from '@prisma/client/runtime/client';
+import { InputJsonValue } from '@hw/prismagen/runtime';
 
 export async function seedAdventureTemplates(prismaClient: PrismaClient): Promise<void> {
   const sunkenTombCells: HwEditorCell[] = [

@@ -11,6 +11,7 @@ COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY hwbe/package.json hwbe/
 COPY shared/package.json shared/
 COPY prismagen/package.json prismagen/
+COPY seeds/package.json seeds/
 RUN pnpm install --frozen-lockfile
 
 COPY tsconfig.json ./
@@ -35,8 +36,9 @@ COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY hwbe/package.json hwbe/
 COPY shared/package.json shared/
 COPY prismagen/package.json prismagen/
+COPY seeds/package.json seeds/
 
-RUN pnpm install --frozen-lockfile --prod --filter @hw/hwbe...
+RUN pnpm install --frozen-lockfile --prod --filter @hw/hwbe... --filter @hw/seeds...
 
 # Stage 3: runtime
 FROM node:24-slim
@@ -59,6 +61,7 @@ COPY --from=build /app/hwbe/dist hwbe/dist/
 COPY prismagen/adapter-pg.ts prismagen/
 COPY prismagen/prisma.config.ts prismagen/
 COPY prismagen/prisma prismagen/prisma/
+COPY seeds/ seeds/
 
 COPY hwbe/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
