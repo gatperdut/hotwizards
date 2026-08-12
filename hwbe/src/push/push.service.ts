@@ -24,11 +24,11 @@ export class PushService {
   }
 
   public async delete(user: HwUser, endpoint: string): Promise<number> {
-    const subscription = await this.prismaService.pushSubscription.delete({
+    const { count } = await this.prismaService.pushSubscription.deleteMany({
       where: { userId: user.id, endpoint: endpoint },
     });
 
-    return subscription.id;
+    return count;
   }
 
   public async notifyUser(userId: number, payload: PushPayload): Promise<void> {
@@ -59,7 +59,7 @@ export class PushService {
           )
           .catch(async (err) => {
             if (err.statusCode === 410) {
-              await this.prismaService.pushSubscription.delete({
+              await this.prismaService.pushSubscription.deleteMany({
                 where: { endpoint: sub.endpoint },
               });
             }
