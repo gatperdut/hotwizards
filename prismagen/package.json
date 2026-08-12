@@ -15,7 +15,9 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
-    "db:seed": "tsx prisma/$(if [ \"$HWBE_NODE_ENV\" = \"development\" ]; then echo dev.seed.ts; else echo prod.seed.ts; fi)",
+    "seed": "tsx prisma/seed.ts",
+    "seed:dev": "tsx prisma/dev.seed.ts",
+    "seed:prod": "tsx prisma/prod.seed.ts",
     "studio": "prisma studio"
   },
   "dependencies": {

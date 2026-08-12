@@ -1,3 +1,3 @@
 import { config } from 'dotenv';
 
-config({ path: ['.env', '../hwbe/.env'], quiet: true });
+config({ path: ['../hwbe/.env'], quiet: true });

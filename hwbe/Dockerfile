@@ -40,6 +40,8 @@ RUN pnpm install --frozen-lockfile --prod --filter @hw/hwbe...
 
 # Stage 3: runtime
 FROM node:24-slim
+ARG PNPM_VERSION
+RUN npm install -g pnpm@${PNPM_VERSION}
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends openssl \

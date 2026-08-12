@@ -30,7 +30,7 @@
     "prismagen:migrate:dev": "pnpm --filter @hw/prismagen migrate:dev",
     "prismagen:migrate:deploy": "pnpm --filter @hw/prismagen migrate:deploy",
     "prismagen:migrate:reset": "pnpm --filter @hw/prismagen migrate:reset",
-    "prismagen:db:seed": "pnpm --filter @hw/prismagen db:seed",
+    "prismagen:seed": "pnpm --filter @hw/prismagen seed",
     "prismagen:studio": "pnpm --filter @hw/prismagen studio",
     "reset:dev:db": "pnpm run prismagen:migrate:reset",
     "reset:dev:schema": "./scripts/reset-schema.sh",

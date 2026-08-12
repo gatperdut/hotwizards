@@ -1,5 +1,5 @@
-import { PrismaClient } from '@hw/prismagen/client';
 import { PrismaPg } from '@hw/prismagen/adapter-pg';
+import { PrismaClient } from '@hw/prismagen/client';
 import './env.js';
 import { seedAdventureTemplates } from './seeds/adventure-templates.seed.js';
 import { seedCampaigns } from './seeds/campaigns.seed.js';

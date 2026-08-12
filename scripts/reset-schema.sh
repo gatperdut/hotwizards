@@ -9,12 +9,12 @@ rm -rf prisma/migrations
 echo 'DROP OWNED BY CURRENT_USER CASCADE;' | npx prisma db execute --stdin
 
 echo "Regenerating prisma client"
-npx prisma generate
+pnpm run generate
 
 echo "Creating single initial migration from schema.prisma"
-npx prisma migrate dev --name initial
+pnpm run migrate:dev -- --name initial
 
 echo "Seeding database"
-npx tsx prisma/dev.seed.ts
+pnpm run seed:dev
 
 echo "Done. Remember to commit the regenerated prismagen/prisma/migrations."

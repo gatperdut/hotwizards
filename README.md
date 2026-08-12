@@ -17,7 +17,7 @@ docker compose up -d db               # or point HWBE_DB_URL at any postgres
 pnpm run prismagen:generate           # generates prismagen/src (gitignored)
 pnpm run shared:start
 pnpm run prismagen:migrate:deploy     # apply committed migrations
-pnpm run prismagen:db:seed            # dev seed (HWBE_NODE_ENV=development)
+pnpm run prismagen:seed               # dev seed (HWBE_NODE_ENV=development)
 pnpm run hwbe:start
 pnpm run hwfe:start
 ```

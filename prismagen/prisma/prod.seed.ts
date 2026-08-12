@@ -1,5 +1,5 @@
-import { PrismaClient } from '@hw/prismagen/client';
 import { PrismaPg } from '@hw/prismagen/adapter-pg';
+import { PrismaClient } from '@hw/prismagen/client';
 import './env.js';
 import { seedProdUsers } from './seeds/prod-users.seed.js';
 

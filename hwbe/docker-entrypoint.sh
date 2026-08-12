@@ -3,14 +3,10 @@ set -e
 
 echo "Applying database migrations..."
 cd /app/prismagen
-npx prisma migrate deploy
+pnpm run migrate:deploy
 
 echo "Seeding database..."
-if [ "$HWBE_NODE_ENV" = "development" ]; then
-  npx tsx prisma/dev.seed.ts
-else
-  npx tsx prisma/prod.seed.ts
-fi
+pnpm run seed
 
 echo "Starting hwbe..."
 cd /app/hwbe
