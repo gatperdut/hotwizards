@@ -199,6 +199,7 @@ export class DungeonService {
     const cells = this.hwfeCells();
     const master = this.campaignService.master();
     const myHero = this.myHero();
+    const hwfeMonsters = this.hwfeMonsters();
 
     cells.forEach((cell) => {
       cell.pixi.baseSprite.alpha = 1.0;
@@ -244,6 +245,11 @@ export class DungeonService {
             });
             break;
         }
+      }
+
+      const monster = hwfeMonsters.find((m) => m.x === cell.x && m.y === cell.y);
+      if (monster && monster.alignment === 'MONSTER') {
+        monster.pixi.sprite.alpha = cell.visibility < 2 ? 0.5 : 1.0;
       }
     });
 
