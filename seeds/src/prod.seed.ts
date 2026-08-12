@@ -1,7 +1,7 @@
 import { PrismaClient } from '@hw/prismagen/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import './env.js';
-import { seedProdUsers } from './seeds/prod-users.seed.js';
+import { seedUsers } from './seeds/prod/users.seed.js';
 
 const connectionString: string = process.env['HWBE_DB_URL'] as string;
 
@@ -10,7 +10,7 @@ const adapter = new PrismaPg({ connectionString: connectionString });
 const prismaClient = new PrismaClient({ adapter: adapter });
 
 async function main(): Promise<void> {
-  await seedProdUsers(prismaClient);
+  await seedUsers(prismaClient);
 }
 
 main()

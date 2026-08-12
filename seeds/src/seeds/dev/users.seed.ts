@@ -7,7 +7,7 @@ type NamedDevUserSeed = {
   admin: boolean;
 };
 
-export async function seedDevUsers(prismaClient: PrismaClient): Promise<void> {
+export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
   const salt: string = await bcrypt.genSalt();
 
   const namedUserSeeds: NamedDevUserSeed[] = [

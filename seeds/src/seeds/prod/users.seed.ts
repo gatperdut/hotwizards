@@ -6,7 +6,7 @@ type NamedProdUserSeed = {
   initials: string;
 };
 
-export async function seedProdUsers(prismaClient: PrismaClient): Promise<void> {
+export async function seedUsers(prismaClient: PrismaClient): Promise<void> {
   const salt: string = await bcrypt.genSalt();
 
   const namedUserSeeds: NamedProdUserSeed[] = [
