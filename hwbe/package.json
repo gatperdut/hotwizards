@@ -13,12 +13,11 @@
     "start": "nest start --watch",
     "start:debug": "nest start --watch --debug",
     "build": "nest build",
-    "prisma:gen": "npx prisma generate",
-    "prisma:migrate:dev": "npx prisma migrate dev",
-    "prisma:migrate:deploy": "npx prisma migrate deploy",
-    "prisma:migrate:reset": "npx prisma migrate reset",
-    "prisma:db:seed": "npx prisma db seed",
-    "prisma:studio": "npx prisma studio",
+    "prisma:migrate:dev": "npx prisma migrate dev --config ../prismagen/prisma.config.ts",
+    "prisma:migrate:deploy": "npx prisma migrate deploy --config ../prismagen/prisma.config.ts",
+    "prisma:migrate:reset": "npx prisma migrate reset --config ../prismagen/prisma.config.ts",
+    "prisma:db:seed": "tsx prisma/$(if [ \"$HWBE_NODE_ENV\" = \"development\" ]; then echo dev.seed.ts; else echo prod.seed.ts; fi)",
+    "prisma:studio": "npx prisma studio --config ../prismagen/prisma.config.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {

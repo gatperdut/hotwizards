@@ -8,7 +8,6 @@ RUN npm install -g pnpm@${PNPM_VERSION}
 WORKDIR /app
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
-COPY hwbe/package.json hwbe/
 COPY hwfe/package.json hwfe/
 COPY shared/package.json shared/
 COPY prismagen/package.json prismagen/
@@ -17,8 +16,6 @@ RUN pnpm install --frozen-lockfile
 COPY tsconfig.json ./
 COPY shared/ shared/
 COPY prismagen/ prismagen/
-COPY hwbe/prisma.config.ts hwbe/
-COPY hwbe/prisma hwbe/prisma/
 COPY hwfe/ hwfe/
 
 # Values baked into the bundle via src/environments/environment.ts placeholders.
@@ -34,7 +31,7 @@ RUN sed -i "s|HWFE_SENTRY_DSN_PLACEHOLDER|${HWFE_SENTRY_DSN}|" hwfe/src/environm
 
 ENV HWBE_DB_URL=postgresql://build:build@localhost:5432/build?schema=public
 
-RUN pnpm run hwbe:prisma:gen \
+RUN pnpm run prismagen:generate \
   && pnpm run shared:build \
   && pnpm run hwfe:build
 

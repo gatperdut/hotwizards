@@ -9,7 +9,6 @@ WORKDIR /app
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY hwbe/package.json hwbe/
-COPY hwfe/package.json hwfe/
 COPY shared/package.json shared/
 COPY prismagen/package.json prismagen/
 RUN pnpm install --frozen-lockfile
@@ -21,7 +20,7 @@ COPY hwbe/ hwbe/
 
 ENV HWBE_DB_URL=postgresql://build:build@localhost:5432/build?schema=public
 
-RUN pnpm run hwbe:prisma:gen \
+RUN pnpm run prismagen:generate \
   && pnpm run shared:build \
   && pnpm run hwbe:build
 
@@ -34,7 +33,6 @@ WORKDIR /app
 
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
 COPY hwbe/package.json hwbe/
-COPY hwfe/package.json hwfe/
 COPY shared/package.json shared/
 COPY prismagen/package.json prismagen/
 
@@ -56,7 +54,8 @@ WORKDIR /app
 COPY --from=build /app/shared/dist shared/dist/
 COPY --from=build /app/prismagen/src prismagen/src/
 COPY --from=build /app/hwbe/dist hwbe/dist/
-COPY hwbe/prisma.config.ts hwbe/
+COPY prismagen/prisma.config.ts prismagen/
+COPY prismagen/prisma prismagen/prisma/
 COPY hwbe/prisma hwbe/prisma/
 
 COPY hwbe/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
