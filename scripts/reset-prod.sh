@@ -10,7 +10,8 @@ ssh root@hotwizards.net 'cd /opt/hw && docker compose down && docker volume rm h
 
 echo "Stack restarting; waiting for the API to come back (~1 min)"
 for i in $(seq 1 30); do
-  # 401 = backend is up and answering (endpoint requires auth); 5xx = still booting
+  # 401 = backend is up and answering (endpoint requires auth)
+  # 5xx = still booting
   code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 https://hotwizards.net/api/adventure-templates || true)
   if [ "$code" = "401" ]; then
     echo "Backend is up and migrated (waited ~$((i * 5))s)."

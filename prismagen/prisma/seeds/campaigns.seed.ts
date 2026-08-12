@@ -1,6 +1,6 @@
-import { MembershipStatus, PrismaClient } from '@hw/prismagen/client';
 import { HwBackpack, HwInventory } from '@hw/shared/inventory';
 import { InputJsonObject } from '@prisma/client/runtime/client';
+import { MembershipStatus, PrismaClient } from '../../src/client';
 
 export async function seedCampaigns(prismaClient: PrismaClient): Promise<void> {
   const carlos = await prismaClient.user.findUnique({ where: { handle: 'Carlos' } });

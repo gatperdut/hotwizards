@@ -15,7 +15,8 @@ import { PwaService } from './services/pwa.service.js';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes, withExperimentalAutoCleanupInjectors()), // TODO drop withExperimentalAutoCleanupInjectors when ng version makes it default
+    // TODO drop withExperimentalAutoCleanupInjectors when ng version makes it default
+    provideRouter(routes, withExperimentalAutoCleanupInjectors()),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerImmediately',
