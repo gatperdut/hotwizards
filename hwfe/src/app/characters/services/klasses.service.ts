@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Klass } from '@hw/prismagen/browser';
+import { Klass } from '@hw/prismagen/enums';
 
 @Injectable({ providedIn: 'root' })
 export class KlassesService {

@@ -1,13 +1,13 @@
-import { PrismaPg } from '@hw/prismagen/adapter-pg';
 import { PrismaClient } from '@hw/prismagen/client';
+import { PrismaPg } from '@prisma/adapter-pg';
 import './env.js';
 import { seedAdventureTemplates } from './seeds/adventure-templates.seed.js';
 import { seedCampaigns } from './seeds/campaigns.seed.js';
 import { seedDevUsers } from './seeds/dev-users.seed.js';
 
-const connectionString: string = process.env['HWBE_DB_URL'] as string;
+const connectionString = process.env['HWBE_DB_URL'] as string;
 
-const adapter: PrismaPg = new PrismaPg({ connectionString: connectionString });
+const adapter = new PrismaPg({ connectionString: connectionString });
 
 const prismaClient = new PrismaClient({ adapter: adapter });
 

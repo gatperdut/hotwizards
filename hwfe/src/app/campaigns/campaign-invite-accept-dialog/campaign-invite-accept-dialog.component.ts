@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { form, FormRoot, maxLength, required } from '@angular/forms/signals';
-import { Gender, Klass } from '@hw/prismagen/browser';
+import { Gender, Klass } from '@hw/prismagen/enums';
 import { characterPortrait } from '@hw/shared/characters';
 import { HwMembershipAcceptDto } from '@hw/shared/memberships';
 import { firstValueFrom } from 'rxjs';

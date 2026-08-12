@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Movement } from '@hw/prismagen/browser';
+import { Movement } from '@hw/prismagen/enums';
 
 @Injectable({ providedIn: 'root' })
 export class MovementsService {
