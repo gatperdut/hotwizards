@@ -40,7 +40,6 @@
     "@types/express": "^5.0.0",
     "@types/ms": "^2.1.0",
     "@types/node": "^24.0.0",
-    "@types/web-push": "^3.6.4",
-    "globals": "^17.0.0"
+    "@types/web-push": "^3.6.4"
   }
 }
