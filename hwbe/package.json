@@ -13,11 +13,6 @@
     "start": "nest start --watch",
     "start:debug": "nest start --watch --debug",
     "build": "nest build",
-    "prisma:migrate:dev": "npx prisma migrate dev --config ../prismagen/prisma.config.ts",
-    "prisma:migrate:deploy": "npx prisma migrate deploy --config ../prismagen/prisma.config.ts",
-    "prisma:migrate:reset": "npx prisma migrate reset --config ../prismagen/prisma.config.ts",
-    "prisma:db:seed": "tsx prisma/$(if [ \"$HWBE_NODE_ENV\" = \"development\" ]; then echo dev.seed.ts; else echo prod.seed.ts; fi)",
-    "prisma:studio": "npx prisma studio --config ../prismagen/prisma.config.ts",
     "clean": "rm -rf dist"
   },
   "dependencies": {
@@ -30,18 +25,12 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/platform-socket.io": "^11.1.19",
     "@nestjs/websockets": "^11.1.19",
-    "@prisma/adapter-pg": "^7.6.0",
-    "@prisma/client": "^7.6.0",
     "@sentry/nestjs": "^10.47.0",
     "@sentry/profiling-node": "^10.47.0",
     "bcrypt": "^6.0.0",
-    "dotenv": "^17.4.0",
     "ms": "^2.1.3",
-    "pg": "^8.20.0",
-    "prisma": "^7.6.0",
     "reflect-metadata": "^0.2.2",
     "socket.io": "^4.8.3",
-    "tsx": "^4.21.0",
     "web-push": "^3.6.7"
   },
   "devDependencies": {

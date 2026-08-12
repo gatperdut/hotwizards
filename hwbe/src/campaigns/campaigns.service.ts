@@ -29,7 +29,7 @@ import { Paginated } from '@hw/shared/pagination';
 import { FloorTrapSpritePath, heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
+import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';

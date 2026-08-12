@@ -4,8 +4,7 @@
   "sourceRoot": "src",
   "entryFile": "hwbe/src/main",
   "compilerOptions": {
-    "deleteOutDir": true,
-    "assets": [{ "include": "../prisma/**/*", "outDir": "dist/hwbe/prisma" }]
+    "deleteOutDir": true
   },
   "generateOptions": {
     "spec": false

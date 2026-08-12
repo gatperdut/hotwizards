@@ -6,7 +6,7 @@ import { HwMembership } from '@hw/shared/memberships';
 import { HwUser } from '@hw/shared/users';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InputJsonObject } from '@prisma/client/runtime/client';
+import { InputJsonObject } from '@hw/prismagen/runtime';
 import { CampaignHwRelations, campaignToHwCampaign } from '../campaigns/campaign-to-hw-campaign.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';

@@ -54,9 +54,9 @@ WORKDIR /app
 COPY --from=build /app/shared/dist shared/dist/
 COPY --from=build /app/prismagen/src prismagen/src/
 COPY --from=build /app/hwbe/dist hwbe/dist/
+COPY prismagen/adapter-pg.ts prismagen/
 COPY prismagen/prisma.config.ts prismagen/
 COPY prismagen/prisma prismagen/prisma/
-COPY hwbe/prisma hwbe/prisma/
 
 COPY hwbe/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh

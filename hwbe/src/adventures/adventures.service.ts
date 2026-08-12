@@ -22,9 +22,9 @@ import {
   monsterSpritePath,
 } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
+import { InputJsonValue } from '@hw/prismagen/runtime';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InputJsonValue } from '@prisma/client/runtime/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { AdventuresGateway } from './adventures.gateway.js';

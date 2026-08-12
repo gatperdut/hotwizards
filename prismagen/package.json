@@ -11,15 +11,26 @@
   },
   "scripts": {
     "generate": "prisma generate",
-    "clean": "rm -rf src/*"
+    "clean": "rm -rf src/*",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:reset": "prisma migrate reset",
+    "db:seed": "tsx prisma/$(if [ \"$HWBE_NODE_ENV\" = \"development\" ]; then echo dev.seed.ts; else echo prod.seed.ts; fi)",
+    "studio": "prisma studio"
   },
   "dependencies": {
+    "@hw/shared": "workspace:*",
+    "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "^7.6.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.0",
-    "prisma": "^7.6.0"
+    "prisma": "^7.6.0",
+    "tsx": "^4.21.0"
   },
   "exports": {
+    "./adapter-pg": "./adapter-pg.ts",
+    "./browser": "./src/browser.ts",
     "./client": "./src/client.ts",
-    "./browser": "./src/browser.ts"
+    "./runtime": "./runtime.ts"
   }
 }

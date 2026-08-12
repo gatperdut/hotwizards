@@ -1,6 +1,6 @@
 import { PrismaClient } from '@hw/prismagen/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import 'dotenv/config';
+import { PrismaPg } from '@hw/prismagen/adapter-pg';
+import './env.js';
 import { seedAdventureTemplates } from './seeds/adventure-templates.seed.js';
 import { seedCampaigns } from './seeds/campaigns.seed.js';
 import { seedDevUsers } from './seeds/dev-users.seed.js';

@@ -9,7 +9,7 @@ import {
   HwSlot,
 } from '@hw/shared/inventory';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InputJsonObject, InputJsonValue } from '@prisma/client/runtime/client';
+import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CharactersGateway } from './characters.gateway.js';
 
