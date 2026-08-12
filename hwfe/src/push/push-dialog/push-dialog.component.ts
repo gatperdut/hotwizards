@@ -8,7 +8,7 @@ import { DialogActionsDirective } from '@hw/hwfe/app/ui/dialog/directives/dialog
 import { DialogContentDirective } from '@hw/hwfe/app/ui/dialog/directives/dialog-content.directive';
 import { DialogTitleDirective } from '@hw/hwfe/app/ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '@hw/hwfe/app/ui/dialog/services/dialog.service';
-import { tap } from 'rxjs';
+import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { PushApiService } from '../services/push-api.service';
 
 export type PushDialogData = void;
@@ -34,34 +34,47 @@ export class PushDialogComponent {
   public dialogRef = inject<DialogRef<PushDialogResult>>(DialogRef);
   private pushApiService = inject(PushApiService);
   private swPush = inject(SwPush);
+  private toastService = inject(ToastService);
 
   public subscription$ = this.swPush.subscription;
 
   public loading = signal(false);
 
   public subscribe(): void {
+    this.loading.set(true);
     this.pushApiService
       .upsert()
-      .pipe(
-        tap(() => {
-          this.loading.set(true);
-        }),
-      )
-      .subscribe()
+      .subscribe({
+        next: () => {
+          this.toastService.show({ message: 'Push notifications enabled' });
+        },
+        error: () => {
+          this.toastService.show({
+            message: 'Push notifications could not be enabled',
+            color: 'warning',
+          });
+        },
+      })
       .add(() => {
         this.loading.set(false);
       });
   }
 
   public unsubscribe(): void {
+    this.loading.set(true);
     this.pushApiService
       .delete()
-      .pipe(
-        tap(() => {
-          this.loading.set(true);
-        }),
-      )
-      .subscribe()
+      .subscribe({
+        next: () => {
+          this.toastService.show({ message: 'Push notifications disabled' });
+        },
+        error: () => {
+          this.toastService.show({
+            message: 'Push notifications could not be disabled',
+            color: 'warning',
+          });
+        },
+      })
       .add(() => {
         this.loading.set(false);
       });
