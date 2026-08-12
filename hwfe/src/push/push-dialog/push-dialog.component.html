@@ -20,18 +20,26 @@
       }
 
       @if (subscription$ | async) {
-        <app-button
-          class="self-center"
-          color="warning"
-          (click)="unsubscribe()"
-          label="Disable notifications"
-        ></app-button>
+        @if (loading()) {
+          <div class="spinner"></div>
+        } @else {
+          <app-button
+            class="self-center"
+            color="warning"
+            (click)="unsubscribe()"
+            label="Disable notifications"
+          ></app-button>
+        }
       } @else {
-        <app-button
-          class="self-center"
-          (click)="subscribe()"
-          label="Enable notifications"
-        ></app-button>
+        @if (loading()) {
+          <div class="spinner"></div>
+        } @else {
+          <app-button
+            class="self-center"
+            (click)="subscribe()"
+            label="Enable notifications"
+          ></app-button>
+        }
       }
     </div>
   </ng-template>

@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { SwPush } from '@angular/service-worker';
 import { ButtonComponent } from '@hw/hwfe/app/ui/button/button.component';
 import { DialogRef } from '@hw/hwfe/app/ui/dialog/dialog-ref.class';
@@ -8,6 +8,7 @@ import { DialogActionsDirective } from '@hw/hwfe/app/ui/dialog/directives/dialog
 import { DialogContentDirective } from '@hw/hwfe/app/ui/dialog/directives/dialog-content.directive';
 import { DialogTitleDirective } from '@hw/hwfe/app/ui/dialog/directives/dialog-title.directive';
 import { APP_DIALOG_DATA } from '@hw/hwfe/app/ui/dialog/services/dialog.service';
+import { tap } from 'rxjs';
 import { PushApiService } from '../services/push-api.service';
 
 export type PushDialogData = void;
@@ -36,11 +37,33 @@ export class PushDialogComponent {
 
   public subscription$ = this.swPush.subscription;
 
+  public loading = signal(false);
+
   public subscribe(): void {
-    this.pushApiService.upsert().subscribe();
+    this.pushApiService
+      .upsert()
+      .pipe(
+        tap(() => {
+          this.loading.set(true);
+        }),
+      )
+      .subscribe()
+      .add(() => {
+        this.loading.set(false);
+      });
   }
 
   public unsubscribe(): void {
-    this.pushApiService.delete().subscribe();
+    this.pushApiService
+      .delete()
+      .pipe(
+        tap(() => {
+          this.loading.set(true);
+        }),
+      )
+      .subscribe()
+      .add(() => {
+        this.loading.set(false);
+      });
   }
 }
