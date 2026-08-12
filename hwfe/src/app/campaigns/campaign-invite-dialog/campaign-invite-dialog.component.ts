@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { form, FormRoot, minLength } from '@angular/forms/signals';
+import { form, FormRoot, maxLength, minLength } from '@angular/forms/signals';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwUser } from '@hw/shared/users';
 import { firstValueFrom, map } from 'rxjs';
@@ -47,6 +47,7 @@ export class CampaignInviteDialogComponent {
     this.model,
     (schemaPath) => {
       minLength(schemaPath, 1);
+      maxLength(schemaPath, 4 - this.data.campaign.memberships.length);
     },
     {
       submission: {
@@ -87,4 +88,7 @@ export class CampaignInviteDialogComponent {
   });
 
   public options = computed(() => this.resource.value() || []);
+
+  public maximum = computed(() => 4 - this.data.campaign.memberships.length);
+  public tooMany = computed(() => this.model().length > this.maximum());
 }

@@ -80,7 +80,7 @@ export class CampaignsListEntryComponent {
   public actions = computed(() => {
     const result: AppCardAction[] = [];
 
-    if (this.meMaster() && !this.hasAdventure()) {
+    if (this.meMaster() && !this.hasAdventure() && this.campaign().memberships.length < 4) {
       result.push(this.campaignsListActionsService.inviteAction(this.campaign()));
     }
 

@@ -1,5 +1,5 @@
 <div class="hw-border h-full flex flex-col p-hw-average gap-hw-average" [class]="color()">
-  <div class="pb-hw-average separator-b" [class]="`separator-${separatorColor()}`">
+  <div class="pb-hw-average" [class]="separatorClass()">
     <div class="flex flex-row justify-between items-center gap-hw-small">
       <ng-content select="[appCardTitle]"></ng-content>
       @if (miniactions().length) {

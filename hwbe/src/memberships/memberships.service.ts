@@ -1,4 +1,5 @@
 import { Gender, Klass, MembershipStatus } from '@hw/prismagen/client';
+import { InputJsonObject } from '@hw/prismagen/runtime';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
 import { heroStartingInventory } from '@hw/shared/dungeon';
@@ -6,7 +7,6 @@ import { HwMembership } from '@hw/shared/memberships';
 import { HwUser } from '@hw/shared/users';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InputJsonObject } from '@hw/prismagen/runtime';
 import { CampaignHwRelations, campaignToHwCampaign } from '../campaigns/campaign-to-hw-campaign.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
@@ -26,6 +26,10 @@ export class MembershipsService {
   public async create(user: HwUser, campaign: HwCampaign, userIds: number[]): Promise<number[]> {
     if (userIds.includes(campaign.master.id)) {
       throw new BadRequestException('You cannot invite yourself to your own campaign');
+    }
+
+    if (userIds.length + campaign.memberships.length > 4) {
+      throw new BadRequestException('Maximum of 4 memberships per campaign');
     }
 
     const existingUsers = await this.prismaService.user.findMany({

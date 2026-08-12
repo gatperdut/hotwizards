@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { HwfeColor } from '../../shared/color.const';
 import { ButtonComponent } from '../button/button.component';
 
@@ -23,7 +23,11 @@ export type AppCardMiniAction = {
 })
 export class CardComponent {
   public color = input<HwfeColor>('primary');
-  public separatorColor = input<HwfeColor>('secondary');
+  public separatorColor = input<HwfeColor | null>(null);
   public actions = input<AppCardAction[]>([]);
   public miniactions = input<AppCardMiniAction[]>([]);
+
+  public separatorClass = computed(() =>
+    this.separatorColor() ? `separator-b separator-${this.separatorColor()}` : '',
+  );
 }
