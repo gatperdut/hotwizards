@@ -42,6 +42,7 @@ import {
   BaseSpriteSharedVisibleTint,
 } from '../../sprites/base-sprites.const';
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
+import { FloorTrapSpriteTint } from '../../sprites/floor-trap-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
 import { MonsterSelectedTint } from '../../sprites/monster-sprites.const';
@@ -271,6 +272,11 @@ export class DungeonService {
     cells.forEach((cell) => {
       if (cell.searched) {
         cell.pixi.baseSprite.tint = cell.pixi.baseSprite.tint - BaseSpriteSearchedTintSubtraction;
+      }
+      if (cell.floorTrap.spritePath) {
+        cell.pixi.floorTrapSprite!.visible = cell.floorTrap.found || master.me;
+        cell.pixi.floorTrapSprite!.tint = FloorTrapSpriteTint;
+        cell.pixi.floorTrapSprite!.alpha = cell.floorTrap.found ? 1.0 : 0.4;
       }
     });
 
