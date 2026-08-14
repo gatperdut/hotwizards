@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_HWBE: ghcr.io/${{ github.repository }}-hwbe
-  IMAGE_HWFE: ghcr.io/${{ github.repository }}-hwfe
+  HWBE_IMAGE: ghcr.io/${{ github.repository }}-hwbe
+  HWFE_IMAGE: ghcr.io/${{ github.repository }}-hwfe
 
 jobs:
   build-and-deploy-hw:
@@ -39,8 +39,8 @@ jobs:
           file: hwbe/Dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_HWBE }}:latest
-            ${{ env.IMAGE_HWBE }}:${{ github.sha }}
+            ${{ env.HWBE_IMAGE }}:latest
+            ${{ env.HWBE_IMAGE }}:${{ github.sha }}
           cache-from: type=gha,scope=hwbe
           cache-to: type=gha,scope=hwbe,mode=max
 
@@ -51,8 +51,8 @@ jobs:
           file: hwfe/Dockerfile
           push: true
           tags: |
-            ${{ env.IMAGE_HWFE }}:latest
-            ${{ env.IMAGE_HWFE }}:${{ github.sha }}
+            ${{ env.HWFE_IMAGE }}:latest
+            ${{ env.HWFE_IMAGE }}:${{ github.sha }}
           cache-from: type=gha,scope=hwfe
           cache-to: type=gha,scope=hwfe,mode=max
           build-args: |
@@ -105,7 +105,7 @@ jobs:
 
       - name: HWBE - Upload sourcemaps
         run: |
-          docker create --name hwbe-dist ${{ env.IMAGE_HWBE }}:${{ github.sha }}
+          docker create --name hwbe-dist ${{ env.HWBE_IMAGE }}:${{ github.sha }}
           docker cp hwbe-dist:/app/hwbe/dist ./hwbe-dist
           docker rm hwbe-dist
           npx @sentry/cli releases new -p $SENTRY_PROJECT "${{ github.sha }}"
@@ -121,7 +121,7 @@ jobs:
 
       - name: HWFE - Upload sourcemaps
         run: |
-          docker create --name hwfe-dist ${{ env.IMAGE_HWFE }}:${{ github.sha }}
+          docker create --name hwfe-dist ${{ env.HWFE_IMAGE }}:${{ github.sha }}
           docker cp hwfe-dist:/usr/share/nginx/html ./hwfe-dist
           docker rm hwfe-dist
           npx @sentry/cli releases new -p $SENTRY_PROJECT "${{ github.sha }}"
