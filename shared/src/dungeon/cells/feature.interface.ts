@@ -1,7 +1,7 @@
 import { FeatureSpritePath } from '../../sprites/feature-sprites.const.js';
-import { HwTrapStatus } from './trap-status.interface.js';
-import { HwTrapped } from './trapped.interface.js';
+import { HwFeatureTrap } from './feature-trap.interface.js';
 
-export interface HwFeature extends HwTrapped, HwTrapStatus {
+export interface HwFeature {
   spritePath: FeatureSpritePath | null;
+  trap: HwFeatureTrap;
 }

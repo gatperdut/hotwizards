@@ -145,6 +145,7 @@ export class DungeonService {
               updatedCell.y,
               updatedCell.door.spritePath,
             );
+            cell.door.open = updatedCell.door.open;
           }
         }
 
@@ -252,12 +253,12 @@ export class DungeonService {
       ? this.createFloorTrapSprite(cell.x, cell.y, cell.floorTrap.spritePath)
       : null;
     const featureTrapSprite =
-      cell.feature.spritePath && cell.feature.trapped
-        ? this.createFeatureTrapSprite(cell.x, cell.y, '/tiles/feature-traps/feature-trap.png')
+      cell.feature.spritePath && cell.feature.trap.spritePath
+        ? this.createFeatureTrapSprite(cell.x, cell.y, cell.feature.trap.spritePath)
         : null;
     const doorTrapSprite =
-      cell.door.spritePath && cell.door.trapped
-        ? this.createDoorTrapSprite(cell.x, cell.y, '/tiles/feature-traps/feature-trap.png')
+      cell.door.spritePath && cell.door.trap.spritePath
+        ? this.createDoorTrapSprite(cell.x, cell.y, cell.door.trap.spritePath)
         : null;
     const stairsSprite = cell.stairsSpritePath
       ? this.createStairsSprite(cell.x, cell.y, cell.stairsSpritePath)

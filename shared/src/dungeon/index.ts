@@ -1,6 +1,8 @@
 export { HwCell } from './cells/cell.interface.js';
 export { HwCorners } from './cells/corners.interface.js';
+export { HwDoorTrap } from './cells/door-trap.interface.js';
 export { HwDoor } from './cells/door.interface.js';
+export { HwFeatureTrap } from './cells/feature-trap.interface.js';
 export { HwFeature } from './cells/feature.interface.js';
 export { HwFloorTrap } from './cells/floor-trap.interface.js';
 export { cellsHaveLos } from './cells/los/cells-have-los.const.js';
@@ -17,7 +19,6 @@ export { searchedCells } from './cells/position/searched-cells.const.js';
 export { secondaryCells } from './cells/position/secondary-cells.const.js';
 export { HwSecondary } from './cells/secondary.interface.js';
 export { HwTrapStatus } from './cells/trap-status.interface.js';
-export { HwTrapped } from './cells/trapped.interface.js';
 export { cellIsTraversable } from './cells/traversable/cell-is-traversable.const.js';
 export { HwAlignment } from './creatures/alignment.const.js';
 export { creatureAt } from './creatures/creature-at.const.js';

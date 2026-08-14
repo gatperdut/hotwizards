@@ -17,7 +17,6 @@ import { AdjacentOffsets } from '@hw/shared/directions';
 import {
   cellAt,
   cellIsHint,
-  cellsHaveLos,
   cellsUpdateLos,
   losFrom,
   sameCell,
@@ -194,11 +193,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
             case 2:
               sprites.forEach((s) => {
                 s.visible = true;
-                s.tint = master.me
-                  ? BaseSpritePersonalVisibleTint
-                  : cellsHaveLos(cells, cellAt(cells, myHero!.x, myHero!.y)!, cell)
-                    ? BaseSpritePersonalVisibleTint
-                    : BaseSpriteSharedVisibleTint;
+                s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
               });
               break;
           }

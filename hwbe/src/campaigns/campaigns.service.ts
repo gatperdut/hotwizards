@@ -1,4 +1,5 @@
 import { Movement, Prisma } from '@hw/prismagen/client';
+import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { HwCharacter } from '@hw/shared/characters';
@@ -15,8 +16,10 @@ import {
   creatureMovementPoints,
   HwCell,
   HwDoor,
+  HwDoorTrap,
   HwDungeon,
   HwFeature,
+  HwFeatureTrap,
   HwFloorTrap,
   HwHero,
   HwMonster,
@@ -26,10 +29,15 @@ import {
 import { HwEditorCell, HwEditorDoor, HwEditorDungeon, HwEditorFeature } from '@hw/shared/editor';
 import { HwMembership } from '@hw/shared/memberships';
 import { Paginated } from '@hw/shared/pagination';
-import { FloorTrapSpritePath, heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import {
+  DoorTrapSpritePath,
+  FeatureTrapSpritePath,
+  FloorTrapSpritePath,
+  heroSpritePath,
+  monsterSpritePath,
+} from '@hw/shared/sprites';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PushService } from '../push/push.service.js';
 import { CampaignHwRelations, campaignToHwCampaign } from './campaign-to-hw-campaign.js';
@@ -387,8 +395,9 @@ export class CampaignsService {
   private editorFeatureToFeature(editorFeature: HwEditorFeature): HwFeature {
     return {
       spritePath: editorFeature.spritePath,
-      trapped: editorFeature.trapped,
-      found: false,
+      trap: this.featureTrap(
+        editorFeature.trapped ? '/tiles/feature-traps/feature-trap.png' : null,
+      ),
     };
   }
 
@@ -396,14 +405,27 @@ export class CampaignsService {
     return {
       spritePath: editorDoor.spritePath,
       open: false,
-      trapped: editorDoor.trapped,
-      found: false,
+      trap: this.doorTrap(editorDoor.trapped ? '/tiles/feature-traps/feature-trap.png' : null),
     };
   }
 
   private floorTrap(floorTrapSpritePath: FloorTrapSpritePath | null): HwFloorTrap {
     return {
       spritePath: floorTrapSpritePath,
+      found: false,
+    };
+  }
+
+  private featureTrap(featureTrapSpritePath: FeatureTrapSpritePath | null): HwFeatureTrap {
+    return {
+      spritePath: featureTrapSpritePath,
+      found: false,
+    };
+  }
+
+  private doorTrap(doorTrapSpritePath: DoorTrapSpritePath | null): HwDoorTrap {
+    return {
+      spritePath: doorTrapSpritePath,
       found: false,
     };
   }
