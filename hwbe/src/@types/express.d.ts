@@ -1,4 +1,4 @@
-import { HwUser } from '@hw/shared/user';
+import { HwUser } from '@hw/shared/users';
 
 declare module 'express' {
   interface Request {
