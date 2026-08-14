@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   OnDestroy,
@@ -13,7 +14,15 @@ import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { AdjacentOffsets } from '@hw/shared/directions';
-import { cellAt, cellsUpdateLos, sameCell, searchedCells } from '@hw/shared/dungeon';
+import {
+  adjacentCells,
+  cellAt,
+  cellsUpdateLos,
+  losFrom,
+  sameCell,
+  searchedCells,
+  secondaryCells,
+} from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
 import {
   ClosedDoorSpritePath,
@@ -28,7 +37,15 @@ import { CanvasLoadingComponent } from '../map/canvas-loading/canvas-loading.com
 import { OverflowService } from '../map/services/overflow.service';
 import { TextureService } from '../map/services/texture.service';
 import { ViewportService } from '../map/services/viewport.service';
+import {
+  BaseSpriteFoggedTint,
+  BaseSpritePersonalVisibleTint,
+  BaseSpriteSearchedTintSubtraction,
+  BaseSpriteSharedVisibleTint,
+} from '../sprites/base-sprites.const';
+import { FloorTrapSpriteTint } from '../sprites/floor-trap-sprites.const';
 import { DungeonSidebarComponent } from './dungeon-sidebar/dungeon-sidebar.component';
+import { HwfeCell } from './interfaces/cell.interface';
 import { CellService } from './services/cell.service';
 import { DungeonService } from './services/dungeon.service';
 
@@ -48,6 +65,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   private campaignService = inject(CampaignService);
   private campaignsApiService = inject(CampaignsApiService);
   private toastService = inject(ToastService);
+  private cellService = inject(CellService);
   private router = inject(Router);
   private overflowService = inject(OverflowService);
   private dungeonService = inject(DungeonService);
@@ -72,6 +90,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.campaignsListen();
     this.adventuresListen();
+
+    this.effects();
   }
 
   public ngAfterViewInit(): void {
@@ -122,6 +142,108 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   private centerActiveHero(): void {
     const hero = this.dungeonService.activeHero();
     this.viewportService.center(hero!.x, hero!.y);
+  }
+
+  private effects(): void {
+    effect(() => {
+      const cells = this.dungeonService.hwfeCells();
+      const master = this.campaignService.master();
+      const myHero = this.dungeonService.myHero();
+      const hwfeMonsters = this.dungeonService.hwfeMonsters();
+
+      cells.forEach((cell) => {
+        const sprites = this.cellService.sprites(cell);
+
+        if (
+          cell.visibility === 0 &&
+          adjacentCells(cells, cell).some(
+            (c) => c.visibility > 0 && (!c.door.spritePath || c.door.open),
+          )
+        ) {
+          sprites.forEach((s) => {
+            s.visible = master.me;
+          });
+          cell.pixi.baseSprite.visible = true;
+          cell.pixi.baseSprite.alpha = master.me ? 1.0 : 0.1;
+          if (master.me) {
+            cell.pixi.baseSprite.tint = BaseSpriteFoggedTint;
+          }
+        } else {
+          switch (cell.visibility) {
+            case 0:
+              sprites.forEach((s) => {
+                s.visible = master.me;
+                if (master.me) {
+                  s.tint = BaseSpriteFoggedTint;
+                }
+              });
+              break;
+
+            case 1:
+              sprites.forEach((s) => {
+                s.visible = true;
+                s.tint = BaseSpriteFoggedTint;
+              });
+              break;
+
+            case 2:
+              sprites.forEach((s) => {
+                s.visible = true;
+                s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
+              });
+              break;
+          }
+        }
+      });
+
+      cells.forEach((cell) => {
+        if (!cell.feature.spritePath) {
+          return;
+        }
+
+        const secCells = secondaryCells(cells, cell);
+        if (!secCells.length || secCells.every((c) => c.visibility === 2)) {
+          return;
+        }
+        cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint;
+      });
+
+      if (myHero) {
+        losFrom<HwfeCell>(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {
+          const sprites = this.cellService.sprites(cell);
+
+          sprites.forEach((s) => {
+            s.tint = BaseSpritePersonalVisibleTint;
+          });
+        });
+      }
+
+      cells.forEach((cell) => {
+        if (cell.searched) {
+          cell.pixi.baseSprite.tint = cell.pixi.baseSprite.tint - BaseSpriteSearchedTintSubtraction;
+        }
+
+        if (cell.floorTrap.spritePath) {
+          cell.pixi.floorTrapSprite!.visible = cell.floorTrap.found || master.me;
+          cell.pixi.floorTrapSprite!.tint = FloorTrapSpriteTint;
+          cell.pixi.floorTrapSprite!.alpha = cell.floorTrap.found ? 1.0 : 0.4;
+        }
+      });
+
+      hwfeMonsters.forEach((monster) => {
+        switch (cellAt(cells, monster.x, monster.y)!.visibility) {
+          case 0:
+          case 1:
+            monster.pixi.sprite.visible = master.me;
+            monster.pixi.sprite.alpha = 0.5;
+            break;
+          case 2:
+            monster.pixi.sprite.visible = true;
+            monster.pixi.sprite.alpha = 1.0;
+            break;
+        }
+      });
+    });
   }
 
   private campaignsListen(): void {
@@ -284,7 +406,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
-      this.dungeonService.updateVisibility();
     });
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
@@ -336,7 +457,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeMonstersUpdate();
-      this.dungeonService.updateVisibility();
     });
 
     this.dungeonService.adventuresSocket.on('downSelectMonster', (id) => {
@@ -397,7 +517,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
-      this.dungeonService.updateVisibility();
     });
 
     this.dungeonService.adventuresSocket.on('downEquipItem', (heroId, backpackItemId) => {

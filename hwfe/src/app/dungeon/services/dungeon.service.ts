@@ -1,16 +1,6 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { Adjacent, AdjacentOffsets } from '@hw/shared/directions';
-import {
-  adjacentCells,
-  cellAt,
-  creatureAt,
-  HwCell,
-  HwCreature,
-  HwHero,
-  HwMonster,
-  losFrom,
-  secondaryCells,
-} from '@hw/shared/dungeon';
+import { cellAt, creatureAt, HwCell, HwCreature, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
   AdventuresUpstream,
@@ -35,14 +25,7 @@ import { groundZIndex, world2Ground } from '../../map/consts/coords.const.';
 import { DungeonWidth } from '../../map/consts/dungeon-size.const';
 import { TextureService } from '../../map/services/texture.service';
 import { ViewportService } from '../../map/services/viewport.service';
-import {
-  BaseSpriteFoggedTint,
-  BaseSpritePersonalVisibleTint,
-  BaseSpriteSearchedTintSubtraction,
-  BaseSpriteSharedVisibleTint,
-} from '../../sprites/base-sprites.const';
 import { CreatureUnselectTint } from '../../sprites/creature-sprites.const';
-import { FloorTrapSpriteTint } from '../../sprites/floor-trap-sprites.const';
 import { BaseSpriteHitArea } from '../../sprites/ground-hit-area.const';
 import { HeroSpriteTints } from '../../sprites/hero-sprites.const';
 import { MonsterSelectedTint } from '../../sprites/monster-sprites.const';
@@ -58,14 +41,12 @@ import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
 import { HwfeMonster } from '../interfaces/monster.interface';
-import { CellService } from './cell.service';
 
 @Injectable()
 export class DungeonService {
   private textureService = inject(TextureService);
   private viewportService = inject(ViewportService);
   private campaignService = inject(CampaignService);
-  private cellService = inject(CellService);
   private adventuresApiService = inject(AdventuresApiService);
   private dialogService = inject(DialogService);
   private injector = inject(Injector);
@@ -107,8 +88,6 @@ export class DungeonService {
     this.hwfeCellsSet();
     this.hwfeHeroesSet();
     this.hwfeMonstersSet();
-
-    this.updateVisibility();
   }
 
   private hwfeCellsSet(): void {
@@ -193,110 +172,6 @@ export class DungeonService {
         return resultCell;
       }),
     );
-  }
-
-  public updateVisibility(): void {
-    const cells = this.hwfeCells();
-    const master = this.campaignService.master();
-    const myHero = this.myHero();
-    const hwfeMonsters = this.hwfeMonsters();
-
-    cells.forEach((cell) => {
-      cell.pixi.baseSprite.alpha = 1.0;
-
-      const sprites = this.cellService.sprites(cell);
-
-      if (
-        cell.visibility === 0 &&
-        adjacentCells(cells, cell).some(
-          (c) => c.visibility > 0 && (!c.door.spritePath || c.door.open),
-        )
-      ) {
-        sprites.forEach((s) => {
-          s.visible = master.me;
-        });
-        cell.pixi.baseSprite.visible = true;
-        cell.pixi.baseSprite.alpha = master.me ? 1.0 : 0.1;
-        if (master.me) {
-          cell.pixi.baseSprite.tint = BaseSpriteFoggedTint;
-        }
-      } else {
-        switch (cell.visibility) {
-          case 0:
-            sprites.forEach((s) => {
-              s.visible = master.me;
-              if (master.me) {
-                s.tint = BaseSpriteFoggedTint;
-              }
-            });
-            break;
-
-          case 1:
-            sprites.forEach((s) => {
-              s.visible = true;
-              s.tint = BaseSpriteFoggedTint;
-            });
-            break;
-
-          case 2:
-            sprites.forEach((s) => {
-              s.visible = true;
-              s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
-            });
-            break;
-        }
-      }
-
-      const monster = hwfeMonsters.find((m) => m.x === cell.x && m.y === cell.y);
-      if (monster && monster.alignment === 'MONSTER') {
-        monster.pixi.sprite.alpha = cell.visibility < 2 ? 0.5 : 1.0;
-      }
-    });
-
-    cells.forEach((cell) => {
-      if (!cell.feature.spritePath) {
-        return;
-      }
-
-      const secCells = secondaryCells(cells, cell);
-      if (!secCells.length || secCells.every((c) => c.visibility === 2)) {
-        return;
-      }
-      cell.pixi.featureSprite!.tint = BaseSpriteFoggedTint;
-    });
-
-    if (myHero) {
-      losFrom<HwfeCell>(cells, [cellAt(cells, myHero.x, myHero.y)!]).forEach((cell) => {
-        const sprites = this.cellService.sprites(cell);
-
-        sprites.forEach((s) => {
-          s.tint = BaseSpritePersonalVisibleTint;
-        });
-      });
-    }
-
-    cells.forEach((cell) => {
-      if (cell.searched) {
-        cell.pixi.baseSprite.tint = cell.pixi.baseSprite.tint - BaseSpriteSearchedTintSubtraction;
-      }
-      if (cell.floorTrap.spritePath) {
-        cell.pixi.floorTrapSprite!.visible = cell.floorTrap.found || master.me;
-        cell.pixi.floorTrapSprite!.tint = FloorTrapSpriteTint;
-        cell.pixi.floorTrapSprite!.alpha = cell.floorTrap.found ? 1.0 : 0.4;
-      }
-    });
-
-    this.hwfeMonsters().forEach((monster) => {
-      switch (cellAt(cells, monster.x, monster.y)!.visibility) {
-        case 0:
-        case 1:
-          monster.pixi.sprite.visible = master.me;
-          break;
-        case 2:
-          monster.pixi.sprite.visible = true;
-          break;
-      }
-    });
   }
 
   public hwfeHeroesUpdate(): void {
