@@ -9,6 +9,7 @@ export { losFrom } from './cells/los/los-from.const.js';
 export { adjacentCells } from './cells/position/adjacent-cells.const.js';
 export { cellAt } from './cells/position/cell-at.const.js';
 export { cellIsAt } from './cells/position/cell-is-at.const.js';
+export { cellIsHint } from './cells/position/cell-is-hint.const.js';
 export { diagonalCells } from './cells/position/diagonal-cells.const.js';
 export { directionCells } from './cells/position/direction-cells.const.js';
 export { sameCell } from './cells/position/same-cell.const.js';

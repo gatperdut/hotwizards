@@ -15,8 +15,9 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { AdjacentOffsets } from '@hw/shared/directions';
 import {
-  adjacentCells,
   cellAt,
+  cellIsHint,
+  cellsHaveLos,
   cellsUpdateLos,
   losFrom,
   sameCell,
@@ -152,19 +153,23 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const hwfeMonsters = this.dungeonService.hwfeMonsters();
 
       cells.forEach((cell) => {
+        cell.pixi.baseSprite.visible = master.me;
+        cell.pixi.baseSprite.tint = BaseSpritePersonalVisibleTint;
+        cell.pixi.baseSprite.alpha = 1.0;
+        this.cellService.sprites(cell).forEach((sprite) => {
+          sprite.visible = master.me;
+          sprite.tint = BaseSpriteSharedVisibleTint;
+          sprite.alpha = 1.0;
+        });
+      });
+
+      cells.forEach((cell) => {
         const sprites = this.cellService.sprites(cell);
 
-        if (
-          cell.visibility === 0 &&
-          adjacentCells(cells, cell).some(
-            (c) => c.visibility > 0 && (!c.door.spritePath || c.door.open),
-          )
-        ) {
-          sprites.forEach((s) => {
-            s.visible = master.me;
-          });
+        if (cellIsHint(cells, cell)) {
           cell.pixi.baseSprite.visible = true;
           cell.pixi.baseSprite.alpha = master.me ? 1.0 : 0.1;
+
           if (master.me) {
             cell.pixi.baseSprite.tint = BaseSpriteFoggedTint;
           }
@@ -189,7 +194,11 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
             case 2:
               sprites.forEach((s) => {
                 s.visible = true;
-                s.tint = master.me ? BaseSpritePersonalVisibleTint : BaseSpriteSharedVisibleTint;
+                s.tint = master.me
+                  ? BaseSpritePersonalVisibleTint
+                  : cellsHaveLos(cells, cellAt(cells, myHero!.x, myHero!.y)!, cell)
+                    ? BaseSpritePersonalVisibleTint
+                    : BaseSpriteSharedVisibleTint;
               });
               break;
           }
@@ -197,6 +206,10 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       });
 
       cells.forEach((cell) => {
+        if (cellIsHint(cells, cell)) {
+          return;
+        }
+
         if (!cell.feature.spritePath) {
           return;
         }

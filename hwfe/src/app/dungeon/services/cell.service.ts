@@ -12,6 +12,8 @@ export class CellService {
       cell.pixi.doorSprite,
       cell.pixi.featureSprite,
       cell.pixi.floorTrapSprite,
+      cell.pixi.featureTrapSprite,
+      cell.pixi.doorTrapSprite,
       cell.pixi.stairsSprite,
     ].filter((s) => !!s);
   }
