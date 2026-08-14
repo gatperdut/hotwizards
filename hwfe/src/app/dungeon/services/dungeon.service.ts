@@ -252,14 +252,12 @@ export class DungeonService {
     const floorTrapSprite = cell.floorTrap.spritePath
       ? this.createFloorTrapSprite(cell.x, cell.y, cell.floorTrap.spritePath)
       : null;
-    const featureTrapSprite =
-      cell.feature.spritePath && cell.feature.trap.spritePath
-        ? this.createFeatureTrapSprite(cell.x, cell.y, cell.feature.trap.spritePath)
-        : null;
-    const doorTrapSprite =
-      cell.door.spritePath && cell.door.trap.spritePath
-        ? this.createDoorTrapSprite(cell.x, cell.y, cell.door.trap.spritePath)
-        : null;
+    const featureTrapSprite = cell.feature.trap.spritePath
+      ? this.createFeatureTrapSprite(cell.x, cell.y, cell.feature.trap.spritePath)
+      : null;
+    const doorTrapSprite = cell.door.trap.spritePath
+      ? this.createDoorTrapSprite(cell.x, cell.y, cell.door.trap.spritePath)
+      : null;
     const stairsSprite = cell.stairsSpritePath
       ? this.createStairsSprite(cell.x, cell.y, cell.stairsSpritePath)
       : null;

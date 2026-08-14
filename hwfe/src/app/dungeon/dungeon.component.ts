@@ -236,6 +236,18 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           cell.pixi.floorTrapSprite!.tint = FloorTrapSpriteTint;
           cell.pixi.floorTrapSprite!.alpha = cell.floorTrap.found ? 1.0 : 0.4;
         }
+
+        if (cell.feature.trap.spritePath) {
+          cell.pixi.featureTrapSprite!.visible = cell.feature.trap.found || master.me;
+          cell.pixi.featureTrapSprite!.tint = FloorTrapSpriteTint;
+          cell.pixi.featureTrapSprite!.alpha = cell.feature.trap.found ? 1.0 : 0.4;
+        }
+
+        if (cell.door.trap.spritePath) {
+          cell.pixi.doorTrapSprite!.visible = cell.door.trap.found || master.me;
+          cell.pixi.doorTrapSprite!.tint = FloorTrapSpriteTint;
+          cell.pixi.doorTrapSprite!.alpha = cell.door.trap.found ? 1.0 : 0.4;
+        }
       });
 
       hwfeMonsters.forEach((monster) => {
@@ -808,7 +820,14 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
               };
             }),
             cells: campaign.adventure!.dungeon.cells.map((c) =>
-              cellAt(cells, c.x, c.y) ? { ...c, searched: true } : c,
+              cellAt(cells, c.x, c.y)
+                ? {
+                    ...c,
+                    searched: true,
+                    feature: { ...c.feature, trap: { ...c.feature.trap, found: true } },
+                    door: { ...c.door, trap: { ...c.door.trap, found: true } },
+                  }
+                : c,
             ),
           },
         },

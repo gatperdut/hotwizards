@@ -1,3 +1,4 @@
+import { InputJsonValue } from '@hw/prismagen/runtime';
 import { HwAdventure } from '@hw/shared/adventures';
 import { HwCampaign } from '@hw/shared/campaigns';
 import { characterPortrait } from '@hw/shared/characters';
@@ -8,6 +9,7 @@ import {
   cellsUpdateLos,
   creatureMaxActionPoints,
   creatureMovementPoints,
+  HwCell,
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
@@ -22,7 +24,6 @@ import {
   monsterSpritePath,
 } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
-import { InputJsonValue } from '@hw/prismagen/runtime';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -527,9 +528,29 @@ export class AdventuresService {
           heroes: adventure.dungeon.heroes.map((h) =>
             h.id === hero.id ? { ...h, actionPoints: h.actionPoints - 1 } : h,
           ),
-          cells: adventure.dungeon.cells.map((c) =>
-            cellAt(cells, c.x, c.y) ? { ...c, searched: true } : c,
-          ),
+          cells: adventure.dungeon.cells.map((c) => {
+            const cell = cellAt(cells, c.x, c.y);
+
+            if (!cell) {
+              return c;
+            }
+
+            const updatedC: HwCell = {
+              ...c,
+              floorTrap: { ...c.floorTrap, found: true },
+              feature: {
+                ...c.feature,
+                trap: { ...c.feature.trap, ...(c.feature.trap.spritePath ? { found: true } : {}) },
+              },
+              door: {
+                ...c.door,
+                trap: { ...c.door.trap, ...(c.door.trap.spritePath ? { found: true } : {}) },
+              },
+              searched: true,
+            };
+
+            return updatedC;
+          }),
         } as unknown as InputJsonValue,
       },
     }));
