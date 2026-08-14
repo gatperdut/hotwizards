@@ -20,6 +20,7 @@ export {
   OpenDoorSpritePaths,
   OpenToClosedDoorSpritePaths,
 } from './door-sprites.const.js';
+export { DoorTrapSpritePath, DoorTrapSpritePaths } from './door-trap-sprites.const.js';
 export {
   FeatureSpritePath,
   FeatureSpritePaths,

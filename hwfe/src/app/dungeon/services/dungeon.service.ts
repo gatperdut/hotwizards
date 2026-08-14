@@ -11,7 +11,9 @@ import {
   BaseSpritePath,
   CornerSpritePath,
   DoorSpritePath,
+  DoorTrapSpritePath,
   FeatureSpritePath,
+  FeatureTrapSpritePath,
   FloorTrapSpritePath,
   LootSpritePath,
   SpritePath,
@@ -249,6 +251,14 @@ export class DungeonService {
     const floorTrapSprite = cell.floorTrap.spritePath
       ? this.createFloorTrapSprite(cell.x, cell.y, cell.floorTrap.spritePath)
       : null;
+    const featureTrapSprite =
+      cell.feature.spritePath && cell.feature.trapped
+        ? this.createFeatureTrapSprite(cell.x, cell.y, '/tiles/feature-traps/feature-trap.png')
+        : null;
+    const doorTrapSprite =
+      cell.door.spritePath && cell.door.trapped
+        ? this.createDoorTrapSprite(cell.x, cell.y, '/tiles/feature-traps/feature-trap.png')
+        : null;
     const stairsSprite = cell.stairsSpritePath
       ? this.createStairsSprite(cell.x, cell.y, cell.stairsSpritePath)
       : null;
@@ -293,6 +303,8 @@ export class DungeonService {
         featureSprite: featureSprite,
         doorSprite: doorSprite,
         floorTrapSprite: floorTrapSprite,
+        featureTrapSprite: featureTrapSprite,
+        doorTrapSprite: doorTrapSprite,
         stairsSprite: stairsSprite,
         corners: pixiCorners,
         lootSprite: lootSprite,
@@ -363,6 +375,26 @@ export class DungeonService {
     const floorTrapSprite = this.createSprite(x, y, floorTrapSpritePath!);
     floorTrapSprite.eventMode = 'none';
     return floorTrapSprite;
+  }
+
+  private createFeatureTrapSprite(
+    x: number,
+    y: number,
+    featureTrapSpritePath: FeatureTrapSpritePath,
+  ): Sprite {
+    const featureTrapSprite = this.createSprite(x, y, featureTrapSpritePath!);
+    featureTrapSprite.eventMode = 'none';
+    return featureTrapSprite;
+  }
+
+  private createDoorTrapSprite(
+    x: number,
+    y: number,
+    doorTrapSpritePath: DoorTrapSpritePath,
+  ): Sprite {
+    const doorTrapSprite = this.createSprite(x, y, doorTrapSpritePath!);
+    doorTrapSprite.eventMode = 'none';
+    return doorTrapSprite;
   }
 
   private createStairsSprite(x: number, y: number, stairsSpritePath: StairsSpritePath): Sprite {

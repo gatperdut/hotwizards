@@ -8,6 +8,8 @@ export interface HwfeCell extends HwCell {
     featureSprite: Sprite | null;
     doorSprite: Sprite | null;
     floorTrapSprite: Sprite | null;
+    featureTrapSprite: Sprite | null;
+    doorTrapSprite: Sprite | null;
     stairsSprite: Sprite | null;
     corners: HwfeCorners;
     lootSprite: Sprite | null;
