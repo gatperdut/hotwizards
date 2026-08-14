@@ -1,0 +1,22 @@
+name: hw-dev
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${HWBE_DB_USER:-hwbeuser}
+      POSTGRES_PASSWORD: ${HWBE_DB_PASSWORD:-hwbepw}
+      POSTGRES_DB: ${HWBE_DB_NAME:-hwbe}
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+# Top-level declaration of the named volume referenced above.
+volumes:
+  db-data:

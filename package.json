@@ -35,6 +35,11 @@
     "seeds:seed:dev": "pnpm --filter @hw/seeds seed:dev",
     "seeds:seed:prod": "pnpm --filter @hw/seeds seed:prod",
     "seeds:clear": "pnpm --filter @hw/seeds clear",
+    "db:up": "docker-compose -f docker-compose.dev.yml up -d --wait",
+    "db:down": "docker-compose -f docker-compose.dev.yml down",
+    "db:nuke": "docker-compose -f docker-compose.dev.yml down -v",
+    "db:logs": "docker-compose -f docker-compose.dev.yml logs -f db",
+    "db:psql": "docker-compose -f docker-compose.dev.yml exec db sh -c 'psql -U \"$POSTGRES_USER\" \"$POSTGRES_DB\"'",
     "clear": "pnpm run hwbe:clear && pnpm run hwfe:clear && pnpm run shared:clear && pnpm run prismagen:clear && pnpm run seeds:clear",
     "reset:dev": "./scripts/reset-dev.sh",
     "reset:prod": "./scripts/reset-prod.sh"

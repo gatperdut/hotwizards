@@ -10,11 +10,12 @@ pnpm run clear
 echo "Installing dependencies from lockfile"
 pnpm i
 
-pnpm -w run prismagen:migrate:reset
+echo "Recreating database container from a pristine, empty volume"
+pnpm run db:nuke
+pnpm run db:up
 
-echo "Wiping database and migration history"
+echo "Wiping migration history"
 rm -rf prismagen/prisma/migrations
-echo 'DROP OWNED BY CURRENT_USER CASCADE;' | pnpm --filter @hw/prismagen db:execute --stdin
 
 echo "Regenerating prisma client"
 pnpm -w run prismagen:generate
