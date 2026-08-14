@@ -10,8 +10,7 @@
     "pnpm": ">=11.0.0"
   },
   "scripts": {
-    "start": "nest start --watch",
-    "start:debug": "nest start --watch --debug",
+    "start": "nest start --watch --debug",
     "build": "nest build",
     "clear": "rm -rf dist node_modules"
   },

@@ -14,7 +14,6 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset",
-    "db:execute": "prisma db execute",
     "studio": "prisma studio",
     "clear": "rm -rf src/* node_modules"
   },
