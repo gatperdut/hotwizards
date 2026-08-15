@@ -37,7 +37,7 @@ export class AdventureTemplatePickerComponent {
   public actions = input<AdventurePickerAction[]>([]);
 
   constructor() {
-    effect(() => {
+    effect((): void => {
       this.model();
       this.page.set(0);
     });

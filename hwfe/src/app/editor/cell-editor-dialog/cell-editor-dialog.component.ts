@@ -103,7 +103,7 @@ export class CellEditorDialogComponent {
   private editorService = inject(EditorService);
 
   constructor() {
-    effect(() => {
+    effect((): void => {
       this.form.baseSpritePath().value();
       this.form.featureSpritePath().value();
       this.form.featureTrapped().value();
@@ -135,7 +135,7 @@ export class CellEditorDialogComponent {
       this.form.spawn().markAsTouched();
     });
 
-    effect(() => {
+    effect((): void => {
       const featureSpritePath = this.form.featureSpritePath().value();
       const originalFeatureSpritePath = this.data.cell.feature.spritePath;
 
@@ -161,6 +161,7 @@ export class CellEditorDialogComponent {
             .filter((affectedCell) => !!affectedCell),
         }));
       }
+
       if (featureSpritePath) {
         this.externalData.update((value) => ({
           ...value,
@@ -177,6 +178,17 @@ export class CellEditorDialogComponent {
             })
             .filter((affectedCell) => !!affectedCell),
         }));
+      }
+    });
+
+    effect((): void => {
+      if (!this.form.featureSpritePath().value()) {
+        this.form.featureTrapped().value.set(false);
+      }
+
+      if (!this.form.doorSpritePath().value()) {
+        console.log('remove trap door');
+        this.form.doorTrapped().value.set(false);
       }
     });
   }

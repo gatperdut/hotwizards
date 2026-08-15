@@ -29,7 +29,7 @@ export class IconComponent {
   public classes = input<string>('w-4 h-4');
 
   constructor() {
-    effect(() => {
+    effect((): void => {
       const iconName = this.name();
       this.iconService.getIcon(iconName).subscribe({
         next: (svg) => this.rawSvg.set(svg),

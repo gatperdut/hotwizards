@@ -74,7 +74,7 @@ export class CampaignsListComponent {
     this.campaignsListen();
     this.membershipsListen();
 
-    effect(() => {
+    effect((): void => {
       this.model();
       this.page.set(0);
     });

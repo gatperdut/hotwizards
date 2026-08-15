@@ -145,7 +145,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   }
 
   private effects(): void {
-    effect(() => {
+    effect((): void => {
       const cells = this.dungeonService.hwfeCells();
       const master = this.campaignService.master();
       const myHero = this.dungeonService.myHero();
