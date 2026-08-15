@@ -21,6 +21,7 @@ import {
   losFrom,
   sameCell,
   searchedCells,
+  searchSecondaryCells,
   secondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
@@ -815,24 +816,11 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
             : c,
         );
 
-        searchCells.forEach((searchCell) => {
-          secondaryCells(
-            this.campaignService.campaign().adventure!.dungeon.cells,
-            searchCell,
-          ).forEach((secCell) => {
-            const updatedC = cellAt(updatedCells, secCell.x, secCell.y);
-            if (updatedC) {
-              updatedC.searched = true;
-              updatedC.feature.trap.found = true;
-            }
-          });
-
-          if (searchCell.secondary) {
-            const secondary = cellAt(updatedCells, searchCell.secondary.x, searchCell.secondary.y)!;
-            secondary.searched = true;
-            secondary.feature.trap.found = true;
-          }
-        });
+        searchSecondaryCells(
+          searchCells,
+          updatedCells,
+          this.campaignService.campaign().adventure!.dungeon.cells,
+        );
 
         return {
           ...campaign,

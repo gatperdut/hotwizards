@@ -15,7 +15,7 @@ import {
   HwTransformEndTurnMaster,
   sameCell,
   searchedCells,
-  secondaryCells,
+  searchSecondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
 import {
@@ -516,13 +516,13 @@ export class AdventuresService {
   public async search(campaign: HwCampaign, hero: HwHero): Promise<void> {
     const adventure = campaign.adventure!;
 
-    const cells = searchedCells(
+    const searchCells = searchedCells(
       adventure.dungeon.cells,
       cellAt(adventure.dungeon.cells, hero.x, hero.y)!,
     );
 
     const updatedCells = adventure.dungeon.cells.map((c) => {
-      const cell = cellAt(cells, c.x, c.y);
+      const cell = cellAt(searchCells, c.x, c.y);
 
       if (!cell) {
         return c;
@@ -551,21 +551,7 @@ export class AdventuresService {
       return updatedC;
     });
 
-    cells.forEach((cell) => {
-      secondaryCells(adventure.dungeon.cells, cell).forEach((secCell) => {
-        const updatedC = cellAt(updatedCells, secCell.x, secCell.y);
-        if (updatedC) {
-          updatedC.searched = true;
-          updatedC.feature.trap.found = true;
-        }
-      });
-
-      if (cell.secondary) {
-        const secondary = cellAt(updatedCells, cell.secondary.x, cell.secondary.y)!;
-        secondary.searched = true;
-        secondary.feature.trap.found = true;
-      }
-    });
+    searchSecondaryCells(searchCells, updatedCells, adventure.dungeon.cells);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
