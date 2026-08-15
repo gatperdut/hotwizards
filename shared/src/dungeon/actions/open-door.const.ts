@@ -4,27 +4,23 @@ import {
   ClosedDoorSpritePath,
   ClosedToOpenDoorSpritePaths,
 } from '../../sprites/door-sprites.const.js';
-import { HwCell } from '../cells/cell.interface.js';
+import { heroSpritePath } from '../../sprites/hero-sprites.const.js';
 import { cellAt } from '../cells/position/cell-at.const.js';
 import { sameCell } from '../cells/position/same-cell.const.js';
+import { HwDungeon } from '../dungeon.interface.js';
 
-export const openDoor = <T extends HwCell>(
-  allCells: T[],
-  x: number,
-  y: number,
-  adjacent: Adjacent,
-): T[] | null => {
+export const openDoor = (dungeon: HwDungeon, x: number, y: number, adjacent: Adjacent): boolean => {
   const targetCell = cellAt(
-    allCells,
+    dungeon.cells,
     x + AdjacentOffsets[adjacent].x,
     y + AdjacentOffsets[adjacent].y,
   );
 
   if (!targetCell || !targetCell.door.spritePath || targetCell.door.open) {
-    return null;
+    return false;
   }
 
-  return allCells.map((cell) => {
+  dungeon.cells = dungeon.cells.map((cell) => {
     if (sameCell(targetCell, cell)) {
       return {
         ...targetCell,
@@ -39,4 +35,19 @@ export const openDoor = <T extends HwCell>(
 
     return cell;
   });
+
+  const hero = dungeon.heroes.find((h) => h.x === x && h.y === y)!;
+
+  dungeon.heroes = dungeon.heroes.map((h) =>
+    h.id === hero.id
+      ? {
+          ...h,
+          spritePath: heroSpritePath(h.klass, h.gender, adjacent),
+          direction: adjacent,
+          movementPoints: h.movementPoints - 1,
+        }
+      : h,
+  );
+
+  return true;
 };

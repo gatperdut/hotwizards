@@ -29,7 +29,6 @@ import {
   secondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
-import { heroSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
@@ -415,34 +414,19 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
 
-      const cells = openDoor(dungeon.cells, hero.x, hero.y, data.adj)!;
-
-      const heroes = dungeon.heroes.map((h) =>
-        h.id === hero.id
-          ? {
-              ...h,
-              spritePath: heroSpritePath(h.klass, h.gender, data.adj),
-              direction: data.adj,
-              movementPoints: h.movementPoints - 1,
-            }
-          : h,
-      );
+      openDoor(dungeon, hero.x, hero.y, data.adj)!;
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...dungeon,
-            heroes: heroes,
-            cells: cells,
-          },
+          dungeon: dungeon,
         },
       }));
 
       cellsUpdateLos(
-        cells,
-        heroes.map((h) => cellAt(cells, h.x, h.y)!),
+        dungeon.cells,
+        dungeon.heroes.map((h) => cellAt(dungeon.cells, h.x, h.y)!),
       );
 
       this.dungeonService.hwfeCellsUpdate();

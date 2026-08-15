@@ -203,23 +203,10 @@ export class AdventuresService {
   public async openDoor(campaign: HwCampaign, hero: HwHero, adjacent: Adjacent): Promise<void> {
     const adventure = campaign.adventure!;
 
-    const updatedCells = openDoor(adventure.dungeon.cells, hero.x, hero.y, adjacent);
-    if (!updatedCells) {
+    const canOpenDoor = openDoor(adventure.dungeon, hero.x, hero.y, adjacent);
+    if (!canOpenDoor) {
       throw new UnprocessableEntityException('There is no door to open');
     }
-
-    adventure.dungeon.cells = updatedCells;
-    adventure.dungeon.heroes = adventure.dungeon.heroes.map((h) => {
-      if (hero.id !== h.id) {
-        return h;
-      }
-
-      return {
-        ...h,
-        direction: adjacent,
-        movementPoints: h.movementPoints - 1,
-      };
-    });
 
     cellsUpdateLos(
       adventure.dungeon.cells,
