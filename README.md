@@ -52,3 +52,4 @@ ssh root@hotwizards.net 'cd /opt/hw && docker compose down && docker volume rm h
 - Deal with `as unknown`?
 - Deal with pixi `.on()`?
 - Are the dialogs being pulled in by the imports anyway, despite the lazy loading?
+- shared:dungeon:actions => implement more, so duplicate code between hwfe (dungeon.component) and hwbe (adventures.service) is reduced?

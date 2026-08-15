@@ -13,17 +13,13 @@ import {
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
+  openDoor,
   sameCell,
   searchedCells,
   searchSecondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
-import {
-  ClosedDoorSpritePath,
-  ClosedToOpenDoorSpritePaths,
-  heroSpritePath,
-  monsterSpritePath,
-} from '@hw/shared/sprites';
+import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -289,31 +285,13 @@ export class AdventuresService {
   public async openDoor(campaign: HwCampaign, hero: HwHero, adjacent: Adjacent): Promise<void> {
     const adventure = campaign.adventure!;
 
-    const targetCell = cellAt(
-      adventure.dungeon.cells,
-      hero.x + AdjacentOffsets[adjacent].x,
-      hero.y + AdjacentOffsets[adjacent].y,
-    );
+    const updatedCells = openDoor(adventure.dungeon.cells, hero.x, hero.y, adjacent);
 
-    if (!targetCell || !targetCell.door.spritePath || targetCell.door.open) {
+    if (!updatedCells) {
       throw new UnprocessableEntityException('There is no door to open');
     }
 
-    adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
-      if (sameCell(targetCell, cell)) {
-        return {
-          ...targetCell,
-          door: {
-            ...targetCell.door,
-            spritePath:
-              ClosedToOpenDoorSpritePaths[targetCell.door.spritePath as ClosedDoorSpritePath],
-            open: true,
-          },
-        };
-      }
-
-      return cell;
-    });
+    adventure.dungeon.cells = updatedCells;
 
     adventure.dungeon.heroes = adventure.dungeon.heroes.map((h) => {
       if (hero.id !== h.id) {
@@ -552,8 +530,6 @@ export class AdventuresService {
     });
 
     searchSecondaryCells(searchCells, updatedCells, adventure.dungeon.cells);
-
-    console.log(updatedCells);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },

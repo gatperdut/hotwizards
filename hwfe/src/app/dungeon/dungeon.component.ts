@@ -13,24 +13,19 @@ import {
 import { Router } from '@angular/router';
 import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
-import { AdjacentOffsets } from '@hw/shared/directions';
 import {
   cellAt,
   cellIsHint,
   cellsUpdateLos,
   losFrom,
+  openDoor,
   sameCell,
   searchedCells,
   searchSecondaryCells,
   secondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
-import {
-  ClosedDoorSpritePath,
-  ClosedToOpenDoorSpritePaths,
-  heroSpritePath,
-  monsterSpritePath,
-} from '@hw/shared/sprites';
+import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
@@ -487,26 +482,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downOpenDoor', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
-      const cell = cellAt(
-        dungeon.cells,
-        hero.x + AdjacentOffsets[data.adj].x,
-        hero.y + AdjacentOffsets[data.adj].y,
-      )!;
 
-      const cells = dungeon.cells.map((c) => {
-        if (sameCell(c, cell)) {
-          return {
-            ...c,
-            door: {
-              ...c.door,
-              spritePath: ClosedToOpenDoorSpritePaths[c.door.spritePath as ClosedDoorSpritePath],
-              open: true,
-            },
-          };
-        }
-
-        return c;
-      });
+      const cells = openDoor(dungeon.cells, hero.x, hero.y, data.adj)!;
 
       const heroes = dungeon.heroes.map((h) =>
         h.id === hero.id

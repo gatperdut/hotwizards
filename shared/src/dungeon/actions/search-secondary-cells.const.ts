@@ -1,6 +1,6 @@
-import { HwCell } from './cell.interface.js';
-import { cellAt } from './position/cell-at.const.js';
-import { secondaryCells } from './position/secondary-cells.const.js';
+import { HwCell } from '../cells/cell.interface.js';
+import { cellAt } from '../cells/position/cell-at.const.js';
+import { secondaryCells } from '../cells/position/secondary-cells.const.js';
 
 export const searchSecondaryCells = <T extends HwCell>(
   searchCells: T[],

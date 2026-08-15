@@ -1,3 +1,5 @@
+export { openDoor } from './actions/open-door.const.js';
+export { searchSecondaryCells } from './actions/search-secondary-cells.const.js';
 export { HwCell } from './cells/cell.interface.js';
 export { HwCorners } from './cells/corners.interface.js';
 export { HwDoorTrap } from './cells/door-trap.interface.js';
@@ -17,7 +19,6 @@ export { directionCells } from './cells/position/direction-cells.const.js';
 export { sameCell } from './cells/position/same-cell.const.js';
 export { searchedCells } from './cells/position/searched-cells.const.js';
 export { secondaryCells } from './cells/position/secondary-cells.const.js';
-export { searchSecondaryCells } from './cells/search-secondary-cells.const.js';
 export { HwSecondary } from './cells/secondary.interface.js';
 export { HwTrapStatus } from './cells/trap-status.interface.js';
 export { cellIsTraversable } from './cells/traversable/cell-is-traversable.const.js';
