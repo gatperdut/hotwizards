@@ -135,6 +135,11 @@ export class DungeonService {
           searched: updatedCell.searched,
         };
 
+        resultCell.door.open = updatedCell.door.open;
+        resultCell.door.trap.found = updatedCell.door.trap.found;
+        resultCell.feature.trap.found = updatedCell.feature.trap.found;
+        resultCell.searched = updatedCell.searched;
+
         if (cell.door.spritePath !== updatedCell.door.spritePath) {
           if (cell.door.spritePath) {
             this.viewportService.destroySprite(cell.pixi.doorSprite!);
@@ -145,7 +150,6 @@ export class DungeonService {
               updatedCell.y,
               updatedCell.door.spritePath,
             );
-            cell.door.open = updatedCell.door.open;
           }
         }
 

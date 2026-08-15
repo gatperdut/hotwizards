@@ -801,37 +801,60 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
       const allCells = this.campaignService.campaign().adventure!.dungeon.cells;
 
-      const cells = searchedCells(allCells, cellAt(allCells, hero.x, hero.y)!);
+      const searchCells = searchedCells(allCells, cellAt(allCells, hero.x, hero.y)!);
 
-      this.campaignService.campaign.update((campaign) => ({
-        ...campaign,
-        adventure: {
-          ...campaign.adventure!,
-          dungeon: {
-            ...campaign.adventure!.dungeon,
-            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-              if (h.id !== heroId) {
-                return h;
+      this.campaignService.campaign.update((campaign) => {
+        const updatedCells = campaign.adventure!.dungeon.cells.map((c) =>
+          cellAt(searchCells, c.x, c.y)
+            ? {
+                ...c,
+                searched: true,
+                feature: { ...c.feature, trap: { ...c.feature.trap, found: true } },
+                door: { ...c.door, trap: { ...c.door.trap, found: true } },
               }
+            : c,
+        );
 
-              return {
-                ...h,
-                actionPoints: h.actionPoints - 1,
-              };
-            }),
-            cells: campaign.adventure!.dungeon.cells.map((c) =>
-              cellAt(cells, c.x, c.y)
-                ? {
-                    ...c,
-                    searched: true,
-                    feature: { ...c.feature, trap: { ...c.feature.trap, found: true } },
-                    door: { ...c.door, trap: { ...c.door.trap, found: true } },
-                  }
-                : c,
-            ),
+        searchCells.forEach((searchCell) => {
+          secondaryCells(
+            this.campaignService.campaign().adventure!.dungeon.cells,
+            searchCell,
+          ).forEach((secCell) => {
+            const updatedC = cellAt(updatedCells, secCell.x, secCell.y);
+            if (updatedC) {
+              updatedC.searched = true;
+              updatedC.feature.trap.found = true;
+            }
+          });
+
+          if (searchCell.secondary) {
+            const secondary = cellAt(updatedCells, searchCell.secondary.x, searchCell.secondary.y)!;
+            secondary.searched = true;
+            secondary.feature.trap.found = true;
+          }
+        });
+
+        return {
+          ...campaign,
+          adventure: {
+            ...campaign.adventure!,
+            dungeon: {
+              ...campaign.adventure!.dungeon,
+              heroes: campaign.adventure!.dungeon.heroes.map((h) => {
+                if (h.id !== heroId) {
+                  return h;
+                }
+
+                return {
+                  ...h,
+                  actionPoints: h.actionPoints - 1,
+                };
+              }),
+              cells: updatedCells,
+            },
           },
-        },
-      }));
+        };
+      });
 
       this.dungeonService.hwfeHeroesUpdate();
       this.dungeonService.hwfeCellsUpdate();

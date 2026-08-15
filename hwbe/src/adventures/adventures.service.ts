@@ -15,6 +15,7 @@ import {
   HwTransformEndTurnMaster,
   sameCell,
   searchedCells,
+  secondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
 import {
@@ -520,6 +521,52 @@ export class AdventuresService {
       cellAt(adventure.dungeon.cells, hero.x, hero.y)!,
     );
 
+    const updatedCells = adventure.dungeon.cells.map((c) => {
+      const cell = cellAt(cells, c.x, c.y);
+
+      if (!cell) {
+        return c;
+      }
+
+      const updatedC: HwCell = {
+        ...c,
+        floorTrap: { ...c.floorTrap, found: true },
+        feature: {
+          ...c.feature,
+          trap: {
+            ...c.feature.trap,
+            ...(c.feature.trap.spritePath ? { ...c.feature.trap, found: true } : c.feature.trap),
+          },
+        },
+        door: {
+          ...c.door,
+          trap: {
+            ...c.door.trap,
+            ...(c.door.trap.spritePath ? { ...c.door.trap, found: true } : c.door.trap),
+          },
+        },
+        searched: true,
+      };
+
+      return updatedC;
+    });
+
+    cells.forEach((cell) => {
+      secondaryCells(adventure.dungeon.cells, cell).forEach((secCell) => {
+        const updatedC = cellAt(updatedCells, secCell.x, secCell.y);
+        if (updatedC) {
+          updatedC.searched = true;
+          updatedC.feature.trap.found = true;
+        }
+      });
+
+      if (cell.secondary) {
+        const secondary = cellAt(updatedCells, cell.secondary.x, cell.secondary.y)!;
+        secondary.searched = true;
+        secondary.feature.trap.found = true;
+      }
+    });
+
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
@@ -528,29 +575,7 @@ export class AdventuresService {
           heroes: adventure.dungeon.heroes.map((h) =>
             h.id === hero.id ? { ...h, actionPoints: h.actionPoints - 1 } : h,
           ),
-          cells: adventure.dungeon.cells.map((c) => {
-            const cell = cellAt(cells, c.x, c.y);
-
-            if (!cell) {
-              return c;
-            }
-
-            const updatedC: HwCell = {
-              ...c,
-              floorTrap: { ...c.floorTrap, found: true },
-              feature: {
-                ...c.feature,
-                trap: { ...c.feature.trap, ...(c.feature.trap.spritePath ? { found: true } : {}) },
-              },
-              door: {
-                ...c.door,
-                trap: { ...c.door.trap, ...(c.door.trap.spritePath ? { found: true } : {}) },
-              },
-              searched: true,
-            };
-
-            return updatedC;
-          }),
+          cells: updatedCells,
         } as unknown as InputJsonValue,
       },
     }));
