@@ -1,3 +1,4 @@
+export { endTurnHero } from './actions/end-turn-hero.const.js';
 export { moveHero } from './actions/move-hero.const.js';
 export { moveMonster } from './actions/move-monster.const.js';
 export { openDoor } from './actions/open-door.const.js';

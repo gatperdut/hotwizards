@@ -20,7 +20,7 @@ pnpm run hwbe:start
 pnpm run hwfe:start
 ```
 
-For workspace hygiene (clears `node_modules`/`dist`/generated code):
+For workspace hygiene (clears `node_modules` / `dist` / generated code):
 
 ```sh
 pnpm run clear
@@ -32,7 +32,7 @@ Database scripts:
 - `pnpm run db:up`: start the db container, block until the healthcheck passes.
 - `pnpm run db:down`: stop and remove the container. The data volume survives.
 - `pnpm run db:nuke`: same as `db:down`, but also delete the data volume (fresh on next `db:up`).
-- `pnpm run db:logs`: postgres logs
+- `pnpm run db:logs`: postgres logs.
 - `pnpm run db:psql`: open a psql shell inside the container.
 
 ### Migration policy

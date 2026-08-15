@@ -9,6 +9,7 @@ import {
   cellsUpdateLos,
   creatureMaxActionPoints,
   creatureMovementPoints,
+  endTurnHero,
   HwCell,
   HwHero,
   HwMonster,
@@ -112,35 +113,26 @@ export class AdventuresService {
     const hero = adventure.dungeon.heroes.find((h) => h.id === user.id)!;
 
     const actionPoints = creatureMaxActionPoints(hero.klass, hero.inventory);
-
     const movementPoints = creatureMovementPoints(
       hero.klass,
       hero.inventory,
       campaign.ruleset.movement,
     );
 
-    const updatedHero = {
-      ...hero,
-      actionPoints: creatureMaxActionPoints(hero.klass, hero.inventory),
-      movementPoints: movementPoints,
-      maxMovementPoints: movementPoints,
-    };
+    endTurnHero(adventure.dungeon, user.id, actionPoints, movementPoints);
 
     await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
         turn: turn,
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) => (h.id === user.id ? updatedHero : h)),
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     });
 
     this.endTurnPush(campaign, turn);
 
     this.adventuresGateway.handleDownEndTurnHero(campaign.id, {
-      heroId: updatedHero.id,
+      heroId: hero.id,
       actionPoints: actionPoints,
       movementPoints: movementPoints,
       turn: turn,
