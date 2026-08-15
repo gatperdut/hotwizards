@@ -531,6 +531,7 @@ export class AdventuresService {
       const updatedC: HwCell = {
         ...c,
         floorTrap: { ...c.floorTrap, found: true },
+        searched: true,
         feature: {
           ...c.feature,
           trap: {
@@ -545,13 +546,14 @@ export class AdventuresService {
             ...(c.door.trap.spritePath ? { ...c.door.trap, found: true } : c.door.trap),
           },
         },
-        searched: true,
       };
 
       return updatedC;
     });
 
     searchSecondaryCells(searchCells, updatedCells, adventure.dungeon.cells);
+
+    console.log(updatedCells);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },

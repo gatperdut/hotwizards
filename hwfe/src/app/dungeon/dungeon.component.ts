@@ -810,6 +810,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
             ? {
                 ...c,
                 searched: true,
+                floorTrap: { ...c.floorTrap, found: true },
                 feature: { ...c.feature, trap: { ...c.feature.trap, found: true } },
                 door: { ...c.door, trap: { ...c.door.trap, found: true } },
               }

@@ -135,10 +135,11 @@ export class DungeonService {
           searched: updatedCell.searched,
         };
 
+        resultCell.searched = updatedCell.searched;
+        resultCell.floorTrap.found = updatedCell.floorTrap.found;
+        resultCell.feature.trap.found = updatedCell.feature.trap.found;
         resultCell.door.open = updatedCell.door.open;
         resultCell.door.trap.found = updatedCell.door.trap.found;
-        resultCell.feature.trap.found = updatedCell.feature.trap.found;
-        resultCell.searched = updatedCell.searched;
 
         if (cell.door.spritePath !== updatedCell.door.spritePath) {
           if (cell.door.spritePath) {
