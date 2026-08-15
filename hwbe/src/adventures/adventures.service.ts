@@ -11,6 +11,7 @@ import {
   creatureMovementPoints,
   endTurnHero,
   endTurnMaster,
+  equipItem,
   HwCell,
   HwHero,
   HwMonster,
@@ -22,7 +23,7 @@ import {
   searchedCells,
   searchSecondaryCells,
 } from '@hw/shared/dungeon';
-import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
+import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -228,25 +229,16 @@ export class AdventuresService {
 
   public async equipItem(campaign: HwCampaign, hero: HwHero, backpackItem: HwItem): Promise<void> {
     const adventure = campaign.adventure!;
-    const inventory = { ...hero.inventory };
 
-    const slot = HwItemSlots[backpackItem.name];
-    if (!slot) {
+    const canEquipItem = equipItem(adventure.dungeon, hero.id, backpackItem.id);
+    if (!canEquipItem) {
       throw new UnprocessableEntityException(`Item ${backpackItem.name} cannot be equiped`);
     }
-
-    inventory.gear[slot] = backpackItem;
-    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) =>
-            h.id === hero.id ? { ...h, inventory, movementPoints: h.movementPoints - 1 } : h,
-          ),
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     }));
 
