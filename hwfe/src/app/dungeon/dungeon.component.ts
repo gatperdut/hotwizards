@@ -18,6 +18,7 @@ import {
   cellIsHint,
   cellsUpdateLos,
   endTurnHero,
+  endTurnMaster,
   losFrom,
   moveHero,
   moveMonster,
@@ -322,24 +323,20 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downEndTurnMaster', (data) => {
-      this.campaignService.campaign.update((campaign) => ({
-        ...campaign,
-        adventure: {
-          ...campaign.adventure!,
-          turn: 1,
-          dungeon: {
-            ...campaign.adventure!.dungeon,
-            monsters: campaign.adventure!.dungeon.monsters.map((monster) => {
-              return {
-                ...monster,
-                actionPoints: data.monsters[monster.id].actionPoints,
-                movementPoints: data.monsters[monster.id].movementPoints,
-                maxMovementPoints: data.monsters[monster.id].movementPoints,
-              };
-            }),
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
+      endTurnMaster(dungeon, data);
+
+      this.campaignService.campaign.update((campaign) => {
+        return {
+          ...campaign,
+          adventure: {
+            ...campaign.adventure!,
+            turn: 1,
+            dungeon: dungeon,
           },
-        },
-      }));
+        };
+      });
 
       this.dungeonService.hwfeMonstersUpdate();
 

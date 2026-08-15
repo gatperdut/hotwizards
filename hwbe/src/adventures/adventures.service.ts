@@ -10,6 +10,7 @@ import {
   creatureMaxActionPoints,
   creatureMovementPoints,
   endTurnHero,
+  endTurnMaster,
   HwCell,
   HwHero,
   HwMonster,
@@ -70,39 +71,27 @@ export class AdventuresService {
     const adventure = campaign.adventure!;
     const turn = (adventure.turn + 1) % (campaign.memberships.length + 1);
 
-    const wsData: HwTransformEndTurnMaster = {
-      monsters: {},
-    };
-    const updatedMonsters = adventure.dungeon.monsters.map((m) => {
-      const actionPoints = creatureMaxActionPoints(m.type!, m.inventory);
-      const movementPoints = creatureMovementPoints(
-        m.type!,
-        m.inventory,
-        campaign.ruleset.movement,
-      );
-      wsData.monsters[m.id] = { actionPoints: actionPoints, movementPoints: movementPoints };
-      return {
-        ...m,
-        actionPoints: actionPoints,
-        movementPoints: movementPoints,
-        maxMovementPoints: movementPoints,
+    const data: HwTransformEndTurnMaster = { monsters: {} };
+    adventure.dungeon.monsters.forEach((m) => {
+      data.monsters[m.id] = {
+        actionPoints: creatureMaxActionPoints(m.type!, m.inventory),
+        movementPoints: creatureMovementPoints(m.type!, m.inventory, campaign.ruleset.movement),
       };
     });
+
+    endTurnMaster(adventure.dungeon, data);
 
     await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
         turn: turn,
-        dungeon: {
-          ...adventure.dungeon,
-          monsters: updatedMonsters,
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     });
 
     this.endTurnPush(campaign, turn);
 
-    this.adventuresGateway.handleDownEndTurnMaster(campaign.id, wsData);
+    this.adventuresGateway.handleDownEndTurnMaster(campaign.id, data);
 
     return turn;
   }
