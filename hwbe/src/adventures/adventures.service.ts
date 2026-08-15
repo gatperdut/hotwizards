@@ -13,13 +13,14 @@ import {
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
+  moveMonster,
   openDoor,
   sameCell,
   searchedCells,
   searchSecondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
-import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import { heroSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -223,55 +224,29 @@ export class AdventuresService {
   ): Promise<void> {
     const adventure = campaign.adventure!;
 
-    const currentCell = cellAt(adventure.dungeon.cells, monster.x, monster.y)!;
-
     const targetCell = cellAt(
       adventure.dungeon.cells,
       monster.x + AdjacentOffsets[adjacent].x,
       monster.y + AdjacentOffsets[adjacent].y,
     );
-
     if (!targetCell || !cellIsTraversable(targetCell)) {
       throw new UnprocessableEntityException('The cell cannot be walked into');
     }
 
-    adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
-      if (sameCell(currentCell, cell)) {
-        return {
-          ...currentCell,
-          creatureId: null,
-        };
-      }
-
-      if (sameCell(targetCell, cell)) {
-        return {
-          ...targetCell,
-          creatureId: monster.id,
-        };
-      }
-
-      return cell;
-    });
-
-    adventure.dungeon.monsters = adventure.dungeon.monsters.map((m) => {
-      if (m.id !== monster.id) {
-        return m;
-      }
-
-      return {
-        ...m,
-        spritePath: monsterSpritePath(m.type!, adjacent),
-        x: targetCell.x,
-        y: targetCell.y,
-        direction: adjacent,
-        movementPoints: m.movementPoints - 1,
-      };
-    });
+    const moveMonsterData = moveMonster(adventure.dungeon, monster.id, adjacent);
 
     await this.prismaService.campaign.update({
       where: { id: campaign.id },
       data: {
-        adventure: { update: { dungeon: adventure.dungeon as unknown as InputJsonValue } },
+        adventure: {
+          update: {
+            dungeon: {
+              ...adventure.dungeon,
+              cells: moveMonsterData.cells,
+              monsters: moveMonsterData.monsters,
+            } as unknown as InputJsonValue,
+          },
+        },
       },
     });
 
@@ -286,13 +261,11 @@ export class AdventuresService {
     const adventure = campaign.adventure!;
 
     const updatedCells = openDoor(adventure.dungeon.cells, hero.x, hero.y, adjacent);
-
     if (!updatedCells) {
       throw new UnprocessableEntityException('There is no door to open');
     }
 
     adventure.dungeon.cells = updatedCells;
-
     adventure.dungeon.heroes = adventure.dungeon.heroes.map((h) => {
       if (hero.id !== h.id) {
         return h;

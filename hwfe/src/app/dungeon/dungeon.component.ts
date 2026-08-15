@@ -18,6 +18,7 @@ import {
   cellIsHint,
   cellsUpdateLos,
   losFrom,
+  moveMonster,
   openDoor,
   sameCell,
   searchedCells,
@@ -25,7 +26,7 @@ import {
   secondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItemSlots } from '@hw/shared/inventory';
-import { heroSpritePath, monsterSpritePath } from '@hw/shared/sprites';
+import { heroSpritePath } from '@hw/shared/sprites';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
 import { CampaignsApiService } from '../campaigns/services/campaigns-api.service';
@@ -426,38 +427,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-      const monster = dungeon.monsters.find((m) => m.id === data.monsterId)!;
-      const leftCell = cellAt(dungeon.cells, monster.x, monster.y)!;
-      const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
-      const cells = dungeon.cells.map((c) => {
-        if (sameCell(c, leftCell)) {
-          return { ...c, creatureId: null };
-        }
-
-        if (sameCell(c, enteredCell)) {
-          return { ...c, creatureId: data.monsterId };
-        }
-
-        return c;
-      });
-
-      const monsters = dungeon.monsters.map((m) => {
-        if (m.id !== data.monsterId) {
-          return m;
-        }
-
-        this.dungeonService.selectMonster(m.id, false);
-
-        return {
-          ...m,
-          spritePath: monsterSpritePath(m.type!, data.adj),
-          direction: data.adj,
-          x: data.cell.x,
-          y: data.cell.y,
-          movementPoints: m.movementPoints - 1,
-        };
-      });
+      const moveMonsterData = moveMonster(dungeon, data.monsterId, data.adj);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
@@ -465,11 +436,13 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
           ...campaign.adventure!,
           dungeon: {
             ...dungeon,
-            monsters: monsters,
-            cells: cells,
+            monsters: moveMonsterData.monsters,
+            cells: moveMonsterData.cells,
           },
         },
       }));
+
+      this.dungeonService.selectMonster(data.monsterId, false);
 
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeMonstersUpdate();

@@ -1,3 +1,4 @@
+export { moveMonster } from './actions/move-monter.const.js';
 export { openDoor } from './actions/open-door.const.js';
 export { searchSecondaryCells } from './actions/search-secondary-cells.const.js';
 export { HwCell } from './cells/cell.interface.js';
