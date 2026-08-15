@@ -1,17 +1,11 @@
 import { AdjacentOffsets } from '../../directions/adjacents/adjacent-offsets.const.js';
 import { Adjacent } from '../../directions/adjacents/adjacents.const.js';
 import { monsterSpritePath } from '../../sprites/monster-sprites.const.js';
-import { HwCell } from '../cells/cell.interface.js';
 import { cellAt } from '../cells/position/cell-at.const.js';
 import { sameCell } from '../cells/position/same-cell.const.js';
-import { HwMonster } from '../creatures/monsters/monster.interface.js';
 import { HwDungeon } from '../dungeon.interface.js';
 
-export const moveMonster = (
-  dungeon: HwDungeon,
-  monsterId: number,
-  adjacent: Adjacent,
-): { cells: HwCell[]; monsters: HwMonster[] } => {
+export const moveMonster = (dungeon: HwDungeon, monsterId: number, adjacent: Adjacent): void => {
   const monster = dungeon.monsters.find((m) => m.id === monsterId)!;
   const currentCell = cellAt(dungeon.cells, monster.x, monster.y)!;
   const targetCell = cellAt(
@@ -20,7 +14,7 @@ export const moveMonster = (
     monster.y + AdjacentOffsets[adjacent].y,
   )!;
 
-  const cells = dungeon.cells.map((c) => {
+  dungeon.cells = dungeon.cells.map((c) => {
     if (sameCell(c, currentCell)) {
       return { ...c, creatureId: null };
     }
@@ -32,7 +26,7 @@ export const moveMonster = (
     return c;
   });
 
-  const monsters = dungeon.monsters.map((m) => {
+  dungeon.monsters = dungeon.monsters.map((m) => {
     if (m.id !== monsterId) {
       return m;
     }
@@ -46,6 +40,4 @@ export const moveMonster = (
       movementPoints: m.movementPoints - 1,
     };
   });
-
-  return { cells: cells, monsters: monsters };
 };

@@ -13,6 +13,7 @@ import {
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
+  moveHero,
   moveMonster,
   openDoor,
   sameCell,
@@ -20,7 +21,6 @@ import {
   searchSecondaryCells,
 } from '@hw/shared/dungeon';
 import { HwItem, HwItemSlots, HwSlot } from '@hw/shared/inventory';
-import { heroSpritePath } from '@hw/shared/sprites';
 import { HwUser } from '@hw/shared/users';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -150,12 +150,8 @@ export class AdventuresService {
   }
 
   public async moveHero(campaign: HwCampaign, hero: HwHero, adjacent: Adjacent): Promise<void> {
-    const adventure = campaign.adventure!;
-
-    const currentCell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
-
     const targetCell = cellAt(
-      adventure.dungeon.cells,
+      campaign.adventure!.dungeon.cells,
       hero.x + AdjacentOffsets[adjacent].x,
       hero.y + AdjacentOffsets[adjacent].y,
     );
@@ -164,56 +160,27 @@ export class AdventuresService {
       throw new UnprocessableEntityException('The cell cannot be walked into');
     }
 
-    adventure.dungeon.cells = adventure.dungeon.cells.map((cell) => {
-      if (sameCell(currentCell, cell)) {
-        return {
-          ...currentCell,
-          creatureId: null,
-        };
-      }
-
-      if (sameCell(targetCell, cell)) {
-        return {
-          ...targetCell,
-          creatureId: hero.id,
-          searched: true,
-        };
-      }
-
-      return cell;
-    });
-
-    adventure.dungeon.heroes = adventure.dungeon.heroes.map((h) => {
-      if (hero.id !== h.id) {
-        return h;
-      }
-
-      return {
-        ...h,
-        spritePath: heroSpritePath(h.klass, h.gender, adjacent),
-        x: targetCell.x,
-        y: targetCell.y,
-        adjacent: adjacent,
-        movementPoints: h.movementPoints - 1,
-      };
-    });
+    moveHero(campaign.adventure!.dungeon, hero.id, adjacent);
 
     cellsUpdateLos(
-      adventure.dungeon.cells,
-      adventure.dungeon.heroes.map((h) => cellAt(adventure.dungeon.cells, h.x, h.y)!),
+      campaign.adventure!.dungeon.cells,
+      campaign.adventure!.dungeon.heroes.map((h) =>
+        cellAt(campaign.adventure!.dungeon.cells, h.x, h.y)!,
+      ),
     );
 
     await this.prismaService.campaign.update({
       where: { id: campaign.id },
       data: {
-        adventure: { update: { dungeon: adventure.dungeon as unknown as InputJsonValue } },
+        adventure: {
+          update: { dungeon: campaign.adventure!.dungeon as unknown as InputJsonValue },
+        },
       },
     });
 
     this.adventuresGateway.handleDownMoveHero(campaign.id, {
       heroId: hero.id,
       adj: adjacent,
-      cell: { x: targetCell.x, y: targetCell.y },
     });
   }
 
@@ -233,18 +200,14 @@ export class AdventuresService {
       throw new UnprocessableEntityException('The cell cannot be walked into');
     }
 
-    const moveMonsterData = moveMonster(adventure.dungeon, monster.id, adjacent);
+    moveMonster(adventure.dungeon, monster.id, adjacent);
 
     await this.prismaService.campaign.update({
       where: { id: campaign.id },
       data: {
         adventure: {
           update: {
-            dungeon: {
-              ...adventure.dungeon,
-              cells: moveMonsterData.cells,
-              monsters: moveMonsterData.monsters,
-            } as unknown as InputJsonValue,
+            dungeon: adventure.dungeon as unknown as InputJsonValue,
           },
         },
       },
@@ -253,7 +216,6 @@ export class AdventuresService {
     this.adventuresGateway.handleDownMoveMonster(campaign.id, {
       monsterId: monster.id,
       adj: adjacent,
-      cell: { x: targetCell.x, y: targetCell.y },
     });
   }
 

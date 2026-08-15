@@ -18,6 +18,7 @@ import {
   cellIsHint,
   cellsUpdateLos,
   losFrom,
+  moveHero,
   moveMonster,
   openDoor,
   sameCell,
@@ -376,48 +377,19 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
-      const leftCell = cellAt(dungeon.cells, hero.x, hero.y)!;
-      const enteredCell = cellAt(dungeon.cells, data.cell.x, data.cell.y)!;
 
-      const cells = dungeon.cells.map((c) => {
-        if (sameCell(c, leftCell)) {
-          return { ...c, creatureId: null };
-        }
-
-        if (sameCell(c, enteredCell)) {
-          return { ...c, creatureId: data.heroId, searched: true };
-        }
-
-        return c;
-      });
-
-      const heroes = dungeon.heroes.map((h) =>
-        h.id === hero.id
-          ? {
-              ...h,
-              spritePath: heroSpritePath(h.klass, h.gender, data.adj),
-              direction: data.adj,
-              x: data.cell.x,
-              y: data.cell.y,
-              movementPoints: h.movementPoints - 1,
-            }
-          : h,
-      );
+      moveHero(dungeon, hero.id, data.adj);
 
       cellsUpdateLos(
-        cells,
-        heroes.map((h) => cellAt(cells, h.x, h.y)!),
+        dungeon.cells,
+        dungeon.heroes.map((h) => cellAt(dungeon.cells, h.x, h.y)!),
       );
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...dungeon,
-            heroes: heroes,
-            cells: cells,
-          },
+          dungeon: dungeon,
         },
       }));
 
@@ -428,17 +400,13 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
 
-      const moveMonsterData = moveMonster(dungeon, data.monsterId, data.adj);
+      moveMonster(dungeon, data.monsterId, data.adj);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...dungeon,
-            monsters: moveMonsterData.monsters,
-            cells: moveMonsterData.cells,
-          },
+          dungeon: dungeon,
         },
       }));
 
