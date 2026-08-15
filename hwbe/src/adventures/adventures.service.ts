@@ -22,6 +22,7 @@ import {
   sameCell,
   searchedCells,
   searchSecondaryCells,
+  unequipItem,
 } from '@hw/shared/dungeon';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
 import { HwUser } from '@hw/shared/users';
@@ -247,25 +248,16 @@ export class AdventuresService {
 
   public async unequipItem(campaign: HwCampaign, hero: HwHero, slot: HwSlot): Promise<void> {
     const adventure = campaign.adventure!;
-    const inventory = { ...hero.inventory };
 
-    const item = inventory.gear[slot];
-    if (!item) {
+    const canUnequipItem = unequipItem(adventure.dungeon, hero.id, slot);
+    if (!canUnequipItem) {
       throw new UnprocessableEntityException(`No item equipped in slot ${slot}`);
     }
-
-    inventory.gear[slot] = null;
-    inventory.backpack.items.unshift(item);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) =>
-            h.id === hero.id ? { ...h, inventory, movementPoints: h.movementPoints - 1 } : h,
-          ),
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     }));
 

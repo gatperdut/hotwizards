@@ -28,6 +28,7 @@ import {
   searchedCells,
   searchSecondaryCells,
   secondaryCells,
+  unequipItem,
 } from '@hw/shared/dungeon';
 import { forkJoin, tap } from 'rxjs';
 import { CampaignService } from '../campaigns/campaign/campaign.service';
@@ -450,32 +451,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downUnequipItem', (heroId, slot) => {
-      const inventory = this.campaignService
-        .campaign()
-        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!.inventory;
-      const gearItem = inventory.gear[slot]!;
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
 
-      inventory.backpack.items.push(gearItem);
-      inventory.gear[slot] = null;
+      unequipItem(dungeon, heroId, slot);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...campaign.adventure!.dungeon,
-            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-              if (h.id !== heroId) {
-                return h;
-              }
-
-              return {
-                ...h,
-                movementPoints: h.movementPoints - 1,
-                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
-              };
-            }),
-          },
+          dungeon: dungeon,
         },
       }));
 
