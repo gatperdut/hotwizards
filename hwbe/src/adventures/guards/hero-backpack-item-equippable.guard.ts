@@ -3,7 +3,7 @@ import { BadRequestException, CanActivate, ExecutionContext, Injectable } from '
 import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
-export class BackpackItemEquippableGuard implements CanActivate {
+export class HeroBackpackItemEquippableGuard implements CanActivate {
   public canActivate(executionContext: ExecutionContext): boolean {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const hero = request.hero;

@@ -15,6 +15,7 @@ import { CharactersService } from './characters.service.js';
 import { CurrentBackpackItem } from './decorators/current-backpack-item.decorator.js';
 import { CurrentCharacter } from './decorators/current-character.decorator.js';
 import { TargetCharacter } from './decorators/target-character.decorator.js';
+import { CharacterBackpackItemEquippableGuard } from './guards/character-backpack-item-equippable.guard.js';
 import { SetCharacterBackpackItemGuard } from './guards/set-character-backpack-item.guard.js';
 import { SetCharacterCampaignGuard } from './guards/set-character-campaign.guard.js';
 import { SetCharacterGearItemGuard } from './guards/set-character-gear-item.guard.js';
@@ -26,7 +27,12 @@ export class CharactersController {
   constructor(private charactersService: CharactersService) {}
 
   @Post(':characterId/equip-item')
-  @UseGuards(SetCharacterGuard, SetCharacterCampaignGuard, SetCharacterBackpackItemGuard)
+  @UseGuards(
+    SetCharacterGuard,
+    SetCharacterCampaignGuard,
+    SetCharacterBackpackItemGuard,
+    CharacterBackpackItemEquippableGuard,
+  )
   public equipItem(
     @CurrentCampaign() campaign: HwCampaign,
     @CurrentCharacter() character: HwCharacter,

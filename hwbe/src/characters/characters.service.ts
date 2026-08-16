@@ -1,15 +1,14 @@
+import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { HwCharacter } from '@hw/shared/characters';
+import { equipItem, HwCharacter } from '@hw/shared/characters';
 import {
   HwBuyableItemName,
   HwBuyableItemNames,
   HwItem,
   HwItemCosts,
-  HwItemSlots,
   HwSlot,
 } from '@hw/shared/inventory';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CharactersGateway } from './characters.gateway.js';
 
@@ -25,20 +24,12 @@ export class CharactersService {
     character: HwCharacter,
     backpackItem: HwItem,
   ): Promise<void> {
-    const inventory = { ...character.inventory };
-
-    const slot = HwItemSlots[backpackItem.name];
-    if (!slot) {
-      throw new UnprocessableEntityException(`Item ${backpackItem.name} cannot be equiped`);
-    }
-
-    inventory.gear[slot] = backpackItem;
-    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
+    equipItem(character, backpackItem.id);
 
     void (await this.prismaService.character.update({
       where: { id: character.id },
       data: {
-        inventory: inventory as unknown as InputJsonValue,
+        inventory: character.inventory as unknown as InputJsonValue,
       },
     }));
 
