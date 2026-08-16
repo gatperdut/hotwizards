@@ -225,6 +225,7 @@ export class TownComponent {
       });
     });
 
+    // TODO next
     this.charactersSocket.on('downDropItem', (characterId, backpackItemId) => {
       const inventory = this.campaignService
         .memberships()
