@@ -9,6 +9,7 @@ import {
   cellsUpdateLos,
   creatureMaxActionPoints,
   creatureMovementPoints,
+  destroyItem,
   dropItem,
   endTurnHero,
   endTurnMaster,
@@ -251,6 +252,7 @@ export class AdventuresService {
   public async unequipItem(campaign: HwCampaign, hero: HwHero, slot: HwSlot): Promise<void> {
     const adventure = campaign.adventure!;
 
+    // TODO check in controller guard? One or two more like this, too.
     const canUnequipItem = unequipItem(adventure.dungeon, hero.id, slot);
     if (!canUnequipItem) {
       throw new UnprocessableEntityException(`No item equipped in slot ${slot}`);
@@ -268,7 +270,6 @@ export class AdventuresService {
 
   public async dropItem(campaign: HwCampaign, hero: HwHero, backpackItem: HwItem): Promise<void> {
     const adventure = campaign.adventure!;
-
     dropItem(adventure.dungeon, hero.id, backpackItem.id);
 
     void (await this.prismaService.adventure.update({
@@ -287,21 +288,12 @@ export class AdventuresService {
     backpackItem: HwItem,
   ): Promise<void> {
     const adventure = campaign.adventure!;
-    const inventory = { ...hero.inventory };
-
-    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
+    destroyItem(adventure.dungeon, hero.id, backpackItem.id);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) =>
-            h.id === hero.id
-              ? { ...h, inventory: inventory, movementPoints: h.movementPoints - 1 }
-              : h,
-          ),
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     }));
 

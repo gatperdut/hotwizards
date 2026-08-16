@@ -1,3 +1,4 @@
+export { destroyItem } from './actions/destroy-item.const.js';
 export { dropItem } from './actions/drop-item.const.js';
 export { endTurnHero } from './actions/end-turn-hero.const.js';
 export { endTurnMaster } from './actions/end-turn-master.const.js';

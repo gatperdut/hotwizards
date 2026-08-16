@@ -17,6 +17,7 @@ import {
   cellAt,
   cellIsHint,
   cellsUpdateLos,
+  destroyItem,
   dropItem,
   endTurnHero,
   endTurnMaster,
@@ -479,33 +480,14 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downDestroyItem', (heroId, backpackItemId) => {
-      const hero = this.campaignService
-        .campaign()
-        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
-      const inventory = hero.inventory;
-
-      inventory.backpack.items = inventory.backpack.items.filter(
-        (item) => item.id !== backpackItemId,
-      );
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      destroyItem(dungeon, heroId, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...campaign.adventure!.dungeon,
-            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-              if (h.id !== heroId) {
-                return h;
-              }
-
-              return {
-                ...h,
-                movementPoints: h.movementPoints - 1,
-                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
-              };
-            }),
-          },
+          dungeon: dungeon,
         },
       }));
 
