@@ -22,6 +22,8 @@ export class DialogService {
   private appRef = inject(ApplicationRef);
   private injector = inject(Injector);
 
+  private openDialogs = new Set<DialogRef<any>>();
+
   public async open<C, D, R>(
     lazy: LazyDialog<C, D, R>,
     data: D,
@@ -53,11 +55,20 @@ export class DialogService {
 
     this.appRef.attachView(componentRef.hostView);
 
+    this.openDialogs.add(dialogRef);
+
     dialogRef.afterClosed$.subscribe(() => {
       this.appRef.detachView(componentRef.hostView);
       componentRef.destroy();
+      this.openDialogs.delete(dialogRef);
     });
 
     return dialogRef;
+  }
+
+  public closeAll(): void {
+    for (const dialogRef of [...this.openDialogs]) {
+      dialogRef.close();
+    }
   }
 }

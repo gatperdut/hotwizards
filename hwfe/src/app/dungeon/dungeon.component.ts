@@ -47,6 +47,7 @@ import {
   BaseSpriteSharedVisibleTint,
 } from '../sprites/base-sprites.const';
 import { FloorTrapSpriteTint } from '../sprites/floor-trap-sprites.const';
+import { DialogService } from '../ui/dialog/services/dialog.service';
 import { DungeonSidebarComponent } from './dungeon-sidebar/dungeon-sidebar.component';
 import { HwfeCell } from './interfaces/cell.interface';
 import { CellService } from './services/cell.service';
@@ -74,6 +75,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
   private dungeonService = inject(DungeonService);
   private viewportService = inject(ViewportService);
   private textureService = inject(TextureService);
+  private dialogService = inject(DialogService);
 
   public loading = signal(true);
 
@@ -313,6 +315,8 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         .get(this.campaignService.campaign().id)
         .pipe(
           tap((campaign) => {
+            this.dialogService.closeAll();
+
             this.campaignService.campaign.set(campaign);
 
             this.toastService.show({

@@ -97,6 +97,8 @@ export class TownComponent {
         .get(this.campaignService.campaign().id)
         .pipe(
           tap((campaign) => {
+            this.dialogService.closeAll();
+
             this.campaignService.campaign.set(campaign);
 
             this.toastService.show({
