@@ -21,8 +21,8 @@ import {
   moveHero,
   moveMonster,
   openDoor,
+  pickupGold,
   pickupItem,
-  sameCell,
   searchedCells,
   searchSecondaryCells,
   unequipItem,
@@ -302,7 +302,6 @@ export class AdventuresService {
 
   public async pickupItem(campaign: HwCampaign, hero: HwHero, lootItem: HwItem): Promise<void> {
     const adventure = campaign.adventure!;
-
     pickupItem(adventure.dungeon, hero.id, lootItem.id);
 
     void (await this.prismaService.adventure.update({
@@ -317,31 +316,15 @@ export class AdventuresService {
 
   public async pickupGold(campaign: HwCampaign, hero: HwHero, amount: number): Promise<void> {
     const adventure = campaign.adventure!;
-    const inventory = { ...hero.inventory };
-    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
-    const loot = { ...cell.loot };
-
-    if (loot.gold < amount) {
-      throw new UnprocessableEntityException(
-        `Cannot take ${amount} gold coins from a loot of ${loot.gold}`,
-      );
+    const canPickupGold = pickupGold(adventure.dungeon, hero.id, amount);
+    if (!canPickupGold) {
+      throw new UnprocessableEntityException(`Cannot take ${amount} gold coins from the cell loot`);
     }
-
-    loot.gold -= amount;
-    inventory.backpack.gold += amount;
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) =>
-            h.id === hero.id
-              ? { ...h, inventory: inventory, movementPoints: h.movementPoints - 1 }
-              : h,
-          ),
-          cells: adventure.dungeon.cells.map((c) => (sameCell(cell, c) ? { ...c, loot: loot } : c)),
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     }));
 

@@ -26,8 +26,8 @@ import {
   moveHero,
   moveMonster,
   openDoor,
+  pickupGold,
   pickupItem,
-  sameCell,
   searchedCells,
   searchSecondaryCells,
   secondaryCells,
@@ -515,48 +515,14 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downPickupGold', (heroId, amount) => {
-      const hero = this.campaignService
-        .campaign()
-        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
-      const inventory = hero.inventory;
-      const cell = cellAt(
-        this.campaignService.campaign().adventure!.dungeon.cells,
-        hero.x,
-        hero.y,
-      )!;
-      const loot = cell.loot;
-
-      loot.gold -= amount;
-      inventory.backpack.gold += amount;
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      pickupGold(dungeon, heroId, amount);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...campaign.adventure!.dungeon,
-            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-              if (h.id !== heroId) {
-                return h;
-              }
-
-              return {
-                ...h,
-                movementPoints: h.movementPoints - 1,
-                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
-              };
-            }),
-            cells: campaign.adventure!.dungeon.cells.map((c) => {
-              if (!sameCell(c, cell)) {
-                return c;
-              }
-
-              return {
-                ...c,
-                loot: { ...loot },
-              };
-            }),
-          },
+          dungeon: dungeon,
         },
       }));
 
