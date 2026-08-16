@@ -1,4 +1,5 @@
 export { equipItem } from './actions/equip-item.const.js';
+export { unequipItem } from './actions/unequip-item.const.js';
 export { HwCharacterBuyItemDto } from './character-buy-item.dto.js';
 export { HwCharacterDestroyItemDto } from './character-destroy-item.dto.js';
 export { HwCharacterDropItemDto } from './character-drop-item.dto.js';

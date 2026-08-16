@@ -24,7 +24,7 @@ import { CurrentLootItem } from './decorators/current-loot-item.decorator.js';
 import { CurrentMonster } from './decorators/current-monster.decorator.js';
 import { AdventureCampaignMasterGuard } from './guards/adventure-campaign-master.guard.js';
 import { AdventureProperTurnGuard } from './guards/adventure-proper-turn.guard.js';
-import { HeroBackpackItemEquippableGuard } from './guards/backpack-item-equippable.guard.js';
+import { HeroBackpackItemEquippableGuard } from './guards/hero-backpack-item-equippable.guard.js';
 import { HeroHasActionPoints } from './guards/hero-has-action-points.guard.js';
 import { HeroHasMovementPointsGuard } from './guards/hero-has-movement-points.guard.js';
 import { MonsterHasMovementPoints } from './guards/monster-has-movement-points.guard.js';

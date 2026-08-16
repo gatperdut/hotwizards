@@ -1,6 +1,6 @@
 import { InputJsonObject, InputJsonValue } from '@hw/prismagen/runtime';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { equipItem, HwCharacter } from '@hw/shared/characters';
+import { equipItem, HwCharacter, unequipItem } from '@hw/shared/characters';
 import {
   HwBuyableItemName,
   HwBuyableItemNames,
@@ -41,20 +41,12 @@ export class CharactersService {
     character: HwCharacter,
     slot: HwSlot,
   ): Promise<void> {
-    const inventory = { ...character.inventory };
-
-    const item = inventory.gear[slot];
-    if (!item) {
-      throw new UnprocessableEntityException(`No item equipped in slot ${slot}`);
-    }
-
-    inventory.gear[slot] = null;
-    inventory.backpack.items.unshift(item);
+    unequipItem(character, slot);
 
     void (await this.prismaService.character.update({
       where: { id: character.id },
       data: {
-        inventory: inventory as unknown as InputJsonValue,
+        inventory: character.inventory as unknown as InputJsonValue,
       },
     }));
 

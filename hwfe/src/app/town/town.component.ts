@@ -13,7 +13,7 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { equipItem } from '@hw/shared/characters';
+import { equipItem, unequipItem } from '@hw/shared/characters';
 import { HwBuyableItemName, HwItem, HwItemCosts } from '@hw/shared/inventory';
 import {
   CampaignsSingleDownstream,
@@ -210,29 +210,19 @@ export class TownComponent {
     });
 
     this.charactersSocket.on('downUnequipItem', (characterId, slot) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      const gearItem = inventory.gear[slot]!;
-      inventory.backpack.items.push(gearItem);
-      inventory.gear[slot] = null;
+      unequipItem(character, slot);
 
-      this.campaignService.campaign.update((campaign) => ({
+      this.campaignService.campaign.set({
         ...campaign,
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
-            },
-          };
-        }),
-      }));
+        memberships: campaign.memberships.map((m) => ({
+          ...m,
+          character: m.character!.id === character.id ? { ...character } : m.character,
+        })),
+      });
     });
 
     this.charactersSocket.on('downDropItem', (characterId, backpackItemId) => {
