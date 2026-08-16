@@ -9,6 +9,7 @@ import {
   cellsUpdateLos,
   creatureMaxActionPoints,
   creatureMovementPoints,
+  dropItem,
   endTurnHero,
   endTurnMaster,
   equipItem,
@@ -266,25 +267,13 @@ export class AdventuresService {
 
   public async dropItem(campaign: HwCampaign, hero: HwHero, backpackItem: HwItem): Promise<void> {
     const adventure = campaign.adventure!;
-    const inventory = { ...hero.inventory };
-    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
-    const loot = { ...cell.loot };
 
-    inventory.backpack.items = inventory.backpack.items.filter((i) => i.id !== backpackItem.id);
-    loot.items.push(backpackItem);
+    dropItem(adventure.dungeon, hero.id, backpackItem.id);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) =>
-            h.id === hero.id
-              ? { ...h, inventory: inventory, movementPoints: h.movementPoints - 1 }
-              : h,
-          ),
-          cells: adventure.dungeon.cells.map((c) => (sameCell(cell, c) ? { ...c, loot: loot } : c)),
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     }));
 

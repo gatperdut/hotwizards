@@ -17,6 +17,7 @@ import {
   cellAt,
   cellIsHint,
   cellsUpdateLos,
+  dropItem,
   endTurnHero,
   endTurnMaster,
   equipItem,
@@ -324,7 +325,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downEndTurnMaster', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-
       endTurnMaster(dungeon, data);
 
       this.campaignService.campaign.update((campaign) => {
@@ -368,7 +368,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
-
       moveHero(dungeon, hero.id, data.adj);
 
       cellsUpdateLos(
@@ -390,7 +389,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-
       moveMonster(dungeon, data.monsterId, data.adj);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -414,7 +412,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downOpenDoor', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
-
       openDoor(dungeon, hero.x, hero.y, data.adj)!;
 
       this.campaignService.campaign.update((campaign) => ({
@@ -436,7 +433,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downEquipItem', (heroId, backpackItemId) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-
       equipItem(dungeon, heroId, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -452,7 +448,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downUnequipItem', (heroId, slot) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
-
       unequipItem(dungeon, heroId, slot);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -467,51 +462,14 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downDropItem', (heroId, backpackItemId) => {
-      const hero = this.campaignService
-        .campaign()
-        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
-      const inventory = hero.inventory;
-      const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
-      const cell = cellAt(
-        this.campaignService.campaign().adventure!.dungeon.cells,
-        hero.x,
-        hero.y,
-      )!;
-      const loot = cell.loot;
-
-      inventory.backpack.items = inventory.backpack.items.filter(
-        (item) => item.id !== backpackItemId,
-      );
-      loot.items.push(backpackItem);
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      dropItem(dungeon, heroId, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         adventure: {
           ...campaign.adventure!,
-          dungeon: {
-            ...campaign.adventure!.dungeon,
-            heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-              if (h.id !== heroId) {
-                return h;
-              }
-
-              return {
-                ...h,
-                movementPoints: h.movementPoints - 1,
-                inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
-              };
-            }),
-            cells: campaign.adventure!.dungeon.cells.map((c) => {
-              if (!sameCell(c, cell)) {
-                return c;
-              }
-
-              return {
-                ...c,
-                loot: { ...loot },
-              };
-            }),
-          },
+          dungeon: dungeon,
         },
       }));
 

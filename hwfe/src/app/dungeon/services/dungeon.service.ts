@@ -171,6 +171,7 @@ export class DungeonService {
           cell.pixi.lootSprite
         ) {
           this.viewportService.destroySprite(cell.pixi.lootSprite);
+          cell.pixi.lootSprite = null;
         }
 
         if (!cell.searched && updatedCell.searched) {
