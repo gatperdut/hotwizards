@@ -1,14 +1,11 @@
 import { HwItemSlots } from '../../inventory/item-slots.const.js';
 import { HwDungeon } from '../dungeon.interface.js';
 
-export const equipItem = (dungeon: HwDungeon, heroId: number, backpackItemId: string): boolean => {
+export const equipItem = (dungeon: HwDungeon, heroId: number, backpackItemId: string): void => {
   const hero = dungeon.heroes.find((h) => h.id === heroId)!;
   const backpackItem = hero.inventory.backpack.items.find((item) => item.id === backpackItemId)!;
 
-  const slot = HwItemSlots[backpackItem.name];
-  if (!slot) {
-    return false;
-  }
+  const slot = HwItemSlots[backpackItem.name]!;
 
   hero.inventory.gear[slot] = backpackItem;
   hero.inventory.backpack.items = hero.inventory.backpack.items.filter(
@@ -24,6 +21,4 @@ export const equipItem = (dungeon: HwDungeon, heroId: number, backpackItemId: st
         }
       : h,
   );
-
-  return true;
 };

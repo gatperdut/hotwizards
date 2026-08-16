@@ -7,7 +7,7 @@ import {
 import { HwRequest } from '../../auth/types/request.type.js';
 
 @Injectable()
-export class HeroHasMovementPoints implements CanActivate {
+export class HeroHasMovementPointsGuard implements CanActivate {
   public canActivate(executionContext: ExecutionContext): boolean {
     const request = executionContext.switchToHttp().getRequest<HwRequest>();
     const hero = request.hero;

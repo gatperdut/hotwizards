@@ -14,7 +14,6 @@ import {
   endTurnHero,
   endTurnMaster,
   equipItem,
-  HwCell,
   HwHero,
   HwMonster,
   HwTransformEndTurnMaster,
@@ -23,8 +22,7 @@ import {
   openDoor,
   pickupGold,
   pickupItem,
-  searchedCells,
-  searchSecondaryCells,
+  search,
   unequipItem,
 } from '@hw/shared/dungeon';
 import { HwItem, HwSlot } from '@hw/shared/inventory';
@@ -208,15 +206,17 @@ export class AdventuresService {
   public async openDoor(campaign: HwCampaign, hero: HwHero, adjacent: Adjacent): Promise<void> {
     const adventure = campaign.adventure!;
 
-    const canOpenDoor = openDoor(adventure.dungeon, hero.x, hero.y, adjacent);
-    if (!canOpenDoor) {
+    const targetCell = cellAt(
+      adventure.dungeon.cells,
+      hero.x + AdjacentOffsets[adjacent].x,
+      hero.y + AdjacentOffsets[adjacent].y,
+    );
+
+    if (!targetCell || !targetCell.door.spritePath || targetCell.door.open) {
       throw new UnprocessableEntityException('There is no door to open');
     }
 
-    cellsUpdateLos(
-      adventure.dungeon.cells,
-      adventure.dungeon.heroes.map((h) => cellAt(adventure.dungeon.cells, h.x, h.y)!),
-    );
+    openDoor(adventure.dungeon, hero.x, hero.y, adjacent);
 
     await this.prismaService.campaign.update({
       where: { id: campaign.id },
@@ -233,11 +233,7 @@ export class AdventuresService {
 
   public async equipItem(campaign: HwCampaign, hero: HwHero, backpackItem: HwItem): Promise<void> {
     const adventure = campaign.adventure!;
-
-    const canEquipItem = equipItem(adventure.dungeon, hero.id, backpackItem.id);
-    if (!canEquipItem) {
-      throw new UnprocessableEntityException(`Item ${backpackItem.name} cannot be equiped`);
-    }
+    equipItem(adventure.dungeon, hero.id, backpackItem.id);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
@@ -252,11 +248,7 @@ export class AdventuresService {
   public async unequipItem(campaign: HwCampaign, hero: HwHero, slot: HwSlot): Promise<void> {
     const adventure = campaign.adventure!;
 
-    // TODO check in controller guard? One or two more like this, too.
-    const canUnequipItem = unequipItem(adventure.dungeon, hero.id, slot);
-    if (!canUnequipItem) {
-      throw new UnprocessableEntityException(`No item equipped in slot ${slot}`);
-    }
+    unequipItem(adventure.dungeon, hero.id, slot);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
@@ -316,10 +308,14 @@ export class AdventuresService {
 
   public async pickupGold(campaign: HwCampaign, hero: HwHero, amount: number): Promise<void> {
     const adventure = campaign.adventure!;
-    const canPickupGold = pickupGold(adventure.dungeon, hero.id, amount);
-    if (!canPickupGold) {
+
+    const cell = cellAt(adventure.dungeon.cells, hero.x, hero.y)!;
+
+    if (cell.loot.gold < amount) {
       throw new UnprocessableEntityException(`Cannot take ${amount} gold coins from the cell loot`);
     }
+
+    pickupGold(adventure.dungeon, hero.id, amount);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
@@ -333,54 +329,12 @@ export class AdventuresService {
 
   public async search(campaign: HwCampaign, hero: HwHero): Promise<void> {
     const adventure = campaign.adventure!;
-
-    const searchCells = searchedCells(
-      adventure.dungeon.cells,
-      cellAt(adventure.dungeon.cells, hero.x, hero.y)!,
-    );
-
-    const updatedCells = adventure.dungeon.cells.map((c) => {
-      const cell = cellAt(searchCells, c.x, c.y);
-
-      if (!cell) {
-        return c;
-      }
-
-      const updatedC: HwCell = {
-        ...c,
-        floorTrap: { ...c.floorTrap, found: true },
-        searched: true,
-        feature: {
-          ...c.feature,
-          trap: {
-            ...c.feature.trap,
-            ...(c.feature.trap.spritePath ? { ...c.feature.trap, found: true } : c.feature.trap),
-          },
-        },
-        door: {
-          ...c.door,
-          trap: {
-            ...c.door.trap,
-            ...(c.door.trap.spritePath ? { ...c.door.trap, found: true } : c.door.trap),
-          },
-        },
-      };
-
-      return updatedC;
-    });
-
-    searchSecondaryCells(searchCells, updatedCells, adventure.dungeon.cells);
+    search(adventure.dungeon, hero.id);
 
     void (await this.prismaService.adventure.update({
       where: { id: adventure.id },
       data: {
-        dungeon: {
-          ...adventure.dungeon,
-          heroes: adventure.dungeon.heroes.map((h) =>
-            h.id === hero.id ? { ...h, actionPoints: h.actionPoints - 1 } : h,
-          ),
-          cells: updatedCells,
-        } as unknown as InputJsonValue,
+        dungeon: adventure.dungeon as unknown as InputJsonValue,
       },
     }));
 

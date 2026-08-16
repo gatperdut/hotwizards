@@ -2,13 +2,9 @@ import { cellAt } from '../cells/position/cell-at.const.js';
 import { sameCell } from '../cells/position/same-cell.const.js';
 import { HwDungeon } from '../dungeon.interface.js';
 
-export const pickupGold = (dungeon: HwDungeon, heroId: number, amount: number): boolean => {
+export const pickupGold = (dungeon: HwDungeon, heroId: number, amount: number): void => {
   const hero = dungeon.heroes.find((h) => h.id === heroId)!;
   const cell = cellAt(dungeon.cells, hero.x, hero.y)!;
-
-  if (cell.loot.gold < amount) {
-    return false;
-  }
 
   cell.loot.gold -= amount;
   hero.inventory.backpack.gold += amount;
@@ -35,6 +31,4 @@ export const pickupGold = (dungeon: HwDungeon, heroId: number, amount: number): 
       loot: { ...cell.loot, items: [...cell.loot.items] },
     };
   });
-
-  return true;
 };

@@ -5,20 +5,17 @@ import {
   ClosedToOpenDoorSpritePaths,
 } from '../../sprites/door-sprites.const.js';
 import { heroSpritePath } from '../../sprites/hero-sprites.const.js';
+import { cellsUpdateLos } from '../cells/los/cells-update-los.const.js';
 import { cellAt } from '../cells/position/cell-at.const.js';
 import { sameCell } from '../cells/position/same-cell.const.js';
 import { HwDungeon } from '../dungeon.interface.js';
 
-export const openDoor = (dungeon: HwDungeon, x: number, y: number, adjacent: Adjacent): boolean => {
+export const openDoor = (dungeon: HwDungeon, x: number, y: number, adjacent: Adjacent): void => {
   const targetCell = cellAt(
     dungeon.cells,
     x + AdjacentOffsets[adjacent].x,
     y + AdjacentOffsets[adjacent].y,
-  );
-
-  if (!targetCell || !targetCell.door.spritePath || targetCell.door.open) {
-    return false;
-  }
+  )!;
 
   dungeon.cells = dungeon.cells.map((cell) => {
     if (sameCell(targetCell, cell)) {
@@ -49,5 +46,8 @@ export const openDoor = (dungeon: HwDungeon, x: number, y: number, adjacent: Adj
       : h,
   );
 
-  return true;
+  cellsUpdateLos(
+    dungeon.cells,
+    dungeon.heroes.map((h) => cellAt(dungeon.cells, h.x, h.y)!),
+  );
 };

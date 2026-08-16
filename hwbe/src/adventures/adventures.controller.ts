@@ -24,8 +24,9 @@ import { CurrentLootItem } from './decorators/current-loot-item.decorator.js';
 import { CurrentMonster } from './decorators/current-monster.decorator.js';
 import { AdventureCampaignMasterGuard } from './guards/adventure-campaign-master.guard.js';
 import { AdventureProperTurnGuard } from './guards/adventure-proper-turn.guard.js';
+import { BackpackItemEquippableGuard } from './guards/backpack-item-equippable.guard.js';
 import { HeroHasActionPoints } from './guards/hero-has-action-points.guard.js';
-import { HeroHasMovementPoints } from './guards/hero-has-movement-points.guard.js';
+import { HeroHasMovementPointsGuard } from './guards/hero-has-movement-points.guard.js';
 import { MonsterHasMovementPoints } from './guards/monster-has-movement-points.guard.js';
 import { SetAdventureCampaignGuard } from './guards/set-adventure-campaign.guard.js';
 import { SetAdventureHeroGuard } from './guards/set-adventure-hero.guard.js';
@@ -84,7 +85,7 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
   )
   public moveHero(
     @CurrentCampaign() campaign: HwCampaign,
@@ -116,7 +117,7 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
   )
   public openDoor(
     @CurrentCampaign() campaign: HwCampaign,
@@ -132,8 +133,9 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
     SetHeroBackpackItemGuard,
+    BackpackItemEquippableGuard,
   )
   public equipItem(
     @CurrentCampaign() campaign: HwCampaign,
@@ -149,7 +151,7 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
     SetHeroGearItemGuard,
   )
   public unequipItem(
@@ -166,7 +168,7 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
     SetHeroBackpackItemGuard,
   )
   public dropItem(
@@ -199,7 +201,7 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
     SetHeroLootItemGuard,
   )
   public pickupItem(
@@ -216,7 +218,7 @@ export class AdventuresController {
     SetAdventureCampaignGuard,
     AdventureProperTurnGuard,
     SetAdventureHeroGuard,
-    HeroHasMovementPoints,
+    HeroHasMovementPointsGuard,
   )
   public pickupGold(
     @CurrentCampaign() campaign: HwCampaign,

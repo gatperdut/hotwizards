@@ -9,6 +9,7 @@ export { openDoor } from './actions/open-door.const.js';
 export { pickupGold } from './actions/pickup-gold.const.js';
 export { pickupItem } from './actions/pickup-item.const.js';
 export { searchSecondaryCells } from './actions/search-secondary-cells.const.js';
+export { search } from './actions/search.const.js';
 export { unequipItem } from './actions/unequip-item.const.js';
 export { HwCell } from './cells/cell.interface.js';
 export { HwCorners } from './cells/corners.interface.js';

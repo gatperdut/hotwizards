@@ -28,8 +28,7 @@ import {
   openDoor,
   pickupGold,
   pickupItem,
-  searchedCells,
-  searchSecondaryCells,
+  search,
   secondaryCells,
   unequipItem,
 } from '@hw/shared/dungeon';
@@ -428,11 +427,6 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
         },
       }));
 
-      cellsUpdateLos(
-        dungeon.cells,
-        dungeon.heroes.map((h) => cellAt(dungeon.cells, h.x, h.y)!),
-      );
-
       this.dungeonService.hwfeCellsUpdate();
       this.dungeonService.hwfeHeroesUpdate();
     });
@@ -531,50 +525,15 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     });
 
     this.dungeonService.adventuresSocket.on('downSearch', (heroId) => {
-      const hero = this.campaignService
-        .campaign()
-        .adventure!.dungeon.heroes.find((h) => h.id === heroId)!;
-      const allCells = this.campaignService.campaign().adventure!.dungeon.cells;
-
-      const searchCells = searchedCells(allCells, cellAt(allCells, hero.x, hero.y)!);
+      const dungeon = this.campaignService.campaign().adventure!.dungeon;
+      search(dungeon, heroId);
 
       this.campaignService.campaign.update((campaign) => {
-        const updatedCells = campaign.adventure!.dungeon.cells.map((c) =>
-          cellAt(searchCells, c.x, c.y)
-            ? {
-                ...c,
-                searched: true,
-                floorTrap: { ...c.floorTrap, found: true },
-                feature: { ...c.feature, trap: { ...c.feature.trap, found: true } },
-                door: { ...c.door, trap: { ...c.door.trap, found: true } },
-              }
-            : c,
-        );
-
-        searchSecondaryCells(
-          searchCells,
-          updatedCells,
-          this.campaignService.campaign().adventure!.dungeon.cells,
-        );
-
         return {
           ...campaign,
           adventure: {
             ...campaign.adventure!,
-            dungeon: {
-              ...campaign.adventure!.dungeon,
-              heroes: campaign.adventure!.dungeon.heroes.map((h) => {
-                if (h.id !== heroId) {
-                  return h;
-                }
-
-                return {
-                  ...h,
-                  actionPoints: h.actionPoints - 1,
-                };
-              }),
-              cells: updatedCells,
-            },
+            dungeon: dungeon,
           },
         };
       });
