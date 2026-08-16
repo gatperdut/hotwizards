@@ -3,12 +3,10 @@ import { HwDungeon } from '../dungeon.interface.js';
 
 export const unequipItem = (dungeon: HwDungeon, heroId: number, slot: HwSlot): boolean => {
   const hero = dungeon.heroes.find((h) => h.id === heroId)!;
-  const inventory = hero.inventory;
+  const gearItem = hero.inventory.gear[slot]!;
 
-  const gearItem = inventory.gear[slot]!;
-
-  inventory.backpack.items.push(gearItem);
-  inventory.gear[slot] = null;
+  hero.inventory.backpack.items.push(gearItem);
+  hero.inventory.gear[slot] = null;
 
   dungeon.heroes = dungeon.heroes.map((h) => {
     if (h.id !== heroId) {
@@ -18,7 +16,7 @@ export const unequipItem = (dungeon: HwDungeon, heroId: number, slot: HwSlot): b
     return {
       ...h,
       movementPoints: h.movementPoints - 1,
-      inventory: { gear: { ...inventory.gear }, backpack: { ...inventory.backpack } },
+      inventory: { gear: { ...hero.inventory.gear }, backpack: { ...hero.inventory.backpack } },
     };
   });
 
