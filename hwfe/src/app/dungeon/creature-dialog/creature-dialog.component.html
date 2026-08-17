@@ -3,7 +3,7 @@
     <div class="flex flex-row gap-3 items-center">
       @if (creature().alignment === 'HERO') {
         <app-who-character
-          [user]="data.user!"
+          [user]="data.creatureUser!"
           [character]="hero()"
           [master]="false"
         ></app-who-character>
@@ -25,19 +25,19 @@
   <ng-template appDialogContent>
     <app-inventory-manager
       [inventory]="creature().inventory"
-      [showEquip]="data.user?.me || false"
+      [showEquip]="data.creatureUser?.me || false"
       [canEquip]="creature().movementPoints >= 1"
       (equip)="onEquip($event)"
-      [showUnequip]="data.user?.me || false"
+      [showUnequip]="data.creatureUser?.me || false"
       [canUnequip]="creature().movementPoints >= 1"
       (unequip)="onUnequip($event)"
-      [showDropItem]="data.user?.me || false"
+      [showDropItem]="data.creatureUser?.me || false"
       [canDropItem]="creature().movementPoints >= 1"
       (dropItem)="onDropItem($event)"
       [showSellItem]="false"
       [canSellItem]="true"
       [showGiveGold]="false"
-      [showDestroyItem]="data.user?.me || false"
+      [showDestroyItem]="data.creatureUser?.me || false"
       [canDestroyItem]="true"
       (destroyItem)="onDestroyItem($event)"
     ></app-inventory-manager>

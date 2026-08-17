@@ -34,7 +34,7 @@ import { APP_DIALOG_DATA } from '../../ui/dialog/services/dialog.service';
 
 export type CreatureDialogData = {
   campaign: WritableSignal<HwCampaign>;
-  user: HwUser | null;
+  creatureUser: HwUser | null;
   creatureId: number;
 };
 
@@ -65,11 +65,10 @@ export class CreatureDialogComponent {
 
   public adventure = computed(() => this.data.campaign().adventure!);
   public master = computed(() => this.data.campaign().master);
-  public creature = computed(
-    () =>
-      [...this.adventure().dungeon.heroes, ...this.adventure().dungeon.monsters].find(
-        (c) => c.id === this.data.creatureId,
-      )!,
+  public creature = computed(() =>
+    [...this.adventure().dungeon.heroes, ...this.adventure().dungeon.monsters].find(
+      (c) => c.id === this.data.creatureId,
+    )!,
   );
 
   public creatureMaxBodyPoints = creatureMaxBodyPoints;

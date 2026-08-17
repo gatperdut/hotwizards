@@ -505,7 +505,7 @@ export class DungeonService {
       dialog,
       {
         campaign: this.campaignService.campaign,
-        user:
+        creatureUser:
           creature.alignment === 'HERO'
             ? this.campaignService.memberships().find((m) => m.userId === creature.id)!.user
             : null,
