@@ -373,6 +373,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downMoveHero', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
+
       moveHero(dungeon, hero.id, data.adj);
 
       cellsUpdateLos(
@@ -394,6 +395,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downMoveMonster', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       moveMonster(dungeon, data.monsterId, data.adj);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -417,6 +419,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
     this.dungeonService.adventuresSocket.on('downOpenDoor', (data) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
       const hero = dungeon.heroes.find((h) => h.id === data.heroId)!;
+
       openDoor(dungeon, hero.x, hero.y, data.adj)!;
 
       this.campaignService.campaign.update((campaign) => ({
@@ -433,6 +436,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downEquipItem', (heroId, backpackItemId) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       equipItem(dungeon, heroId, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -448,6 +452,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downUnequipItem', (heroId, slot) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       unequipItem(dungeon, heroId, slot);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -463,6 +468,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downDropItem', (heroId, backpackItemId) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       dropItem(dungeon, heroId, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -479,6 +485,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downDestroyItem', (heroId, backpackItemId) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       destroyItem(dungeon, heroId, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -494,6 +501,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downPickupItem', (heroId, lootItemId) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       pickupItem(dungeon, heroId, lootItemId);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -510,6 +518,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downPickupGold', (heroId, amount) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       pickupGold(dungeon, heroId, amount);
 
       this.campaignService.campaign.update((campaign) => ({
@@ -526,6 +535,7 @@ export class DungeonComponent implements AfterViewInit, OnDestroy {
 
     this.dungeonService.adventuresSocket.on('downSearch', (heroId) => {
       const dungeon = this.campaignService.campaign().adventure!.dungeon;
+
       search(dungeon, heroId);
 
       this.campaignService.campaign.update((campaign) => {

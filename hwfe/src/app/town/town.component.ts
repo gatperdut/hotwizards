@@ -13,8 +13,18 @@ import { ToastService } from '@hw/hwfe/app/ui/toast/services/toast.service';
 import { SocketService } from '@hw/hwfe/sockets/socket.service';
 import { HwAdventureTemplate } from '@hw/shared/adventure-templates';
 import { HwCampaign } from '@hw/shared/campaigns';
-import { equipItem, unequipItem } from '@hw/shared/characters';
-import { HwBuyableItemName, HwItem, HwItemCosts } from '@hw/shared/inventory';
+import {
+  buyItem,
+  destroyItem,
+  dropItem,
+  equipItem,
+  giveGold,
+  pickupGold,
+  pickupItem,
+  sellItem,
+  unequipItem,
+} from '@hw/shared/characters';
+import { HwItem } from '@hw/shared/inventory';
 import {
   CampaignsSingleDownstream,
   CampaignsSingleUpstream,
@@ -202,10 +212,9 @@ export class TownComponent {
 
       this.campaignService.campaign.set({
         ...campaign,
-        memberships: campaign.memberships.map((m) => ({
-          ...m,
-          character: m.character!.id === character.id ? { ...character } : m.character,
-        })),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       });
     });
 
@@ -218,262 +227,129 @@ export class TownComponent {
 
       this.campaignService.campaign.set({
         ...campaign,
-        memberships: campaign.memberships.map((m) => ({
-          ...m,
-          character: m.character!.id === character.id ? { ...character } : m.character,
-        })),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       });
     });
 
-    // TODO next
     this.charactersSocket.on('downDropItem', (characterId, backpackItemId) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      const stash = this.campaignService.campaign().stash;
-
-      const backpackItem = inventory.backpack.items.find((item) => item.id === backpackItemId)!;
-      inventory.backpack.items = inventory.backpack.items.filter(
-        (item) => item.id !== backpackItemId,
-      );
-      stash.items.push(backpackItem);
+      dropItem(campaign, character, backpackItemId);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         stash: {
           ...campaign.stash,
         },
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...inventory.gear,
-                },
-                backpack: {
-                  ...inventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       }));
     });
 
     this.charactersSocket.on('downPickupItem', (characterId, stashItemId) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      const stash = this.campaignService.campaign().stash;
-
-      const stashItem = stash.items.find((item) => item.id === stashItemId)!;
-      stash.items = stash.items.filter((item) => item.id !== stashItemId);
-      inventory.backpack.items.push(stashItem);
+      pickupItem(campaign, character, stashItemId);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         stash: {
           ...campaign.stash,
         },
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...inventory.gear,
-                },
-                backpack: {
-                  ...inventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       }));
     });
 
     this.charactersSocket.on('downPickupGold', (characterId, amount) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      const stash = this.campaignService.campaign().stash;
-
-      stash.gold -= amount;
-      inventory.backpack.gold += amount;
+      pickupGold(campaign, character, amount);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
         stash: {
           ...campaign.stash,
         },
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...inventory.gear,
-                },
-                backpack: {
-                  ...inventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       }));
     });
 
     this.charactersSocket.on('downBuyItem', (characterId, boughtItem) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      inventory.backpack.gold -= HwItemCosts[boughtItem.name as HwBuyableItemName];
-      inventory.backpack.items.push(boughtItem);
+      buyItem(character, boughtItem);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...inventory.gear,
-                },
-                backpack: {
-                  ...inventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       }));
     });
 
     this.charactersSocket.on('downSellItem', (characterId, soldItemId) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      const soldItem = inventory.backpack.items.find((item) => item.id === soldItemId)!;
-      inventory.backpack.items = inventory.backpack.items.filter((item) => item.id !== soldItemId);
-      inventory.backpack.gold += Math.round(HwItemCosts[soldItem.name as HwBuyableItemName] / 2);
+      sellItem(character, soldItemId);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...inventory.gear,
-                },
-                backpack: {
-                  ...inventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       }));
     });
 
     this.charactersSocket.on('downGiveGold', (characterId, targetCharacterId, amount) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
+      const targetMembership = campaign.memberships.find((m) => m.id === targetCharacterId)!;
+      const targetCharacter = targetMembership.character!;
 
-      const targetInventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === targetCharacterId)!.character!.inventory;
-
-      inventory.backpack.gold -= amount;
-      targetInventory.backpack.gold += amount;
+      giveGold(campaign, character, targetCharacter, amount);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId && m.characterId !== targetCharacterId) {
-            return m;
-          }
-
-          const whichInventory = m.characterId === characterId ? inventory : targetInventory;
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...whichInventory.gear,
-                },
-                backpack: {
-                  ...whichInventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId
+            ? { ...m, character: { ...character } }
+            : m.characterId === targetCharacterId
+              ? { ...m, character: { ...targetCharacter } }
+              : m,
+        ),
       }));
     });
 
     this.charactersSocket.on('downDestroyItem', (characterId, destroyedItemId) => {
-      const inventory = this.campaignService
-        .memberships()
-        .find((m) => m.characterId === characterId)!.character!.inventory;
+      const campaign = this.campaignService.campaign();
+      const membership = campaign.memberships.find((m) => m.id === characterId)!;
+      const character = membership.character!;
 
-      inventory.backpack.items = inventory.backpack.items.filter(
-        (item) => item.id !== destroyedItemId,
-      );
+      destroyItem(character, destroyedItemId);
 
       this.campaignService.campaign.update((campaign) => ({
         ...campaign,
-        memberships: campaign.memberships.map((m) => {
-          if (m.characterId !== characterId) {
-            return m;
-          }
-          return {
-            ...m,
-            character: {
-              ...m.character!,
-              inventory: {
-                gear: {
-                  ...inventory.gear,
-                },
-                backpack: {
-                  ...inventory.backpack,
-                },
-              },
-            },
-          };
-        }),
+        memberships: campaign.memberships.map((m) =>
+          m.characterId === characterId ? { ...m, character: { ...character } } : m,
+        ),
       }));
     });
   }

@@ -1,7 +1,11 @@
-import { HwCharacter } from '../../characters/character.interface.js';
-import { HwItemSlots } from '../../inventory/item-slots.const.js';
+import { HwCampaign } from '../../campaigns/campaign.interface.js';
+import { HwCharacter } from '../character.interface.js';
 
-export const equipItem = (character: HwCharacter, backpackItemId: string): void => {
+export const dropItem = (
+  campaign: HwCampaign,
+  character: HwCharacter,
+  backpackItemId: string,
+): void => {
   const backpackItem = character.inventory.backpack.items.find(
     (item) => item.id === backpackItemId,
   )!;
@@ -11,9 +15,10 @@ export const equipItem = (character: HwCharacter, backpackItemId: string): void 
     gear: { ...character.inventory.gear },
     backpack: { ...character.inventory.backpack },
   };
+  campaign.stash = { ...campaign.stash };
 
-  character.inventory.gear[HwItemSlots[backpackItem.name]!] = backpackItem;
   character.inventory.backpack.items = character.inventory.backpack.items.filter(
     (item) => item.id !== backpackItemId,
   );
+  campaign.stash.items.push(backpackItem);
 };
