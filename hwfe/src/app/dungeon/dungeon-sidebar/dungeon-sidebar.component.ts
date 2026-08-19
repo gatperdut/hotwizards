@@ -30,11 +30,6 @@ import { SidebarButtonAction } from '../../sidebar/sidebar-button/sidebar-button
 import { SidebarButton, SidebarComponent } from '../../sidebar/sidebar.component';
 import { StatsComponent } from '../../stats/stats.component';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
-import {
-  LootDialogComponent,
-  LootDialogData,
-  LootDialogResult,
-} from '../loot-dialog/loot-dialog.component';
 import { DungeonService } from '../services/dungeon.service';
 
 @Component({
@@ -72,7 +67,6 @@ export class DungeonSidebarComponent {
       this.moveButton(),
       this.searchButton(),
       this.openDoorButton(),
-      this.pickupButton(),
       this.centerButton(),
       this.stopButton(),
     ].filter((button) => !!button);
@@ -212,35 +206,6 @@ export class DungeonSidebarComponent {
       autoClose: false,
       disabled: !activeHero || actions.every((a) => a.disabled),
       actions: actions,
-    };
-  }
-
-  private pickupButton(): SidebarButton | null {
-    const adventure = this.campaignService.campaign().adventure!;
-    const master = this.campaignService.master();
-    const activeHero = this.dungeonService.activeHero();
-
-    if (master.me) {
-      return null;
-    }
-
-    const cell = activeHero ? cellAt(adventure.dungeon.cells, activeHero.x, activeHero.y) : null;
-
-    return {
-      icon: 'arrow-up-on-square',
-      color: 'primary',
-      disabled: !activeHero?.me || (cell!.loot.gold <= 0 && cell!.loot.items.length <= 0),
-      callback: (): void => {
-        const dialog: LazyDialog<LootDialogComponent, LootDialogData, LootDialogResult> = {
-          importFn: () =>
-            import('../loot-dialog/loot-dialog.component').then((m) => m.LootDialogComponent),
-        };
-
-        void this.dialogService.open(dialog, {
-          campaign: this.campaignService.campaign,
-          heroId: activeHero!.id,
-        });
-      },
     };
   }
 

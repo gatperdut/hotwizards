@@ -1,0 +1,107 @@
+<app-dialog sizeClass="max-w-3xl">
+  <ng-template appDialogTitle>
+    <div class="typ-h2">Cell ({{ cell().x }},{{ cell().y }})</div>
+  </ng-template>
+
+  <ng-template appDialogContent>
+    @let creature = this.creature();
+    @let showCreature = !!creature;
+    @let loot = this.loot();
+    @let showLoot = loot.gold > 0 || loot.items.length;
+    @if (!showCreature && !showLoot) {
+      <div class="typ-body">This cell is empty</div>
+    } @else {
+      <div class="flex flex-col gap-8">
+        <div class="flex flex-col gap-2.5">
+          @if (showCreature) {
+            <div class="typ-body">{{ creature.alignment === 'HERO' ? 'Hero' : 'Monster' }}</div>
+            <div class="flex flex-row gap-3 items-center">
+              @if (creature.alignment === 'HERO') {
+                <app-who-character
+                  [user]="creatureUser()!"
+                  [character]="hero()"
+                  [master]="false"
+                ></app-who-character>
+                <ng-container
+                  *ngTemplateOutlet="
+                    statsOutlet;
+                    context: { creature: hero(), creatureType: hero().klass }
+                  "
+                ></ng-container>
+              } @else {
+                <app-who-monster [master]="true" [monster]="monster()"></app-who-monster>
+                <ng-container
+                  *ngTemplateOutlet="
+                    statsOutlet;
+                    context: { creature: monster(), creatureType: monster().type! }
+                  "
+                ></ng-container>
+              }
+            </div>
+            <app-inventory-manager
+              [inventory]="creature.inventory"
+              [showEquip]="(activePlayer()?.me && creatureUser()?.me) || false"
+              [canEquip]="creature.movementPoints >= 1"
+              (equip)="onEquip($event)"
+              [showUnequip]="(activePlayer()?.me && creatureUser()?.me) || false"
+              [canUnequip]="creature.movementPoints >= 1"
+              (unequip)="onUnequip($event)"
+              [showDropItem]="(activePlayer()?.me && creatureUser()?.me) || false"
+              [canDropItem]="creature.movementPoints >= 1"
+              (dropItem)="onDropItem($event)"
+              [showSellItem]="false"
+              [canSellItem]="true"
+              [showGiveGold]="false"
+              [showDestroyItem]="(activePlayer()?.me && creatureUser()?.me) || false"
+              [canDestroyItem]="true"
+              (destroyItem)="onDestroyItem($event)"
+            ></app-inventory-manager>
+          }
+        </div>
+        @if (showLoot) {
+          <div class="flex flex-col gap-2.5">
+            @let creature = this.creature();
+            <div class="typ-body">Loot</div>
+            <app-backpack-manager
+              [gear]="null"
+              [backpack]="loot"
+              [showPickupItem]="(activePlayer()?.me && creatureUser()?.me) || false"
+              [canPickupItem]="!!creature && creature.movementPoints >= 1"
+              (pickupItem)="onPickupItem($event)"
+              [showPickupGold]="(activePlayer()?.me && creatureUser()?.me) || false"
+              [canPickupGold]="!!creature && creature.movementPoints >= 1 && loot.gold > 0"
+              (pickupGold)="onPickupGold($event)"
+              [showDropGold]="false"
+            ></app-backpack-manager>
+          </div>
+        }
+      </div>
+    }
+  </ng-template>
+
+  <ng-template appDialogActions>
+    <app-button label="Close" type="button" (click)="dialogRef.close()"></app-button>
+  </ng-template>
+</app-dialog>
+
+<ng-template #statsOutlet let-creature="creature" let-creatureType="creatureType">
+  <app-stats
+    [bodyPoints]="creature.bodyPoints"
+    [maxBodyPoints]="creatureMaxBodyPoints(creatureType, creature.inventory)"
+    [mindPoints]="creature.mindPoints"
+    [maxMindPoints]="creatureMaxMindPoints(creatureType, creature.inventory)"
+    [attackDie]="creatureAttackDie(creatureType, creature.inventory)"
+    [defendDie]="creatureDefendDie(creatureType, creature.inventory)"
+    [actionPoints]="creature.actionPoints"
+    [maxActionPoints]="creatureMaxActionPoints(creatureType, creature.inventory)"
+    [movementPoints]="creature.movementPoints"
+    [maxMovementPoints]="creature.maxMovementPoints"
+    [maxMovementPointsFn]="
+      creatureMaxMovementPointsFn(
+        creatureType,
+        creature.inventory,
+        data.campaign().ruleset.movement
+      )
+    "
+  ></app-stats>
+</ng-template>

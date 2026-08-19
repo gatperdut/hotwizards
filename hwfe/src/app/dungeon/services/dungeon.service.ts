@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { Adjacent, AdjacentOffsets } from '@hw/shared/directions';
-import { cellAt, creatureAt, HwCell, HwCreature, HwHero, HwMonster } from '@hw/shared/dungeon';
+import { cellAt, creatureAt, HwCell, HwHero, HwMonster } from '@hw/shared/dungeon';
 import {
   AdventuresDownstream,
   AdventuresUpstream,
@@ -35,10 +35,10 @@ import { GreenSpriteTintSubtraction } from '../../sprites/sprite-tints.const';
 import { SpriteOffsets, SpriteSizes, spriteZIndex } from '../../sprites/sprites.const';
 import { DialogService, LazyDialog } from '../../ui/dialog/services/dialog.service';
 import {
-  CreatureDialogComponent,
-  CreatureDialogData,
-  CreatureDialogResult,
-} from '../creature-dialog/creature-dialog.component';
+  CellDialogComponent,
+  CellDialogData,
+  CellDialogResult,
+} from '../cell-dialog/cell-dialog.component';
 import { HwfeCell } from '../interfaces/cell.interface';
 import { HwfeCorners } from '../interfaces/corners.interface';
 import { HwfeHero } from '../interfaces/hero.interface';
@@ -439,7 +439,6 @@ export class DungeonService {
     }
     event.stopPropagation();
 
-    const activePlayer = this.activePlayer()!;
     const master = this.campaignService.master();
     const hwfeCell = cellAt(this.hwfeCells(), x, y)!;
 
@@ -447,31 +446,43 @@ export class DungeonService {
       return;
     }
 
+    if (!master.me || (master.me && !this.activePlayer()?.me)) {
+      this.viewCell(hwfeCell);
+      return;
+    }
+
     const creature =
       creatureAt([...this.hwfeHeroes(), ...this.hwfeMonsters()], hwfeCell.x, hwfeCell.y) ?? null;
-    if (!master.me || !activePlayer.me) {
-      if (creature) {
-        this.viewCreature(creature);
-      }
-    } else {
-      if (!creature) {
+    const selectedMonster = this.selectedMonster();
+
+    if (!creature) {
+      if (selectedMonster) {
         this.adventuresApiService
           .selectMonster(this.campaignService.campaign().adventure!.id, null)
           .subscribe();
       } else {
-        if (creature.alignment === 'HERO') {
-          this.viewCreature(creature);
-        } else {
-          const selectedMonster = this.selectedMonster();
-          if (selectedMonster && selectedMonster.id === creature.id) {
-            this.viewCreature(creature);
-          } else {
-            this.adventuresApiService
-              .selectMonster(this.campaignService.campaign().adventure!.id, creature.id)
-              .subscribe();
-          }
-        }
+        this.viewCell(hwfeCell);
       }
+      return;
+    }
+
+    if (creature.alignment === 'HERO') {
+      this.viewCell(hwfeCell);
+      return;
+    }
+
+    if (selectedMonster) {
+      if (creature.id === selectedMonster.id) {
+        this.viewCell(hwfeCell);
+      } else {
+        this.adventuresApiService
+          .selectMonster(this.campaignService.campaign().adventure!.id, creature.id)
+          .subscribe();
+      }
+    } else {
+      this.adventuresApiService
+        .selectMonster(this.campaignService.campaign().adventure!.id, creature.id)
+        .subscribe();
     }
   }
 
@@ -493,23 +504,18 @@ export class DungeonService {
     }
   }
 
-  private viewCreature(creature: HwCreature): void {
-    const dialog: LazyDialog<CreatureDialogComponent, CreatureDialogData, CreatureDialogResult> = {
+  private viewCell(cell: HwfeCell): void {
+    const dialog: LazyDialog<CellDialogComponent, CellDialogData, CellDialogResult> = {
       importFn: () =>
-        import('../creature-dialog/creature-dialog.component').then(
-          (m) => m.CreatureDialogComponent,
-        ),
+        import('../cell-dialog/cell-dialog.component').then((m) => m.CellDialogComponent),
     };
 
     void this.dialogService.open(
       dialog,
       {
         campaign: this.campaignService.campaign,
-        creatureUser:
-          creature.alignment === 'HERO'
-            ? this.campaignService.memberships().find((m) => m.userId === creature.id)!.user
-            : null,
-        creatureId: creature.id,
+        x: cell.x,
+        y: cell.y,
       },
       this.injector,
     );
